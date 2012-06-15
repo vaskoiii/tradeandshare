@@ -263,11 +263,11 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 	<dl>
 		<dt><?= tt('element', 'access_public_web'); ?></dt>
 			<dd>Any one even if they are not a user of the site can see this information.</dd>
-		<dt><?= tt('element', 'access_user_inter'); ?></dt>
+		<dt><?= tt('element', 'access_user_all'); ?></dt>
 			<dd>Any user on the site can see this information.</dd>
 		<dt><?= tt('element', 'access_team_intra'); ?></dt>
 			<dd>Any user on the corresponding team can view this information.</dd>
-		<dt><?= tt('element', 'access_user_intra'); ?></dt>
+		<dt><?= tt('element', 'access_user_inter'); ?></dt>
 			<dd>Info shared between the sending user and the receiving user.</dd>
 		<dt><?= tt('element', 'access_user_author'); ?></dt>
 			<dd>Private info that only you can see.</dd>
