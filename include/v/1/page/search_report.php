@@ -42,29 +42,7 @@ foreach ($v1 as $k2 => $v2) {
 	add_translation('element', $k2);
 } } }
 
-
-$sql = '
-	select
-		count(tag.id) as tag_count,
-		tag.name as tag_name,
-		tag.id as tag_id
-	from
-		ts_tag tag,
-		ts_link_tag ltg,
-		ts_item itm,
-		ts_tag tag2
-	where
-		ltg.tag_id = tag.id and
-		tag2.id = itm.tag_id and
-		tag2.parent_id = tag.id
-	group by
-		tag.id
-';
-# order by will happen later
-
-
 $my_array_name = 'search_report';
-#$my_list_name = 'minder';
 $my_list_name = 'category';
 
 $data[$my_array_name]['search']['select'][] = 'count(t1.id) as tag_count';
@@ -74,6 +52,7 @@ $data[$my_array_name]['search']['select'][] = 't1.id as tag_id';
 $data[$my_array_name]['search']['from'][] = 'ts_tag t2';
 $data[$my_array_name]['search']['from'][] = 'ts_item i';
 
+$data[$my_array_name]['search']['where'][] = 'i.active = 1';
 $data[$my_array_name]['search']['where'][] = 'i.tag_id = t2.id';
 $data[$my_array_name]['search']['where'][] = 't2.parent_id = t1.id';
 
@@ -90,6 +69,9 @@ $data[$my_array_name]['search']['order_by'] = array('tag_count desc'); # todo fi
 # order by is not needed it happens later.
 
 $sql = get_engine_result_listing_sql($data[$my_array_name], $limit);
+
+# todo add another case for listings (with this one exception) so this hack is unneded. 2012-06-16 vaskoiii
+$sql = str_replace('t1.user_id = u.id', 'i.user_id = u.id', $sql);
 
 $data[$my_array_name]['result']['listing'] = array();
 $result = mysql_query($sql) or die(mysql_error());

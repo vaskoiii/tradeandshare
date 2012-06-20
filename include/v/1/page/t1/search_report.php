@@ -42,7 +42,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="doc_box">
 		<h3><?= tt('page', 'main'); ?></h3>
 		<p>
-			<a href="item_list/<?= ff(get_lock_query()); ?>"><?= tt('element', 'everything'); ?></a>
+			<a href="item_list/<?= ff($q['raw']); ?>"><?= tt('element', 'everything'); ?></a>
 		</p>
 	</div>
 
@@ -53,8 +53,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		if (!empty($data['search_report']['result']['listing'])) {
 			echo '<dl>';
 			foreach ($data['search_report']['result']['listing'] as $k1 => $v1) { ?>
-				<dt>
-					<a href="item_list/<?= ff(get_lock_query('parent_tag_id=' . (int)$v1['tag_id'])); ?>"><?= kk('tag', $v1['tag_id'], 'translation_name', $v1['tag_name']); ?></a>
+				<dt><?
+					# todo fix so that the link maintains the locking and not all url vars 2012-06-16 vaskoiii ?> 
+					<a href="item_list/<?= ff($q['raw'] . '&parent_tag_id=' . (int)$v1['tag_id'], $x['level']); ?>"><?= kk('tag', $v1['tag_id'], 'translation_name', $v1['tag_name']); ?></a>
 					-
 					<?= (int)$v1['tag_count']; ?>
 				</dt>
