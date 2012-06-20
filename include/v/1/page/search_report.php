@@ -42,35 +42,64 @@ foreach ($v1 as $k2 => $v2) {
 	add_translation('element', $k2);
 } } }
 
+
+$sql = '
+	select
+		count(tag.id) as tag_count,
+		tag.name as tag_name,
+		tag.id as tag_id
+	from
+		ts_tag tag,
+		ts_link_tag ltg,
+		ts_item itm,
+		ts_tag tag2
+	where
+		ltg.tag_id = tag.id and
+		tag2.id = itm.tag_id and
+		tag2.parent_id = tag.id
+	group by
+		tag.id
+';
+# order by will happen later
+
+
 $my_array_name = 'search_report';
-$my_list_name = 'minder';
+#$my_list_name = 'minder';
+$my_list_name = 'category';
 
-$data[$my_array_name]['search']['select'][] = 'COUNT(t1.kind_name_id)';
-$data[$my_array_name]['search']['select'][] = 'tr.name AS translation_name';
-$data[$my_array_name]['search']['select'][] = 'tr.description AS translation_description';
-$data[$my_array_name]['search']['select'][] = 'tr.kind_name_id';
+$data[$my_array_name]['search']['select'][] = 'count(t1.id) as tag_count';
+$data[$my_array_name]['search']['select'][] = 't1.name as tag_name';
+$data[$my_array_name]['search']['select'][] = 't1.id as tag_id';
 
-$data[$my_array_name]['search']['from'][] = $config['mysql']['prefix'] . 'translation tr';
-//$data[$my_array_name]['search']['from'][] = $config['mysql']['prefix'] . 'kind ki';
+$data[$my_array_name]['search']['from'][] = 'ts_tag t2';
+$data[$my_array_name]['search']['from'][] = 'ts_item i';
 
-//$data[$my_array_name]['search']['where'][] = 'mi.name = ki.name'; // join on name because id's are different
-$data[$my_array_name]['search']['where'][] = 'ki.id = tr.kind_id';
-$data[$my_array_name]['search']['where'][] = 't1.kind_name_id = tr.kind_name_id';
-
-//$data[$my_array_name]['search']['where_x'][] = 'mi.name = "category"';
-$data[$my_array_name]['search']['where_x'][] = 'ki.name = "tag"';
-$data[$my_array_name]['search']['where_x'][] = 'tr.dialect_id = ' . (int)$_SESSION['dialect']['dialect_id'];
-
-$data[$my_array_name]['search']['group_by'][] = 't1.kind_name_id';
-
-$data[$my_array_name]['search']['order_by'][] = 'COUNT(t1.kind_name_id) DESC';
+$data[$my_array_name]['search']['where'][] = 'i.tag_id = t2.id';
+$data[$my_array_name]['search']['where'][] = 't2.parent_id = t1.id';
 
 search_lock($data[$my_array_name], $my_list_name, $_SESSION['login']['login_user_name']);
 listing_engine($data[$my_array_name], $my_list_name, $_SESSION['login']['login_user_name']);
 
-$sql = get_engine_result_listing_sql($data[$my_array_name]);
+# todo fix the need for this override in the engine. vaskoiii 2012-06-16
+$limit = get_db_single_value('
+		count(tag_id)
+	from
+		' . $config['mysql']['prefix'] . 'link_tag
+');
+$data[$my_array_name]['search']['order_by'] = array('tag_count desc'); # todo fix the necessity for this override in the engine. vaskoiii 2012-06-16
+# order by is not needed it happens later.
+
+$sql = get_engine_result_listing_sql($data[$my_array_name], $limit);
 
 $data[$my_array_name]['result']['listing'] = array();
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result))
 	$data[$my_array_name]['result']['listing'][] = $row;
+
+# translate
+$key['tag_id']['select']['translation_description'] = 'translation_description';
+foreach($data[$my_array_name]['result']['listing'] as $k1 => $v1) {
+	add_key('tag', $v1['tag_id'], 'tag_name', $key);
+}
+# todo sort categories alphabetical without left outer join. vaskoiii 2012-06-16
+# todo add some base categories to the initial install.

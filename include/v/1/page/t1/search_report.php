@@ -53,8 +53,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		if (!empty($data['search_report']['result']['listing'])) {
 			echo '<dl>';
 			foreach ($data['search_report']['result']['listing'] as $k1 => $v1) { ?>
-				<dt><a href="item_list/<?= ff(get_lock_query('parent_tag_id=' . (int)$v1['kind_name_id'])); ?>"><?= to_html($v1['translation_name']); ?></a></dt>
-				<dd><?= to_html($v1['translation_description']); ?></a></dd><?
+				<dt>
+					<a href="item_list/<?= ff(get_lock_query('parent_tag_id=' . (int)$v1['tag_id'])); ?>"><?= kk('tag', $v1['tag_id'], 'translation_name', $v1['tag_name']); ?></a>
+					-
+					<?= (int)$v1['tag_count']; ?>
+				</dt>
+				<dd><?= kk('tag', $v1['tag_id'], 'translation_description', '!'); ?></a></dd><?
 			}
 			echo '</dl>';
 		}
