@@ -35,7 +35,7 @@ $config['title_prefix'] = 'TS '; # Used on Email & Feeds & Page Title
 $config['mysql'] = array(
 	'host' => 'localhost',
 	'user' => 'ts',
-	'password' => '',
+	'password' => 'dxhTw3',
 	'database' => 'ts',
 	'prefix' => 'ts_'
 );

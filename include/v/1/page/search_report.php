@@ -42,46 +42,56 @@ foreach ($v1 as $k2 => $v2) {
 	add_translation('element', $k2);
 } } }
 
-$my_array_name = 'search_report';
-$my_list_name = 'category';
-
-$data[$my_array_name]['search']['select'][] = 'count(t1.id) as tag_count';
-$data[$my_array_name]['search']['select'][] = 't1.name as tag_name';
-$data[$my_array_name]['search']['select'][] = 't1.id as tag_id';
-
-$data[$my_array_name]['search']['from'][] = 'ts_tag t2';
-$data[$my_array_name]['search']['from'][] = 'ts_item i';
-
-$data[$my_array_name]['search']['where'][] = 'i.active = 1';
-$data[$my_array_name]['search']['where'][] = 'i.tag_id = t2.id';
-$data[$my_array_name]['search']['where'][] = 't2.parent_id = t1.id';
-
-search_lock($data[$my_array_name], $my_list_name, $_SESSION['login']['login_user_name']);
-listing_engine($data[$my_array_name], $my_list_name, $_SESSION['login']['login_user_name']);
-
-# todo fix the need for this override in the engine. vaskoiii 2012-06-16
-$limit = get_db_single_value('
-		count(tag_id)
+$s1 = 'custom_key';
+$s2 = 'custom_query';
+$sql = '
+	select
+		tg.id as tag_id,
+		tg.name as tag_name
 	from
-		' . $config['mysql']['prefix'] . 'link_tag
-');
-$data[$my_array_name]['search']['order_by'] = array('tag_count desc'); # todo fix the necessity for this override in the engine. vaskoiii 2012-06-16
-# order by is not needed it happens later.
-
-$sql = get_engine_result_listing_sql($data[$my_array_name], $limit);
-
-# todo add another case for listings (with this one exception) so this hack is unneded. 2012-06-16 vaskoiii
-$sql = str_replace('t1.user_id = u.id', 'i.user_id = u.id', $sql);
-
-$data[$my_array_name]['result']['listing'] = array();
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result))
-	$data[$my_array_name]['result']['listing'][] = $row;
-
-# translate
-$key['tag_id']['select']['translation_description'] = 'translation_description';
-foreach($data[$my_array_name]['result']['listing'] as $k1 => $v1) {
-	add_key('tag', $v1['tag_id'], 'tag_name', $key);
+		' . $config['mysql']['prefix'] . 'tag tg,
+		' . $config['mysql']['prefix'] . 'link_tag ltg
+	where
+		ltg.tag_id = tg.id
+';
+$result = mysql_query($sql) or ts_die(mysql_error());
+while ($row = mysql_fetch_assoc($result)) {
+	$data[$s1]['tag_id']['search'][$row['tag_id']] = $row['tag_id'];
+	$data[$s1]['tag_id']['name'][$row['tag_id']] = $row['tag_name'];
+	$data[$s1]['tag_id']['description'][$row['tag_id']] = '!'; # hardcode default
+	$data[$s1]['tag_id']['count'][$row['tag_id']] = 0; # assume empty
 }
-# todo sort categories alphabetical without left outer join. vaskoiii 2012-06-16
-# todo add some base categories to the initial install.
+
+# name/description
+$sql = '
+	select
+		tln.kind_name_id as tag_id,
+		tln.name as translation_name,
+		tln.description as translation_description
+	from
+		' . $config['mysql']['prefix'] . 'translation tln
+	where
+		tln.kind_id = 11 and
+		tln.kind_name_id in (' . implode(',', $data[$s1]['tag_id']['search']) . ') and
+		tln.default = 1 and
+		tln.dialect_id = ' . (int)$_SESSION['dialect']['dialect_id']
+;
+$result = mysql_query($sql) or ts_die(mysql_error());
+while ($row = mysql_fetch_assoc($result)) {
+	$data[$s1]['tag_id']['name'][$row['tag_id']] = $row['translation_name'];
+	$data[$s1]['tag_id']['description'][$row['tag_id']] = $row['translation_description'];
+}
+
+# count
+foreach($data[$s1]['tag_id']['search'] as $k1 => $v1) {
+	$data[$s2] = array();
+	$data[$s2]['search']['where_x'][] = 'a.parent_id = ' . (int)$k1;
+	search_lock($data[$s2], 'item', $_SESSION['login']['login_user_id']);
+	listing_engine($data[$s2], 'item', $_SESSION['login']['login_user_id']);
+	get_engine_result_total($data[$s2]);
+	$data[$s1]['tag_id']['count'][$k1] = $data[$s2]['result']['total'];
+}
+
+# sort
+arsort($data[$s1]['tag_id']['count'], SORT_NUMERIC);
+asort($data[$s1]['tag_id']['name']);

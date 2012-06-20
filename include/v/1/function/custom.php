@@ -20,6 +20,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+function ts_die($s) {
+	global $config;
+	if ($config['debug'] == 1)
+		die($s);
+}
+
 function encrypt_password($string) {
 	return md5($string);
 }

@@ -49,18 +49,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="doc_box">
 		<h3><?= tt('page', 'category_list'); ?></h3>
 		<p><?
-		
-		if (!empty($data['search_report']['result']['listing'])) {
+		# shortcut
+		$a1 = $data['custom_key']['tag_id'];
+		$a2 = $data['custom_key']['tag_id']['count'];
+		if (!empty($data['custom_key']['tag_id']['count'])) {
 			echo '<dl>';
-			foreach ($data['search_report']['result']['listing'] as $k1 => $v1) { ?>
+			foreach ($data['custom_key']['tag_id']['count'] as $k1 => $v1) {
+			if ($v1 != 0) { ?>
 				<dt><?
 					# todo fix so that the link maintains the locking and not all url vars 2012-06-16 vaskoiii ?> 
-					<a href="item_list/<?= ff($q['raw'] . '&parent_tag_id=' . (int)$v1['tag_id'], $x['level']); ?>"><?= kk('tag', $v1['tag_id'], 'translation_name', $v1['tag_name']); ?></a>
+					<a href="item_list/<?= ff($q['raw'] . '&parent_tag_id=' . (int)$k1, $x['level']); ?>"><?= to_html($data['custom_key']['tag_id']['name'][$k1]); ?></a>
 					-
-					<?= (int)$v1['tag_count']; ?>
+					<?= (int)$v1; ?>
 				</dt>
-				<dd><?= kk('tag', $v1['tag_id'], 'translation_description', '!'); ?></a></dd><?
-			}
+				<dd><?= to_html($data['custom_key']['tag_id']['description'][$k1]); ?></a></dd><?
+			} }
 			echo '</dl>';
 		}
 		else
