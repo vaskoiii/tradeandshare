@@ -104,7 +104,7 @@ $sql = '
 		name = ' . to_sql($action_content_1['login_user_name']) . ',
 		location_id = ' . (int)$config['main_location_id'] . ',
 		password = ' . to_sql($lookup['user_password']) . ', 
-		email = ' . to_sql($lookup['user_email']) . ',
+		email = ' . to_sql($action_content_1['user_email']) . ',
 		modified = CURRENT_TIMESTAMP,
 		active = 1
 ';
