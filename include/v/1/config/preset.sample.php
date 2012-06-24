@@ -24,7 +24,7 @@ $config = array();
 # Change Every Upload
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
-$config['email_from'] = $config['website_name'] . ' <noreply@localhost>';
+$config['email_from'] = 'TS <noreply@localhost>';
 
 # Main
 $config['start_page'] = '/main/';

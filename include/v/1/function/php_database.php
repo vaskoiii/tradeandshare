@@ -21,38 +21,35 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Retrieve parts that "may" be be better stored here than in a relational database.
 # Ideally: Logic is minimal. (no [if] only [switch])
 # Group By similar sections then sort alphabetically.
+
 function get_load_same_edit($load) {
-	switch($load) {
-		case 'list':
-			return 'action';
-		case 'view':
-			return 'motion';
-	}
-	return false;
-}
+switch($load) {
+	case 'list':
+		return 'action';
+	case 'view':
+		return 'motion';
+	default:
+		return false;
+} }
 
 function get_load_opposite_edit($load) {
-	switch($load) {
-		case 'view':
-		case 'motion':
-			return 'action';
-		case 'list':
-		case 'view':
-			return 'motion';
-	}
-	return false;
-}
+switch($load) {
+	case 'view':
+	case 'motion':
+		return 'action';
+	case 'list':
+	case 'view':
+		return 'motion';
+	default:
+		return false;
+} }
 
 function get_load_parent($load) {
-	switch($load) {
-		case 'view':
-			return 'motion';
-		case 'list':
-			return 'action';
-		break;
-	}
-	return false;
-}
+switch($load) {
+	case 'view':	return 'motion';
+	case 'list':	return 'action';
+	default:	return false;
+} }
 
 function get_x_load() {
 	return array(
@@ -92,218 +89,170 @@ function get_combined_table_name($array) {
 }
 
 function get_table_name($type) {
-	# We should have had this in the database a long time ago!
-	switch($type) {
+switch($type) {
+	case 'category':	return 'tag';
+	case 'jargon':		return 'translation';
+	case 'groupmate':	return 'link_contact_group';
+	case 'teammate':	return 'link_team_user';
+	default:		return $type;
+} }
+
+function get_parent_listing_type($type) {
+switch($type) {
+	case 'category':	return 'category';
+	case 'feedback':	return 'incident';
+	case 'groupmate':	return 'group';
+	case 'meripost':	return 'meritopic';
+	case 'metail':		return 'user'; # Super Important!
+	case 'note':		return 'contact'; # Super Important!
+	case 'teammate':	return 'team';
+	case 'user':		return 'location';
+	default:		return false;
+} }
+
+function get_child_listing_type($type) {
+switch($type) {
+	case 'category':	return 'category';
+	case 'contact':		return 'note'; # Super Important!
+	case 'group':		return 'groupmate';
+	case 'incident':	return 'feedback';
+	case 'location':	return 'user';
+	case 'meritopic':	return 'meripost';
+	case 'team':		return 'teammate';
+	case 'user':		return 'metail'; # Super Important!
+	default:		return false;
+} }
+
+function get_main_table_alias($type) {
+switch ($type) {
+	case 'contact':		return 'c';
+	case 'group':		return 'g';
+	case 'groupmate':	return 'lcg';
+	case 'location':	return 'lo';
+	case 'team':		return 't';
+	case 'teammate':	return 'ltu';
+	case 'user':		return 'u';
+	default:		return 't1';
+} }
+
+function get_secondary_table_alias($type) {
+switch($type) { # used in [new_report] and [top_report]
+	case 'teammate':	return 't'; break; # team
+	default:		return 't2'; # t2 DNE but we could make it exist if it is convenient
+} }
+
+
+function minimize_display_structure(& $array, $display) {
+}
+
+# eliminate redundant on view pages
+function minimize_listing_structure(& $array, $view_type, $list_type) {
+switch($view_type) {
+	case 'contact':
+	case 'user':
+	switch($list_type) {
+		case 'translation':
 		case 'category':
-		case 'contact':
+		case 'dialect':
+		case 'feed':
 		case 'feedback':
 		case 'group':
 		case 'incident':
-		case 'metail':
-		case 'note':
-		case 'team':
-		case 'meripost':
-		case 'meritopic':
-		case 'user':
-		case 'minder':
-			return $type;
-		break;
-		case 'groupmate':	return 'link_contact_group'; break; # previously link_contact_user 2012-04-19 vaskoiii
-		case 'teammate':	return 'link_team_user'; break;
-	}
-	return false;
-	//die('no such table for listing type: ' . $type);
-}
-
-// reciprocal of get_child?
-function get_parent_listing_type($type) {
-	switch($type) {
-		case 'category':	return 'category'; break;
-		case 'feedback':	return 'incident'; break;
-		case 'groupmate':	return 'group'; break;
-		case 'meripost':	return 'meritopic'; break;
-		case 'metail':		return 'user'; break; // Super Important!
-		case 'note':		return 'contact'; break; // Super Important!
-		case 'teammate':	return 'team'; break;
-		case 'user':		return 'location'; break;
-	} 
-	return false;
-}
-
-function get_child_listing_type($type) {
-	switch($type) {
-		case 'category':	return 'category'; break;
-		case 'contact':		return 'note'; break; // Super Important!
-		case 'group':		return 'groupmate'; break; # used to be contact 2012-04-19 vaskoiii
-		case 'incident':	return 'feedback'; break;
-		case 'location':	return 'user'; break; # testing this one out
-		case 'meritopic':	return 'meripost'; break;
-		case 'team':		return 'teammate'; break;
-		case 'user':		return 'metail'; break; // Super Important!
-	} 
-	return false;
-}
-
-# Because you can't call an aliased table by it's original name
-function get_main_table_alias($type) {
-	$ta = 't1'; // ta = table alias
-	switch ($type) {
-		case 'contact':		$ta = 'c'; break;
-		case 'group':		$ta = 'g'; break;	
-		case 'groupmate':	$ta = 'lcg'; break;	
-		case 'location':	$ta = 'lo'; break;
-		case 'team':		$ta = 't'; break;
-		case 'teammate':	$ta = 'ltu'; break;
-		case 'user':		$ta = 'u'; break;
-	}
-	return $ta;
-}
-
-function get_secondary_table_alias($type) {
-	# used in [new_report] and [top_report]
-	$ta = 't2'; // t2 DNE but we could make it exist if it is convenient
-	switch($type) {
-		case 'teammate':	$ta = 't'; break; // team
-	}
-	return $ta;
-}
-
-/*
-Potential Different Listing Behavior ON:
-$type . '_view'
-$type . '_list'
-'feed_atom'
-*/
-
-# problem is that we need unique values... without them it is impossible to discern which generic values to keep and which to hide. ie)
-# _
-# _
-# _
-# but if we have unique value we can know which NOT to display
-# user_name_spacer = _
-# contact_name_spacer = _
-# team_name_spacer = _
-#
-# in this way we have the best of both worlds... a specific value referring to a generic one...
-#
-# after getting all the fields we would need additional function for hiding stuff
-
-function minimize_display_structure(& $array, $display) {
-
-}
-
-
-function minimize_listing_structure(& $array, $view_type, $list_type) {
-
-	switch($view_type) {
-		case 'contact':
-		case 'user':
-			switch($list_type) {
-				case 'translation':
-				case 'category':
-				case 'dialect':
-				case 'feed':
-				case 'feedback':
-				case 'group':
-				case 'incident':
-				case 'item':
-				case 'jargon':
-				case 'location':
-				case 'minder':
-				case 'news':
-				case 'tag':
-				case 'team':
-				case 'meritopic':
-				case 'meripost':
-					unset($array['source']);
-					unset($array['source_spacer']);
-				break;
-				case 'login':
-				case 'teammate':
-					unset($array['team_name_spacer']);
-					unset($array['user_name']);
-				break;
-				case 'rating':
-					# todo structure like offers
-				break;
-				case 'metail':
-					unset($array['user_name']);
-					unset($array['subject_endline']);
-				break;
-				case 'message':
-				case 'invited':
-				break;
-				case 'user':
-					# not really sure what to do with the user page either...
-				case 'contact':
-					# useful case only for adding contacts
-					# todo helpful user message for this 2012-04-12 vaskoiii
-				break;
-				case 'note':
-					unset($array['contact_name']);
-					unset($array['subject_endline']);
-				break;
-			}
-		break;
-		case 'incident':
-			switch($list_type) {
-				case 'feedback':
-					unset($array['source_spacer']);
-					unset($array['incident_name']);
-				break;
-			}
-		break;
-		case 'team':
-			switch($list_type) {
-				case 'team':
-					# just like the other cases with user/user and contact/contact 2012-04-12 vaskoiii
-				break;
-				case 'teammate':
-					unset($array['team_name']);
-					unset($array['team_name_spacer']);
-					unset($array['source']);
-					unset($array['source_spacer']);
-					unset($array['direction_right_name']);
-				break;
-			}
-		break;
-		case 'group':
-			switch($list_type) {
-				case 'group':
-					# never displays anything unless you are in your group 2012-04-12 vaskoiii
-				break;
-				case 'groupmate':
-					unset($array['group_name']);
-					unset($array['group_name_spacer']);
-				break;
-			}
-		break;
+		case 'item':
+		case 'jargon':
 		case 'location':
-			switch($list_type) {
-				case 'location':
-					# another awesome case
-				break;
-				case 'user':
-					unset($array['location_name']);
-					unset($array['user_name_spacer']);
-				break;
-			}
-		break;
+		case 'minder':
+		case 'news':
+		case 'tag':
+		case 'team':
 		case 'meritopic':
-			switch($list_type) {
-				case 'meripost':
-					unset($array['meritopic_name']);
-					unset($array['source_spacer']);
-				break;
-			}
+		case 'meripost':
+			unset($array['source']);
+			unset($array['source_spacer']);
+		break;
+		case 'login':
+		case 'teammate':
+			unset($array['team_name_spacer']);
+			unset($array['user_name']);
+		break;
+		case 'rating':
+			# todo structure like offers
+		break;
+		case 'metail':
+			unset($array['user_name']);
+			unset($array['subject_endline']);
+		break;
+		case 'message':
+		case 'invited':
+		break;
+		case 'user':
+			# not really sure what to do with the user page either...
+		case 'contact':
+			# useful case only for adding contacts
+			# todo helpful user message for this 2012-04-12 vaskoiii
+		break;
+		case 'note':
+			unset($array['contact_name']);
+			unset($array['subject_endline']);
 		break;
 	}
-
-}
+	break;
+	case 'incident':
+	switch($list_type) {
+		case 'feedback':
+			unset($array['source_spacer']);
+			unset($array['incident_name']);
+		break;
+	}
+	break;
+	case 'team':
+	switch($list_type) {
+		case 'team':
+			# just like the other cases with user/user and contact/contact 2012-04-12 vaskoiii
+		break;
+		case 'teammate':
+			unset($array['team_name']);
+			unset($array['team_name_spacer']);
+			unset($array['source']);
+			unset($array['source_spacer']);
+			unset($array['direction_right_name']);
+		break;
+	}
+	break;
+	case 'group':
+	switch($list_type) {
+		case 'group':
+			# never displays anything unless you are in your group 2012-04-12 vaskoiii
+		break;
+		case 'groupmate':
+			unset($array['group_name']);
+			unset($array['group_name_spacer']);
+		break;
+	}
+	break;
+	case 'location':
+	switch($list_type) {
+		case 'location':
+			# another awesome case
+		break;
+		case 'user':
+			unset($array['location_name']);
+			unset($array['user_name_spacer']);
+		break;
+	}
+	break;
+	case 'meritopic':
+	switch($list_type) {
+		case 'meripost':
+			unset($array['meritopic_name']);
+			unset($array['source_spacer']);
+		break;
+	}
+	break;
+} }
 
 function get_mask_author($type, $display) {
 	# $display currently has 3 types: main, feed, email 2012-02-26 vaskoiii
-
 	$array = array(
 		'source' => 'user_name',
 		'source_spacer' => '_'

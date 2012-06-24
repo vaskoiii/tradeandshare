@@ -217,34 +217,7 @@ function process_data_translation($container) {
 	#echo '<hr>' . $k1 . ' - ' . $v1 . '<br>';
 	if ($v1) {
 	switch($k1) {
-		# are these uid parts even necessary? 2012-03-10 vaskoiii
-		case 'jargon_uid':
-			$output[$k1] = get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'translation
-				WHERE
-					id = ' . (int)($v1)
-			);
-		break;
-		case 'groupmate_uid':
-			$output[$k1] = get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'link_contact_group
-				WHERE
-					id = ' . (int)($v1)
-			);
-		break;
-		case 'teammate_uid':
-			$output[$k1] = get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'link_team_user
-				WHERE
-					id = ' . (int)($v1)
-			);
-		break;
+
 		# data translation
 		case 'tag_path':
 			# complicated lookup
@@ -561,16 +534,56 @@ function process_data_translation($container) {
 					gt.name = ' . to_sql($input[$k1])
 			);
 		break;
-		default:
-		if (str_match('_uid', $k1)) {
+		# are these uid parts even necessary? 2012-03-10 vaskoiii
+		case 'jargon_uid':
 			$output[$k1] = get_db_single_value('
 					id
 				FROM
-					' . $prefix . str_replace('_uid', '', $k1) . '
+					' . $prefix . 'translation
+				WHERE
+					id = ' . (int)($v1)
+			);
+		break;
+		case 'groupmate_uid':
+			$output[$k1] = get_db_single_value('
+					id
+				FROM
+					' . $prefix . 'link_contact_group
+				WHERE
+					id = ' . (int)($v1)
+			);
+		break;
+		case 'teammate_uid':
+			$output[$k1] = get_db_single_value('
+					id
+				FROM
+					' . $prefix . 'link_team_user
+				WHERE
+					id = ' . (int)($v1)
+			);
+		break;
+		default:
+		if (str_match('_uid', $k1)) { # allow checking for non-existent ids
+		switch ($k1) {
+			case 'category_uid':
+			$output[$k1] = get_db_single_value('
+					tag_id
+				FROM
+					' . $prefix . 'link_tag
+				WHERE
+					tag_id = ' . (int)($v1)
+			, 0);
+			break;
+			default:
+			$output[$k1] = get_db_single_value('
+					id
+				FROM
+					' . $prefix . get_table_name(str_replace('_uid', '', $k1)) . '
 				WHERE
 					id = ' . (int)($v1)
 			, 0);
-		}
+			break;
+		} }
 		break;
 	} } }
 }
@@ -952,32 +965,7 @@ function process_does_exist() {
 					id != ' . (int)$id
 			, 0))
 				$does_exist = true;
-		break;/*
-		case 'invite':
-			if (get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'invite
-				WHERE
-					user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' AND
-					invite_email = ' . to_sql($action_content_1['invite_email'] . ' AND
-					modified <= DATEADD(day, -7, CURRENT_TIMESTAMP)
-					id != ' . (int)$id
-			))
-				$does_exist = true;
-		break;*//*
-		case 'rating':
-			if (get_db_single_value('
-					id 
-				FROM
-					' . $prefix . 'rating 
-				WHERE
-					source_user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' AND 
-					destination_user_id = ' . (int)$lookup['xor_user_id'] . ' AND
-					id != ' . (int)$id
-			))
-				$does_exist = true;
-		break;*/
+		break;
 		case 'group':
 			if ($lookup['group_id'])
 				$does_exist = true;
@@ -1046,27 +1034,6 @@ function process_does_exist() {
 					}
 				break;
 			}
-		break;
-		case 'tag':
-		#	if (get_db_single_value('
-		#			id
-		#		FROM
-		#			' . $prefix . 'tag
-		#		WHERE
-		#			name = ' . to_sql($lookup['tag_name']) . ' AND
-		#			parent_id = ' . (int)$lookup['parent_tag_id'] . ' AND
-		#			id != ' . (int)$id
-		#	, 1))
-		#		$does_exist = true;
-		#	elseif (get_db_single_value('
-		#			tag_id
-		#		from
-		#			' . $prefix . 'index_tag
-		#		where
-		#			tag_path = ' . to_sql($action_content_1['tag_path']) . ' and
-		#			tag_id != ' . (int)$id
-		#	, 1))
-		#		$does_exist = true;
 		break;
 		case 'team':
 			if ($lookup['team_id']) {
@@ -1162,7 +1129,6 @@ function process_does_exist() {
 					$does_exist = true;
 		break;
 	} }
-
 	if (!$message) {
 	if ($did_exist) {
 	if ($x['name'] == 'edit_process') {

@@ -65,10 +65,10 @@ contact_user_mixed_split('search_content_1', '');
 
 if ($process) {
 	foreach($process as $k1 => $v1) {
-		process_data_translation($k1); # get [id]s
-		process_does_not_exist($k1); # error checking
-		process_does_exist($k1); # error checking
+		process_data_translation($k1);
+		process_does_not_exist($k1);
 	}
+	# process_does_exist($k1); # likely unnecessary for searching 2012-06-22 vaskoiii
 }
 
 # todo check for invalid fields
