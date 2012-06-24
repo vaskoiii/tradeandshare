@@ -499,12 +499,12 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'tag_translation_description':
 		case 'translation_tag_description': # (different css?)
 			$grab .= " \n" . '<span class="' . $v1 . '">'
-				. '!'
+				# . '!'
 				# todo: display tag_description (not just a hardcoded !) - 2012-02-24 vaskoiii
-				# . ($listing['tag_id']
-				# 	? a_link_replace($translation['kind_name_id']['tag_id']['result'][ $listing['tag_id'] ]['translation_description']) 
-				# 	: tt('element', 'unset')
-				# )
+				. ($listing['tag_id']
+					? a_link_replace($key['tag_id']['result'][ $listing['tag_id'] ]['translation_description']) 
+					: tt('element', 'unset')
+				)
 			. '</span>';
 		break;
 		case 'offer_name':
