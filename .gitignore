@@ -1,0 +1,3 @@
+.*
+!.gitignore
+include/v/1/config/preset.php
