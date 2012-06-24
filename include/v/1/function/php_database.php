@@ -88,6 +88,13 @@ function get_combined_table_name($array) {
 	return implode('_', $array);
 }
 
+function get_base_type($type) {
+switch($type) {
+	case 'category':	return 'tag';
+	case 'jargon':		return 'translation';
+	default:		return $type;
+} }
+
 function get_table_name($type) {
 switch($type) {
 	case 'category':	return 'tag';

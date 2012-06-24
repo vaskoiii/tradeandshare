@@ -259,31 +259,12 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= '<br />';
 		break;
 		case 'uid':
-			if ($load == 'atom')
-				$grab .= '<span class="uid">' . tt('element', $type . '_uid', 'translation_name', $translation) . ': ' . (int)$listing[ $type . '_id'] . '</span>';
-			elseif ($listing['list_type']) # for top_report.php 2012-02-29
-				$grab .= '<span class="uid">' . tt('element', $listing['list_type']  . '_uid', 'translation_name', $translation) . ': ' . (int)$listing[ $listing['list_type']  . '_id'] . '</span>';
-			else { # ($load == 'result)
-				if ($load == 'view') {
-					$grab .= '<span class="uid">' . tt('element', $type . '_uid', 'translation_name', $translation) . '</span>: <span class="uid">' . (int)$listing[ $type . '_id'] . '</span>';
-				}
-				else {
-					$s1 = $type;
-					switch ($type) {
-						case 'category':
-						case 'tag':
-							$s1 = 'tag';
-						break;
-						case 'jargon':
-						case 'translation':
-							$s1 = 'translation';
-						break;
-					}
-					$grab .= '<span class="uid">' . tt('element', $s1 . '_uid', 'translation_name', $translation) . '</span>: <span class="uid">'
-						. (int)$listing[$s1 . '_id'] 
-					. '</span>';
-				}
-			}
+			$s1 = $type;
+			if ($listing['list_type']) # for top_report.php 2012-02-29 vaskoiii
+				$s1 = $listing['list_type'];
+			ob_start(); ?> 
+			<span class="uid"><?= tt('element', $s1 . '_uid', 'translation_name', $translation); ?>: <?= (int)$listing[ get_base_type($s1) . '_id']; ?></span><?
+			$grab .= ob_get_clean();
 		break;
 		case 'ts_link':
 			$grab .= a_link_replace(
@@ -500,7 +481,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'translation_tag_description': # (different css?)
 			$grab .= " \n" . '<span class="' . $v1 . '">'
 				# . '!'
-				# todo: display tag_description (not just a hardcoded !) - 2012-02-24 vaskoiii
 				. ($listing['tag_id']
 					? a_link_replace($key['tag_id']['result'][ $listing['tag_id'] ]['translation_description']) 
 					: tt('element', 'unset')
