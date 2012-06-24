@@ -39,7 +39,8 @@ ErrorDocument 404 "/index.php"
 ErrorDocument 403 "/index.php"
 
 Configure TS:
-./include/v/1/config/preset.php
+cp ./include/v/1/config/preset.sample.php ./include/v/1/config/preset.php
+vi ./include/v/1/config/preset.php
 
 Login (https):
 User Name: |root|
