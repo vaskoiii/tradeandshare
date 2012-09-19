@@ -201,6 +201,7 @@ switch ($x['page']['name']) {
 		else
 			$_SESSION['dialect'] = array(
 				'dialect_name' => 'English',
+				'dialect_code' => 'en', # as specified in DB
 				'dialect_id' => '2'
 			);
 		# LOGIN 

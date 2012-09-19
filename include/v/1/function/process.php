@@ -361,6 +361,15 @@ function process_data_translation($container) {
 		break;
 
 		case 'dialect_name':
+			$output[str_replace('_name', '_code', $k1)] = get_db_single_value('
+					code
+				FROM
+					' . $prefix . 'dialect
+				WHERE
+					name = ' . to_sql($input[$k1]) . ' AND
+					active = 1
+			', 0);
+		# nobreak;
 		case 'team_name':
 		case 'team_required_name':
 		case 'location_name':

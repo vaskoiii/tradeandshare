@@ -340,7 +340,14 @@ switch($x['load']['list']['name']) {
 	case 'doc':
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php'); ?> 
 		<div class="content"><div class="content_box"><?
-			include($x['site']['i'] . '/html/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php'); ?> 
+			$s1 = '/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php';
+			if (file_exists($config['file_path'] . 'include/' . $x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1)) {
+				include($x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1);
+			}
+			else {
+				echo '<div class="doc_notice notice" style="margin: 10px -18px; margin-top: -20px;">English Only!</div>';
+				include($x['site']['i'] . 'html/en/' . $s1);
+			} ?> 
 		</div></div>
 		<div class="menu_1"></div>
 		<div class="menu_2"></div><?

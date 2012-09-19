@@ -25,6 +25,7 @@ $config = array();
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
 $config['email_from'] = 'TS <noreply@localhost>';
+$config['file_path'] = '/www/site/ts/';
 
 # Main
 $config['start_page'] = '/main/';

@@ -121,8 +121,15 @@ foreach($process['action_content_1'] as $k1 => $v1) {
 		case 'load_javascript':
 			$_SESSION['load'][$k1] = get_boolean_gp($k1);
 		break;
-		case 'background_theme_name':
 		case 'dialect_name':
+			$s1 = str_replace('_name', '', $k1);
+			if ($interpret['lookup'][$s1 . '_id']) {
+				$_SESSION[$s1][$s1 . '_id'] = $interpret['lookup'][$s1 . '_id'];
+				$_SESSION[$s1][$s1 .'_code'] = $interpret['lookup'][$s1 . '_code'];
+				$_SESSION[$s1][$s1 .'_name'] = $process['action_content_1'][$s1 . '_name'];
+			}
+		break;
+		case 'background_theme_name':
 		case 'display_name':
 		case 'launcher_theme_name':
 		case 'lock_contact_name':
@@ -165,6 +172,11 @@ foreach($process['action_content_1'] as $k1 => $v1) {
 			ts_set_cookie('theme', 'launcher_theme_id', $_SESSION['theme']['launcher_theme_id']);
 		break;
 		case 'dialect_name':
+			$s1 = str_replace('_name', '', $k1);
+			ts_set_cookie($s1, $s1 . '_name', $_SESSION[$s1][$s1 . '_name']);
+			ts_set_cookie($s1, $s1 . '_code', $_SESSION[$s1][$s1 . '_code']);
+			ts_set_cookie($s1, $s1 . '_id', $_SESSION[$s1][$s1 . '_id']);
+		break;
 		case 'display_name':
 			$s1 = str_replace('_name', '', $k1);
 			ts_set_cookie($s1, $s1 . '_name', $_SESSION[$s1][$s1 . '_name']);
