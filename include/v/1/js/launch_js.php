@@ -70,8 +70,9 @@ $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result))
 	$data['launch'][] = $row;
 
-$data['launch']['js_array_string'] = '';
+$data['js_array_string'] = '';
+
 foreach($data['launch'] as $k1 => $v1) {
 	# Threatening characters are: & ' " and \ so these will be striped from the translation
-	$data['launch']['js_array_string'] .= 'tsl["' . $v1->page_name . '"] = "' . preg_replace('/[\&\\\"\']/', '', $v1->translation_name) . '";' ."\n";
+	$data['js_array_string'] .= 'tsl["' . $v1['page_name'] . '"] = "' . preg_replace('/[\&\\\"\']/', '', $v1['translation_name']) . '";' ."\n";
 }

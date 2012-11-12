@@ -322,7 +322,7 @@ function createtsl_iframe() {
 }
 function getMatchArray(myString) {
 	var tsl = new Array();
-	{$data['launch']['js_array_string']}
+	{$data['js_array_string']}
 	var tsl_match = new Array();
 	var tsl_limit = 5;
 	var tsl_matched = 0;
