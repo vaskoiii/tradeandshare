@@ -707,16 +707,20 @@ function get_lock_query($extra_query = '') {
 
 function print_paging($current_page, $result_amount_total, $result_amount_per_page) {
 	global $x;
-	global $_SESSION; ?> 
+	global $_SESSION;
+
+
+	if (!$current_page)
+		$current_page = 1; ?> 
 
 	<ul><?
-		$last_page = floor($result_amount_total / $result_amount_per_page);
+		$last_page = floor($result_amount_total / $result_amount_per_page) + 1;
 
 		if ($result_amount_total % $result_amount_per_page == 0)
 			$last_page--;
 
-		if ($current_page) { ?> 
-			<li><a href="<?= ffm('page=0&expand%5B0%5D=', 0); ?>">|&lt;&lt;</a></li>
+		if ($current_page && $current_page != 1) { ?> 
+			<li><a href="<?= ffm('page=1&expand%5B0%5D=', 0); ?>">|&lt;&lt;</a></li>
 			<li><a href="<?= ffm('page=' . (int)($current_page - 1) . '&expand%5B0%5D=', 0); ?>">&lt;&lt;</a></li><?
 		}
 		else { ?> 
@@ -724,7 +728,7 @@ function print_paging($current_page, $result_amount_total, $result_amount_per_pa
 			<li><span class="spacer">&lt;&lt;</span></li> <?
 		} ?> 
 
-		<li><span id="current_page"><?= (int)(get_gp('page') + 1); ?></span></li><?
+		<li><span id="current_page"><?= (int)($current_page); ?></span></li><?
 
 		if ($current_page < $last_page && $last_page > 0) { ?> 
 			<li><a href="<?= ffm('page=' . (int)($current_page + 1) . '&expand%5B0%5D=', 0); ?>">&gt;&gt;</a></li>

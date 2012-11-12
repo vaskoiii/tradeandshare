@@ -131,6 +131,11 @@ function get_engine_result_listing_sql(& $base, $limit = false, $load = false) {
 	else
 		$limit = $config[$x['site']['t']]['result_amount_per_page'];
 
+
+	$i1 = get_gp('page');
+	if (!$i1)
+		$i1 = 1;
+
 	$sql = '
 		SELECT
 			' . implode(', ', $select) . '
@@ -152,7 +157,7 @@ function get_engine_result_listing_sql(& $base, $limit = false, $load = false) {
 		LIMIT '
 			. ( $load == 'view'
 				? '1'
-				: (get_gp('page') * $limit)  . ',' . $limit
+				: (($i1 - 1) * $limit)  . ',' . $limit
 			) . '
 	';
 	# todo fix page name comparison! 2012-02-16 vaskoiii

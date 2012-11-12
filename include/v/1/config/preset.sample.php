@@ -22,6 +22,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 $config = array();
 
 # Change Every Upload
+date_default_timezone_set('UTC');
+
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
 $config['email_from'] = 'TS <noreply@localhost>';
