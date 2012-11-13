@@ -129,8 +129,6 @@ if ($x['page']['name'] == 'profile_edit') {
 			u.email as user_email,
 			lo.name as location_name,
 			um.notify_offer_received,
-			um.notify_rating_received,
-			um.notify_transfer_received,
 			um.notify_teammate_received,
 			um.feature_lock,
 			um.feature_minnotify' .

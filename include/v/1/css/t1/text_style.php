@@ -165,7 +165,7 @@ input, select {
 .accept_usage_policy {
 	color: #009900;
 	}
-.notify_offer_received, .notify_rating_received, .notify_transfer_received, .notify_teammate_received {
+.notify_offer_received, .notify_teammate_received {
 	color: #9900cc;
 	}
 .feature_lock, .feature_minnotify {

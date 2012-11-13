@@ -745,9 +745,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		break;
 		# BOOLEAN implementation
 		# recommend: 1 = true and 2 = false to avoid using a 0 in the data type
-		case 'notify_rating_received':
-			# ratings notifications are intentionally turned off for everyone...
-		break;
 		case 'load_javascript': ?>
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= get_gp('preview') == 1 ? ' disabled="disabled" ' : ''; ?><?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
@@ -755,8 +752,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'feature_lock':
 		case 'feature_minnotify':
 		case 'notify_offer_received':
-		case 'notify_teammate_received':
-		case 'notify_transfer_received': ?>
+		case 'notify_teammate_received': ?>
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 				<div class="v"><input type="checkbox" <?= ($preview == 1 ? 'disabled="disabled"' : '') . $k1; ?> name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;

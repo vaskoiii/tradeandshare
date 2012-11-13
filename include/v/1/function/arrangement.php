@@ -387,9 +387,7 @@ function get_action_content_1($type = false, $name = false) {
 						'user_email' => '',
 						'location_name' => '',
 						'notify_offer_received' => '',
-						'notify_transfer_received' => '',
 						'notify_teammate_received' => '',
-						#'feature_cornucopia' => '', # goal is to make advanced mode always available to advanced users while not confusing new users with all of the options in advanced mode
 						'feature_lock' => '',
 						'feature_minnotify' => '',
 						'accept_usage_policy' => '',

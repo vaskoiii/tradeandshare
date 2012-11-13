@@ -679,108 +679,99 @@ switch($process['miscellaneous']['action']) {
 		}
 	break;
 	case 'export':
-	case 'import':
+		# untested logic just setup for future guidance 2012-11-11 vaskoiii
 		switch($process['miscellaneous']['list_name']) {
 			case 'item':
-			# transfer is being changed into a semi public transaction log 2012-11-11 vaskoiii
-			# also [status] is no longer used on transfers. (only on items).
-			# case 'transfer':
-				// TODO: use start_engine() so we don't need the repeat sql.
+			case 'transfer':
+				# TODO: use start_engine() so we don't need the repeat sql.
 				$sql = '
 					SELECT
 						gt.tag_id,
-						gt.status_id,
 						gt.description,
 						ca.tag_path as parent_tag_path,
 						ta.name as tag_name,
-						st.name as status_name
 					FROM
 						' . $prefix . $process['miscellaneous']['list_name'] . ' gt,
 						' . $prefix . 'tag ta,
 						' . $prefix . 'link_tag l_t,
-						' . $prefix . 'status st
 					WHERE
 						gt.id IN (' . implode(', ', $interpret['row']) . ') AND
 						ta.id = gt.tag_id AND
 						ta.parent_id = l_t.id AND
-						gt.status_id = st.id AND
-						gt.status_id = st.id
 				';
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result))
 					$interpret['port_array'][] = $row;
-				switch($process['miscellaneous']['action']) {
-					case 'export':
-						// MUST HAPPEN
-						foreach ($interpret['port_array'] as $k1 => $v1) {
-							$sql = '
-								INSERT INTO
-									' . $prefix . 'transfer
-								SET
-									source_user_id = ' . (int)$login_user_id . ',
-									destination_user_id = ' . (int)$interpret['user_id'] . ',
-									modified = CURRENT_TIMESTAMP,
-									tag_id = ' . (int)$v1['tag_id'] . ',
-									status_id = ' . (int)$v1['status_id'] . ',
-									description = ' . to_sql($v1['description']) . '
-							';
-							$result = mysql_query($sql) or die(mysql_error());
-							$interpret['transfer_id'] = mysql_insert_id($config['mysql_resource']);
-							index_entry(
-								'transfer',
-								$interpret['transfer_id'],
-								$login_user_id,
-								$interpret['user_id'],
-								'active'
-							);
-							index_entry(
-								'transfer',
-								$interpret['transfer_id'],
-								$login_user_id,
-								$interpret['user_id'],
-								'index'
-							);
-						}
-						// ALSO IMPORTANT
-						$email_sent = false;
-						if ($interpret['user_id'] != $login_user_id) {
-							$email_array = get_user_email_array($interpret['user_id'], 'notify_transfer_received');
-							if ($email_array['notify_transfer_received'] == 1) {
-								$email_boundary = get_email_boundary();
-								# untested but fixed to comply with function call changes 2012-03-27 vaskoiii
-								start_engine($sudo['data']['email'], $process['miscellaneous']['list_name'], $interpret['user_id'], $interpret['row']); //$interpret['row'] is an array
-								# todo we need some work done here! ie) $sudo 2012-02-29 vaskoiii
-								listing_key_translation($key, $translation, $sudo['data']['email'], $process['miscellaneous']['list_name'], $interpret['user_id']);
-								$email_sent = mail(
-									$email_array['email'], 
-									get_email_subject($process['miscellaneous']['list_name'], $email_array['feature_minnotify']), 
-									get_email_body($process['miscellaneous']['list_name'], $email_array['feature_minnotify'], $email_boundary), 
-									get_email_header($email_array['feature_minnotify'], $email_boundary)
-								);
-							}
-						}
-					break;
-					case 'import':
-					foreach ($interpret['port_array'] as $k1 => $v1) {
-						$sql = '
-							INSERT INTO
-								' . $prefix . 'item
-							SET
-								user_id = ' . (int)$login_user_id . ',
-								modified = CURRENT_TIMESTAMP,
-								tag_id = ' . (int)$v1['tag_id'] . ',
-								status_id = ' . (int)$v1['status_id'] . ',
-								team_id = ' . (int)$lookup['team_required_id'] . ',
-								description = ' . to_sql($v1['description']) . ',
-								active = 1
-						';
-						$result = mysql_query($sql) or die(mysql_error());
-						# no need to update indexes for items ie) no source_user_id no destination_user_id just user_id
-					}
-					break;
+				foreach ($interpret['port_array'] as $k1 => $v1) {
+					$sql = '
+						INSERT INTO
+							' . $prefix . 'transfer
+						SET
+							source_user_id = ' . (int)$login_user_id . ',
+							destination_user_id = ' . (int)$interpret['user_id'] . ',
+							modified = CURRENT_TIMESTAMP,
+							tag_id = ' . (int)$v1['tag_id'] . ',
+							description = ' . to_sql($v1['description']) . '
+					';
+					$result = mysql_query($sql) or die(mysql_error());
+					$interpret['transfer_id'] = mysql_insert_id($config['mysql_resource']);
+					index_entry(
+						'transfer',
+						$interpret['transfer_id'],
+						$login_user_id,
+						$interpret['user_id'],
+						'index'
+					);
 				}
 			break;
 		}
+	break;
+	case 'import':
+	switch($process['miscellaneous']['list_name']) {
+		case 'item':
+		case 'transfer':
+			# TODO: use start_engine() so we don't need the repeat sql.
+			$sql = '
+				SELECT
+					gt.tag_id,
+					gt.status_id,
+					gt.description,
+					ca.tag_path as parent_tag_path,
+					ta.name as tag_name,
+					st.name as status_name
+				FROM
+					' . $prefix . $process['miscellaneous']['list_name'] . ' gt,
+					' . $prefix . 'tag ta,
+					' . $prefix . 'link_tag l_t,
+					' . $prefix . 'status st
+				WHERE
+					gt.id IN (' . implode(', ', $interpret['row']) . ') AND
+					ta.id = gt.tag_id AND
+					ta.parent_id = l_t.id AND
+					gt.status_id = st.id AND
+					gt.status_id = st.id
+			';
+			$result = mysql_query($sql) or die(mysql_error());
+			while ($row = mysql_fetch_assoc($result))
+				$interpret['port_array'][] = $row;
+			foreach ($interpret['port_array'] as $k1 => $v1) {
+				$sql = '
+					INSERT INTO
+						' . $prefix . 'item
+					SET
+						user_id = ' . (int)$login_user_id . ',
+						modified = CURRENT_TIMESTAMP,
+						tag_id = ' . (int)$v1['tag_id'] . ',
+						status_id = ' . (int)$v1['status_id'] . ',
+						team_id = ' . (int)$lookup['team_required_id'] . ',
+						description = ' . to_sql($v1['description']) . ',
+						active = 1
+				';
+				$result = mysql_query($sql) or die(mysql_error());
+				# no need to update indexes for items ie) no source_user_id no destination_user_id just user_id
+			}
+		break;
+	}
 	break;
 	case 'remember':
 	case 'forget':

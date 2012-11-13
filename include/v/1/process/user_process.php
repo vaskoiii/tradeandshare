@@ -125,9 +125,7 @@ $sql = '
 	SET
 		id = ' . (int)$lookup['user_more_id'] . ',
 		notify_offer_received = 1,
-		notify_rating_received = 1,
 		notify_teammate_received = 1,
-		notify_transfer_received = 1,
 		feature_lock = ' . (int)$_SESSION['feature']['feature_lock'] . ',
 		feature_minnotify = ' . (int)$_SESSION['feature']['feature_minnotify'] . '
 ';

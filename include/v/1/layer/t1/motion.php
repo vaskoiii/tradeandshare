@@ -77,10 +77,8 @@ switch($k2) {
 	case 'load_javascript':
 	case 'accept_usage_policy':
 	case 'remember_login':
-	case 'notify_rating_received':
 	case 'notify_teammate_received':
 	case 'notify_offer_received':
-	case 'notify_transfer_received':
 	case 'feature_lock':
 	case 'feature_minnotify':
 		# dont override checkboxes

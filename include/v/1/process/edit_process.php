@@ -182,7 +182,6 @@ switch ($k2) {
 	break;
 	case 'notify_offer_received':
 	case 'notify_teammate_received':
-	case 'notify_transfer_received':
 	case 'feature_lock':
 	case 'feature_minnotify':
 	case 'accept_usage_policy':
@@ -667,7 +666,6 @@ switch($type) {
 				. $prefix . 'user_more um
 			SET
 				notify_offer_received = ' . (int)$lookup['notify_offer_received'] . ',
-				notify_transfer_received = ' . (int)$lookup['notify_transfer_received'] . ',
 				notify_teammate_received = ' . (int)$lookup['notify_teammate_received'] . ',
 				feature_lock = ' . (int)$lookup['feature_lock'] . ',
 				feature_minnotify = ' . (int)$lookup['feature_minnotify'] . '
@@ -757,11 +755,14 @@ switch($type) {
 		}
 	break;
 	case 'rating':
+	case 'transfer':
+		# disable notification email (recipient can not always see it)
 		index_entry(
 			$type,
 			$lookup[$type . '_id'],
 			$login_user_id,
-			$lookup['user_id']
+			$lookup['user_id'],
+			'index'
 		);
 	break;
 	case 'offer':
@@ -772,8 +773,6 @@ switch($type) {
 			$lookup['user_id'],
 			'active'
 		);
-	# nobreak;
-	case 'transfer':
 		index_entry(
 			$type,
 			$lookup[$type . '_id'],
@@ -804,7 +803,7 @@ switch($type) {
 			if ($tsmail['data']['search']['response']['search_miscellaneous']['notify_' . $type . '_received']) {
 				switch($type) {
 					case 'offer':
-					case 'transfer':
+					# case 'transfer':
 						start_engine(
 							$tsmail['data']['list'],
 							#$type,

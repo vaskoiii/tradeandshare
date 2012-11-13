@@ -272,9 +272,7 @@ function process_data_translation($container) {
 		// BOOLEAN checkbox
 		case 'enabled';
 		case 'notify_offer_received':
-		case 'notify_rating_received':
 		case 'notify_teammate_received':
-		case 'notify_transfer_received':
 		case 'feature_lock':
 		case 'feature_minnotify':
 			// booleans don't need error checking with get_boolean_gp() used in generic_edit_process

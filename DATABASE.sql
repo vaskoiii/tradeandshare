@@ -2487,3 +2487,4 @@ update ts_transfer set `active` = 1;
 DROP TABLE `ts_active_transfer_user`;
 ALTER TABLE `ts_transfer` ADD INDEX ( `team_id` );
 ALTER TABLE `ts_transfer` DROP `status_id`;
+ALTER TABLE `ts_user_more` DROP `notify_rating_received`, DROP `notify_transfer_received`;
