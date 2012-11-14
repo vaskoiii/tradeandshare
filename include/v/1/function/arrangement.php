@@ -310,7 +310,6 @@ function get_action_content_1($type = false, $name = false) {
 						'contact_name' => '',
 						'tag_translation_name' => '',
 						'transfer_description' => '',
-						'status_name' => '',
 					);
 				break;
 				case 'contact':
@@ -493,9 +492,8 @@ function get_search_content_1($type) {
 		case 'transfer':
 			$array = array(
 				'direction_name' => '',
-				'status_name' => '',
 				'parent_tag_path' => '',
-				#'team_required_name' => '',
+				'team_required_name' => '',
 			);
 		break;
 		case 'contact':
@@ -604,6 +602,7 @@ function get_action_content_2($type, $name = false) {
 		default:
 		switch($type) {
 			case 'item':
+			case 'transfer':
 				$array = array(
 					'parent_tag_path' => '',
 					'team_required_name' => '',
@@ -611,7 +610,6 @@ function get_action_content_2($type, $name = false) {
 			break;
 			case 'category':
 			case 'tag':
-			case 'transfer':
 				$array = array(
 					'parent_tag_path' => '',
 				);

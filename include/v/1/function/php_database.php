@@ -279,12 +279,12 @@ function get_mask_author($type, $display) {
 		break;
 		case 'invited':
 		case 'rating':
+		case 'transfer': 
 			$array = array(
 				'source' => 'source_user_name'
 			);
 		break;
 		case 'offer':
-		case 'transfer': 
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'source_user_name',
@@ -398,6 +398,18 @@ function get_mask_subject($type, $display) {
 				'contact_name' => 'contact_name',
 			);
 		break;
+		case 'transfer': 
+		switch($display) {
+			default;
+				$array = array(
+					'direction_right_name' => 'direction_right_name',
+					'destination_user_name' => 'destination_user_name',
+					'destination_user_name_spacer' => '_',
+					'tag_name' => 'tag_name',
+				);
+			break; 
+		}
+		break;
 		case 'rating':
 			$array = array(
 				'direction_right_name' => 'direction_right_name',
@@ -443,28 +455,6 @@ function get_mask_subject($type, $display) {
 					'offer_name' => 'offer_name',
 				);
 			break;
-		}
-		break;
-		case 'transfer': 
-		switch($display) {
-			case 'feed':
-				$array = array(
-					'direction_right_name' => 'direction_right_name',
-					'destination_user_name' => 'destination_user_name',
-					'destination_user_name_spacer' => '_',
-					'tag_name' => 'tag_name',
-				);
-			break;
-			default:
-				$array = array(
-					'way_name' => 'way_name',
-					'corresponding_user_name' => 'corresponding_user_name',
-					'corresponding_user_name_spacer' => '_',
-					'tag_name' => 'tag_name',
-					'tag_name_spacer' => '_',
-					'status_name' => 'status_name',
-				);
-			break; 
 		}
 		break;
 		case 'user':
@@ -638,6 +628,7 @@ function lt_detail($type) {
 		case 'feedback':
 			$array = array('incident_id', '_');
 		break;
+		case 'transfer':
 		case 'item':
 			# ideally translate each level in the tag path. For now just the parent is translated 2012-04-24 vaskoiii
 			# choose from parent_tag_path, parent_tag_translation_name
@@ -647,9 +638,6 @@ function lt_detail($type) {
 			# - parent_tag_id
 			# - level?
 			# (will allow non recursive lookups of parent tag paths) to translate each level in the category path
-		break;
-		case 'transfer': 
-				$array = array('parent_tag_path', '_', 'tag_translation_description', '.');
 		break;
 		case 'location':
 			 $array = array('location_coordinate', '_');

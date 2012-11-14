@@ -144,10 +144,10 @@ if (!empty($v1['page_id'])) { ?>
 					case 'news_list':
 					case 'metail_list':
 					case 'rating_list':
+					case 'transfer_list':
 						echo '<span class="access_team_intra">' . tt('element', 'access_team_intra') . '</span>';
 					break;
 					case 'offer_list':
-					case 'transfer_list':
 						echo '<span class="access_user_inter">' . tt('element', 'access_user_inter') . '</span>';
 					break;
 					case 'contact_list':

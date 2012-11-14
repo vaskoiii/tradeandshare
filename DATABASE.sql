@@ -2477,3 +2477,13 @@ CREATE TABLE IF NOT EXISTS `ts_visit` (
 
 INSERT INTO `ts_visit` (`id`, `user_id`, `page_id`, `when`) VALUES
 (29783, 111, 367, '2012-06-14 00:43:27');
+
+-- 2012-11-11
+ALTER TABLE `ts_transfer` ADD `team_id` INT NOT NULL AFTER `status_id`;
+-- following just used for testing
+-- update ts_transfer set team_id = 103 where team_id = 0;
+ALTER TABLE `ts_transfer` ADD `active` TINYINT( 1 ) NOT NULL;
+update ts_transfer set `active` = 1;
+DROP TABLE `ts_active_transfer_user`;
+ALTER TABLE `ts_transfer` ADD INDEX ( `team_id` );
+ALTER TABLE `ts_transfer` DROP `status_id`;

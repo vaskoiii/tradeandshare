@@ -219,6 +219,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 
 	# TEAM REQUIRED switch
 	switch($type) {
+		case 'transfer':
 		case 'item':
 		case 'news':
 		case 'metail':
@@ -407,13 +408,10 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 		case 'transfer':
 			if (empty($group_by)) # conditional added because sometimes we get 2x group by clauses for some reason. 2012-04-12 vaskoiii
 				$group_by[] = 't1.id'; // Allows us to search ALL translations not just the default one and still not show several result sets!
-			// get translated status name from key
-			// get translated tag name from key
-			// get translated dialect from key
+			# get translated tag name from key
+			# get translated dialect from key
 			$select[] = 't1.id AS item_id';
 			$select[] = 't1.description AS ' . $type . '_description';
-			$select[] = 'i_s.id AS status_id';
-			$select[] = 'i_s.name AS status_name';
 			$select[] = 't1.modified';
 
 			# we can get everything from this guy
@@ -425,10 +423,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$from[] = $prefix . 'index_tag i_t';
 
 			$where[] = 'a.parent_id = i_t.tag_id';
-
-			$from[] = $prefix . 'status i_s';
 			$where[] = 't1.tag_id = a.id';
-			$where[] = 't1.status_id = i_s.id';
+			$where[] = 't1.active = 1';
 
 			$from[] = $prefix . 'tag a';
 			# keyword
@@ -446,26 +442,22 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 				$where_x[] = 't1.id = ' . (int)get_gp($type . '_id');
 			if (isset_gp('parent_tag_id'))
 				$where_x[] = 'a.parent_id = ' . (int)get_gp('parent_tag_id');
-			if (isset_gp('status_id'))
-				$where_x[] = 't1.status_id = ' . (int)get_gp('status_id');
 			switch($type) {
-				case 'item':
-						$where[] = 't1.active = 1';
-					$select[] = 't1.id as item_id';
-					$from[] = $prefix . 'item t1';
-					$where[] = 't1.user_id = u.id';
-				break;
 				case 'transfer':
-						$from[] = $prefix . 'active_transfer_user a1';
-						$where[] = 'a1.transfer_id = t1.id';
-						$where[] = 'a1.user_id = ' . (int)$login_user_id;
 					$select[] = 't1.id as transfer_id';
 					$from[] = $prefix . 'transfer t1';
-					// TODO: Fix OR statement using index table!!!
-					$where[] = '(
-						t1.source_user_id = ' . (int)$login_user_id . ' OR
-						t1.destination_user_id = ' . (int)$login_user_id . '
-					)';
+				break;
+				case 'item':
+					# get translated status name from key
+					$select[] = 't1.id as item_id';
+					$select[] = 'i_s.id AS status_id';
+					$select[] = 'i_s.name AS status_name';
+					$from[] = $prefix . 'item t1';
+					$from[] = $prefix . 'status i_s';
+					$where[] = 't1.user_id = u.id';
+					$where[] = 't1.status_id = i_s.id';
+					if (isset_gp('status_id'))
+						$where_x[] = 't1.status_id = ' . (int)get_gp('status_id');
 				break;
 			}
 		break;
@@ -591,6 +583,23 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 					t1.description LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
+
+
+
+
+
+/*
+
+ SELECT u.id as source_user_id, u.name as source_user_name, u2.id as destination_user_id, u2.name as destination_user_name, t1.team_id AS team_required_id, t2.name as team_required_name, t1.id AS item_id, t1.description AS transfer_description, i_s.id AS status_id, i_s.name AS status_name, t1.modified, a.parent_id AS parent_tag_id, a.id AS tag_id, a.name AS tag_name, i_t.tag_path AS parent_tag_path, t1.id as transfer_id 
+
+FROM ts_user u, ts_user u2, ts_team t2, ts_link_team_user ltu2, ts_index_tag i_t, ts_status i_s, ts_tag a, ts_transfer t1 
+
+WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1.destination_user_id AND t2.id = t1.team_id AND ltu2.active = 1 AND ltu2.team_id = t1.team_id AND ltu2.user_id = 132 AND a.parent_id = i_t.tag_id AND t1.tag_id = a.id AND t1.status_id = i_s.id AND t1.active = 1 AND ( t1.source_user_id = 132 OR t1.destination_user_id = 132 ) GROUP BY t1.id ORDER BY modified DESC LIMIT 0,10 
+
+
+*/
+
+
 		case 'rating':
 			// TODO add grade id to key so we can get grade name
 			$select[] = 't1.id AS rating_id';

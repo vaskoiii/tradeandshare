@@ -765,7 +765,6 @@ switch($type) {
 		);
 	break;
 	case 'offer':
-	case 'transfer':
 		index_entry(
 			$type,
 			$lookup[$type . '_id'],
@@ -773,6 +772,8 @@ switch($type) {
 			$lookup['user_id'],
 			'active'
 		);
+	# nobreak;
+	case 'transfer':
 		index_entry(
 			$type,
 			$lookup[$type . '_id'],

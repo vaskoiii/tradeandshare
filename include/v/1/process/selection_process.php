@@ -137,9 +137,9 @@ switch($process['miscellaneous']['action']) {
 				$interpret['table'] = 'link_contact_group';
 			break;
 			case 'offer':
-			case 'transfer':
 				$interpret['table'] = 'active_' . $process['miscellaneous']['list_name'] . '_user';
 			break;
+			case 'transfer':
 			case 'feed':
 			case 'invite':
 			case 'item':
@@ -653,7 +653,6 @@ switch($process['miscellaneous']['action']) {
 		# DELETE
 		switch($process['miscellaneous']['list_name']) {
 			case 'offer':
-			case 'transfer':
 				$sql = '
 					DELETE
 						t0
@@ -683,7 +682,9 @@ switch($process['miscellaneous']['action']) {
 	case 'import':
 		switch($process['miscellaneous']['list_name']) {
 			case 'item':
-			case 'transfer':
+			# transfer is being changed into a semi public transaction log 2012-11-11 vaskoiii
+			# also [status] is no longer used on transfers. (only on items).
+			# case 'transfer':
 				// TODO: use start_engine() so we don't need the repeat sql.
 				$sql = '
 					SELECT

@@ -634,7 +634,6 @@ function process_does_not_exist($container) {
 			break;
 
 			#case 'tag_name': // this is included on the item_edit screen but SHOULD be assigned an id before this function is called.
-			#die('alskdjf');
 			//case 'login_user_name':
 			case 'dialect_name':
 			case 'direction_name':

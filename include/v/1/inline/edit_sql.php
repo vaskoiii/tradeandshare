@@ -177,8 +177,9 @@ switch($type) {
 				destination_user_id = ' . (int)$lookup['xor_user_id'] . ',
 				modified = CURRENT_TIMESTAMP,
 				tag_id = ' . to_sql($lookup['tag_id']) . ',
-				status_id = ' . to_sql($lookup['status_id']) . ',
-				description = ' . to_sql($action_content_1['transfer_description']) . '
+				team_id = ' . to_sql($lookup['team_required_id']) . ',
+				description = ' . to_sql($action_content_1['transfer_description']) . ',
+				active = 1
 			' . ($id ? 'WHERE id = ' . (int)$id : '')
 		;
 	break;
