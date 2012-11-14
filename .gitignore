@@ -1,5 +1,6 @@
 .*
 !.gitignore
+git-remote-https.core
 include/v/1/config/preset.php
 history
 mail
