@@ -44,7 +44,6 @@ function get_action_footer_1($type = false, $name = false) {
 		default:
 		switch ($type) {
 			case 'message':
-			case 'transfer':
 				$array = array(
 					'send' => '',
 				);

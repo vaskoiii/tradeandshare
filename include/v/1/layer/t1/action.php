@@ -171,8 +171,7 @@ switch($k1) {
 	case 'send': # use "send" context instead of "add"
 	case 'add':
 		switch($x['part'][0]) {
-			case 'offer':
-			case 'transfer': ?> 
+			case 'offer': ?> 
 				<input type="submit" name="<?= $k1; ?>" value="<?= tt('element', 'send'); ?>" /><?
 			break;
 			default:
@@ -186,8 +185,6 @@ switch($k1) {
 		if (!get_gp('preview') == 1) {
 		switch($x['page']['name']) {
 			case 'offer_edit':
-			case 'transfer_edit':
-				
 			break;
 			default:
 				if (get_gp('id') || get_gp('action_id') || $x['page']['name'] == 'profile_edit') { ?> 
