@@ -615,7 +615,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'edit':
 		if ($load != 'view') {
 		switch($type) { 
-			case 'transfer':
 			case 'offer':
 			case 'user': # (editable from profile but not list)
 				# not editable
@@ -642,6 +641,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 						$b1 = 1;
 					break;
 					case 'rating':
+					case 'transfer':
 					if ($listing['source_user_id'] == $login_user_id)
 						$b1 = 1;
 					break;

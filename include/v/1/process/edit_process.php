@@ -21,7 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: process ALL the different edits
 
 # SEND EMAIL:
-# offer, rating, transfer, teammate
+# offer, teammate
 # -------------------------
 # on add? YES
 # on edit? YES
@@ -42,13 +42,13 @@ switch (get_gp('type')) {
 	case 'invite':
 	# main
 	case 'item':
-	case 'news':
+	case 'transfer':
 	case 'rating':
 	case 'incident':
 	case 'feedback':
 	# contact
 	case 'offer':
-	case 'transfer':
+	case 'news':
 	case 'contact':
 	case 'note':
 	case 'group':
@@ -533,7 +533,6 @@ if (!$message) {
 					$message = tt('element', 'translation_kind_name') . ' : ' . tt('element', 'uneditable');
 		break;
 		case 'offer':
-		case 'transfer':
 			if (get_gp('id'))
 				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable');
 	
