@@ -245,9 +245,10 @@ function url_response(& $container, $login_user_id, $load) {
 	$prefix = $config['mysql']['prefix'];
 	$prepend = '';
 	switch ($load) {
+		case '':
 		case 'search':
-		case 'list':
 		case 'result':
+		case 'list':
 		break;
 		default:
 			$prepend = $load . '_';
@@ -288,7 +289,10 @@ function url_response(& $container, $login_user_id, $load) {
 		case 'lock_location_name':
 		case 'lock_range_name':
 		case 'lock_team_name':
+
 		case 'parent_tag_path': # special
+		case 'parent_tag_name':
+
 		case 'phase_name':
 		case 'status_name':
 		case 'tag_name':
@@ -428,6 +432,7 @@ function get_default_value($input, $load, & $x = null) {
 		}
 		break;
 		case 'parent_tag_path':
+		case 'parent_tag_name':
 		switch($load) {
 			case 'search':
 			break;
@@ -473,6 +478,7 @@ function get_default_value($input, $load, & $x = null) {
 # maybe load should be the first parameter 2012-03-15 vaskoiii
 function print_container(& $container, & $listing = null, & $key = null, & $translation = null, $load = '', & $option = null) {
 
+
 	# todo: these globals should not be used! 2012-03-07 vaskoiii
 	if (!$listing) {
 		global $data;
@@ -485,15 +491,29 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 	if (!$option)
 		global $option;
 
+	# 2012-12-03 vaskoiii
+	# TODO: use the following variables to prepoulate necessary (but not necessarily all) information for importing:
+	# import_item_id
+	# import_transfer_id
+	# TODO: account for:
+	# item >> item
+	# item >> transfer
+	# transfer >> transfer
+	# transfer >> item
+	# TODO: use URL values of [id] not [name] and not [description] ie) action_status_id=2 NOT action_status_name=Neutral
+	$load_ = $load . '_'; # prefix used to autopopulate values from URL - [search] is default so no prefix used on URL values
+	switch($load) {
+		case '':
+		case 'search':
+		case 'result':
+		case 'list': # alias for [search] and [result] as a combined entity
+			$load_ = '';
+		break;
+	}
+
 	# ok globals
 	global $x;
 	global $config;
-
-	# shortcut
-	$preview = 2;
-	# correct logic? Preview not currently used 2012-04-09 vaskoiii
-	#if ($load == get_gp('preview'))
-	#	$preview = 1;
 
 	if (!empty($container)) {
 	foreach($container as $k1 => $v1) {
@@ -518,7 +538,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					if (!empty($listing)) { ?> 
 						<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= kk($listing['kind_name'], $listing['kind_name_id'], $listing['kind_name'] . '_name', '' /*$listing['kind_name'] . '_id: ' . $listing['kind_name_id']*/, $key); ?>" maxlength="255" /><?
 					} else {  ?> 
-						<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?=
+						<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= # get_gp($load_ . 'kind_name_id') ??? 2012-12-03
 							kk($container['translation_kind_name'], get_gp('kind_name_id'), $container['translation_kind_name'] . '_name', '', $key); ?>" maxlength="255" /><?
 						# todo tricky! 2012-05-01 vaskoiii
 					}
@@ -526,19 +546,13 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				</div>
 			</span><?
 		break;
-		case 'tag_translation_name':
-			if ($preview == 1) { ?>
+		case 'tag_translation_name': ?> 
+			<span valign="top">
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><span class="<?= $k1; ?>"><?= kk('tag', $listing['tag_id'], 'translation_name', $listing['tag_name'], $key); ?></div><?
-			}
-			else { ?>
-				<span valign="top">
-					<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-					<div class="v">
-						<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : get_gp($k1); # kk('tag', $listing['tag_id'], 'translation_name', $listing['tag_name'], $key); # previously get_gp($k1); 2012-03-27 vaskoiii ?>" maxlength="255" />
-					</div>
-				</span><?
-			}
+				<div class="v">
+					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : get_gp($load_ . $k1); ?>" maxlength="255" />
+				</div>
+			</span><?
 		break;
 
 		# back to 1st switch functions 2012-02-10 vaskoiii
@@ -557,13 +571,10 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'child':
 			// special case
 		break;
-		//case 'user_password': // << don't think this case ever happens...
 		case 'user_password_unencrypted':
-		case 'user_password_unencrypted_again': 
-			if ($preview != 1) { ?>
-				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><input type="password" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" /></div><?
-			}
+		case 'user_password_unencrypted_again': ?> 
+			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
+			<div class="v"><input type="password" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" /></div><?
 		break;
 		// Checkbox
 		// might be confusing because checkboxes don't get submitted but if we read the values from the database they are either 1 or 2 so they kind of have different logic for display and entry.
@@ -572,7 +583,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'accept_friend':
 		case 'accept_usage_policy': ?> 
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-			<div class="v"><input type="checkbox" <?= ($preview == 1 ? 'disabled="disabled"' : '') . $k1; ?> name="<?= $k1; ?>" <?= ($v1 != 1) ? '' : 'checked="checked"'; ?> /></div><?
+			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 != 1) ? '' : 'checked="checked"'; ?> /></div><?
 		break;
 
 
@@ -603,7 +614,12 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 
 		case 'feed_query':
 		case 'page_name':
+
 		case 'parent_tag_path':
+		case 'parent_tag_name':
+
+
+
 		case 'team_required_name':// NOT translated
 
 		case 'group_name': // NOT translated
@@ -627,118 +643,92 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'range_name':
 		case 'status_name':
 		case 'phase_name':
-		case 'meritype_name': 
-			# todo call by $x['load'] not page name!
-			if ($preview == 1) {
+		case 'meritype_name': ?> 
+			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
+			<div class="v"><?
 
-			#if ($v1 || $_SESSION[str_replace(array('_set'), array(''), $x['page']['name'])][$k1]) { 
-			if ($v1) { ?>
-				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><span class="<?= $k1; ?>"><? 
-				switch($k1) {
-					case 'team_name':
-					case 'lock_team_name':
-					case 'team_required_name':
-					case 'dialect_name':
-					case 'lock_group_name':
-					case 'group_name': ?> 
-						<?= to_html($v1 ? $v1 : ''); #$_SESSION[str_replace(array('_set'), array(''), $x['page']['name'])][$k1]); ?><?
-					break;
-					case 'translation_kind_name':
-					case 'minder_kind_name':
-							echo tt('kind', $v1); ?><?
-					break;
-					case 'default_boolean_name': ?> 
-						<?= tt('boolean', $v1); ?><?
-					break;
-					default:  
-						// Works if all set variables are separate from all the other ones both shouldn't be set.
-						// tt('element', $v1 ? $v1 : $_SESSION[preg_replace(array('/\_set/'), array(''), $x['page']['name'])][$k1]); ?> 
-						<?= tt(str_replace(array('_set', '_name', 'lock_'), array('', '', ''), $k1), $v1); ?><?
-					break;
-				} ?> 
-				</span></div><?
-			} }
-			else { ?> 
-				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><?
+			$i1 = 1; # input type="text"
+			if (!empty($option[$k1]))
+				$i1 = 2; # select
+		#echo '<pre>'; print_r($option['status_name']); echo '</pre>';
+			if ($load == 'action')
+			if ($x['load']['action']['name'] != 'set')
+			if ($x['load']['action']['type'] == str_replace('_name', '', $k1))
+				$i1 = 1; # alternatively we could define another input type for use in this case 2012-03-08 vaskoiii
 
-				$i1 = 1; # input type="text"
-				if ($option[$k1])
-					$i1 = 2; # select
-				if ($load == 'action')
-				if ($x['load']['action']['name'] != 'set')
-				if ($x['load']['action']['type'] == str_replace('_name', '', $k1))
-					$i1 = 1; # alternatively we could define another input type for use in this case 2012-03-08 vaskoiii
+			if ($i1 == 2) { ?>
+			<select onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="<?= $k1; ?>" name="<?= $k1; ?>">
+				<option></option><?
+				$b1 = 2; # reset master select
 
-				if ($i1 == 2) { ?>
-				<select onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="<?= $k1; ?>" name="<?= $k1; ?>">
-					<option></option><?
-					$b1 = 2; # reset master select
-
-					if ($x['load']['action']['name'] == 'set')
-					if ($x['load']['action']['type'] == 'theme')
-						$b1 = 1;
-					# don't have an option for certain pages:
-					foreach ($option[$k1] as $k2 => $v2) {
+				if ($x['load']['action']['name'] == 'set')
+				if ($x['load']['action']['type'] == 'theme')
+					$b1 = 1;
+				# don't have an option for certain pages: ????
+				foreach ($option[$k1] as $k2 => $v2) {
+					# echo "\n k1=".$k1 . ' k2='.$k2 . ' v1='.$v1 . ' v2='.$v2;
+					# echo "\n" . $k1 . ' | ' ; echo $v1 . ' ?= ' . $k2;
 					if ($v1 == $k2) {
-						#echo $k1 . ' | ' ; echo $v1 . ' ?= ' . $k2;
 						$b1 = 1; # get master select
-					}}
-					foreach ($option[$k1] as $k2 => $v2) {
-					# do not allow mixing listing types in feeds 2012-06-05 vaskoiii ?> 
-					<option <?
-						// use master select
-						if ($b1 == 1 && $v1 == $k2) { ?> 
-							 selected="selected" <?
-						} 
-						elseif ($b1 != 1) {
-						switch ($k1) {
-							case 'default_boolean_name':
-							if (!isset_gp('id') && $k2 == '1')
-								; // echo ' selected="selected" ';
-							break;
-						} } ?> 
-						value="<?= $k2; ?>"><?
-						#echo 'b1=' . $b1 . '&v1=' . $v1 . '&k2=' . $k2;
-						switch($k1) {
-							case 'parent_tag_path':
-								echo to_html($v2);
-							break;
-							case 'location_name':
-							case 'lock_location_name':
-							case 'team_name':
-							case 'lock_team_name':
-							case 'team_required_name':
-							case 'dialect_name':
-							case 'lock_group_name':
-							case 'group_name': ?> 
-								<?= to_html($k2); ?><?
-							break;
-							case 'default_boolean_name': ?> 
-								<?=  tt('boolean', $k2); ?><?
-							break;
-							case 'translation_kind_name':
-							case 'minder_kind_name': ?> 
-								<?= tt('kind', $k2); ?><?
-							break;
-							case 'background_theme_name':
-							case 'launcher_theme_name':
-								echo tt('theme', $k2);
-							break;
-							default:?>
-								<?= tt(str_replace(array('lock_', '_name'), array('', ''), $k1), $k2); ?><?
-							break;
-						} ?> 
-					</option><?
-					} ?> 
-				</select><?
+					}
 				}
-				else { ?> 
-					<input class="<?= $k1; ?>" type="text" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" maxlength="255" /><?
+				foreach ($option[$k1] as $k2 => $v2) {
+				# do not allow mixing listing types in feeds 2012-06-05 vaskoiii ?> 
+				<option <?
+					// use master select
+					if ($b1 == 1 && $v1 == $k2) { ?> 
+						 selected="selected" <?
+					} 
+					elseif (get_gp($load_ . $k1) == $v2) { # Needed if value is set in the URL ?>
+						 selected="selected" <?
+					}
+					elseif ($b1 != 1) {
+					switch ($k1) {
+						case 'default_boolean_name':
+						if (!isset_gp('id') && $k2 == '1')
+							; // echo ' selected="selected" ';
+						break;
+					} } ?> 
+					value="<?= $k2; ?>"><?
+					#echo 'b1=' . $b1 . '&v1=' . $v1 . '&k2=' . $k2;
+					switch($k1) {
+						case 'parent_tag_path':
+						case 'parent_tag_name':
+							echo to_html($v2);
+						break;
+						case 'location_name':
+						case 'lock_location_name':
+						case 'team_name':
+						case 'lock_team_name':
+						case 'team_required_name':
+						case 'dialect_name':
+						case 'lock_group_name':
+						case 'group_name': ?> 
+							<?= to_html($k2); ?><?
+						break;
+						case 'default_boolean_name': ?> 
+							<?=  tt('boolean', $k2); ?><?
+						break;
+						case 'translation_kind_name':
+						case 'minder_kind_name': ?> 
+							<?= tt('kind', $k2); ?><?
+						break;
+						case 'background_theme_name':
+						case 'launcher_theme_name':
+							echo tt('theme', $k2);
+						break;
+						default:?>
+							<?= tt(str_replace(array('lock_', '_name'), array('', ''), $k1), $k2); ?><?
+						break;
+					} ?> 
+				</option><?
 				} ?> 
-				</div><?
+			</select><?
 			}
+			else { ?> 
+				<input class="<?= $k1; ?>" type="text" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" maxlength="255" /><?
+			} ?> 
+			</div><?
 		break;
 		case 'order_name':
 			# Ignore
@@ -747,66 +737,40 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		# recommend: 1 = true and 2 = false to avoid using a 0 in the data type
 		case 'load_javascript': ?>
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= get_gp('preview') == 1 ? ' disabled="disabled" ' : ''; ?><?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
+			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
 		case 'feature_lock':
 		case 'feature_minnotify':
 		case 'notify_offer_received':
 		case 'notify_teammate_received': ?>
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><input type="checkbox" <?= ($preview == 1 ? 'disabled="disabled"' : '') . $k1; ?> name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
+				<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
 		case 'contact_user_mixed': ?>
 			<div class="k"><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name"><?= to_html($config['unabstracted_prefix']) . tt('element', 'user_name') . to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><?
-				$s1 = '';
-				$s2 = '';
-				if ($preview == 1) {
-					# user_name
+				$s1 = ''; ?> 
+				<input class="<?= $k1; ?>" type="text" name="<?= $k1; ?>" value="<?
+				if ($_SESSION['interpret']['failure'] == 1) {
+					echo $container['contact_user_mixed'];
+				}
+				else {
+					# dont forget to account for the possible destination_user_id 2012-03-27 vaskoiii
 					if ($container['contact_name'])
-						$s2 = $container['contact_name'];
+						echo $container['contact_name']; 
 					elseif ($key['user_id']['result'][ $listing['user_id'] ]['contact_name'])
-						$s2 = $key['user_id']['result'][ $listing['user_id'] ]['contact_name'];
+						echo $key['user_id']['result'][ $listing['user_id'] ]['contact_name'];
 					elseif ($key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'])
-						$s2 = $key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'];
-					# contact_name
+						echo $key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'];
+
 					if ($container['user_name']) 
 						$s1 .= $container['user_name'];
 					elseif ($key['contact_id']['result'][ $listing['contact_id'] ]['user_name'])
 						$s1 .= $key['contact_id']['result'][ $listing['contact_id'] ]['user_name'];
-					elseif ($key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'])
-						$s1 .= $key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'];
-					# both
-					if ($s2) { ?>
-						<span class="contact_name"><?= to_html($s2); ?></span> <?
-					}
-					if ($s1) { ?>
-						 <span class="user_name"><?= to_html($config['unabstracted_prefix'] . $s1 . $config['unabstracted_suffix']); ?></span><?
-					} 
-				} 
-				else { ?> 
-					<input class="<?= $k1; ?>" type="text" name="<?= $k1; ?>" value="<?
-					if ($_SESSION['interpret']['failure'] == 1) {
-						echo $container['contact_user_mixed'];
-					}
-					else {
-						# dont forget to account for the possible destination_user_id 2012-03-27 vaskoiii
-						if ($container['contact_name'])
-							echo $container['contact_name']; 
-						elseif ($key['user_id']['result'][ $listing['user_id'] ]['contact_name'])
-							echo $key['user_id']['result'][ $listing['user_id'] ]['contact_name'];
-						elseif ($key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'])
-							echo $key['user_id']['result'][ $listing['destination_user_id'] ]['contact_name'];
-
-						if ($container['user_name']) 
-							$s1 .= $container['user_name'];
-						elseif ($key['contact_id']['result'][ $listing['contact_id'] ]['user_name'])
-							$s1 .= $key['contact_id']['result'][ $listing['contact_id'] ]['user_name'];
-						if ($s1)
-							echo ' ' . to_html($config['unabstracted_prefix'] . $s1 . $config['unabstracted_suffix']);
-					}
-					?>" /><?
-				} ?> 
+					if ($s1)
+						echo ' ' . to_html($config['unabstracted_prefix'] . $s1 . $config['unabstracted_suffix']);
+				}
+				?>" />
 			</div><?
 		break;
 		case 'lock_contact_user_mixed': ?> 
@@ -833,37 +797,22 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'contact_name': 
 			# also ambiguous
 		break;
-		default:
-			if ($preview == 1) { ?>
-			<span valign="top">
-				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><span class="<?= $k1; ?>"><?
-					if ( !str_match('_description', $k1) ) { ?>
-						<?= to_html($v1); ?><?
-					}
-					else { ?>
-						<?= a_link_replace($v1); ?><?
-					} ?>
-				</span></div>
-			</span><?
-			}
-			else { ?>
-			<span valign="top">
-				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
-				<div class="v"><?
-					if ( !str_match('_description', $k1) ) { ?>
-						<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($k1)); ?>" maxlength="255" /><?
-					}
-					else { ?>
-						<? # textarea display hacks 2012-02-26 vaskoiii ?>
-						<div class="textarea">
-							<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" maxlength="255" /><?= to_html($v1); ?></textarea>
-						</div>
-						&nbsp;<?
-					} ?>
-				</div>
-			</span><?
-			}
+		default: ?>
+		<span valign="top">
+			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
+			<div class="v"><?
+				if ( !str_match('_description', $k1) ) { ?>
+					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
+				}
+				else { ?>
+					<? # textarea display hacks 2012-02-26 vaskoiii ?>
+					<div class="textarea">
+						<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="<?= $k1; ?>" maxlength="255" /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
+					</div>
+					&nbsp;<?
+				} ?>
+			</div>
+		</span><?
 		break;
 	} } }
 }

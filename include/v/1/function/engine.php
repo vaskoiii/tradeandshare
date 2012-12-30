@@ -247,8 +247,23 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.modified';
 			$select[] = 't1.active';
 			$select[] = 't1.parent_id';
+
 			$select[] = 'i_t.tag_path';
 			$select[] = 't1.name as tag_name';
+
+
+
+
+			# have to get the parent_tag_path parameter
+			$select[] = 't1.parent_id as parent_tag_id';
+			# todo: fix needing the parent_tag_path because of the way it is retrieved with the $option 2012-12-29 vaskoiii
+			$select[] = 'i_t2.tag_path AS parent_tag_name';
+			$select[] = 'i_t2.tag_path AS parent_tag_path';
+			$from[] = $prefix . 'index_tag i_t2';
+			$where[] = 't1.parent_id = i_t2.tag_id';
+
+
+
 
 			$from[] = $prefix . 'index_tag i_t';
 			$where[] = 't1.id = i_t.tag_id';
@@ -423,6 +438,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$from[] = $prefix . 'index_tag i_t';
 
 			$where[] = 'a.parent_id = i_t.tag_id';
+
 			$where[] = 't1.tag_id = a.id';
 			$where[] = 't1.active = 1';
 

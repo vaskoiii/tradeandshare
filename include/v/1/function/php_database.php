@@ -668,6 +668,8 @@ function lt_action($type) {
 		'edit' => 'edit',
 		'translate' => 'translate',
 		'delete' => 'delete',
+		'import' => 'import',
+		'export' => 'export',
 	);
 	if (get_child_listing_type($type))
 		$array[$type . '_view'] = $type . '_view';

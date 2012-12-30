@@ -180,3 +180,9 @@ input, select {
 .load_javascript {
 	color: #3333aa;
 	}
+.export {
+	color: #6633cc;
+}
+.import {
+	color: #cc0099
+}

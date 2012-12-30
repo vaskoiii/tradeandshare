@@ -21,6 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Retrieve parts that "may" be be better stored here than in a relational database.
 # Ideally: Logic is minimal. (no [if] only [switch])
 # todo: $id = false as a parameter? 2012-04-19 vaskoiii
+# todo: parent_tag_path should actually be parent_tag_name
 
 # layout/FOOTER
 function get_action_footer_1($type = false, $name = false) {
@@ -450,6 +451,7 @@ function get_search_content_1($type) {
 			$array = array(
 				'status_name' => '',
 				'parent_tag_path' => '',
+				# 'parent_tag_name' => '',
 				'team_required_name' => '',
 			);
 		break;
@@ -490,6 +492,7 @@ function get_search_content_1($type) {
 			$array = array(
 				'direction_name' => '',
 				'parent_tag_path' => '',
+				# 'parent_tag_name' => '',
 				'team_required_name' => '',
 			);
 		break;
@@ -539,12 +542,14 @@ function get_search_content_1($type) {
 		case 'category':
 			$array = array(
 				'parent_tag_path' => '',
+				# 'parent_tag_name' => '',
 				'tag_name' => '',
 			);
 		break;
 		case 'tag':
 			$array = array(
 				'parent_tag_path' => '',
+				# 'parent_tag_name' => '',
 			);
 		break;
 		case 'minder':
@@ -602,6 +607,7 @@ function get_action_content_2($type, $name = false) {
 			case 'transfer':
 				$array = array(
 					'parent_tag_path' => '',
+					# 'parent_tag_name' => '',
 					'team_required_name' => '',
 				);
 			break;
@@ -609,6 +615,7 @@ function get_action_content_2($type, $name = false) {
 			case 'tag':
 				$array = array(
 					'parent_tag_path' => '',
+					# 'parent_tag_name' => '',
 				);
 			break;
 			case 'news':

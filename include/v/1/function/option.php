@@ -41,6 +41,7 @@ function sort_option(& $option = null, & $key = null, & $translation = null) {
 		$s1 = str_replace(array('lock_', '_name'), array('', ''), $k1);
 		switch ($k1) {
 			case 'parent_tag_path':
+			case 'parent_tag_name':
 				# get the value here and sort
 				foreach ($v1 as $k2 => $v2) {
 
@@ -71,6 +72,7 @@ function add_option($option_name, & $option = null) {
 		global $option;
 	switch($option_name) { 
 		case 'parent_tag_path':
+		case 'parent_tag_name':
 		case 'default_boolean_name':
 		case 'dialect_name':
 		case 'direction_name':
@@ -118,6 +120,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 	foreach($option as $k1 => $v1) {
 		unset($sql);
 		switch($k1) { 
+			case 'parent_tag_name':
 			case 'parent_tag_path':
 				$sql = '
 					SELECT
@@ -253,11 +256,14 @@ function do_option(& $option, & $key = null, & $translation = null) {
 			while ($row = mysql_fetch_assoc($result)) {
 				if ($k1 == 'parent_tag_path')
 					$option[$k1][$row['id']] = $row['name']; # originally id is used but is later overwritten 2012-04-22 vaskoiii
+				elseif ($k1 == 'parent_tag_name')
+					$option[$k1][$row['id']] = $row['name']; # originally id is used but is later overwritten 2012-04-22 vaskoiii
 				else
 					$option[$k1][$row['name']] = $row['name'];
 				switch($k1) {
 
 					case 'parent_tag_path':
+					case 'parent_tag_name':
 						# special case using id 2012-04-28 vaskoiii
 						add_key('tag', $row['id'], 'translation_name', $key);
 					break;

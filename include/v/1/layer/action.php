@@ -87,13 +87,41 @@ $b1 = 1;
 if ($b1 == 1) {
 if (!$_SESSION['interpret']['failure']) {
 if (!$_SESSION['process']['form_info']['load'] == 'action') {
-if ($x['load']['action']['id']) {
+if (
+	$x['load']['action']['id']
+	# mod to accomodate imports/exports 2012-12-10 vaskoiii
+	|| (get_gp('action_tag_id'))
+	/*
+	|| (get_gp('action_item_id') && $x['part']['0'] == 'item') # 
+	|| (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer') # transfer-transfer import
+	|| (get_gp('action_transfer_id') && $x['part']['0'] == 'item') # transfer-item import
+	|| (get_gp('action_item_id') && $x['part']['0'] == 'transfer') # item-transfer import
+	*/
+) {
 
 	$b1 = 2;
-	start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array($x['load']['action']['id']), 'view');
+
+	echo '<hr>'; echo get_gp('action_transfer_id') . get_gp('action_item_id') .  $x['part'][0]; echo '<hr>';
+	if (get_gp('action_tag_id')) {
+		start_engine($data['action'], 'tag', $_SESSION['login']['login_user_id'], array(get_gp('action_tag_id')), 'view');
+	}
+	/*
+	elseif (get_gp('action_item_id') && $x['part']['0'] == 'item')
+		start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
+	elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer')
+		start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
+	elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'item')
+		start_engine($data['action'], 'transfer', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
+	elseif (get_gp('action_item_id') && $x['part']['0'] == 'transfer')
+		start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
+	*/
+	else
+		start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array($x['load']['action']['id']), 'view');
+
 	listing_key_translation($key, $translation, $data['action'], get_gp('edit_type'), $_SESSION['login']['login_user_id']);
 
 	$action_listing = & $data['action']['result']['listing'][0];
+# echo '<pre>'; print_r($data['action']); echo '</pre>'; exit;
 
 	if (!empty($data['action']['response']))
 	foreach ($data['action']['response'] as $k1 => $v1)
@@ -119,6 +147,21 @@ if ($x['load']['action']['id']) {
 	if ($action_content_1['contact_name'])
 		add_key('contact', $action_listing['contact_id'], 'user_name', $key);
 } } } }
+
+# custom cleanup for import/export 2012-12-10 vaskoiii
+# intended to unset everything except tag relevant values
+/*
+if (get_gp('action_item_id') && $x['part']['0'] == 'item')
+	start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
+elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer')
+	start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
+elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'item')
+	start_engine($data['action'], 'transfer', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
+elseif (get_gp('action_item_id') && $x['part']['0'] == 'transfer')
+	start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
+*/
+
+
 
 if ($b1 == 1) {
 if ($x['page']['name'] == 'profile_edit') {
@@ -226,6 +269,7 @@ foreach ($v1 as $k2 => $v2) {
 	if (!$x['load']['action']['id']) {
 	switch($k2) {
 		case 'parent_tag_path':
+		case 'parent_tag_name':
 			if (!$v2)
 				$data['action']['response'][$k1][$k2] = '<|!|>';
 		break;

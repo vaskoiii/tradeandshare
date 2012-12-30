@@ -183,6 +183,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$grab .= ' (<a href="jargon_list/?parent_tag_id=' . (int)$listing['parent_tag_id'] . '&amp;kind_id=11&amp;kind_name_id=' . (int)$listing['tag_id'] . '"><span class="translate">#</span></a>) ';
 			}
 		break;
+		case 'import':
+			if ($x['part'][0] == 'transfer' || $x['part'][0] == 'item')
+				$grab .= $config['spacer'] . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
+		break;
+		case 'export':
+			if ($x['part'][0] == 'transfer' || $x['part'][0] == 'item')
+				$grab .= $config['spacer'] . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
+		break;
 		case 'delete':
 		if ($load == 'list') {
 		switch ($type) {
