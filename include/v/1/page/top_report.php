@@ -78,6 +78,8 @@ add_translation('element', 'more');
 add_translation('element', 'less');
 add_translation('element', 'edit');
 add_translation('element', 'delete');
+add_translation('element', 'import');
+add_translation('element', 'export');
 add_translation('element', 'unset');
 add_translation('element', 'item_uid');
 add_translation('element', 'login_uid');

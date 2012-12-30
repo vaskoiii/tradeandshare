@@ -184,11 +184,11 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			}
 		break;
 		case 'import':
-			if ($x['part'][0] == 'transfer' || $x['part'][0] == 'item')
+			if ($type == 'transfer' || $type == 'item')
 				$grab .= $config['spacer'] . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'export':
-			if ($x['part'][0] == 'transfer' || $x['part'][0] == 'item')
+			if ($type == 'transfer' || $type == 'item')
 				$grab .= $config['spacer'] . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'delete':
