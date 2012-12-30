@@ -101,7 +101,7 @@ if (
 
 	$b1 = 2;
 
-	echo '<hr>'; echo get_gp('action_transfer_id') . get_gp('action_item_id') .  $x['part'][0]; echo '<hr>';
+	#echo '<hr>'; echo get_gp('action_transfer_id') . get_gp('action_item_id') .  $x['part'][0]; echo '<hr>';
 	if (get_gp('action_tag_id')) {
 		start_engine($data['action'], 'tag', $_SESSION['login']['login_user_id'], array(get_gp('action_tag_id')), 'view');
 	}
