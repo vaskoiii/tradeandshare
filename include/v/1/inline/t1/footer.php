@@ -45,6 +45,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<nobr>&copy; 2003-<?= to_html(date('Y')); ?> Trade and Share</nobr>
 		</p>
 		<div class="menu_1">
+			<ul>
+				<li><a href="./contact_list/"><?= tt('page', 'contact_list'); ?></a></li>
+				<li><a href="./user_list/"><?= tt('page', 'user_list'); ?></a></li>
+			</ul>
 		</div>
 		<div class="menu_2" style="margin-bottom: 0px;">
 		</div>
