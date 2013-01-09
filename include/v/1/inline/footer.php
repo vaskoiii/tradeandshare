@@ -21,6 +21,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 add_translation('page', 'sitemap_doc');
 add_translation('page', 'contact_list');
 add_translation('page', 'user_list');
+add_translation('page', 'note_list');
+add_translation('page', 'metail_list');
 
 do_option($option);
 do_key($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']);
