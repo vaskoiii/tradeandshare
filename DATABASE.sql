@@ -2493,3 +2493,7 @@ ALTER TABLE `ts_user_more` DROP `notify_rating_received`, DROP `notify_transfer_
 UPDATE `ts`.`ts_page` SET `parent_id` = '60' WHERE `ts_page`.`id` =255 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `parent_id` = '236' WHERE `ts_page`.`id` =11 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `order` = '1' WHERE `ts_page`.`id` =13 LIMIT 1 ;
+
+-- 2013-01-18
+UPDATE `ts`.`ts_page` SET `parent_id` = '60', `order` = '12' WHERE `ts_page`.`id` =24 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '64', `order` = '120' WHERE `ts_page`.`id` =246 LIMIT 1 ;

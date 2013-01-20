@@ -54,9 +54,6 @@ if ($x['preload']['focus'] == 'view')
 	</div>
 
 	<div class="menu_1">
-	</div>
-
-	<div class="menu_2">
 	<ul><?
 		# Item | Message
 		switch($x['load']['view']['type']) {
@@ -74,11 +71,52 @@ if ($x['preload']['focus'] == 'view')
 			case 'meritopic':
 			break;
 			default: ?> 
-				<li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li><?
+				<? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?>
+				<span class="spacer">&gt;&gt;</span> <a id="view_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
+
+<div id="view_menu" style="margin-top: 10px; display: none">
+<table>
+<tr><td>
+<dl>
+<dt><?= tt('page', 'new_area'); ?></dt>
+<dd>
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=newp&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
+</dd>
+
+<?
+foreach ($data['new_report']['page_id'] as $k1 => $v1) {
+	switch ($v1['page_name']) {
+		case 'ts_area':
+		case 'new_area':
+		break;
+		default:
+	echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
+		break;
+	}
+	if (!empty($v1['page_id']))
+	foreach ($v1['page_id'] as $k2 => $v2) { 
+		$e1 = explode('_', $v2['page_name']); ?> 
+		<nobr>
+			<span class="spacer"><?= $config['spacer'] ?></span>
+			<a href="<?= ffm('list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+		</nobr><?
+	}
+	echo '</dd>';
+} ?>
+</dl>
+</td></tr>
+</table>
+</div><?
+
 			break;
 		} ?> 
 	</ul>
 	</div>
+	<div class="menu_2">
+	</div>
+
 
 </div>
 
