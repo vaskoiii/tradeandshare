@@ -32,7 +32,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		<center><ul>
 			<li><a href="/item_list/" /><?= tt('page', 'item_list'); ?></a></li>
 			<li><a href="/offer_list/" /><?= tt('page', 'offer_list'); ?></a></li>
-			<span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
+			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
 		</ul>
 <div id="head_menu" style="display: none;">
 <table>
