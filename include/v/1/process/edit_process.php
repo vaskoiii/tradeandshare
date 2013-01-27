@@ -29,13 +29,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # keep at the top to easily turn on and off sections for testing
 switch (get_gp('type')) {
-	# rough
+	# diabled intentionally
+	# todo add translations
 	case 'dialect':
 		# intended to be added in future but not necessary now 2012-04-28 vaskoiii
-	break;
 	case 'minder':
 		# requires memorizing the correct kind_name_name/kind_name_id - remeber/forget only requires 1 click 2012-04-20 vaskoiii
-		# diabled intentionally
+		process_failure('Not Allowed');
 	break;
 	# special
 	case 'profile':

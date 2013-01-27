@@ -72,7 +72,8 @@ while ($row = mysql_fetch_assoc($result))
 
 $data['js_array_string'] = '';
 
+if (!empty($data['launch'])) {
 foreach($data['launch'] as $k1 => $v1) {
 	# Threatening characters are: & ' " and \ so these will be striped from the translation
 	$data['js_array_string'] .= 'tsl["' . $v1['page_name'] . '"] = "' . preg_replace('/[\&\\\"\']/', '', $v1['translation_name']) . '";' ."\n";
-}
+} }
