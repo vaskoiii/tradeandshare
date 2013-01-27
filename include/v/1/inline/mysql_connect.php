@@ -27,3 +27,4 @@ while (!($config['mysql_resource'] = mysql_connect( $config['mysql']['host'], $c
 }
 unset($try);
 mysql_select_db($config['mysql']['database'], $config['mysql_resource']);
+mysql_query('SET NAMES utf8');
