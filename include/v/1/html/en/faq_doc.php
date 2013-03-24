@@ -70,6 +70,12 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 </div>
 
 <div class="doc_box">
+	<h3>Web Feeds do NOT work in Mozilla Thunderbird?</h3>
+	<p>Web Feeds actually work fine in Thunderbird but Thunderbird will fail (even fail silently) so it will appear that the TS Web Feeds do not work. This is because Thunderbird requires valid certificates and if they are not valid the domain of this website [https://<?= to_html($_SERVER['HTTP_HOST']); ?>]  must be manually added to Thunderbird in the Advanced and then Certificates section. After an exception is added Web Feeds will work in Thunderbird.</p>
+</div>
+
+
+<div class="doc_box">
 	<h3>Tab Navigation in Firefox?</h3>
 	<p>In firefox press "Tab" and "Shift + Tab" to easily navigate through TS links and forms by using the keyboard. Additionally pressing enter will submit your form you are on or follow the hyperlink you have selected.</p>
 	<p>With the exception of the landing page when logged in, all pages have a default tab focus to help minimize the times of pressing "Tab" to get to where you want to be.</p>
