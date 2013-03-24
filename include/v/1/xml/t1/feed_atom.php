@@ -116,12 +116,25 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 					# trim is important because of extra whitepsaces
 					trim($s1)
 				); 
-			?></title> 
+			?></title><?
+			# function call to get correct variable? 2013-03-22 vaskoiii
+			$s1;
+			switch($x['feed_atom']['page_name']) {
+				case 'rating_list':
+				case 'invited_list':
+				case 'offer_list':
+				case 'transfer_list':
+					$s1 = (int)$listing[$k1]['source_user_id'];
+				break;
+				default:
+					$s1 = (int)$listing[$k1]['user_id'];
+				break;
+			} ?> 
 			<link href="<?= to_html(
 				'https://'
 				. $_SERVER['HTTP_HOST']
 				. '/' . $x['feed_atom']['page_name'] . '/?'
-				. 'lock_user_id=' . (int)$listing[$k1]['user_id']
+				. 'lock_user_id=' . $s1
 			); ?>" /> 
 			<id><?= to_html(
 				'https://'
