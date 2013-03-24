@@ -747,7 +747,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'incident_view':
 		case 'meritopic_view':
 			$s1 = str_replace('_view', '', $v1);
-				$grab .= $config['spacer'] . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
+				$grab .= $config['spacer'] . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id'] . '&action_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
 		break;
 		case 'user_view':
 		case 'team_view':
@@ -770,7 +770,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= '<span style="color: ' . (isset($color['team_name']) ? $color['team_name'] : '') . '" class="' . $v1 . '">' . to_html($listing[$v1]) . '</span>';
 		break;
 		case 'group_name': 
-			$grab .= '<span style="color: ' . (isset($color['group_name']) ? $color['group_name'] : '') . '" class="' . $v1 . '">' . to_html($listing['v1']) . '</span>';
+			$grab .= '<span style="color: ' . (isset($color['group_name']) ? $color['group_name'] : '') . '" class="' . $v1 . '">' . to_html($listing[$v1]) . '</span>';
 		break;
 	}
 	}
