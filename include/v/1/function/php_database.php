@@ -562,10 +562,20 @@ function lt_checkbox($type) {
 
 # feed specific function repeats a little of the work done in the layer headers. 2012-02-27 vaskoiii
 function lt_add_more($type) {
-	$array = array('add_more');
 	switch($type) {
 		case 'feed':
 			$array = array('!');
+		break;
+		case 'invited':
+		case 'rating':
+		case 'transfer':
+			$array = array(
+				'_',
+				'add_more'
+			);
+		break;
+		default:
+			$array = array('add_more');
 		break;
 	}
 	return $array;

@@ -93,13 +93,15 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 		<name><?= to_xml(ltgt_replace_decode($x['feed_atom']['contact_name'] 
 			? $x['feed_atom']['contact_name'] 
 			: $config['unabstracted_prefix'] . $x['feed_atom']['user_name']. $config['unabstracted_suffix']
-		)); ?></name>
-		<uri><?= to_xml(
+		)); ?></name><? /*
+		# What is the feed author's website? Also not needed for atom on thunderbird - 2013-03-22 vaskoiii
+		# uncomment if the website field is not displaying in thunderbird
+		<uri><?= to_html(
 				'https://'
-				. $_SERVER['HTTP_HOST']
-				. '/' . $x['feed_atom']['page_name'] . '/?'
-				. 'lock_user_id=' . (int)$listing[$k1]['user_id'] 
-			); ?></uri>
+				. $_SERVER['HTTP_HOST'] 
+				. '/' . $x['feed_atom']['page_name'] . '/' 
+				. ($x['feed_atom']['query'] ? '?' . $x['feed_atom']['query'] : '') 
+		); ?></uri> */ ?> 
 	</author> <? # feed owner
 	foreach ($listing as $k1 => $v1) { ?> 
 		<entry>
