@@ -121,7 +121,6 @@ if (
 	listing_key_translation($key, $translation, $data['action'], get_gp('edit_type'), $_SESSION['login']['login_user_id']);
 
 	$action_listing = & $data['action']['result']['listing'][0];
-# echo '<pre>'; print_r($data['action']); echo '</pre>'; exit;
 
 	if (!empty($data['action']['response']))
 	foreach ($data['action']['response'] as $k1 => $v1)
@@ -148,20 +147,16 @@ if (
 		add_key('contact', $action_listing['contact_id'], 'user_name', $key);
 } } } }
 
-# custom cleanup for import/export 2012-12-10 vaskoiii
-# intended to unset everything except tag relevant values
-/*
-if (get_gp('action_item_id') && $x['part']['0'] == 'item')
-	start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
-elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer')
-	start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
-elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'item')
-	start_engine($data['action'], 'transfer', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
-elseif (get_gp('action_item_id') && $x['part']['0'] == 'transfer')
-	start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
-*/
-
-
+# Dont propogate user_name on transfer 2013-05-06 vaskoiii
+# todo: integrate this more smoothly
+if (get_gp('action_tag_id') && $x['part']['0'] == 'transfer') {
+	# edit doesnt need to worry about lock_ values
+	$action_content_1['user_name'] = '';
+	$action_content_1['contact_name'] = '';
+	$action_content_1['contact_user_mixed'] = '';
+	$action_listing['user_name'] = '';
+	$action_listing['user_id'] = '';
+}
 
 if ($b1 == 1) {
 if ($x['page']['name'] == 'profile_edit') {

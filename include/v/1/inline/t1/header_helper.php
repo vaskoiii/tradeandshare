@@ -35,7 +35,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
 		</ul>
 		<div id="head_menu" style="display: none;">
-		<div style="margin-top: -10px; display: inline-table; text-align: left;">
+		<div class="content_box" style="margin-top: -10px; display: inline-table; text-align: left;">
 		<dl>
 			<dt><?= tt('page', 'new_area'); ?></dt>
 			<dd>
