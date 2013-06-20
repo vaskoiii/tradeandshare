@@ -41,8 +41,9 @@ a:hover {
 	margin: 0px 0px -10px 0px;
 	color: #333333;
 	}
-input, select {
+input, select, textarea {
 	background: #fefefe;
+	color: #010101;
 }
 .spacer {
 	color: <?= $data['css']['text_style']['color']['spacer']; ?>;
