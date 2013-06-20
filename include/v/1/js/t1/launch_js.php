@@ -294,6 +294,9 @@ function createtsl_iframe() {
 					tsl_launch.type = "submit";
 					tsl_launch.value = "!";
 					tsl_launch.style.margin = '5px';
+					tsl_launch.style.background = '#fefefe';
+					tsl_launch.style.color = '#010101';
+					tsl_input.type = "text";
 					tsl_form.appendChild(tsl_launch);
 					var tsl_hr; // border is not an option because the title can expand dynamically
 					tsl_hr = tsl_idocument.createElement('hr');
