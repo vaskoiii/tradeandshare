@@ -281,6 +281,8 @@ function createtsl_iframe() {
 					tsl_input = tsl_idocument.createElement('input');
 					tsl_input.id = 'tsl_input';
 					tsl_input.style.width = '200px';
+					tsl_input.style.background = '#fefefe';
+					tsl_input.style.color = '#010101';
 					tsl_input.type = "text";
 					tsl_input.autocomplete = "off";
 					tsl_input.setAttribute('onkeyup', 'window.top.showHint(this.value);');
