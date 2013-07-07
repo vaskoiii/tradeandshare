@@ -188,7 +188,8 @@ function launch(event) {
 	// after calling launch(); return false; if not launcher position is wrong!
 }
 function checkIt(event) {
-	if (event.keyCode == 32) {
+	// space | l
+	if (event.keyCode == 32 | event.keyCode == 76) {
 		// alert('shift=' + event.shiftKey + ' :: ctrl=' + event.ctrlKey + ' :: meta=' + event.metaKey + ' :: alt=' + event.altKey + ' :: code=' + event.keyCode);
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
 			launch(event);
