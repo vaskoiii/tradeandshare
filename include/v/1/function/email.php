@@ -113,8 +113,8 @@ function get_tsmail_body(& $tsmail) {
 		$email_message .= $email_link;
 	else {
 		# todo make functions?
-		include('v/1/css/text_style.php'); // pretty text colors!
-		include('v/1/css/email.php'); // picks a random theme could also be a function
+		include('v/1/css/text_style.php'); # pretty text colors!
+		include('v/1/css/email.php'); # picks a random theme could also be a function
 
 		# set random background colors ;
 		$data['css'] = array_merge(
@@ -173,16 +173,16 @@ Content-Transfer-Encoding: 8bit
 	<meta name="viewport" content="width=480" /><? # Needed? Email client can squish the flexible design if necessary? ?> 
 </head>
 
-<body><table width="" bgcolor="#f6f6f6" cellpadding="20" cellspacing="0" border="0" style="word-wrap: break-word;"><tr><td>
-	<table width="420" bgcolor="#ffffff" align="center" cellpadding="0" cellspacing="1" border="0">
+<body><table width="" bgcolor="" cellpadding="20" cellspacing="0" border="0" style="word-wrap: break-word;"><tr><td>
+	<table width="420" bgcolor="#fffffe" align="center" cellpadding="0" cellspacing="1" border="0">
 		<tr><td bgcolor="<?= $tsmail['data']['css']['c1']; ?>">
 		<table width="100%" bgcolor="" valign="" cellpadding="10" cellspacing="0" border="0">
 			<tr><td>
-				<font size="5">
-					<b><?= tt('page', $tsmail['x']['load']['list']['type'] . '_list', 'translation_name', $tsmail['translation']); ?></b>&nbsp;
+				<font size="5" color="#000001">
+				<a href="<?= to_html($email_link); ?>"><b><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('page', $tsmail['x']['load']['list']['type'] . '_list', 'translation_name', $tsmail['translation']); ?></span></b></a>&nbsp;
 				</font>
 				<font size="3">
-					<a href="<?= to_html($email_link . '&expand%5B0%5D=action'); ?>"><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'edit', 'translation_name', $tsmail['translation']); ?></span></a>*
+					<a href="<?= to_html($email_link . '&expand%5B0%5D=action'); ?>"><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'edit', 'translation_name', $tsmail['translation']); ?></span></a><span style="color:#000000;">*</span>
 				</font>
 			</td></tr>
 		</table>
@@ -198,12 +198,6 @@ Content-Transfer-Encoding: 8bit
 			&nbsp;
 		</td></tr>
 	</table>
-	<table width="100%" bgcolor="" align="center" cellpadding="0" cellspacing="0" border="0">
-		<tr><td>&nbsp;</td></tr>
-		<tr><td align="center">
-			<a href="<?= to_html($email_link); ?>"><b><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'more', 'translation_name', $tsmail['translation']); ?></span></b></a>
-		</td></tr>
-	</table>
 </td></tr></table></body>
 </html>
 
@@ -211,6 +205,18 @@ Content-Transfer-Encoding: 8bit
 --PHP-mixed-<?= $boundary; ?>--
 
 <?
+
+# Previously used in the footer with the more link.
+/*
+<table width="100%" bgcolor="" align="center" cellpadding="0" cellspacing="0" border="0">
+	<tr><td>&nbsp;</td></tr>
+	<tr><td align="center">
+		<a href="<?= to_html($email_link); ?>"><b><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'more', 'translation_name', $tsmail['translation']); ?></span></b></a>
+	</td></tr>
+</table>
+ */
+
+
 $email_message = ob_get_clean(); # copy current buffer contents into $message variable and delete current output buffer
 #################### unfold #######################
 

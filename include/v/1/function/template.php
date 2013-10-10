@@ -21,6 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: The template and more viewable code for the listings
 # Warning: do NOT get too crazy with the abbreviations... use references instead if necessary.
 
+# Function calling function (Rearranges Parameters)
 #function print_listing_template(& $listing, & $key, & $translation, $load, $display, $part, $login_user_id, & $style = null) {
 function print_listing_template(& $listing, & $key, & $translation, $load, $display, $part, $login_user_id, & $style = null, $type = '') {
 
@@ -134,11 +135,29 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 	if (!$type)
 		$type = $x['load'][$load]['type'];
 	# $style is the previous $data['css'] array;
-	if ($style)
+	if ($style) {
 		$color = & $style['text_style']['color'];
-	else
+	}
+	else {
 		$color = ''; # prevent adding extra crap to the global array if not needed 2012-02-29 vaskoiii
-	$spacer = & $config['spacer'];
+	}
+
+	# Cant always use the '_' case because sometimes the spacer is conditional
+	$spacer = '<span class="spacer">' .  $config['spacer'] . '</span>';
+	if ($display == 'email') {
+	if ($color['spacer']) {
+		# email requires special treatment to ensure the correct colors are used
+		# Needed on Thunderbird with white text on black font 2013-10-10 vaskoiii	
+		$spacer = '<span style="color: ' . $color['description'] . ';"' .  $config['spacer'] . '</span>';
+	} }
+	# Description Attribute
+	$dattrib = '';
+	if ($display == 'email') {
+	if ($color['description']) {
+		$dattrib = 'style="color:' . $color['description'] . ';"';
+	} }
+
+
 	$key_user = & $key['user_id']['result'];
 	$key_contact = & $key['contact_id']['result'];
 
@@ -179,21 +198,21 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if (0) # disable until usable 2012-04-21 vaskoiii
 			if ($load == 'list' && $type == 'tag') {
 				# todo fix hardcode for kind id 2012-03-02 vaskoiii
-				$grab .= $config['spacer'] . ' <a href="jargon_edit/?parent_tag_id=' . (int)$listing['parent_tag_id'] . '&amp;kind_id=11&amp;kind_name_id=' . (int)$listing['tag_id'] . '"><span class="translate">' . tt('element', 'translate') . '</span></a> ';
+				$grab .= $spacer . ' <a href="jargon_edit/?parent_tag_id=' . (int)$listing['parent_tag_id'] . '&amp;kind_id=11&amp;kind_name_id=' . (int)$listing['tag_id'] . '"><span class="translate">' . tt('element', 'translate') . '</span></a> ';
 				$grab .= ' (<a href="jargon_list/?parent_tag_id=' . (int)$listing['parent_tag_id'] . '&amp;kind_id=11&amp;kind_name_id=' . (int)$listing['tag_id'] . '"><span class="translate">#</span></a>) ';
 			}
 		break;
 		case 'vote':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $config['spacer'] . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="vote">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="vote">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'import':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $config['spacer'] . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'export':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $config['spacer'] . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'delete':
 		if ($load == 'list') {
@@ -251,7 +270,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$s2 = '';
 			 if ($load == 'view')
 				$s2 = 'view_';
-			$grab .= ' <span class="spacer">&gt;&gt;</span> <a id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '_toggle" href="javascript: more_toggle(\'' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '\');">' 
+			$grab .= '<span class="spacer"> &gt;&gt; </span><a id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '_toggle" href="javascript: more_toggle(\'' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '\');">' 
 					. tt('element', 'more', 'translation_name', $translation) 
 				. '</a>'
 				. '</p><p class="more" style="border: none; display: none; padding: 0px; margin: 0px 20px 10px 20px;" id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '">';
@@ -265,7 +284,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 		break;
 		case '_':
-			$grab .= ' <span class="spacer">' . $config['spacer'] . '</span> ';
+			$grab .= $spacer;
 		break;
 		case '.':
 			$grab .= '<br />';
@@ -459,7 +478,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= '<span style="color: ' . (isset($color['status_name']) ? $color['status_name'] : '') . ';" class="' . $v1 . '">' .  tt(str_replace('_name', '', $v1), $listing[$v1]) . '</span>';
 		break;
 		case 'description':
-			$grab .= '<span class="' . $v1 . '">'
+			$grab .= '<span ' . $dattrib . ' class="' . $v1 . '">'
 				. ($listing[$type . '_' . $v1] 
 					? a_link_replace($listing[$type . '_' . $v1]) 
 					: tt('element', 'unset_result_element_name', 'translation_name', $translation)
@@ -484,7 +503,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'tag_description':
 		case 'vote_description':
 			# newline on next line is used for email
-			$grab .= " \n" . '<span class="' . $v1 . '">'
+			$grab .= " \n" . '<span ' . $dattrib . ' class="' . $v1 . '">'
 				. ($listing[$v1] 
 					? a_link_replace($listing[$v1]) 
 					: tt('element', 'unset')
@@ -493,7 +512,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'tag_translation_description':
 		case 'translation_tag_description': # (different css?)
-			$grab .= " \n" . '<span class="' . $v1 . '">'
+			$grab .= " \n" . '<span ' . $dattrib . ' class="' . $v1 . '">'
 				# . '!'
 				. ($listing['tag_id']
 					? a_link_replace($key['tag_id']['result'][ $listing['tag_id'] ]['translation_description']) 
@@ -579,8 +598,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					# needs to be added when cycling through the listing info
 					$grab .= '<span class="kind_name_name">'
 						. '(' .  kk($listing['kind_name'], $listing['kind_name_id'], 'tag_path') . ')'
-					. '</span>'
-					. $config['spacer'];
+					. '</span>' .
+					$spacer;
 				break;
 			}
 		break;
@@ -689,15 +708,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 						'expand' => array(get_load_same_edit($load)),
 					);
 					# inline style needed for html mail 2012-05-06 vaskoiii
-					$grab .= '<span style="color: ' . (isset($color['spacer']) ? $color['spacer'] : '') . ';" class="spacer">' . $spacer . '</span>'
-					. '<a ' . $href_rss_start  . ffm(http_build_query($a1), 0) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
+					$grab .= $spacer . '<a ' . $href_rss_start  . ffm(http_build_query($a1), 0) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
 				}
 			break;
 		} }
 		break;
 		case 'translation_default_boolean_name':
 			if ($listing['default_boolean_id'] == 1)
-				$grab .= '<span class="spacer">' . $spacer . '</span><span class="' . to_html($v1) . '">' . tt('element', 'default') . '</span>';
+				$grab .= '<span class="' . to_html($v1) . '">' . tt('element', 'default') . '</span>';
 		break;
 		case 'known': 
 			switch($type) {
@@ -755,14 +773,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'incident_view':
 		case 'meritopic_view':
 			$s1 = str_replace('_view', '', $v1);
-				$grab .= $config['spacer'] . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id'] . '&action_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
+				$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id'] . '&action_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
 		break;
 		case 'user_view':
 		case 'team_view':
 		case 'group_view':
 		case 'location_view':
 			$s1 = str_replace('_view', '', $v1);
-			$grab .= $config['spacer'] . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&lock_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
+			$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&lock_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
 		break;
 		case 'incident_id':
 			$grab .= '<span class="' . $v1 . '">' .  tt('element', $v1, 'translation_name', $translation) . '</span>: <span class="' . $v1 . '">' . (int)$listing['incident_id'] . '</span>';

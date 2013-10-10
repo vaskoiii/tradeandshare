@@ -46,3 +46,6 @@ $data['css']['text_style']['color']['thing_name'] = '#186400';
 $data['css']['text_style']['color']['status_name'] = '#0036ff';
 $data['css']['text_style']['color']['team_name'] = '#39b628';
 
+# only 1 style needed for all description types 2013-10-10 vaskoiii
+$data['css']['text_style']['color']['description'] = '#000001';
+
