@@ -2582,4 +2582,5 @@ INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'find_vote');
 INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'decision_name');
 
 INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'decision', '1', '2');
+UPDATE `ts`.`ts_decision` SET `name` = 'decision_disapprove' WHERE `ts_decision`.`id` =3 LIMIT 1 ;
 
