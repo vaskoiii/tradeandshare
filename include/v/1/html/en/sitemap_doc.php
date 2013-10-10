@@ -145,6 +145,7 @@ if (!empty($v1['page_id'])) { ?>
 					case 'metail_list':
 					case 'rating_list':
 					case 'transfer_list':
+					case 'vote_list':
 						echo '<span class="access_team_intra">' . tt('element', 'access_team_intra') . '</span>';
 					break;
 					case 'offer_list':

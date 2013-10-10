@@ -2576,3 +2576,9 @@ UPDATE `ts`.`ts_page` SET `order` = '30' WHERE `ts_page`.`id` =307 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `order` = '11' WHERE `ts_page`.`id` =131 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `order` = '31' WHERE `ts_page`.`id` =308 LIMIT 1 ;
 
+-- Additional Cleanup for Translations 2013-10-10
+
+INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'find_vote');
+
+INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'decision', '1', '2');
+
