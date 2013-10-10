@@ -2580,5 +2580,5 @@ UPDATE `ts`.`ts_page` SET `order` = '31' WHERE `ts_page`.`id` =308 LIMIT 1 ;
 
 INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'find_vote');
 
-INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'decision', '1', '2');
+INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'decision_name', '1', '2');
 
