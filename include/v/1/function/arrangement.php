@@ -83,21 +83,23 @@ function get_result_footer_1($type = false, $name = false) {
 				'merge' => '',
 			);
 		break;
-		case 'feed':
-		case 'teammate':
-		case 'invite':
-		case 'transfer':
 		case 'contact':
-		case 'note':
+		case 'feed':
 		case 'group':
 		case 'groupmate':
+		case 'invite':
 		case 'item':
 		case 'metail':
+		case 'note':
 		case 'offer':
+		case 'teammate':
+		case 'transfer':
+		case 'vote':
 			$array = array(
 				'delete' => '',
 			);
 		break;
+		# case 'vote':
 		case 'item': 
 		case 'transfer':
 			$array = array(
@@ -244,6 +246,13 @@ function get_action_content_1($type = false, $name = false) {
 				case 'invite':
 					$array = array(
 						'invite_email' => '',
+					);
+				break;
+				case 'vote':
+					$array = array(
+						'tag_translation_name' => '',
+						'vote_description' => '',
+						'decision_name' => '',
 					);
 				break;
 				case 'item':
@@ -447,6 +456,14 @@ function get_action_content_1($type = false, $name = false) {
 function get_view_content_1($type) { } # placeholder
 function get_search_content_1($type) {
 	switch($type) {
+		case 'vote':
+			$array = array(
+				'decision_name' => '',
+				'parent_tag_path' => '',
+				# 'parent_tag_name' => '',
+				'team_required_name' => '',
+			);
+		break;
 		case 'item':
 			$array = array(
 				'status_name' => '',
@@ -605,6 +622,7 @@ function get_action_content_2($type, $name = false) {
 		switch($type) {
 			case 'item':
 			case 'transfer':
+			case 'vote':
 				$array = array(
 					'parent_tag_path' => '',
 					# 'parent_tag_name' => '',

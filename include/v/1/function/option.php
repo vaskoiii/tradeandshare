@@ -91,6 +91,7 @@ function add_option($option_name, & $option = null) {
 		case 'phase_name':
 		case 'range_name':
 		case 'status_name':
+		case 'decision_name':
 		case 'team_name':
 		case 'team_required_name':
 		case 'teammate_name':
@@ -180,15 +181,16 @@ function do_option(& $option, & $key = null, & $translation = null) {
 						active = 1
 				';
 			break;
-			case 'page_name':
-			case 'display_name':
-			case 'meritype_name':
+			case 'decision_name':
 			case 'direction_name':
-			case 'range_name':
-			case 'lock_range_name':
-			case 'phase_name':
-			case 'status_name':
+			case 'display_name':
 			case 'grade_name':
+			case 'lock_range_name':
+			case 'meritype_name':
+			case 'page_name':
+			case 'phase_name':
+			case 'range_name':
+			case 'status_name':
 				$s1 = str_replace(array('_required', '_qualified', '_name', 'lock_'), array('', '', '', ''), $k1);
 				$sql = '
 					SELECT
@@ -271,6 +273,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 					case 'minder_kind_name':
 						add_translation('kind', $row['name']);
 					break;
+					case 'decision_name':
 					case 'direction_name':
 					case 'display_name':
 					case 'grade_name':

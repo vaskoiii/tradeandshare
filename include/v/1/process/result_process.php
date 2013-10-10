@@ -32,6 +32,7 @@ $interpret['action_array'] = array(
 	'export' => '1', # copy to transfer table
 	'forget' => '1', # remove minder
 	'import' => '1', # copy to item table
+	'judge' => '1', # copy to vote table
 	'remember' => '1', # add minder
 );
 

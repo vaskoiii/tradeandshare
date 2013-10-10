@@ -152,6 +152,21 @@ switch($type) {
 			' . ($id ? 'WHERE id = ' . (int)$id : '') . '
 		';
 	break;
+	case 'vote':
+		$sql = '
+			' . ($id ? 'UPDATE' : 'INSERT INTO') . '
+				' . $prefix . 'vote
+			SET
+				team_id = ' . (int)$lookup['team_required_id'] . ',
+				user_id = ' . (int)$login_user_id . ',
+				modified = CURRENT_TIMESTAMP,
+				tag_id = ' . (int)$lookup['tag_id'] . ',
+				decision_id = ' . (int)$lookup['decision_id'] . ',
+				description = ' . to_sql($action_content_1['vote_description']) . ',
+				active = 1
+			' . ($id ? 'WHERE id = ' . (int)$id : '')
+		;
+	break;
 	case 'item':
 		$sql = '
 			' . ($id ? 'UPDATE' : 'INSERT INTO') . '

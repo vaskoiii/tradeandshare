@@ -143,21 +143,18 @@ function top_reportage($type, $limit, $datetime_lower_limit = '', $datetime_uppe
 
 # todo define this more special somewhere. 2012-03-28 vaskoiii
 # todo ideally show everything except system listings.
-# intentionally not sorted to most common entries will be at the top (thus reducing overhead) 2012-04-22 vaskoiii
+# intentionally not sorted alphabetically !!! most common entries will be at the top (thus reducing overhead) 2012-04-22 vaskoiii
 # comment out sections that you dont want to display in the conglomerated feed (todo ideally just |root| activity would be hidden and everything else would be shown)
 $a1 = array(
+	# DO NOT SORT!
 	'offer' => '',
 	'item' => '',
 	'news' => '',
 	'category' => '',
 	'contact' => '',
 	'user' => '',
-#	'team' => '',
 	'teammate' => '',
-#	'tag' => '',
-#	'incident' => '',
 	'group' => '',
-#	'feedback' => '',
 	'groupmate' => '',
 	'location' => '',
 	'login' => '',
@@ -165,14 +162,19 @@ $a1 = array(
 	'rating' => '',
 	'dialect' => '',
 	'transfer' => '',
-#	'translation' => '',
-#	'jargon' => '',
 	'meripost' => '',
 	'meritopic' => '',
 	'invited' => '',
 	'feed' => '',
 	'metail' => '',
 	'minder' => '',
+	'vote' => '',
+#	'team' => '',
+#	'tag' => '',
+#	'incident' => '',
+#	'feedback' => '',
+#	'translation' => '',
+#	'jargon' => '',
 );
 
 foreach($a1 as $k1 => $v1) {

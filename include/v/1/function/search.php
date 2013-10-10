@@ -293,6 +293,7 @@ function url_response(& $container, $login_user_id, $load) {
 		case 'parent_tag_path': # special
 		case 'parent_tag_name':
 
+		case 'decision_name':
 		case 'phase_name':
 		case 'status_name':
 		case 'tag_name':
@@ -634,7 +635,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'lock_location_name':
 		case 'lock_range_name':
 
-
+		case 'decision_name':
 		case 'default_boolean_name':
 		case 'direction_name':
 		case 'location_name':

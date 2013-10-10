@@ -2497,3 +2497,82 @@ UPDATE `ts`.`ts_page` SET `order` = '1' WHERE `ts_page`.`id` =13 LIMIT 1 ;
 -- 2013-01-18
 UPDATE `ts`.`ts_page` SET `parent_id` = '60', `order` = '12' WHERE `ts_page`.`id` =24 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `parent_id` = '64', `order` = '120' WHERE `ts_page`.`id` =246 LIMIT 1 ;
+
+-- 2013-10-10
+
+--
+-- Table structure for table `ts_vote`
+--
+
+CREATE TABLE IF NOT EXISTS `ts_vote` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  `decision_id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `modified` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tag_id` (`tag_id`),
+  KEY `user_id` (`user_id`),
+  KEY `modified` (`modified`),
+  KEY `team_id` (`team_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+--
+-- Table structure for table `ts_decision`
+--
+
+CREATE TABLE IF NOT EXISTS `ts_decision` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
+
+INSERT INTO `ts_decision` (`id`, `name`, `value`) VALUES
+(1, 'decision_approve', 1),
+(2, 'decision_neutral', 0),
+(3, 'decision_against', -1);
+
+
+INSERT INTO `ts`.`ts_page` (
+`id` ,
+`parent_id` ,
+`file_id` ,
+`name` ,
+`order` ,
+`launch` ,
+`monitor` ,
+`login` ,
+`advanced`
+)
+VALUES (
+NULL , '321', '2', 'vote_edit', '1', '1', '2', '1', '2'
+), (
+NULL , '60', '2', 'vote_list', '33', '1', '1', '1', '2'
+);
+
+-- other_area = 351
+-- home_area = 60
+-- control_area = 62
+-- construct_area = 
+
+UPDATE `ts`.`ts_page` SET `parent_id` = '351' WHERE `ts_page`.`id` =103 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '351' WHERE `ts_page`.`id` =131 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '62' WHERE `ts_page`.`id` =217 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '62' WHERE `ts_page`.`id` =153 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `order` = '20' WHERE `ts_page`.`id` =176 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '60' WHERE `ts_page`.`id` =217 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '50' WHERE `ts_page`.`id` =250 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '70' WHERE `ts_page`.`id` =153 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '30' WHERE `ts_page`.`id` =391 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '40' WHERE `ts_page`.`id` =275 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `order` = '10' WHERE `ts_page`.`id` =103 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '30' WHERE `ts_page`.`id` =307 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '11' WHERE `ts_page`.`id` =131 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '31' WHERE `ts_page`.`id` =308 LIMIT 1 ;
+

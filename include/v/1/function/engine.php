@@ -40,12 +40,13 @@ function prepare_engine(& $base, $type, $login_user_id) {
 		case 'invited':
 			$where[] = $s1 . '.source_user_id != ' . (int)$login_user_id;
 		break;
+		case 'feedback':
 		case 'item':
 		case 'login':
-		case 'feedback':
 		case 'meripost':
 		case 'metail':
 		case 'minder':
+		case 'vote':
 		# =)
 		case 'category':
 		case 'tag':
@@ -219,11 +220,12 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 
 	# TEAM REQUIRED switch
 	switch($type) {
-		case 'transfer':
 		case 'item':
-		case 'news':
 		case 'metail':
+		case 'news':
 		case 'rating':
+		case 'transfer':
+		case 'vote':
 			$select[] = 't1.team_id AS team_required_id';
 			if (isset_gp('team_required_id'))
 				$where_x[] = 't1.team_id = ' . (int)get_gp('team_required_id');
@@ -421,6 +423,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 		break;
 		case 'item':
 		case 'transfer':
+		case 'vote':
 			if (empty($group_by)) # conditional added because sometimes we get 2x group by clauses for some reason. 2012-04-12 vaskoiii
 				$group_by[] = 't1.id'; // Allows us to search ALL translations not just the default one and still not show several result sets!
 			# get translated tag name from key
@@ -462,6 +465,18 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 				case 'transfer':
 					$select[] = 't1.id as transfer_id';
 					$from[] = $prefix . 'transfer t1';
+				break;
+				case 'vote':
+					# get translated decision name from key
+					$select[] = 't1.id as vote_id';
+					$select[] = 'i_s.id AS decision_name';
+					$select[] = 'i_s.name AS decision_name';
+					$from[] = $prefix . 'vote t1';
+					$from[] = $prefix . 'decision i_s';
+					$where[] = 't1.user_id = u.id';
+					$where[] = 't1.decision_id = i_s.id';
+					if (isset_gp('decision_id'))
+						$where_x[] = 't1.decision_id = ' . (int)get_gp('decision_id');
 				break;
 				case 'item':
 					# get translated status name from key

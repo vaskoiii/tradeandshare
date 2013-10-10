@@ -288,6 +288,7 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 		case 'display_name':
 		case 'element_name':
 		case 'grade_name':
+		case 'decision_name':
 		case 'kind_name':
 		case 'location_name': # minder
 		case 'meritype_name':
@@ -674,6 +675,7 @@ function listing_key_translation(& $key, & $translation, & $base, $type, $login_
 					case 'dialect_name':
 					case 'grade_name':
 					case 'phase_name':
+					case 'decision_name':
 	
 					case 'parent_tag_name':
 						$s1 = str_replace('_name', '', $k2);
@@ -708,6 +710,8 @@ function key_list_listing(& $listing, $load, & $x = null, & $key = null) {
 		case 'teammate':
 			add_key('team', 0, 'team_owner', $key);
 		break;
+		case 'vote':
+		case 'transfer': # added vaskoiii 2013-10-10
 		case 'item':
 			add_key('tag', 0, 'translation_name', $key);
 		break;

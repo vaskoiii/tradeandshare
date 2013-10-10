@@ -83,6 +83,7 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 # count
+# todo: factor in vote/transfer count?
 foreach($data[$s1]['tag_id']['search'] as $k1 => $v1) {
 	$data[$s2] = array();
 	$data[$s2]['search']['where_x'][] = 'a.parent_id = ' . (int)$k1;

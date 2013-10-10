@@ -54,6 +54,7 @@ add_translation('page', 'donate_doc');
 add_translation('page', 'download_doc');
 add_translation('page', 'faq_doc');
 add_translation('page', 'item_list');
+add_translation('page', 'vote_list');
 add_translation('page', 'main');
 add_translation('page', 'manager');
 add_translation('page', 'new_report');

@@ -367,6 +367,7 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'teammate':
 		case 'translation':
 		case 'user':
+		case 'vote':
 			$base['adhere'] = 'user_join';
 		break;
 		case 'contact':

@@ -158,7 +158,6 @@ switch($view_type) {
 	case 'contact':
 	case 'user':
 	switch($list_type) {
-		case 'translation':
 		case 'category':
 		case 'dialect':
 		case 'feed':
@@ -168,12 +167,14 @@ switch($view_type) {
 		case 'item':
 		case 'jargon':
 		case 'location':
+		case 'meripost':
+		case 'meritopic':
 		case 'minder':
 		case 'news':
 		case 'tag':
 		case 'team':
-		case 'meritopic':
-		case 'meripost':
+		case 'translation':
+		case 'vote':
 			unset($array['source']);
 			unset($array['source_spacer']);
 		break;
@@ -368,6 +369,13 @@ function get_mask_subject($type, $display) {
 				'destination_user_name' => 'destination_user_name',
 			);
 		break;
+		case 'vote':
+			$array = array(
+				'tag_name' => 'tag_name',
+				'tag_name_spacer' => '_',
+				'decision_name' => 'decision_name',
+			); 
+		break;
 		case 'item':
 			$array = array(
 				'tag_name' => 'tag_name',
@@ -518,15 +526,16 @@ function get_mask_endline($type, $display, $child) {
 		case 'jargon':
 		case 'meripost':
 		case 'meritopic':
+		case 'metail':
 		case 'news':
+		case 'note':
 		case 'offer':
 		case 'rating':
 		case 'tag':
 		case 'team':
 		case 'transfer': 
 		case 'translation':
-		case 'metail':
-		case 'note':
+		case 'vote':
 			$array = array(
 				'subject_endline' => '.'
 			);
@@ -554,6 +563,7 @@ function lt_checkbox($type) {
 		case 'teammate':
 		case 'minder':
 		case 'transfer': 
+		case 'vote':
 			$array = array('checkbox');
 		break;	
 	}
@@ -598,6 +608,7 @@ function lt_body($type) {
 		case 'rating':
 		case 'team':
 		case 'transfer': 
+		case 'vote':
 			$array = array($type . '_description');
 		break;
 		# case 'feed':
@@ -638,8 +649,9 @@ function lt_detail($type) {
 		case 'feedback':
 			$array = array('incident_id', '_');
 		break;
-		case 'transfer':
 		case 'item':
+		case 'transfer':
+		case 'vote':
 			# ideally translate each level in the tag path. For now just the parent is translated 2012-04-24 vaskoiii
 			# choose from parent_tag_path, parent_tag_translation_name
 			$array = array('parent_tag_translation_name', '_', 'team_required_name', '_', 'tag_translation_description', '.');

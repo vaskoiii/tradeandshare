@@ -19,6 +19,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Do specified action on selection
+# 2013-10 only using a 1-listing selection with the following 3 action cases below
+# TODO: consider commenting out unused logic 2013-10-10 vaskoiii
 
 switch(get_gp('action')) {
 	case 'delete':
@@ -63,7 +65,7 @@ function get_author_only_team_id($user_name) {
 			name = ' . to_sql($user_name)
 	);
 	if (!$user_id)
-		die('error_user_NOT_found!'); // should not happen.
+		die('error_user_NOT_found!'); # should not happen.
 	$author_only_team_id_from_team = get_db_single_value('
 			id
 		FROM
@@ -119,17 +121,18 @@ switch($process['miscellaneous']['action']) {
 	break;
 }
 
-// TABLE TRANSLATION
+# TABLE TRANSLATION
+$s1 = $process['miscellaneous']['list_name'];
 switch($process['miscellaneous']['action']) {
 	case 'disable': # unused 2012-03-27 vaskoiii
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
 			case 'feed':
-				$interpret['table'] = $process['miscellaneous']['list_name'];
+				$interpret['table'] = $s1;
 			break;
 		}
 	break;
 	case 'delete':
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
 			case 'teammate':
 				$interpret['table'] = 'link_team_user';
 			break;
@@ -137,46 +140,49 @@ switch($process['miscellaneous']['action']) {
 				$interpret['table'] = 'link_contact_group';
 			break;
 			case 'offer':
-				$interpret['table'] = 'active_' . $process['miscellaneous']['list_name'] . '_user';
+				$interpret['table'] = 'active_' . $s1 . '_user';
 			break;
-			case 'transfer':
+			case 'contact':
 			case 'feed':
-			case 'invite':
-			case 'item':
-			case 'news':
-			case 'metail':
-			case 'rating':
-			case 'incident':
 			case 'feedback':
 			case 'group':
+			case 'incident':
+			case 'invite':
+			case 'item':
 			case 'location':
-			case 'contact':
+			case 'metail':
+			case 'news':
 			case 'note':
-				$interpret['table'] = $process['miscellaneous']['list_name'];
+			case 'rating':
+			case 'transfer':
+			case 'vote':
+				$interpret['table'] = $s1;
 			break;
 			default:
-				$process['miscellaneous']['list_name'] = '<NOT FOUND!>';  // Just make sure this is NOT a possible case below...
+				# Useless logic? vaskoiii 2013-10-10
+				$process['miscellaneous']['list_name'] = '<NOT FOUND!>'; 
 			break;
 		}
 	break;
 	case 'forget':
-		// selecting a table name here is not necessary and table name for minder is variable
+		# selecting a table name here is not necessary and table name for minder is variable
 	break;
 }
 
-// ROW TRANSLATION
-// This part should NOT lead to ANY error messages unless there is bad data!
+# ROW TRANSLATION
+# This part should NOT lead to ANY error messages unless there is bad data!
 $interpret['row'] = array(); // contains only ids of rows that can have the corresponding action performed!!!
+$s1 = $process['miscellaneous']['list_name'];
 switch($process['miscellaneous']['action']) {
 	case 'memorize':
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
 		case 'metail':
-		// you have access and a contact with the corresponding username
+		# you have access and a contact with the corresponding username
 		$sql = '
 			SELECT
 				me.id
 			FROM
-				' . $prefix . $process['miscellaneous']['list_name'] . ' me,
+				' . $prefix . $s1 . ' me,
 				' . $prefix . 'link_team_user ltu,
 				' . $prefix . 'link_contact_user lcu,
 				' . $prefix . 'contact co
@@ -195,13 +201,13 @@ switch($process['miscellaneous']['action']) {
 			$interpret['row'][] = $row['id'];
 	break;
 	case 'disable':
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
 			case 'feed':
 			$sql = '
 				SELECT
 					id
 				FROM
-					`' . $prefix . $process['miscellaneous']['list_name'] . '`
+					`' . $prefix . $s1 . '`
 				WHERE
 					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					user_id = ' . (int)$login_user_id
@@ -214,15 +220,15 @@ switch($process['miscellaneous']['action']) {
 	break;
 	break; #double break? 2012-03-27 vaskoiii
 	case 'delete':
-		switch($process['miscellaneous']['list_name']) {
-			// Validates from orignial table not the active_table_user table
+		switch($s1) {
+			# Validates from orignial table not the active_table_user table
 			case 'offer':
 			case 'transfer':
 			$sql = '
 				SELECT
 					id
 				FROM
-					' . $prefix . $process['miscellaneous']['list_name'] . '
+					' . $prefix . $s1 . '
 				WHERE
 					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					(
@@ -236,7 +242,7 @@ switch($process['miscellaneous']['action']) {
 				SELECT
 					id
 				FROM
-					' . $prefix . $process['miscellaneous']['list_name'] . '
+					' . $prefix . $s1 . '
 				WHERE
 					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					source_user_id = ' . (int)$login_user_id
@@ -248,9 +254,9 @@ switch($process['miscellaneous']['action']) {
 					lt1.id
 				FROM
 					' . $prefix . $interpret['table'] . ' lt1,
-					`' . $prefix . str_replace('mate', '', $process['miscellaneous']['list_name']) . '` tt
+					`' . $prefix . str_replace('mate', '', $s1) . '` tt
 				WHERE
-					lt1.' . preg_replace('/mate/', '', $process['miscellaneous']['list_name']) . '_id = tt.id AND
+					lt1.' . preg_replace('/mate/', '', $s1) . '_id = tt.id AND
 					lt1.id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					tt.id != ' . (int)$config['everyone_team_id'] . ' AND
 					tt.user_id = ' . (int)$login_user_id
@@ -274,7 +280,7 @@ switch($process['miscellaneous']['action']) {
 				SELECT
 					cc.id
 				FROM
-					' . $prefix . $process['miscellaneous']['list_name'] . ' cc,
+					' . $prefix . $s1 . ' cc,
 					' . $prefix . 'contact c
 				WHERE
 					c.id = cc.contact_id AND
@@ -284,19 +290,20 @@ switch($process['miscellaneous']['action']) {
 			break;
 			case 'news':
 			case 'metail':
-			//case 'incident':
-			//case 'feedback':
-			//case 'location':
+			# case 'incident':
+			# case 'feedback':
+			# case 'location':
 			case 'feed':
 			case 'group':
 			case 'invite':
 			case 'contact':
 			case 'item':
+			case 'vote':
 			$sql = '
 				SELECT
 					id
 				FROM
-					`' . $prefix . $process['miscellaneous']['list_name'] . '`
+					`' . $prefix . $s1 . '`
 				WHERE
 					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					user_id = ' . (int)$login_user_id
@@ -309,15 +316,16 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'export':
 	case 'import':
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
+			case 'vote':
 			case 'item':
-				// private stuff can still be imported by hacking?
-				// TODO: allow selection of visable items only...
+				# private stuff can still be imported by hacking?
+				# TODO: allow selection of visable items only...
 				$sql = '
 					SELECT
 						id
 					FROM 
-						' . $prefix . 'item
+						' . $prefix . $s1 . '
 					WHERE
 						id IN (' . implode(',', $process['miscellaneous']['row']) .')
 				';
@@ -348,7 +356,7 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'remember':
 	case 'forget':
-		switch($process['miscellaneous']['list_name']) {
+		switch($s1) {
 			case 'category':
 				die('category should be referred to as tag');
 			break;
@@ -362,15 +370,15 @@ switch($process['miscellaneous']['action']) {
 						' . $prefix . 'kind kk
 					WHERE
 						mi.kind_id = kk.id AND
-						kk.name = ' . to_sql($process['miscellaneous']['list_name']) . '
+						kk.name = ' . to_sql($s1) . '
 				');
 				if ($lookup['kind_id']) {
-					// rows should actually be selecting the team | tag | location name (not the minder anything)
+					# rows should actually be selecting the team | tag | location name (not the minder anything)
 					$sql = ' 
 						SELECT
 							id
 						FROM
-							`' . mysql_real_escape_string($prefix . $process['miscellaneous']['list_name']) . '`
+							`' . mysql_real_escape_string($prefix . $s1) . '`
 						WHERE
 							id IN (' . implode(', ', $process['miscellaneous']['row']) . ')
 					';
@@ -383,15 +391,15 @@ switch($process['miscellaneous']['action']) {
 	break;
 }
 
-// REGULAR TRANSLATION
+# REGULAR TRANSLATION
 process_data_translation('miscellaneous');
 
-// ERROR CHECKING
+# ERROR CHECKING
 if (count($process['miscellaneous']['row']) != count($interpret['row']))
 	$interpret['message'] = tt('element', 'error_invalid_selection');
 
-// We have to check and make sure that you are on the team
-// If importing make sure the user is the owner of the imported item.
+# We have to check and make sure that you are on the team
+# If importing make sure the user is the owner of the imported item.
 switch($process['miscellaneous']['action']) {
 	case 'remember':
 	case 'forget':
@@ -417,7 +425,7 @@ switch($process['miscellaneous']['action']) {
 process_field_missing();
 process_does_not_exist('miscellaneous');
 
-// It will be easier to just error if something has children =)
+# It will be easier to just error if something has children =)
 if (!$interpret['message']) {
 	switch($process['miscellaneous']['list_name']) {
 		case 'contact':
@@ -462,7 +470,7 @@ if (!$interpret['message']) {
 	}
 }
 
-// don't allow a selection of more than 1 for teammates
+# don't allow a selection of more than 1 for teammates
 if (!$interpret['message']) {
 	switch($process['miscellaneous']['action']) {
 		case 'delete':
@@ -470,21 +478,21 @@ if (!$interpret['message']) {
 				case 'teammate':
 					if (count($process['miscellaneous']['row']) > 1)
 						$interpret['message'] = tt('element', 'error') . ' : ' . tt('element', $process['miscellaneous']['list_name'] . '_list') . ' : ' . tt('element', 'selection_limit') . ' : 1';
-						// TODO add translations for selection_limit
-						// imposed because this is a very intensive change for the indexes...
+						# TODO add translations for selection_limit
+						# imposed because this is a very intensive change for the indexes...
 				break;
 			}
 		break;
 	}
 }
 
-// FAILURE
-// process_failure() Can't really use this because it populates:
-// $_SESSION['process']['container']['search_content_box']['element'] = array();
-//$interpret['message'] = 'Testing!!!';
+# FAILURE
+# process_failure() Can't really use this because it populates:
+# $_SESSION['process']['container']['search_content_box']['element'] = array();
+# $interpret['message'] = 'Testing!!!';
 
 if ($interpret['message']) {
-	// different from other process_failure because of the selection... which I guess why we don't use it right now...
+	# different from other process_failure because of the selection... which I guess why we don't use it right now...
 	$_SESSION['process']['selection'] = array();
 	foreach($process['miscellaneous']['row'] as $k1 => $v1)
 		$_SESSION['process']['selection'][$v1] = $v1;
@@ -495,7 +503,7 @@ if ($interpret['message']) {
 	exit;
 }
 
-// AUTHOR ONLY TEAM ID
+# AUTHOR ONLY TEAM ID
 switch($process['miscellaneous']['action']) {
 	case 'disable': // Not used yet...
 	case 'delete':
@@ -504,15 +512,15 @@ switch($process['miscellaneous']['action']) {
 	break;
 }
 
-// DO IT
+# DO IT
 switch($process['miscellaneous']['action']) {
 	case 'memorize':
-		// there is already a check above but since this is potentially super sensitive data we should double check.
+		# there is already a check above but since this is potentially super sensitive data we should double check.
 		if (!empty($interpret['row']))
 		foreach($interpret['row'] as $k1 => $v1) {
-			// perhaps we should limit this to one contact at a time... you could import all the contacts in the system at once with this method by sending a big array.
-			// get contact_id
-			// and description
+			# perhaps we should limit this to one contact at a time... you could import all the contacts in the system at once with this method by sending a big array.
+			# get contact_id
+			# and description
 			$sql = '
 				SELECT
 					co.id as contact_id,
@@ -536,7 +544,7 @@ switch($process['miscellaneous']['action']) {
 				$interpret['selection_action_process']['metail_fun']['metail_description'] = $row['metail_description'];
 			}
 			
-			// repeat of generic_edit process...
+			# repeat of generic_edit process...
 			$sql = '
 				INSERT INTO
 					' . $prefix . 'note
@@ -563,14 +571,14 @@ switch($process['miscellaneous']['action']) {
 		$result = mysql_query($sql) or die(mysql_error());
 	break;
 	case 'delete':
-		// BEFORE DELETE
-		// teammate has to actually change other stuff too!!!
+		# BEFORE DELETE
+		# teammate has to update ALL intra-team listings as well the teammate
 		switch($process['miscellaneous']['list_name']) {
 			case 'teammate':
-				// Actually we need to get TODO the author only teams for the user that is being removed!
-				// yeah this part is not correct... 
-				// GET removed team_id array
-				// GET removed user_id array
+				# Actually we need to get TODO the author only teams for the user that is being removed!
+				# yeah this part is not correct... 
+				# GET removed team_id array
+				# GET removed user_id array
 				$sql = '
 					SELECT
 						team_id,
@@ -585,7 +593,7 @@ switch($process['miscellaneous']['action']) {
 					$interpret['selection_action_process']['team_id'][$row['team_id']] = $row['team_id']; 
 					$interpret['selection_action_process']['user_id'][$row['user_id']] = $row['user_id'];
 				}
-				// MOVE all of the removed user's item/news/metail/tranfer/rating from the corresponding team(s) and puts it in the <user_name> team for the corresponding (removed) user
+				# MOVE all of the removed user's vote/item/news/metail/tranfer/rating from the corresponding team(s) and puts it in the <user_name> team for the corresponding (removed) user
 				foreach ($interpret['selection_action_process']['user_id'] as $k1 => $v1) {
 					$interpret['selection_action_process']['foreach']['user_name'] = get_db_single_value('
 							name
@@ -597,8 +605,8 @@ switch($process['miscellaneous']['action']) {
 					if (!$interpret['selection_action_process']['foreach']['user_name'])
 						die("!data['selection_action_process']['foreach']['user_name']");
 					$interpret['selection_action_process']['foreach']['author_only_team_id'] = get_author_only_team_id($interpret['selection_action_process']['foreach']['user_name']);
-					// don't update the timestamp... we don't want to alert users that they were booted from the team unnecessarily.  Ehhh.. or do we...  lets say no for now.
-					// item
+					# don't update the timestamp... we don't want to alert users that they were booted from the team unnecessarily.  Ehhh.. or do we...  lets say no for now.
+					# item
 					$sql = '
 						UPDATE
 							' . $prefix . 'item
@@ -610,7 +618,31 @@ switch($process['miscellaneous']['action']) {
 							active = 1
 					';
 					$result = mysql_query($sql) or die(mysql_error());
-					// news
+					# transfer
+					$sql = '
+						UPDATE
+							' . $prefix . 'transfer
+						SET
+							team_id = ' . (int)$interpret['selection_action_process']['foreach']['author_only_team_id'] . '
+						WHERE
+							source_user_id = ' . (int)$v1 . ' AND
+							team_id IN (' . implode(',', $interpret['selection_action_process']['team_id']) . ') AND
+							active = 1
+					';
+					$result = mysql_query($sql) or die(mysql_error());
+					# vote
+					$sql = '
+						UPDATE
+							' . $prefix . 'vote
+						SET
+							team_id = ' . (int)$interpret['selection_action_process']['foreach']['author_only_team_id'] . '
+						WHERE
+							user_id = ' . (int)$v1 . ' AND
+							team_id IN (' . implode(',', $interpret['selection_action_process']['team_id']) . ') AND
+							active = 1
+					';
+					$result = mysql_query($sql) or die(mysql_error());
+					# news
 					$sql = '
 						UPDATE
 							' . $prefix . 'news
@@ -622,7 +654,7 @@ switch($process['miscellaneous']['action']) {
 							active = 1
 					';
 					$result = mysql_query($sql) or die(mysql_error());
-					// metail
+					# metail
 					$sql = '
 						UPDATE
 							' . $prefix . 'metail
@@ -634,7 +666,7 @@ switch($process['miscellaneous']['action']) {
 							active = 1
 					';
 					$result = mysql_query($sql) or die(mysql_error());
-					// rating
+					# rating
 					$sql = '
 						UPDATE
 							' . $prefix . 'rating
@@ -683,6 +715,7 @@ switch($process['miscellaneous']['action']) {
 		switch($process['miscellaneous']['list_name']) {
 			case 'item':
 			case 'transfer':
+			case 'vote':
 				# TODO: use start_engine() so we don't need the repeat sql.
 				$sql = '
 					SELECT
@@ -730,7 +763,10 @@ switch($process['miscellaneous']['action']) {
 	switch($process['miscellaneous']['list_name']) {
 		case 'item':
 		case 'transfer':
+		case 'vote':
 			# TODO: use start_engine() so we don't need the repeat sql.
+
+			# st.status_name seems unnecessary 2013-10-10 vaskoiii
 			$sql = '
 				SELECT
 					gt.tag_id,

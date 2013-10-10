@@ -523,6 +523,7 @@ function process_data_translation($container) {
 					gt.name = ' . to_sql($input[$k1])
 			);
 		break;
+		case 'decision_name':
 		case 'direction_name':
 		case 'display_name':
 		case 'grade_name':
@@ -633,6 +634,7 @@ function process_does_not_exist($container) {
 
 			#case 'tag_name': // this is included on the item_edit screen but SHOULD be assigned an id before this function is called.
 			//case 'login_user_name':
+			case 'decision_name':
 			case 'dialect_name':
 			case 'direction_name':
 			case 'display_name':

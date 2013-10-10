@@ -38,14 +38,13 @@ switch (get_gp('type')) {
 		process_failure('Not Allowed');
 	break;
 	# special
-	case 'profile':
 	case 'invite':
+	case 'profile':
 	# main
 	case 'item':
-	case 'transfer':
 	case 'rating':
-	case 'incident':
-	case 'feedback':
+	case 'transfer':
+	case 'vote':
 	# contact
 	case 'offer':
 	case 'news':
@@ -62,12 +61,14 @@ switch (get_gp('type')) {
 	# other
 	case 'meritopic':
 	case 'meripost':
-	case 'location':
+	case 'incident':
+	case 'feedback':
 	# control:
 	case 'translation':
 	case 'jargon':
 	case 'tag':
 	case 'category':
+	case 'location':
 		# briefly tested that adding things works 2012-03-07 vaskoiii
 	break;
 	default:
@@ -144,6 +145,7 @@ switch ($k2) {
 		switch($process['form_info']['type']) {
 			case 'item':
 			case 'transfer':
+			case 'vote':
 				$process[$k1][$k2] = 'tag';
 			break;
 			default:
@@ -228,6 +230,7 @@ switch($type) {
 	break;
 	case 'item':
 	case 'transfer':
+	case 'vote':
 		$lookup['tag_id'] = auto_tag($action_content_2['parent_tag_path'], $action_content_1['tag_translation_name'], $_SESSION['dialect']['dialect_id'], $config['autocreation_user_id'] );
 		#include($x['site']['i'] . 'inline/auto_tag.php');
 	break;
@@ -406,6 +409,7 @@ if (!$message) {
 		case 'item':
 		case 'news':
 		case 'metail':
+		case 'vote':
 			if ($id && !get_db_single_value('
 					id
 				FROM
@@ -462,137 +466,133 @@ if (!$message) {
 	}
 }
 
-// PREVENT ORPHANS
-// Have to also check on selection_action_process for [export] and [import]
-// [export] [team_required_id] = $config['everybody_team_id'];
-// [import] [team_required_id] = <author_only_team_id>;
-
+# PREVENT ORPHANS
+# Have to also check on selection_action_process for [export] and [import]
+# [export] [team_required_id] = $config['everybody_team_id'];
+# [import] [team_required_id] = <author_only_team_id>;
 if (!$message) {
-	switch($type) {
-		case 'item':
-		case 'news':
-		case 'metail':
+switch($type) {
+	case 'item':
+	case 'news':
+	case 'metail':
+	case 'vote':
+		if (!get_db_single_value('
+				user_id
+			FROM
+				' . $prefix . 'link_team_user
+			WHERE
+				team_id = ' . (int)$lookup['team_required_id'] . ' AND
+				user_id = ' . (int)$login_user_id . ' AND
+				active = 1
+		'))
+			$message = tt('element', 'error') . ' : ' . tt('element', 'not_on_team');
+		
+	break;
+} }
+
+# TRICKY ERROR CHECKING
+if (!$message) {
+switch($type) {
+	case 'minder':
+		# todo error checking here sucks.
+		if (!$lookup['minder_kind_id'])
+			$message = 'error on minder 1';
+		# todo tag_path should be the input instead of kind_name_id
+		if (!$action_content_1['kind_name_id'])
+			$message = 'error on minder 2';
+		if (!get_db_single_value('
+				id
+			from
+				' . $prefix . mysql_real_escape_string($action_content_1['minder_kind_name']) . '
+			where
+				id = ' . (int)$action_content_1['kind_name_id']
+		))
+			$message = 'error on minder 3';
+		if (get_db_single_value('
+				id
+			from
+				' . $prefix . mysql_real_escape_string($action_content_1['minder_kind_name']) . '
+			where
+				id = ' . (int)$action_content_1['kind_name_id'] . ' and
+				user_id = ' . (int)$login_user_id
+		))
+			$message = 'error on minder 4';
+	break;
+	# case 'jargon': already not possible to change translation_kind_name 2012-03-10 vaskoiii
+	case 'translation':
+		# Do NOT allow changing kind_id once it is set
+		if (get_gp('id'))
 			if (!get_db_single_value('
-					user_id
+					t.id
 				FROM
-					' . $prefix . 'link_team_user
+					' . $prefix . 'translation t,
+					' . $prefix . 'kind k
 				WHERE
-					team_id = ' . (int)$lookup['team_required_id'] . ' AND
-					user_id = ' . (int)$login_user_id . ' AND
-					active = 1
+					k.id = t.kind_id AND
+					k.name = ' . to_sql($action_content_1['translation_kind_name']) . ' AND
+					t.id = ' . (int)get_gp('id') . '
 			'))
-				$message = tt('element', 'error') . ' : ' . tt('element', 'not_on_team');
-			
-		break;
-	}
-}
+				$message = tt('element', 'translation_kind_name') . ' : ' . tt('element', 'uneditable');
+	break;
+	case 'offer':
+		if (get_gp('id'))
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable');
 
+	break;
+	case 'invite':
+		if (!preg_match("/.*@.*\..*/", $action_content_1['invite_email']) | preg_match("/(<|>)/", $action_content_1['invite_email'])) 
+			$message = tt('element', 'invite_email') . ' : ' . tt('element', 'error_invalid_entry');
+		if (get_gp('id'))
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable');
+	break;
+	case 'team':
+		// Make < and > illegal for teams... they will denote reserved keywords...
+		// we should make an alias field for team name so that we can use all characters for team names...
+		if (preg_match("/[<>]/", $action_content_1['team_name']))
+			$message = tt('element', 'error'). ' : ' . tt('element', 'team_name') . ' : <>';
+		elseif ($lookup['team_id'] == $config['everyone_team_id'])
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
+		elseif ($id == $config['everyone_team_id'])
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
 
-// TRICKY ERROR CHECKING
-if (!$message) {
-	switch($type) {
-		case 'minder':
-			# todo error checking here sucks.
-			if (!$lookup['minder_kind_id'])
-				$message = 'error on minder 1';
-			# todo tag_path should be the input instead of kind_name_id
-			if (!$action_content_1['kind_name_id'])
-				$message = 'error on minder 2';
-			if (!get_db_single_value('
-					id
-				from
-					' . $prefix . mysql_real_escape_string($action_content_1['minder_kind_name']) . '
-				where
-					id = ' . (int)$action_content_1['kind_name_id']
-			))
-				$message = 'error on minder 3';
-			if (get_db_single_value('
-					id
-				from
-					' . $prefix . mysql_real_escape_string($action_content_1['minder_kind_name']) . '
-				where
-					id = ' . (int)$action_content_1['kind_name_id'] . ' and
-					user_id = ' . (int)$login_user_id
-			))
-				$message = 'error on minder 4';
-		break;
-		# case 'jargon': already not possible to change translation_kind_name 2012-03-10 vaskoiii
-		case 'translation':
-			# Do NOT allow changing kind_id once it is set
-			if (get_gp('id'))
-				if (!get_db_single_value('
-						t.id
-					FROM
-						' . $prefix . 'translation t,
-						' . $prefix . 'kind k
-					WHERE
-						k.id = t.kind_id AND
-						k.name = ' . to_sql($action_content_1['translation_kind_name']) . ' AND
-						t.id = ' . (int)get_gp('id') . '
-				'))
-					$message = tt('element', 'translation_kind_name') . ' : ' . tt('element', 'uneditable');
-		break;
-		case 'offer':
-			if (get_gp('id'))
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable');
-	
-		break;
-		case 'invite':
-			if (!preg_match("/.*@.*\..*/", $action_content_1['invite_email']) | preg_match("/(<|>)/", $action_content_1['invite_email'])) 
-				$message = tt('element', 'invite_email') . ' : ' . tt('element', 'error_invalid_entry');
-			if (get_gp('id'))
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable');
-		break;
-		case 'team':
-			// Make < and > illegal for teams... they will denote reserved keywords...
-			// we should make an alias field for team name so that we can use all characters for team names...
-			if (preg_match("/[<>]/", $action_content_1['team_name']))
-				$message = tt('element', 'error'). ' : ' . tt('element', 'team_name') . ' : <>';
-			elseif ($lookup['team_id'] == $config['everyone_team_id'])
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
-			elseif ($id == $config['everyone_team_id'])
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
-
-		break;
-		case 'teammate':
-			# todo would be easier if |root| was the owner of noneditable teams
-			// [<|*|>] team
-			// [<0-9a-zA-Z>] team
-			if ($lookup['team_id'] == $config['everyone_team_id'])
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
-			elseif (preg_match("/[<>]/", $action_content_1['team_name'])) {
-			if (!str_match('<*', $action_content_1['team_name'])) {
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
-			} }
-		break;
-		case 'location':
-			if ($action_content_1['location_id'] == $config['main_location_id'])
-				$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'location_name');
-			elseif (!is_numeric($action_content_1['location_latitude']))
-				$message = tt('element', 'location_latitude') . ' : ' . tt('element', 'error_not_numeric');
-			elseif (!is_numeric($action_content_1['location_longitude']))
-				$message = tt('element', 'location_longitude') . ' : ' . tt('element', 'error_not_numeric');
-		break;
-		case 'profile':
-			if ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
-				$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
-			elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
-				$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
-			elseif (!$lookup['location_id'])
-				$message = tt('element', 'location_id') . ' : ' . tt('element', 'error_does_not_exist');
-			elseif (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name'])) {
-				if ($action_content_1['login_user_name'] != '|root|')
-					$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
-			}
-		break;
-	}
-}
+	break;
+	case 'teammate':
+		# todo would be easier if |root| was the owner of noneditable teams
+		// [<|*|>] team
+		// [<0-9a-zA-Z>] team
+		if ($lookup['team_id'] == $config['everyone_team_id'])
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
+		elseif (preg_match("/[<>]/", $action_content_1['team_name'])) {
+		if (!str_match('<*', $action_content_1['team_name'])) {
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'team_name');
+		} }
+	break;
+	case 'location':
+		if ($action_content_1['location_id'] == $config['main_location_id'])
+			$message = tt('element', 'error') . ' : ' . tt('element', 'uneditable') . ' : ' . tt('element', 'location_name');
+		elseif (!is_numeric($action_content_1['location_latitude']))
+			$message = tt('element', 'location_latitude') . ' : ' . tt('element', 'error_not_numeric');
+		elseif (!is_numeric($action_content_1['location_longitude']))
+			$message = tt('element', 'location_longitude') . ' : ' . tt('element', 'error_not_numeric');
+	break;
+	case 'profile':
+		if ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
+			$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
+		elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
+			$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
+		elseif (!$lookup['location_id'])
+			$message = tt('element', 'location_id') . ' : ' . tt('element', 'error_does_not_exist');
+		elseif (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name'])) {
+			if ($action_content_1['login_user_name'] != '|root|')
+				$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
+		}
+	break;
+} }
 
 # DO IT
 process_failure($message);
 
 #  main update/insert
-
 $sql = '';
 include('v/1/inline/edit_sql.php'); # not sure the best place but file is too big 2012-02-26 vaskoiii
 if (!empty($sql));

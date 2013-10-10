@@ -183,12 +183,16 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$grab .= ' (<a href="jargon_list/?parent_tag_id=' . (int)$listing['parent_tag_id'] . '&amp;kind_id=11&amp;kind_name_id=' . (int)$listing['tag_id'] . '"><span class="translate">#</span></a>) ';
 			}
 		break;
+		case 'vote':
+			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
+				$grab .= $config['spacer'] . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="vote">' . tt('element', $k1) . '</span></a>';
+		break;
 		case 'import':
-			if ($type == 'transfer' || $type == 'item')
+			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $config['spacer'] . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'export':
-			if ($type == 'transfer' || $type == 'item')
+			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $config['spacer'] . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'delete':
@@ -447,9 +451,10 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
-		case 'page_name':
-		case 'meritype_name':
+		case 'decision_name':
 		case 'grade_name':
+		case 'meritype_name':
+		case 'page_name':
 		case 'status_name':
 			$grab .= '<span style="color: ' . (isset($color['status_name']) ? $color['status_name'] : '') . ';" class="' . $v1 . '">' .  tt(str_replace('_name', '', $v1), $listing[$v1]) . '</span>';
 		break;
@@ -477,6 +482,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'item_description':
 		case 'news_description':
 		case 'tag_description':
+		case 'vote_description':
 			# newline on next line is used for email
 			$grab .= " \n" . '<span class="' . $v1 . '">'
 				. ($listing[$v1] 
@@ -600,6 +606,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				break;
 			switch($type) {
 				case 'item':
+				case 'vote':
 					$grab .= '<input type="checkbox" name="row[]" value="' . $listing[ $type . '_id'] . '" ' 
 						. ($_SESSION['process']['selection'][$listing[$type . '_id']] ? 'checked="checked"' : '') 
 					. ' />';
@@ -666,6 +673,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					case 'feedback':
 					case 'incident':
 					case 'contact':
+					case 'vote':
 					if ($listing['user_id'] == $login_user_id)
 						$b1 = 1;
 					break;
@@ -804,6 +812,7 @@ function listing_menu_1($type) { ?>
 		case 'group':
 		case 'groupmate':
 		case 'item':
+		case 'vote':
 		case 'metail':
 		case 'offer': ?> 
 			<input type="submit" name="delete" value="<?= get_translation('delete'); ?>" /><?
@@ -815,15 +824,24 @@ function listing_menu_1($type) { ?>
 		break;
 	}*/
 	switch($type) {
+		case 'vote':
 		case 'item': 
 		case 'transfer': ?> 
 			<input type="submit" name="export" value="<?= get_translation('export'); ?>" /><?
 		break;
 	}
 	switch($type) {
+		case 'vote':
 		case 'item':
 		case 'transfer': ?> 
 			<input type="submit" name="import" value="<?= get_translation('import'); ?>" /><?
+		break;
+	}
+	switch($type) {
+		case 'vote':
+		case 'item': 
+		case 'transfer': ?> 
+			<input type="submit" name="vote" value="<?= get_translation('vote'); ?>" /><?
 		break;
 	}
 	switch($type) {
