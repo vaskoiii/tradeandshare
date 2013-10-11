@@ -146,8 +146,10 @@ function get_tsmail_body(& $tsmail) {
 		}
 		$email_steak = ob_get_clean();
 
+		# Email intentionally has several ways to define color since lots of email clients suck at display
+
 #################### fold #######################
-ob_start(); //Turn on output buffering ?> 
+ob_start(); # Turn on output buffering ?> 
 
 --PHP-mixed-<?= $boundary; ?> 
 Content-Type: multipart/alternative; boundary="PHP-alt-<?= $boundary; ?>"
@@ -173,16 +175,16 @@ Content-Transfer-Encoding: 8bit
 	<meta name="viewport" content="width=480" /><? # Needed? Email client can squish the flexible design if necessary? ?> 
 </head>
 
-<body><table width="" bgcolor="" cellpadding="20" cellspacing="0" border="0" style="word-wrap: break-word;"><tr><td>
+<body><table width="" bgcolor="#c0c0c0" cellpadding="0" cellspacing="1" border="0" style="word-wrap: break-word;"><tr><td>
 	<table width="420" bgcolor="#fffffe" align="center" cellpadding="0" cellspacing="1" border="0">
 		<tr><td bgcolor="<?= $tsmail['data']['css']['c1']; ?>">
 		<table width="100%" bgcolor="" valign="" cellpadding="10" cellspacing="0" border="0">
 			<tr><td>
 				<font size="5" color="#000001">
-				<a href="<?= to_html($email_link); ?>"><b><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('page', $tsmail['x']['load']['list']['type'] . '_list', 'translation_name', $tsmail['translation']); ?></span></b></a>&nbsp;
+				<a style="color:#000001;" href="<?= to_html($email_link); ?>"><b><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('page', $tsmail['x']['load']['list']['type'] . '_list', 'translation_name', $tsmail['translation']); ?></span></b></a>&nbsp;
 				</font>
 				<font size="3">
-					<a href="<?= to_html($email_link . '&expand%5B0%5D=action'); ?>"><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'edit', 'translation_name', $tsmail['translation']); ?></span></a><span style="color:#000000;">*</span>
+					<a style="color:#000001;" href="<?= to_html($email_link . '&expand%5B0%5D=action'); ?>"><span style="color: <?= $tsmail['data']['css']['text_style']['color']['link']; ?>;"><?= tt('element', 'edit', 'translation_name', $tsmail['translation']); ?></span></a><span style="color:#000000;">*</span>
 				</font>
 			</td></tr>
 		</table>

@@ -148,7 +148,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 	if ($color['spacer']) {
 		# email requires special treatment to ensure the correct colors are used
 		# Needed on Thunderbird with white text on black font 2013-10-10 vaskoiii	
-		$spacer = '<span style="color: ' . $color['description'] . ';"' .  $config['spacer'] . '</span>';
+		$spacer = '<span style="color: ' . $color['description'] . ';">' .  $config['spacer'] . '</span>';
 	} }
 	# Description Attribute
 	$dattrib = '';
