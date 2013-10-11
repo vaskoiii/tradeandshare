@@ -175,7 +175,9 @@ Content-Transfer-Encoding: 8bit
 	<meta name="viewport" content="width=480" /><? # Needed? Email client can squish the flexible design if necessary? ?> 
 </head>
 
-<body><table width="" bgcolor="#c0c0c0" cellpadding="0" cellspacing="1" border="0" style="word-wrap: break-word;"><tr><td>
+<body>
+<table width="" bgcolor="" cellpadding="20" cellspacing="0" border="0" style="word-wrap: break-word;"><tr><td>
+<table width="" bgcolor="#c0c0c0" cellpadding="0" cellspacing="1" border="0" style="word-wrap: break-word;"><tr><td>
 	<table width="420" bgcolor="#fffffe" align="center" cellpadding="0" cellspacing="1" border="0">
 		<tr><td bgcolor="<?= $tsmail['data']['css']['c1']; ?>">
 		<table width="100%" bgcolor="" valign="" cellpadding="10" cellspacing="0" border="0">
@@ -200,7 +202,9 @@ Content-Transfer-Encoding: 8bit
 			&nbsp;
 		</td></tr>
 	</table>
-</td></tr></table></body>
+</td></tr></table>
+</td></tr></table>
+</body>
 </html>
 
 --PHP-alt-<?= $boundary; ?>--
