@@ -89,32 +89,12 @@ if (!$_SESSION['interpret']['failure']) {
 if (!$_SESSION['process']['form_info']['load'] == 'action') {
 if (
 	$x['load']['action']['id']
-	# mod to accomodate imports/exports 2012-12-10 vaskoiii
-	|| (get_gp('action_tag_id'))
-	/*
-	|| (get_gp('action_item_id') && $x['part']['0'] == 'item') # 
-	|| (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer') # transfer-transfer import
-	|| (get_gp('action_transfer_id') && $x['part']['0'] == 'item') # transfer-item import
-	|| (get_gp('action_item_id') && $x['part']['0'] == 'transfer') # item-transfer import
-	*/
+	|| (get_gp('action_tag_id')) # mod to accomodate import/export/judge 2012-12-10 vaskoiii
 ) {
-
 	$b1 = 2;
-
-	#echo '<hr>'; echo get_gp('action_transfer_id') . get_gp('action_item_id') .  $x['part'][0]; echo '<hr>';
 	if (get_gp('action_tag_id')) {
 		start_engine($data['action'], 'tag', $_SESSION['login']['login_user_id'], array(get_gp('action_tag_id')), 'view');
 	}
-	/*
-	elseif (get_gp('action_item_id') && $x['part']['0'] == 'item')
-		start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
-	elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'transfer')
-		start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
-	elseif (get_gp('action_transfer_id') && $x['part']['0'] == 'item')
-		start_engine($data['action'], 'transfer', $_SESSION['login']['login_user_id'], array(get_gp('action_transfer_id')), 'view');
-	elseif (get_gp('action_item_id') && $x['part']['0'] == 'transfer')
-		start_engine($data['action'], 'item', $_SESSION['login']['login_user_id'], array(get_gp('action_item_id')), 'view');
-	*/
 	else
 		start_engine($data['action'], $x['load']['action']['type'], $_SESSION['login']['login_user_id'], array($x['load']['action']['id']), 'view');
 

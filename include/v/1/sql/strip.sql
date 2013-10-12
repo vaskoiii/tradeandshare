@@ -57,6 +57,7 @@ delete from ts_translation where kind_id = 11;
 delete from ts_user where id != 111;
 delete from ts_user_more where id != 111;
 delete from ts_visit;
+delete from ts_vote;
 
 -- set |root| email and password = tradeandshare
 UPDATE `tso`.`ts_user` SET `email` = 'user@domain.com' WHERE `ts_user`.`id` =111 LIMIT 1;

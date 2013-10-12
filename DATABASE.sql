@@ -2580,10 +2580,35 @@ UPDATE `ts`.`ts_page` SET `order` = '31' WHERE `ts_page`.`id` =308 LIMIT 1 ;
 
 INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'find_vote');
 INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'decision_name');
-
 INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'decision', '1', '2');
 UPDATE `ts`.`ts_decision` SET `name` = 'decision_disapprove' WHERE `ts_decision`.`id` =3 LIMIT 1 ;
-
-
--- do the rest when sure!
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'vote_description');
+
+
+-- Not all pages should launch
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =342 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =254 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =239 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =29 LIMIT 1 ;
+
+UPDATE `ts_page` set launch=2 WHERE name LIKE '%view';
+
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =350 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =374 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =349 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =359 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =106 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =121 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =263 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =107 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =265 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `launch` = '2' WHERE `ts_page`.`id` =348 LIMIT 1 ;
+
+-- Adding Portal Pages/Cleanup
+
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES (
+NULL , '174', '14', 'people_portal', '10', '1', '2', '1', '2'
+), (
+NULL , '174', '14', 'page_portal', '20', '2', '2', '2', '2'
+);

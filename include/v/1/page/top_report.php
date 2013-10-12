@@ -61,30 +61,31 @@ foreach ($v1 as $k2 => $v2) {
 	add_translation('element', $k2);
 } } }
 
-add_translation('kind', 'team');
-add_translation('kind', 'tag');
-add_translation('kind', 'location');
-add_translation('element', 'remember');
-add_translation('element', 'forget');
-add_translation('element', 'view');
-add_translation('element', 'known');
 add_translation('element', 'default');
-add_translation('element', 'page_name');
-add_translation('page', 'lock_set');
-add_translation('page', 'item_list');
-add_translation('page', 'news_list');
-add_translation('page', 'login_list');
-add_translation('element', 'more');
-add_translation('element', 'less');
-add_translation('element', 'edit');
 add_translation('element', 'delete');
-add_translation('element', 'import');
+add_translation('element', 'edit');
 add_translation('element', 'export');
-add_translation('element', 'unset');
+add_translation('element', 'forget');
+add_translation('element', 'import');
 add_translation('element', 'item_uid');
+add_translation('element', 'judge');
+add_translation('element', 'known');
+add_translation('element', 'less');
 add_translation('element', 'login_uid');
+add_translation('element', 'more');
 add_translation('element', 'news_uid');
+add_translation('element', 'page_name');
+add_translation('element', 'remember');
 add_translation('element', 'search_mixed');
+add_translation('element', 'unset');
+add_translation('element', 'view');
+add_translation('kind', 'location');
+add_translation('kind', 'tag');
+add_translation('kind', 'team');
+add_translation('page', 'item_list');
+add_translation('page', 'lock_set');
+add_translation('page', 'login_list');
+add_translation('page', 'news_list');
 
 $data['result']['result']['listing'] = array();
 

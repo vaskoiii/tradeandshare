@@ -38,11 +38,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<a href="./sitemap_doc/"><?= tt('page', 'sitemap_doc'); ?></a><?
 			if ($_SESSION['load']['load_javascript'] == 1) { ?>
 				|
-				<a href="#" onclick="javascript: launch(event); return false;">Launcher</a>: <nobr>ctrl+shift+space</nobr><?
+				<a href="#" onclick="javascript: launch(event); return false;">Launcher</a>: <nobr>ctrl+shift+space/L</nobr><?
 			} ?> 
 		</p>
 		<p class="bottom_foot">
-			<nobr>&copy; 2003-<?= to_html(date('Y')); ?> Trade and Share</nobr>
+			<nobr>&copy; 2003-<?= to_html(date('Y')); ?> Trade and Share GPL</nobr>
 		</p>
 		<div class="menu_1">
 			<ul>

@@ -21,6 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 add_translation('element', 'delete');
 add_translation('element', 'export');
 add_translation('element', 'import');
+add_translation('element', 'judge');
 add_translation('element', 'remember');
 add_translation('element', 'forget');
 add_translation('element', 'memorize');

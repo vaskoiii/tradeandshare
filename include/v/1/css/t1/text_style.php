@@ -183,7 +183,10 @@ input, select, textarea {
 	}
 .export {
 	color: #6633cc;
-}
+	}
 .import {
-	color: #cc0099
-}
+	color: #cc0099;
+	}
+.judge {
+	color: #CC3300;
+	}

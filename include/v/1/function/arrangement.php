@@ -99,12 +99,13 @@ function get_result_footer_1($type = false, $name = false) {
 				'delete' => '',
 			);
 		break;
-		# case 'vote':
 		case 'item': 
 		case 'transfer':
+		case 'vote':
 			$array = array(
 				'export' => '',
 				'import' => '',
+				'judge' => '',
 			);
 		break;
 		case 'metail':

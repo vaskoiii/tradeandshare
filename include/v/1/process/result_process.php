@@ -20,8 +20,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: selection_action parsing/redirection page
 
-$process = array(); // sent to process
-$interpret = array(); // interpreted from $process
+$process = array(); # sent to process
+$interpret = array(); # interpreted from $process
 
 # preprocessing (only 1 should be set because you can only choose 1 submit) 2012-04-14 vaskoiii
 # todo add to php database

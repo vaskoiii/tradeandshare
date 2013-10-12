@@ -17,20 +17,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-# Contents/Description: Non-Javascript intermediate page before the corresponding action.
-
-# prevent you staying at the [selection_action] page with bad data ie) from browser back
-# if (empty($_SESSION['process']['list_name'])) {
-# 	header('location: ' . $x['..']);
-# 	exit;
-# }
-
-add_translation('element', 'contact_name');
-add_translation('element', 'delete');
-add_translation('element', 'export');
-add_translation('element', 'import');
-add_translation('element', 'judge');
-add_translation('element', 'submit');
-add_translation('element', 'user_name');
-add_translation('page', $_SESSION['process']['list_name'] . '_list');

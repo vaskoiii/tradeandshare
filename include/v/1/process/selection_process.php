@@ -116,6 +116,7 @@ switch($process['miscellaneous']['action']) {
 	case 'export':
 		contact_user_mixed_split();
 	break;
+	case 'judge':
 	case 'import':
 		$process['team_required_name'] = get_gp('team_required_name');
 	break;
@@ -316,6 +317,7 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'export':
 	case 'import':
+	case 'judge':
 		switch($s1) {
 			case 'vote':
 			case 'item':
@@ -808,6 +810,9 @@ switch($process['miscellaneous']['action']) {
 			}
 		break;
 	}
+	break;
+	case 'judge':
+		# placeholder for to judge selection
 	break;
 	case 'remember':
 	case 'forget':

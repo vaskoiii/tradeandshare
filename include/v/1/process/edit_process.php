@@ -467,7 +467,7 @@ if (!$message) {
 }
 
 # PREVENT ORPHANS
-# Have to also check on selection_action_process for [export] and [import]
+# Have to also check on selection_action_process for [export] and [import] and [judge]
 # [export] [team_required_id] = $config['everybody_team_id'];
 # [import] [team_required_id] = <author_only_team_id>;
 if (!$message) {
@@ -486,7 +486,6 @@ switch($type) {
 				active = 1
 		'))
 			$message = tt('element', 'error') . ' : ' . tt('element', 'not_on_team');
-		
 	break;
 } }
 
