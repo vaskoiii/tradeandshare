@@ -204,7 +204,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'judge':
 			if ($type == 'transfer' || $type == 'item' || $type == 'judge')
-				$grab .= $spacer . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="vote">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="judge">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'import':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
@@ -859,7 +859,7 @@ function listing_menu_1($type) { ?>
 		case 'vote':
 		case 'item': 
 		case 'transfer': ?> 
-			<input type="submit" name="vote" value="<?= get_translation('judge'); ?>" /><?
+			<input type="submit" name="judge" value="<?= get_translation('judge'); ?>" /><?
 		break;
 	}
 	switch($type) {
