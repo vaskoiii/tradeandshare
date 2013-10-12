@@ -2614,3 +2614,7 @@ NULL , '174', '14', 'page_portal', '20', '2', '2', '2', '2'
 );
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'judge');
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'vote_uid');
+
+-- More pages
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '5', 'portal_process', '1', '2', '2', '1', '1');

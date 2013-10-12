@@ -19,7 +19,3 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Fastest way to navigate to a page.
-
-
-# sloppy notation for testing should be better variables 2013-10-11 vaskoiii
-include('v/1/js/launch_js.php');

@@ -1279,8 +1279,11 @@ function process_success($message,  $location = false) {
 
 	unset($_SESSION['process']);
 	unset($_SESSION['interpret']);
-	$_SESSION['interpret']['success'] = true;
-	$_SESSION['interpret']['message'] = $message;
+	# allow not needing a reply message
+	if ($message) {
+		$_SESSION['interpret']['success'] = true;
+		$_SESSION['interpret']['message'] = $message;
+	}
 
 	if ($location) {
 		header_debug($location);

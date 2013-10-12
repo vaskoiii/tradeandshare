@@ -33,6 +33,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="content_box">
 <p>v1.0</p>
+<p>Hotkey: Ctrl + Shift + Space/L</p><?
+/* if ($_SESSION['load']['load_javascript'] == 1) { ?>
+	<a href="#" onclick="javascript: launch(event); return false;">Launcher</a>: <nobr>ctrl+shift+space/L</nobr><?
+} */?> 
 <script>
 	launch();
 </script>
@@ -42,4 +46,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 </div>
 
 <div class="menu_2">
+	<ul>
+		<li><a href="/sitemap_doc/"><?= tt('page', 'sitemap_doc'); ?></a></li>
+	</ul>
 </div>
