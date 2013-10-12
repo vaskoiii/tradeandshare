@@ -716,7 +716,7 @@ function lt_action($type) {
 
 # todo fix this 2012-02-28 vaskoiii
 function lt_conglom($type) {
-	// actually this is a conglomeration of the other functions to add the appropriate links at the end.
+	# actually this is a conglomeration of the other functions to add the appropriate links at the end.
 	$array = array_merge(
 		lt_checkbox($type),
 		#lt_author($type),

@@ -1,3 +1,4 @@
+<?
 /*
 Copyright 2003-2012 John Vasko III
 
@@ -17,16 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-Contents/Description: Help maintain order and intended usage
+# Contents/Description: Help maintain order and intended usage ?> 
+
+Box Types (Top to Bottom):
+ [motion]
+ [view]
+ [action]
+ [list]
 
 Assume:
 - [list] includes [search] + [result]
+- only 1 box type per page
 
-- only 1 [motion] box per page
-- only 1 [view] box per page
-- only 1 [action] box per page
-- only 1 [list] box per page
 
+Notes:
 - [set] pages are separate
 - [recover] pages are separate
 

@@ -203,7 +203,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			}
 		break;
 		case 'judge':
-			if ($type == 'transfer' || $type == 'item' || $type == 'judge')
+			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $spacer . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="judge">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'import':

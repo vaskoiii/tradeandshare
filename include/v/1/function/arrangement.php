@@ -68,6 +68,7 @@ function get_action_footer_1($type = false, $name = false) {
 function get_view_footer_1($type = false, $name = false) { } # placeholder
 function get_search_footer_1($type = false, $name = false) { } # placeholder
 function get_result_footer_1($type = false, $name = false) {
+
 	switch($type) {
 		case 'team':
 		case 'location':
@@ -88,13 +89,10 @@ function get_result_footer_1($type = false, $name = false) {
 		case 'group':
 		case 'groupmate':
 		case 'invite':
-		case 'item':
 		case 'metail':
 		case 'note':
 		case 'offer':
 		case 'teammate':
-		case 'transfer':
-		case 'vote':
 			$array = array(
 				'delete' => '',
 			);
@@ -103,6 +101,7 @@ function get_result_footer_1($type = false, $name = false) {
 		case 'transfer':
 		case 'vote':
 			$array = array(
+				'delete' => '',
 				'export' => '',
 				'import' => '',
 				'judge' => '',
