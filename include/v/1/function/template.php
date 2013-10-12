@@ -715,7 +715,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'translation_default_boolean_name':
 			if ($listing['default_boolean_id'] == 1)
-				$grab .= '<span class="' . to_html($v1) . '">' . tt('element', 'default') . '</span>';
+				$grab .= $spacer . '<span class="' . to_html($v1) . '">' . tt('element', 'default') . '</span>';
 		break;
 		case 'known': 
 			switch($type) {
