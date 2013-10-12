@@ -220,7 +220,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# todo make deletable: 2012-04-19 vaskoiii
 			case 'jargon':
 			case 'translation':
-			case 'category': # todo make deleteable (the whole point of having this page is so that we can have a smaller subsection of tags!) 2012-04-21 vaskoiii
 			break;
 			# not deletable:
 			case 'incident':
@@ -232,16 +231,19 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			case 'minder': # forgettable is the terminology instead of delete 2012-04-21 vaskoiii
 				# no delete
 			break;
+			case 'category':
+				# anyone can delete/add a category - It is a superficial link table
+				$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing['tag_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
+			break;
 			case 'rating':
 				if ($listing['source_user_id'] == $login_user_id)
 					$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
-
 			break;
 			case 'offer':
 			case 'transfer':
+				# can you delete offers that arent yours? 2013-10-11 vaskoiii
 				if ($listing['source_user_id'] == $login_user_id || $listing['destination_user_id'])
 					$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
-
 			break;
 			case 'teammate':
 				if ($key['team_id']['result'][ $listing['team_id'] ]['team_owner_user_id'] == $login_user_id)

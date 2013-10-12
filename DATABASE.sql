@@ -2612,7 +2612,5 @@ NULL , '174', '14', 'people_portal', '10', '1', '2', '1', '2'
 ), (
 NULL , '174', '14', 'page_portal', '20', '2', '2', '2', '2'
 );
-
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'judge');
-
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'vote_uid');

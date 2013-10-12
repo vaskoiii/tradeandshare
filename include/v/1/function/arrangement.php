@@ -76,10 +76,10 @@ function get_result_footer_1($type = false, $name = false) {
 			$array = array(
 				'remember' => '',
 				'forget' => '',
+				'delete' => '',
 			);
 		break;
 		case 'tag':
-		case 'category':
 			$array = array(
 				'merge' => '',
 			);

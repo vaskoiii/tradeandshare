@@ -23,10 +23,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # TODO: consider commenting out unused logic 2013-10-10 vaskoiii
 
 switch(get_gp('action')) {
-	case 'delete':
+case 'delete': # delete teammate: new logic for vote_list 2013-10-11 vaskoiii
 	case 'remember':
 	case 'forget':
-
 	break;
 	default:
 		die('action case not tested');
@@ -123,6 +122,8 @@ switch($process['miscellaneous']['action']) {
 }
 
 # TABLE TRANSLATION
+# not in php_database.php
+# todo Use the interpret value in SQL queries when possible
 $s1 = $process['miscellaneous']['list_name'];
 switch($process['miscellaneous']['action']) {
 	case 'disable': # unused 2012-03-27 vaskoiii
@@ -134,6 +135,9 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'delete':
 		switch($s1) {
+			case 'category':
+				$interpret['table'] = 'link_tag';
+			break;
 			case 'teammate':
 				$interpret['table'] = 'link_team_user';
 			break;
@@ -289,22 +293,33 @@ switch($process['miscellaneous']['action']) {
 					c.user_id = ' . (int)$login_user_id
 			;
 			break;
-			case 'news':
-			case 'metail':
 			# case 'incident':
 			# case 'feedback':
 			# case 'location':
+			case 'category':
+			# anyone can delete
+			$sql = '
+				SELECT
+					tag_id as id
+				FROM
+					`' . $prefix . $interpret['table'] . '`
+				WHERE
+					tag_id IN (' . implode(',', $process['miscellaneous']['row']) . ')'
+			;
+			break;
+			case 'contact':
 			case 'feed':
 			case 'group':
 			case 'invite':
-			case 'contact':
 			case 'item':
+			case 'metail':
+			case 'news':
 			case 'vote':
 			$sql = '
 				SELECT
 					id
 				FROM
-					`' . $prefix . $s1 . '`
+					`' . $prefix . $interpret['table'] . '`
 				WHERE
 					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
 					user_id = ' . (int)$login_user_id
@@ -429,64 +444,62 @@ process_does_not_exist('miscellaneous');
 
 # It will be easier to just error if something has children =)
 if (!$interpret['message']) {
-	switch($process['miscellaneous']['list_name']) {
-		case 'contact':
-			if (get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'note
-				WHERE
-					contact_id IN (' . implode($process['miscellaneous']['row']) . ') AND
-					active = 1
-			'))
-				$interpret['message'] = tt('element', 'error_has_children');
-		break;
-		case 'group':
-			if (get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'link_contact_group
-				WHERE
-					group_id IN (' . implode($process['miscellaneous']['row']) . ') AND
-					active = 1
-			'))
-				$interpret['message'] = tt('element', 'error_has_children');
-		break;
-		case 'teammate':
-			// REGEXP "[^a-z0-9A-Z]"
-			// restrict this now!
-			if (get_db_single_value('
-					te.id,
-					te.name
-				FROM
-					' . $prefix . 'team te,
-					' . $prefix . 'link_team_user tm
-				WHERE
-					te.id = tm.team_id AND
-					tm.id IN (' . implode(', ', $process['miscellaneous']['row']) . ') AND
-					te.name LIKE "%<%" AND
-					te.name NOT LIKE "%<*%"
-			'))
-				$interpret['message'] = tt('element', 'error') . ' : ' . tt('element', 'error_uneditable') . ' : ' . tt('element', 'team_name');
-		break;
-	}
-}
+switch($process['miscellaneous']['list_name']) {
+	case 'contact':
+		if (get_db_single_value('
+				id
+			FROM
+				' . $prefix . 'note
+			WHERE
+				contact_id IN (' . implode($process['miscellaneous']['row']) . ') AND
+				active = 1
+		'))
+			$interpret['message'] = tt('element', 'error_has_children');
+	break;
+	case 'group':
+		if (get_db_single_value('
+				id
+			FROM
+				' . $prefix . 'link_contact_group
+			WHERE
+				group_id IN (' . implode($process['miscellaneous']['row']) . ') AND
+				active = 1
+		'))
+			$interpret['message'] = tt('element', 'error_has_children');
+	break;
+	case 'teammate':
+		# REGEXP "[^a-z0-9A-Z]"
+		# restrict this now!
+		if (get_db_single_value('
+				te.id,
+				te.name
+			FROM
+				' . $prefix . 'team te,
+				' . $prefix . 'link_team_user tm
+			WHERE
+				te.id = tm.team_id AND
+				tm.id IN (' . implode(', ', $process['miscellaneous']['row']) . ') AND
+				te.name LIKE "%<%" AND
+				te.name NOT LIKE "%<*%"
+		'))
+			$interpret['message'] = tt('element', 'error') . ' : ' . tt('element', 'error_uneditable') . ' : ' . tt('element', 'team_name');
+	break;
+} }
 
 # don't allow a selection of more than 1 for teammates
 if (!$interpret['message']) {
-	switch($process['miscellaneous']['action']) {
-		case 'delete':
-			switch($process['miscellaneous']['list_name']) {
-				case 'teammate':
-					if (count($process['miscellaneous']['row']) > 1)
-						$interpret['message'] = tt('element', 'error') . ' : ' . tt('element', $process['miscellaneous']['list_name'] . '_list') . ' : ' . tt('element', 'selection_limit') . ' : 1';
-						# TODO add translations for selection_limit
-						# imposed because this is a very intensive change for the indexes...
-				break;
-			}
-		break;
-	}
-}
+switch($process['miscellaneous']['action']) {
+	case 'delete':
+		switch($process['miscellaneous']['list_name']) {
+			case 'teammate':
+				if (count($process['miscellaneous']['row']) > 1)
+					$interpret['message'] = tt('element', 'error') . ' : ' . tt('element', $process['miscellaneous']['list_name'] . '_list') . ' : ' . tt('element', 'selection_limit') . ' : 1';
+					# TODO add translations for selection_limit
+					# imposed because this is a very intensive change for the indexes...
+			break;
+		}
+	break;
+} }
 
 # FAILURE
 # process_failure() Can't really use this because it populates:
@@ -698,6 +711,17 @@ switch($process['miscellaneous']['action']) {
 				';
 				$result = mysql_query($sql) or die(mysql_error());
 			break;
+			case 'category':
+				$sql = '
+					DELETE FROM
+						`' . $prefix . $interpret['table'] . '`
+					WHERE
+						tag_id IN (' . implode(',', $interpret['row']) .')
+				';
+				$result = mysql_query($sql) or die(mysql_error());
+				# also update the tag
+				$interpret['table'] = 'tag';
+			# nobreak;
 			default:
 				$sql = '
 					UPDATE
