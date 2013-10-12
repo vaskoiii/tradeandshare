@@ -67,7 +67,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 
 # uncomment for ability to show/hide certain sections (never used)
 /*
-<script type="text/javascript">
+<script>
 function hide_other_area(string, showall) {
 
 	var sitemap_display = 'none';

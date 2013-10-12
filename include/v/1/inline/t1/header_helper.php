@@ -30,8 +30,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="menu_1">
 		<center>
 		<ul>
-			<li><a href="/item_list/" /><?= tt('page', 'item_list'); ?></a></li>
-			<li><a href="/offer_list/" /><?= tt('page', 'offer_list'); ?></a></li>
+			<li><a href="/item_list/"><?= tt('page', 'item_list'); ?></a></li>
+			<li><a href="/offer_list/"><?= tt('page', 'offer_list'); ?></a></li>
 			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
 		</ul>
 		<div id="head_menu" style="display: none;">
@@ -49,14 +49,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					case 'new_area':
 					break;
 					default:
-				echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
+						echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
 					break;
 				}
-				if (!empty($v1['page_id']))
+				if (!empty($v1['page_id'])) {
 				foreach ($v1['page_id'] as $k2 => $v2) { ?> 
 					<nobr><span class="spacer"><?= $config['spacer'] ?></span><a href="<?= to_html($v2['page_name']); ?>/"><?= tt('page', $v2['page_name']); ?></a></nobr><?
+				} }
+				switch ($v1['page_name']) {
+					case 'ts_area':
+					case 'new_area':
+					break;
+					default:
+						echo '</dd>';
+					break;
 				}
-				echo '</dd>';
 			} ?>
 		</dl>
 		</div>

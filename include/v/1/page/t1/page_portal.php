@@ -22,7 +22,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div id="result">
 	<div class="title">
-		<h2><? $x['preload']['focus'] = 'report'; print_ts_focus(get_translation('page', $x['page']['name']), 'report'); ?></h2>
+		<h2><?= get_translation('page', $x['page']['name']); # no focus! ?></h2>
 		<div class="result_add">
 		</div>
 	</div><?
@@ -32,7 +32,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 
 <div class="content_box">
-	<!-- Put content here --!>
+<p>v1.0</p>
+<script>
+	launch();
+</script>
 </div>
 
 <div class="menu_1">

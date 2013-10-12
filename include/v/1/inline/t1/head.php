@@ -32,12 +32,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		# for smartphone
 		switch($_SESSION['display']['display_name']) {
 			case 'display_select_default':
-				// desktop browsers will likely ignore viewport and then settings will be the same as [display_width_1024_pixels]
-				// try and get the most compact view and the most versatile view simultaneously ?>
+				# desktop browsers will likely ignore viewport and then settings will be the same as [display_width_1024_pixels]
+				# try and get the most compact view and the most versatile view simultaneously ?>
 				<meta name="viewport" content="width=320" /><?
 			break;
 			case 'display_select_none':
-				// browser decides viewport
+				# browser decides viewport
 			break;
 			case 'display_width_320_pixels': ?>
 				<meta name="viewport" content="width=320" /><?
@@ -50,13 +50,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			break;
 		} 
 
-		// COMPATIBILITY MODE
+		# COMPATIBILITY MODE
 		if ($_SESSION['load']['load_javascript'] != 2) { ?>
-			<script type="text/javascript" src="/launch_js/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>"></script>
-			<script type="text/javascript" src="/v/1/autocomplete/jquery-1.4.2.min.js"></script>
-			<script type="text/javascript" src="/v/1/autocomplete/jquery.metadata.js"></script>
-			<script type="text/javascript" src="/v/1/autocomplete/jquery.auto-complete.iii.js"></script>
-			<script type="text/javascript" src="/v/1/autocomplete/jquery.ts.js"></script>
+			<script src="/launch_js/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>"></script>
+			<script src="/v/1/autocomplete/jquery-1.4.2.min.js"></script>
+			<script src="/v/1/autocomplete/jquery.metadata.js"></script>
+			<script src="/v/1/autocomplete/jquery.auto-complete.iii.js"></script>
+			<script src="/v/1/autocomplete/jquery.ts.js"></script>
 			<link rel="stylesheet" type="text/css" href="/v/1/autocomplete/jquery.auto-complete.css" /><?
 		} ?>
 

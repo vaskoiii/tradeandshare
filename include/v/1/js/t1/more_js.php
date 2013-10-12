@@ -23,7 +23,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo currenly used as an include but should not be used as such. Should be included in the header! 2012-02-02
 ?>
 
-<script type="text/javascript">
+<script>
 	function more_toggle(type_id_number) {
 		var asearch = document.getElementById(type_id_number);
 		if (asearch.style.display == 'none') {

@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: JS calls these files to retrieve data Asyncronously (NOT 'Content-type: text/javascript') - though these might be the same.
+# Contents/Description: JS calls these files to retrieve data Asyncronously (NOT 'Content-Type: text/javascript:') - though these might be the same.
 
 header('HTTP/1.0 200 Found');
 header('Content-type: text/plain');
