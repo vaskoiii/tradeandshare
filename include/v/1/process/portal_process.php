@@ -32,7 +32,6 @@ $process['form_info'] = get_action_header_1();
 foreach($process['form_info'] as $k1 => $v1)
 	$process['form_info'][$k1] = get_gp($k1);
 
-# hardcode everything because it is easier in this custom page? 
 $process['action_content_1'] = array(
 	'contact_user_mixed' => '',
 );
@@ -47,16 +46,17 @@ $message = & $interpret['message'];
 process_data_translation('action_content_1');
 
 # error
-# these guys are really global so they probably dont need parameters. 2012-03-10 vaskoiii
-process_field_missing('action_content_1');
-process_does_not_exist('action_content_1');
-process_does_exist('action_content_1');
-if (!$message) {
-	# placeholder for custom error checking if needed
-}
+# process_field_missing('action_content_1');
+# process_does_not_exist('action_content_1');
+# process_does_exist('action_content_1');
+if (!$lookup['user_id']) {
+if (!$lookup['contact_id']) {
+	$message = tt('element', 'contact_user_mixed') . ' : ' . tt('element', 'error_does_not_exist');
+} }
+
 process_failure($message);
 
-# forward to the correct page
+# success
 # same priority as clicking on a contact (user)
 $s1 = '';
 if ($lookup['contact_id'] && $lookup['user_id'])
@@ -65,7 +65,6 @@ elseif ($lookup['contact_id'])
 	$s1 = '/contact_view/?lock_contact_id=' . (int)$lookup['contact_id'] . '&list_name=list&list_type=note';
 elseif ($lookup['user_id'])
 	$s1 = '/user_view/?lock_user_id=' . (int)$lookup['user_id'] . '&list_name=list&list_type=metail';
-
-# if we want to use this we need a special case in this function to supress the popup message
+# forward to the correct page
 process_success('', $s1);
 exit;

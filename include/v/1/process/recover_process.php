@@ -42,14 +42,14 @@ switch($process['form_info']['type']) {
 switch($process['form_info']['type']) {
 	case 'login':
 		process_data_translation('action_content_1');
-		// sets $interpret['login_user_id']
-		// its confusing because case 'feed_recover_process' gets the login_user_id elsewhere 
+		# sets $interpret['login_user_id']
+		# its confusing because case 'feed_recover_process' gets the login_user_id elsewhere 
 
 		process_field_missing('action_content_1');
 		process_does_not_exist('action_content_1');
 		process_does_exist('action_content_1');
 
-		// this is similar to the part in edit process... however... this should be integrated with process_field_missing();
+		# todo: integrated with process_field_missing();
 		if (!$interpret['message'])
 		switch($process['form_info']['type']) {
 			case 'login':
@@ -105,7 +105,7 @@ switch($process['form_info']['type']) {
 	break;
 }
 
-// Get EMAIL INFO from user_id
+# Get EMAIL INFO from user_id
 $result = array();
 $sql = '
 	SELECT

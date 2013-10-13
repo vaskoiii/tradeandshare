@@ -87,46 +87,12 @@ foreach($v1 as $k2 => $v2) {
 	}
 } } }
 
-// MORE ERROR CHECKING
+# MORE ERROR CHECKING
 
-// TODO put this in the does not exist function!
+# TODO put this in the does not exist function!
 foreach($process as $k1 => $v1)
 if ($v1['kind_name_name'] && !$interpret['lookup']['kind_name_id'])
 	$interpret['message'] = tt('element', 'kind_name') . ' + ' . tt('element', 'kind_name_name') . ' : ' . tt('element', 'error_does_not_exist');
-
-# this if never hits a process_failure() so why make a $interpret['message']?
-# is this supposed to be a warning? seems like it should be an error...
-if (str_match('_view', $x['page']['name'])) {
-	if (!$interpret['message']) {
-		switch($x['page']['name']) {
-			case 'contact_view':
-				if (!isset_gp('lock_user_name') && !isset_gp('lock_contact_name'))
-					$interpret['message'] = tt('element', 'lock_contact_user_mixed') . ' : ' . tt('element', 'error_not_set');
-
-			break;
-			default:
-				if (!get_gp('child'))
-					$interpret['message'] = tt('element', 'child') . ' : ' . tt('element', 'error_not_set');
-			break;
-		}
-	}
-}
-
-// FAILURE!
-# needed? 2012-02-01
-if (str_match('_view', $process['referrer'])) {
-	switch($process['referrer']) {
-		case 'contact_view':
-			$interpret['location'] = $x['..'] . '?child=' . $process['child'] . '&lock_contact_id=' . $interpret['lock_contact_id'];
-			process_failure($interpret['message'], $interpret['location']);
-		break;
-		default:
-			$s1 = str_replace('_view', '_id', $process['referrer']);
-			$interpret['location'] = $x['..'] . '?child=' . $process['child'] . '&' . $s1 . '=' . $interpret[$s1];
-			process_failure($interpret['message'], $interpret['location']);
-		break;
-	}
-}
 
 process_failure($interpret['message']);
 

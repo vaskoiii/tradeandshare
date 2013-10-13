@@ -706,8 +706,7 @@ function process_field_missing($container = 'edit_content_1') {
 	$arrangement = & $process[$container];
 	$message = & $interpret['message'];
 
-	// not sure what parts of this loop (1 line down) we need anymore or if we even need this top part...
-	if ($x['name'] == 'edit_process')
+	if ($x['name'] == 'edit_process') # includes: /user_edit/?id=X AND /user_edit/
 	switch($process['form_info']['type']) {
 		case 'user':
 			if ($arrangement['accept_usage_policy'] != 1)
@@ -719,7 +718,6 @@ function process_field_missing($container = 'edit_content_1') {
 
 	if ($arrangement) {
 	foreach($arrangement as $k1 => $v1) {
-	#echo '<hr>' . $message; echo ' mesage from above - ' . $k1 . ': ' . $v1; 
 	if (!$message) {
 		if (preg_match('/^todo_/', $k1)) {
 			;
@@ -732,7 +730,7 @@ function process_field_missing($container = 'edit_content_1') {
 		case 'id':
 		case 'edit_id':
 		case 'feed_query':
-			// Do Nothing
+			# Do Nothing
 		break;
 		case 'user_password':
 		case 'user_password_unencrypted':

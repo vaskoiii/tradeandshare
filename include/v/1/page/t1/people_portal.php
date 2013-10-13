@@ -53,7 +53,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="menu_2">
 	<ul>
 		<li><a href="/contact_list/"><?= tt('page', 'contact_list'); ?></a>/<a href="/note_list/"><?= tt('page', 'note_list'); ?></a></li>
-		<li><a href="/user_list/"><?= tt('page', 'user_list'); ?></a>/<a href="/metail_list"><?= tt('page', 'metail_list'); ?></a></li>
+		<li><a href="/user_list/"><?= tt('page', 'user_list'); ?></a>/<a href="/metail_list/"><?= tt('page', 'metail_list'); ?></a></li>
 	</ul>
 </div>
 

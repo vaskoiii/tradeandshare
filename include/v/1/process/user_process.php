@@ -19,7 +19,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: New user registration standalone
-# Knonw Issues: Included from within edit_process.php
+# Known Issues: Included from within edit_process.php
 
 $process = array(); # Send to process
 $interpret = array(); # Interpreted from $process
