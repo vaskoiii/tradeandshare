@@ -237,7 +237,7 @@ var
 			onSubmit: undefined,
 			spinner: undefined,
 			preventEnterSubmit: FALSE,
-			delay: 111,
+			delay: 0,
 			useCache: TRUE,
 			cacheLimit: 50
 		}
