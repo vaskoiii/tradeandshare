@@ -62,8 +62,14 @@ function remember(page, translation) {
 	window.open(my_link, '_top');
 } 
 
-function showtsl_iframe() {
-	var tsl_iframe = document.getElementById('tsl_iframe');
+function showtsl_iframe(tsType) {
+
+	if (tsType == 'tslPeople') {
+		var tsl_iframe = document.getElementById('tslPeople_iframe');
+	}
+	else {
+		var tsl_iframe = document.getElementById('tsl_iframe');
+	}
 
 	var tsl_iframewidth = tsl_iframe.offsetWidth;
 	var tsl_iframeheight = tsl_iframe.offsetHeight;
@@ -156,15 +162,21 @@ function iii_getFirstGTZ(myArray) {
 }
 */
 
-function killtsl_iframe() {
+function killtsl_iframe(tsType) {
 	var tsl_iframe;
-	tsl_iframe = document.getElementById('tsl_iframe');
+	if (tsType == 'tslPeople')
+		tsl_iframe = document.getElementById('tslPeople_iframe');
+	else
+		tsl_iframe = document.getElementById('tsl_iframe');
 	document.documentElement.removeChild(tsl_iframe);
 	window.parent.focus();
 }
-function gettsl_idocument() {
+function gettsl_idocument(tsType) {
 	var tsl_iframe;
-	tsl_iframe = document.getElementById('tsl_iframe');
+	if (tsType == 'tslPeople')
+		tsl_iframe = document.getElementById('tslPeople_iframe');
+	else
+		tsl_iframe = document.getElementById('tsl_iframe');
 	var tsl_idocument;
 	if (tsl_iframe.contentDocument) {
 		tsl_idocument = tsl_iframe.contentDocument;
@@ -187,22 +199,52 @@ function launch(event) {
 	return true; // if not can't type.
 	// after calling launch(); return false; if not launcher position is wrong!
 }
+function launchPeople(event) {
+	if (!document.getElementById('tslPeople_iframe')) {
+		createtsl_iframe('tslPeople');
+		showtsl_iframe('tslPeople');
+	} else {
+		killtsl_iframe('tslPeople');
+	}
+	return true; // if not can't type.
+	// after calling launch(); return false; if not launcher position is wrong!
+}
+
+
 function checkIt(event) {
-	// space | l
-	if (event.keyCode == 32 | event.keyCode == 76) {
-		// alert('shift=' + event.shiftKey + ' :: ctrl=' + event.ctrlKey + ' :: meta=' + event.metaKey + ' :: alt=' + event.altKey + ' :: code=' + event.keyCode);
+	// comma 188 ,
+	// space 32 deprecated
+	if (event.keyCode == 32 | event.keyCode == 188) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
 			launch(event);
 			return false;
 		}
 	}
+	// period 190 .
+	else if (event.keyCode == 190) {
+		if (0) // placeholder not yet enabled
+		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
+			launchPeople(event);
+			return false;
+		}
+	}
+	// alert('shift=' + event.shiftKey + ' :: ctrl=' + event.ctrlKey + ' :: meta=' + event.metaKey + ' :: alt=' + event.altKey + ' :: code=' + event.keyCode);
 }
 
-function createtsl_iframe() {
+function createtsl_iframe(tsType) {
+
 	var tsl_iframe;
 	tsl_iframe = document.createElement('iframe');
-	tsl_iframe.id = 'tsl_iframe';
-	tsl_iframe.name = 'tsl_iframe';
+
+	if (tsType == 'tslPeople') {
+		tsl_iframe.id = 'tslPeople_iframe';
+		tsl_iframe.name = 'tslPeople_iframe';
+	}
+	else {
+		tsl_iframe.id = 'tsl_iframe';
+		tsl_iframe.name = 'tsl_iframe';
+	}
+	
 	tsl_iframe.setAttribute('border', '0px');
 	tsl_iframe.setAttribute('vspace', '0px');
 	tsl_iframe.setAttribute('hspace', '0px');
@@ -211,6 +253,12 @@ function createtsl_iframe() {
 	tsl_iframe.setAttribute('scrolling', 'no');
 	tsl_iframe.style.position = 'absolute';
 	tsl_iframe.style.top = '-9999px';
+
+	tsl_iframe.style.top = "3px";
+	tsl_iframe.style.left = "3px";
+	tsl_iframe.style.visibility = "visible";
+	tsl_iframe.style.background = 'red';
+
 	// http://en.wikipedia.org/wiki/Display_resolution
 	// Smallest Display Listed is 320px x 200px
 	tsl_iframe.style.width = '298px'; // 298 + (2) 1px borders = 300px
@@ -218,7 +266,7 @@ function createtsl_iframe() {
 	tsl_iframe.style.border = '1px solid white';
 	document.documentElement.appendChild(tsl_iframe);
 	if (tsl_iframe) {
-		var tsl_idocument = gettsl_idocument();
+		var tsl_idocument = gettsl_idocument(tsType);
 		if (tsl_idocument) {
 			tsl_idocument.open(); // IE hack
 			tsl_idocument.close(); // IE hack
@@ -246,6 +294,29 @@ function createtsl_iframe() {
 			tsl_main_box.style.padding = '5px 20px 0px 20px';
 			tsl_main_box.style.background = '{$data['css']['c1']}';
 			tsl_meat_box.appendChild(tsl_main_box); //[
+
+
+			if (tsType == 'tslPeople') {
+				var tsl_form;
+				tsl_form = tsl_idocument.createElement('form');
+				tsl_form.id = 'tsl_form';
+				tsl_form.style.position = 'relative';
+				tsl_form.style.top = '0px';
+				tsl_form.style.margin = '0px';
+				tsl_form.style.padding = '0px';
+				tsl_main_box.appendChild(tsl_form); //[
+					
+					var tsl_p;
+					tsl_p = tsl_idocument.createElement('p');
+					tsl_p.id = 'tsl_p';
+					tsl_p.style.fontWeight = 'bold';
+					tsl_p.innerHTML = 'TS Alternative Launcher Placeholder';
+					tsl_p.style.color = 'black';
+					tsl_form.appendChild(tsl_p);
+
+				//]
+			}
+			else {
 				var tsl_form;
 				tsl_form = tsl_idocument.createElement('form');
 				tsl_form.id = 'tsl_form';
@@ -323,6 +394,7 @@ function createtsl_iframe() {
 				tsl_suggest_more.innerHTML = getSuggestMoreEmptyInput();
 				tsl_alternative_box.appendChild(tsl_suggest_more);
 			//]
+			}
 		}
 	}
 }

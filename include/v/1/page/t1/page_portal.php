@@ -33,7 +33,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="content_box">
 <p>v1.0</p>
-<p>Hotkey: Ctrl + Shift + Space/L</p><?
+<p>Hotkey: Ctrl + Shift|Alt|Meta + Comma</p><?
 /* if ($_SESSION['load']['load_javascript'] == 1) { ?>
 	<a href="#" onclick="javascript: launch(event); return false;">Launcher</a>: <nobr>ctrl+shift+space/L</nobr><?
 } */?> 
