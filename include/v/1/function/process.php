@@ -741,10 +741,13 @@ function process_field_missing($container = 'edit_content_1') {
 				if (!$arrangement[$k1])
 					$message = tt('element', $k1) . ' : ' . tt('element', 'error_field_missing');
 		break;
-		// Will run through 2x
+		# Will run through 2x
 		case 'user_name':
 		case 'contact_name':
-			if ($x['name'] == 'edit_process')
+			if (
+				$x['name'] == 'edit_process' || 
+				$x['name'] == 'portal_process'
+			) {
 			switch($process['form_info']['type']) {
 				case 'contact':
 					#echo '<hr>' . $message . $k1 . ':'; die('dead');
@@ -770,7 +773,7 @@ function process_field_missing($container = 'edit_content_1') {
 					if (!$arrangement[$k1])
 						$message = tt('element', $k1) . ' : ' . tt('element', 'error_field_missing');
 				break;
-			}
+			} }
 		break;
 		case 'row':
 			if (empty($arrangement['row']))

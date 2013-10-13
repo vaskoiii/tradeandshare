@@ -217,7 +217,7 @@ var
 			maxRequestsDeep: FALSE,
 			requestType: 'POST',
 			inputControl: undefined,
-			autoFill: FALSE,
+			autoFill: TRUE,
 			// iii -1
 			// nonInput: [ KEY.shift, KEY.left, KEY.right ],
 			// iii +2
@@ -236,8 +236,8 @@ var
 			onListFormat: undefined,
 			onSubmit: undefined,
 			spinner: undefined,
-			preventEnterSubmit: TRUE,
-			delay: 0,
+			preventEnterSubmit: FALSE,
+			delay: 111,
 			useCache: TRUE,
 			cacheLimit: 50
 		}
@@ -318,16 +318,31 @@ var
 
 			var key = ( LastEvent = event ).keyCode, enter = FALSE;
 
-			if ( key === KEY.tab && ulOpen ) {
+			// iii +3
+			if ( key === KEY.esc ) { 
+				$ul.hide( event ); 
+			}
+			else if ( key === KEY.tab && ulOpen ) {
 				// iii +3
 				if ($li && $li.hasClass( settings.rollover)) {
 					autoFill( liData.value );
 				}
-				select( event );
+				// select( event );
+				// iii +3 this is all we have to do and we are rocking! oh and have to make the tab button exit the field
+				$input.val( liData.value ); // does not work with opera
+				$ul.hide();  // lets us exit the tab trap but messes up autocompletion
+				event.KEY.tab;
 			}
-			// iii +3
-			else if ( key === KEY.esc ) { 
-				$ul.hide( event ); 
+			else if ( key === KEY.enter && ulOpen ) {
+				// iii +4
+				enter = TRUE;
+				if ($li && $li.hasClass( settings.rollover)) {
+					autoFill( liData.value );
+				}
+				//select( event );
+				// iii +2 this is all we have to do and we are rocking! oh and have to make the tab button exit the field
+				$input.val( liData.value ); // $input.val( 'YESSSSSSSS' );
+				$ul.hide( );  // lets us exit the tab trap but messes up autocompletion
 			}
 			else if ( key === KEY.enter ) {
 				enter = TRUE;
@@ -1045,7 +1060,8 @@ var
 
 				start = inputval.length;
 				end = val.length;
-				$input.val( val );
+				// iii -1
+				//$input.val( val );
 			}
 
 			if ( ! settings.autoFill || start > end ) {

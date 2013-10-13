@@ -35,6 +35,11 @@ foreach($process['form_info'] as $k1 => $v1)
 $process['action_content_1'] = array(
 	'contact_user_mixed' => '',
 );
+$process['action_content_1'] = get_action_content_1($process['form_info']['type']);
+if ($process['action_content_1']) {
+foreach($process['action_content_1'] as $k1 => $v1) {
+	$process['action_content_1'][$k1] = get_gp($k1);
+} }
 contact_user_mixed_split('action_content_1', '', 1);
 
 # shortcut
@@ -46,13 +51,14 @@ $message = & $interpret['message'];
 process_data_translation('action_content_1');
 
 # error
-# process_field_missing('action_content_1');
+process_field_missing('action_content_1');
 # process_does_not_exist('action_content_1');
 # process_does_exist('action_content_1');
+if (!$message) {
 if (!$lookup['user_id']) {
 if (!$lookup['contact_id']) {
 	$message = tt('element', 'contact_user_mixed') . ' : ' . tt('element', 'error_does_not_exist');
-} }
+} } }
 
 process_failure($message);
 
