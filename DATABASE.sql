@@ -2618,3 +2618,9 @@ INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'vote_uid');
 -- More pages
 
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '5', 'portal_process', '1', '2', '2', '1', '1');
+
+-- more!
+insert into ts.ts_page set parent_id = 321, file_id = 27, name = 'autopage_ajax', `order` = 1, launch = 2, monitor = 2, login = 2, advanced = 2;
+
+-- why not have this option on the launcher?
+update ts_page set launch=1 where name like '%_portal';

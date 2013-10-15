@@ -22,6 +22,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # currently only 1 warp but may need to add more in the futre.
 
+# todo: combine with search_process - these pages are essentially the same. they don't add any new data just query a result set and take you to the corresponding page
+
 $process = array(); # Send to process
 $interpret = array(); # Interpreted from $process
 $interpret['lookup'] = array();
@@ -33,9 +35,12 @@ foreach($process['form_info'] as $k1 => $v1)
 	$process['form_info'][$k1] = get_gp($k1);
 
 $process['action_content_1'] = array(
-	'contact_user_mixed' => '',
+	'contact_user_mixed' => get_gp('contact_user_mixed'),
+	'contact_name' => '',
+	'user_name' => '',
 );
-$process['action_content_1'] = get_action_content_1($process['form_info']['type']);
+//$process['action_content_1'] = get_action_content_1($process['form_info']['type']);
+
 if ($process['action_content_1']) {
 foreach($process['action_content_1'] as $k1 => $v1) {
 	$process['action_content_1'][$k1] = get_gp($k1);

@@ -24,7 +24,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div id="result">
 	<div class="title">
-		<h2><?= get_translation('page', $x['page']['name']); ?> v1.0</h2>
+		<h2><?= get_translation('page', $x['page']['name']); ?></h2>
 		<div class="result_add">
 		</div>
 	</div><?
@@ -43,8 +43,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<input type="submit" value="!" />
 		</div>
 	</form>
-	<? # todo: implement hotkey ie) Ctrl + Shift + J ?>
-
+	<div class="k">Hotkey:</div>
+	<div class="v">Ctrl + Shift + Period</div>
+	<? # todo: implement hotkey ie) Ctrl + Shift + . ?>
 </div>
 
 <div class="menu_1">

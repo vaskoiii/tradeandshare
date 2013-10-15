@@ -19,3 +19,5 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Fastest way to navigate to a page.
+
+add_translation('element', 'page_name');

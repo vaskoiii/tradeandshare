@@ -8,4 +8,8 @@ jQuery(function($){
 		width: '200px',
 		ajax: '/index.php?x=/autocontact_autouser_ajax/'
 	});
+	$('input[name=page_name]').autoComplete({
+		width: '200px',
+		ajax: '/index.php?x=/autopage_ajax/'
+	});
 });

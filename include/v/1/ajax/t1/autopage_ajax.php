@@ -17,13 +17,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-# Contents/Description: JS calls these files to retrieve data Asyncronously (NOT 'Content-Type: text/javascript:') - though these might be the same.
-
-header('HTTP/1.0 200 Found');
-header('Content-type: text/plain');
-
-include($x['site']['i'] . '/ajax/' . $x['page']['name'] . '.php');
-# template file (included below) will output JSON data ONLY
-# needed because engine files can not (should not) ouput any data ie) the above include
-include($x['site']['i'] . '/ajax/' . $x['site']['t'] . $x['page']['name'] . '.php');
+echo json_encode($data['json']);

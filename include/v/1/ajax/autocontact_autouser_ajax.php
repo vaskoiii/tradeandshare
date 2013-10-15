@@ -20,12 +20,19 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Search contact_name then user_name display contact_name (user_name)
 
+# Allow: value = ''
 $value = get_gp('value');
-if ((!isset_gp('value') || get_gp('value') == ''))
-	exit;
+$all = get_boolean_gp('all'); # use to drop the limits ( Dont test against 0: true = 1 AND false = 2 )
+
+# placeholder for when we want the result set to have differnt styles
+# $style = get_gp('style');
+# the launcher uses this page but we just use strip_tags()
+
+# todo: shouldnt need an exception - potential desctruction if working with the original data array 2013-10-12 vaskoiii
+if (!is_array($data))
+	$data = array();
 
 # first 5 are contact matches (for user/contact pairs)
-$data = array();
 $sql = '
 	SELECT
 		c.name as contact_name,
@@ -36,6 +43,9 @@ $sql = '
 		c.name LIKE ' . to_sql($value . '%') . ' AND
 		c.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' AND
 		c.active = 1
+';
+if ($all != 1)
+$sql .= '
 	LIMIT
 		5
 ';
@@ -83,7 +93,9 @@ $sql = '
 	WHERE
 		u.name LIKE ' . to_sql($value . '%') .
 		(!empty($data['not_user_id']) ? ' AND u.id NOT IN ( ' . implode(', ', $data['not_user_id']) . ' )' : '') . '
-
+';
+if ($all != 1)
+$sql .= '
 	LIMIT
 		5
 ';

@@ -44,36 +44,91 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 
 $data['lock_query'] = get_lock_query();
 
-$sql = <<<SQL
-		SELECT
-			p.name AS page_name,
-			tr.name AS translation_name
-		FROM
-			{$config['mysql']['prefix']}page p,
-			{$config['mysql']['prefix']}translation tr,
-			{$config['mysql']['prefix']}kind k
-		WHERE
-			k.id = tr.kind_id AND 
-			k.name = "page" AND
-			tr.`default` = 1 AND
-			p.id = tr.kind_name_id AND
-			
-			p.launch = 1 AND
-			tr.dialect_id = 
-SQL;
-$sql .= (int)$_SESSION['dialect']['dialect_id'] . "\n";
-$sql .= <<<SQL
-		ORDER BY 
-			tr.name ASC
-SQL;
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result))
-	$data['launch'][] = $row;
+# reuse data from the ajax
+include('v/1/ajax/autopage_ajax.php');
+$pageJson = json_encode($data['json']);
 
-$data['js_array_string'] = '';
+//testing hardcode
+//works
+$_SESSION['login']['login_user_id'] = '132';
+// doesnt
+//$_SESSION['login']['login_user_id'] = '132';
 
-if (!empty($data['launch'])) {
-foreach($data['launch'] as $k1 => $v1) {
-	# Threatening characters are: & ' " and \ so these will be striped from the translation
-	$data['js_array_string'] .= 'tsl["' . $v1['page_name'] . '"] = "' . preg_replace('/[\&\\\"\']/', '', $v1['translation_name']) . '";' ."\n";
-} }
+// slow?
+$_GET['all'] = 1;
+if ($_SESSION['login']['login_user_id']) {
+	$data['json'] = array(); # clear the previous page data
+	include('v/1/ajax/autocontact_autouser_ajax.php');
+	# launcher fails with weird data.
+	# todo fix people launcher from only working after page launcher is fired
+	# todone use . as a wildcard in the launcher
+	foreach ($data['json'] as $k1 => $v1) {
+		/*
+		//url encode makes things safe
+		$data['json'][$k1]['value'] = urlencode(strip_tags($v1['value']));
+		$data['json'][$k1]['display'] = urlencode(strip_tags($v1['display']));
+		# it doesnt like the pipe |
+		# becareful with characters js doesn't like
+		 */
+		// todo: make these characters more safe
+		$data['json'][$k1]['value'] = (strip_tags($v1['value']));
+		$data['json'][$k1]['display'] = (strip_tags($v1['display']));
+		$a1 = array(
+			'|', # |root|
+			'\'' # john's
+		);
+		$a2 = array(
+			'',
+			''
+		);
+		$data['json'][$k1]['value'] = str_replace($a1, $a2, $data['json'][$k1]['value']);
+		$data['json'][$k1]['display'] = str_replace($a1, $a2, $data['json'][$k1]['display']);
+	}
+	//print_r($data['json']);
+
+	$peopleJson = json_encode($data['json']);
+}
+else
+	$peopleJson = '';
+
+# Easy customization of the empty pages (ordinarily style doesnt go in the engine pages)
+# don't forget target="_top"
+# whitespace in the fist column otherwise preg_replace() doesnt work right and the launcher wont load
+$data['launch']['tsl']['empty'] = <<<HTML
+ <table><tr>
+	<td>
+		<a href="/" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a>
+	</td>
+	<td valign="center" style="padding-left: 5px;">
+	<a href="/" target="_top" style="color: #000;">{$translation['page_name']['result']['main']['translation_name']}</a></td>
+ </tr></table>
+HTML;
+$data['launch']['tsl']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tsl']['empty']);
+
+# people launcher
+if ($_SESSION['login']['login_user_id']) {
+$s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
+$data['launch']['tsl']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tsl']['empty']);
+$data['launch']['tslPeople']['empty'] = <<<HTML
+ <table><tr>
+	<td>
+	<a href="{$s1}" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+	</td>
+	<td valign="center" style="padding-left: 5px;">
+	Me (<a href="{$s1}" target="_top" style="color: #000;">{$_SESSION['login']['login_user_name']}</a>)</td>
+ </tr></table>
+HTML;
+}
+else {
+$s1 = '/login_set/';
+$data['launch']['tslPeople']['empty'] = <<<HTML
+ <table><tr>
+	<td>
+	<a href="{$s1}" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+	</td>
+	<td valign="center" style="padding-left: 5px;">
+	<a href="{$s1}" target="_top" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a>)</td>
+ </tr></table>
+HTML;
+}
+$data['launch']['tslPeople']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tslPeople']['empty']);

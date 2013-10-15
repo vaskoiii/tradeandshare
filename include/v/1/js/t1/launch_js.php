@@ -20,19 +20,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Javascript functionality for a launcher with [ctrl + shift + space] to launch any standalone TS page.
 
-/*
-ob_start(); ?>
-<table><tr>
-	<td>
-		<a href="/" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/<?= $data['theme']['color']; ?>/ts_icon.png" /></a>
-	</td>
-	<td valign="center" style="padding-left: 5px;">
-		<a href="/" target="_top" style="color: #000;"><?= $translation['page_name']['result']['main']['translation_name']; ?></a>
-	</td>
-</tr></table><?
-$s1 = ob_get_clean();
-*/
-
 echo <<<JAVASCRIPT
 
 function set_cookie( name, value, expires, path, domain, secure ) {
@@ -49,27 +36,28 @@ function set_cookie( name, value, expires, path, domain, secure ) {
 		( ( secure ) ? ";secure" : "" );
 }
 
-function remember(page, translation) {
-	set_cookie('launch[page_name]', page, 365, '/');
-	set_cookie('launch[translation_name]', translation, 365, '/');
-	
-	var my_link = 'https://{$_SERVER['HTTP_HOST']}/' + page + '/';
-
-	// ADD LOCK
-	if (page.match(RegExp('_list', '')) || page.match('main') || page.match(''))
-		my_link += '{$data['lock_query']}';
-
+function remember(tsType, value, display) {
+	var my_link;
+	if (tsType == 'tslPeople') {
+		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?contact_user_mixed=' + encodeURI(value);
+		my_link = 'https://{$_SERVER['HTTP_HOST']}/';
+		set_cookie('launch[tslPeople][value]', encodeURI(value), 365, '/');
+		set_cookie('launch[tslPeople][display]', encodeURI(display), 365, '/');
+	}
+	else {
+		my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
+		set_cookie('launch[tsl][value]', value, 365, '/');
+		set_cookie('launch[tsl][display]', display, 365, '/');
+		// ADD LOCK
+		if (value.match(RegExp('_list', '')) || value.match(RegExp('_edit', '')) || value.match('main') || value.match(''))
+			my_link += '{$data['lock_query']}';
+	}
 	window.open(my_link, '_top');
 } 
 
 function showtsl_iframe(tsType) {
 
-	if (tsType == 'tslPeople') {
-		var tsl_iframe = document.getElementById('tslPeople_iframe');
-	}
-	else {
-		var tsl_iframe = document.getElementById('tsl_iframe');
-	}
+	var tsl_iframe = document.getElementById(tsType + '_iframe');
 
 	var tsl_iframewidth = tsl_iframe.offsetWidth;
 	var tsl_iframeheight = tsl_iframe.offsetHeight;
@@ -85,7 +73,10 @@ function showtsl_iframe(tsType) {
 	tsl_iframe.style.left = leftposition + "px";
 	tsl_iframe.style.visibility = "visible";
 	
-	setTimeout("gettsl_idocument().getElementById('tsl_input').focus()", 0);
+	if (tsType == 'tslPeople')
+		setTimeout("gettsl_idocument('tslPeople').getElementById('tsl_input').focus()", 0);
+	else
+		setTimeout("gettsl_idocument('tsl').getElementById('tsl_input').focus()", 0);
 }
 
 function iii_clientWidth() {
@@ -189,42 +180,30 @@ function gettsl_idocument(tsType) {
 	}
 	return tsl_idocument;
 }
-function launch(event) {
-	if (!document.getElementById('tsl_iframe')) {
-		createtsl_iframe();
-		showtsl_iframe();
+function launch(tsType, event) {
+	if (!document.getElementById(tsType + '_iframe')) {
+		createtsl_iframe(tsType);
+		showtsl_iframe(tsType);
 	} else {
-		killtsl_iframe();
+		killtsl_iframe(tsType);
 	}
 	return true; // if not can't type.
 	// after calling launch(); return false; if not launcher position is wrong!
 }
-function launchPeople(event) {
-	if (!document.getElementById('tslPeople_iframe')) {
-		createtsl_iframe('tslPeople');
-		showtsl_iframe('tslPeople');
-	} else {
-		killtsl_iframe('tslPeople');
-	}
-	return true; // if not can't type.
-	// after calling launch(); return false; if not launcher position is wrong!
-}
-
 
 function checkIt(event) {
 	// comma 188 ,
 	// space 32 deprecated
 	if (event.keyCode == 32 | event.keyCode == 188) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch(event);
+			launch('tsl', event);
 			return false;
 		}
 	}
 	// period 190 .
 	else if (event.keyCode == 190) {
-		if (0) // placeholder not yet enabled
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launchPeople(event);
+			launch('tslPeople', event);
 			return false;
 		}
 	}
@@ -253,11 +232,6 @@ function createtsl_iframe(tsType) {
 	tsl_iframe.setAttribute('scrolling', 'no');
 	tsl_iframe.style.position = 'absolute';
 	tsl_iframe.style.top = '-9999px';
-
-	tsl_iframe.style.top = "3px";
-	tsl_iframe.style.left = "3px";
-	tsl_iframe.style.visibility = "visible";
-	tsl_iframe.style.background = 'red';
 
 	// http://en.wikipedia.org/wiki/Display_resolution
 	// Smallest Display Listed is 320px x 200px
@@ -296,7 +270,8 @@ function createtsl_iframe(tsType) {
 			tsl_meat_box.appendChild(tsl_main_box); //[
 
 
-			if (tsType == 'tslPeople') {
+			// placeholder
+			if (tsType == 'placeholdeRtslPeople') {
 				var tsl_form;
 				tsl_form = tsl_idocument.createElement('form');
 				tsl_form.id = 'tsl_form';
@@ -329,7 +304,10 @@ function createtsl_iframe(tsType) {
 					var tsl_x;
 					tsl_x = tsl_idocument.createElement('a');
 					tsl_x.id = 'tsl_x';
-					tsl_x.href = 'javascript:top.killtsl_iframe();';
+
+					// switch
+					tsl_x.href = 'javascript:top.killtsl_iframe("' + tsType + '");';
+
 					tsl_x.innerHTML = 'TS';
 					tsl_x.style.marginRight = '10px';
 					tsl_x.style.color = 'black';
@@ -340,8 +318,17 @@ function createtsl_iframe(tsType) {
 					tsl_suggest_one = tsl_idocument.createElement('a');
 					tsl_suggest_one.id = 'tsl_suggest_one';
 					tsl_suggest_one.target = '_top';
-					tsl_suggest_one.href = 'javascript:top.remember(\'{$_COOKIE['launch']['page_name']}\', \'{$_COOKIE['launch']['translation_name']}\');';
-					tsl_suggest_one.innerHTML = '{$_COOKIE['launch']['translation_name']}';
+
+					// switch
+					if (tsType == 'tslPeople') {
+						tsl_suggest_one.href = 'javascript:top.remember("tslPeople", "{$_COOKIE["launch"]["tslPeople"]["value"]}", "{$_COOKIE["launch"]["tslPeople"]["display"]}");';
+						tsl_suggest_one.innerHTML = '{$_COOKIE["launch"]["tslPeople"]["display"]}';
+					}
+					else {
+						tsl_suggest_one.href = 'javascript:top.remember("tsl", "{$_COOKIE['launch']['tsl']['value']}", "{$_COOKIE['launch']['tsl']['display']}");';
+						tsl_suggest_one.innerHTML = '{$_COOKIE['launch']['tsl']['display']}';
+					}
+
 					tsl_suggest_one.style.color = 'black';
 					tsl_suggest_one.style.fontWeight = 'bold';
 					tsl_suggest_one.style.fontSize = '+1.5em';
@@ -357,7 +344,10 @@ function createtsl_iframe(tsType) {
 					tsl_input.style.color = '#010101';
 					tsl_input.type = "text";
 					tsl_input.autocomplete = "off";
-					tsl_input.setAttribute('onkeyup', 'window.top.showHint(this.value);');
+
+					//switch
+					tsl_input.setAttribute('onkeyup', 'window.top.showHint("' + tsType + '", this.value);');
+
 					tsl_input.style.background.color = '#ffffff';
 					tsl_form.appendChild(tsl_input);
 					var tsl_launch;
@@ -391,16 +381,24 @@ function createtsl_iframe(tsType) {
 				tsl_suggest_more.style.margin = '5px 40px 0px 40px';
 				tsl_suggest_more.style.padding = '0px';	
 				// used in 2x places (on creation and on input length of 0)
-				tsl_suggest_more.innerHTML = getSuggestMoreEmptyInput();
+				tsl_suggest_more.innerHTML = getSuggestMoreEmptyInput(tsType);
 				tsl_alternative_box.appendChild(tsl_suggest_more);
 			//]
 			}
 		}
 	}
 }
-function getMatchArray(myString) {
-	var tsl = new Array();
-	{$data['js_array_string']}
+function getMatchArray(tsType, myString) {
+
+	if (tsType == 'tslPeople') {
+		var tsl = JSON.parse('{$peopleJson}');
+	}
+	else {
+		var tsl = JSON.parse('{$pageJson}');
+	}
+	// testing on both sides
+	// var tsl = JSON.parse('{$pageJson}');
+
 	var tsl_match = new Array();
 	var tsl_limit = 5;
 	var tsl_matched = 0;
@@ -409,8 +407,8 @@ function getMatchArray(myString) {
 	myString = RegExp(myString, 'i');
 	for (var k1 in tsl) {
 		if (tsl_matched < tsl_limit ) {
-			if (tsl[k1].slice(0,sLength).match(myString)) {
-				tsl_match[k1] = tsl[k1];
+			if (tsl[k1].display.slice(0,sLength).match(myString)) {
+				tsl_match[tsl[k1].value] = tsl[k1].display;
 				tsl_matched += 1;
 			}
 		}
@@ -432,14 +430,31 @@ function getMatchArray(myString) {
 	for (var k1 in tsl_match) {
 		if (i == 0)
 			tsl_0_href = k1;
-		suggest_more_html += '<li id="tsl_li_' + i + '"><a style="color: black;" id="tsl_' + i 
-		+ '" href="javascript:window.parent.remember(\'' + k1 + '\',\'' + tsl_match[k1] + '\');" target="_top">' + tsl_match[k1] + '</a></li>';
+		// todo figure out how to display correctly for now we are just hacking certaing chars 
+		// var s1 = decodeURIComponent(tsl_match[k1]);
+		// todo make this work
+		// s1 = s1.replace('/\+/g', ' ');
+		var s1 = tsl_match[k1];
+		
+		if (tsType == 'tslPeople') {
+			suggest_more_html += '<li id="tsl_li_' + i + '"><a style="color: black;" id="tsl_' + i 
+			+ '" href="javascript:window.parent.remember(\'tslPeople\', \'' + k1 + '\',\'' + tsl_match[k1] + '\');" target="_top">' + s1 + '</a></li>';
+		}
+		else {
+			suggest_more_html += '<li id="tsl_li_' + i + '"><a style="color: black;" id="tsl_' + i 
+			+ '" href="javascript:window.parent.remember(\'tsl\', \'' + k1 + '\',\'' + tsl_match[k1] + '\');" target="_top">' + s1 + '</a></li>';
+		}
 		i++;
 	}
 	suggest_more_html += suggest_even_more_html;
-	tsl_iframe = document.getElementById('tsl_iframe');
+
+	if (tsType == 'tslPeople')
+		tsl_iframe = document.getElementById('tslPeople_iframe');
+	else
+		tsl_iframe = document.getElementById('tsl_iframe');
+
 	if (tsl_iframe) {
-		tsl_idocument = gettsl_idocument();
+		tsl_idocument = gettsl_idocument(tsType);
 		if (tsl_idocument) {
 			tsl_idocument.getElementById('tsl_suggest_more').innerHTML = suggest_more_html;
 			tsl_0 = tsl_idocument.getElementById('tsl_0');
@@ -447,10 +462,14 @@ function getMatchArray(myString) {
 			tsl_idocument.getElementById('tsl_suggest_one').innerHTML = tsl_0.innerHTML;
 			tsl_idocument.getElementById('tsl_suggest_one').href = tsl_0.href;
 
-			set_cookie('launch[page_name]', tsl_0_href, 365, '/')
-			set_cookie('launch[translation_name]', tsl_0.innerHTML, 365, '/')
-			
-			
+			if (tsType == 'tslPeople') {
+				set_cookie('launch[tslPeople][value]', tsl_0_href, 365, '/')
+				set_cookie('launch[tslPeople][display]', tsl_0.innerHTML, 365, '/')
+			}
+			else {
+				set_cookie('launch[tsl][value]', tsl_0_href, 365, '/')
+				set_cookie('launch[tsl][display]', tsl_0.innerHTML, 365, '/')
+			}
 			tsl_0.style.display = 'none'
 			tsl_idocument.getElementById('tsl_li_0').style.display = 'none'; // For IE and FF
 		}
@@ -461,22 +480,25 @@ function getSuggestMoreNoResult() {
 	return '';
 }
 // If empty input text | first launch
-function getSuggestMoreEmptyInput() {
-	// don't forget target="_top"
-	// jumbled together because it is difficult mixing 2 languages
-	return '<table><tr><td><a href="/"  target="_top" style="margin-left: -20px;"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a></td><td valign="center" style="padding-left: 5px;"><a href="/" target="_top" style="color: #000;">{$translation['page_name']['result']['main']['translation_name']}</a></td></tr></table>';
+function getSuggestMoreEmptyInput(tsType) {
+	if (tsType == 'tslPeople')
+		return '{$data['launch']['tslPeople']['empty']}';
+	else
+		return '{$data['launch']['tsl']['empty']}';
 }
-function showHint(str) {
-	tsl_iframe = document.getElementById('tsl_iframe');
+
+function showHint(tsType, str) {
+	// for some reason the next line fails for tslPeople
+	tsl_iframe = document.getElementById(tsType + '_iframe');
 	if (tsl_iframe) {
-		tsl_idocument = gettsl_idocument();
+		tsl_idocument = gettsl_idocument(tsType);
 		if (tsl_idocument) {
 			if (str.length==0) { 
-				tsl_idocument.getElementById('tsl_suggest_more').innerHTML=getSuggestMoreEmptyInput();
+				tsl_idocument.getElementById('tsl_suggest_more').innerHTML=getSuggestMoreEmptyInput(tsType);
 				return;
 			}
 			else {
-				getMatchArray(str);
+				getMatchArray(tsType, str);
 			}
 		}
 	}
