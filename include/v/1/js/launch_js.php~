@@ -48,6 +48,12 @@ $data['lock_query'] = get_lock_query();
 include('v/1/ajax/autopage_ajax.php');
 $pageJson = json_encode($data['json']);
 
+//testing hardcode
+//works
+//$_SESSION['login']['login_user_id'] = '132';
+// doesnt
+//$_SESSION['login']['login_user_id'] = '132';
+
 // slow?
 $_GET['all'] = 1;
 if ($_SESSION['login']['login_user_id']) {

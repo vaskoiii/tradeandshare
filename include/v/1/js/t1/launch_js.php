@@ -390,14 +390,10 @@ function createtsl_iframe(tsType) {
 }
 function getMatchArray(tsType, myString) {
 
-	if (tsType == 'tslPeople') {
+	if (tsType == 'tslPeople')
 		var tsl = JSON.parse('{$peopleJson}');
-	}
-	else {
+	else
 		var tsl = JSON.parse('{$pageJson}');
-	}
-	// testing on both sides
-	// var tsl = JSON.parse('{$pageJson}');
 
 	var tsl_match = new Array();
 	var tsl_limit = 5;
