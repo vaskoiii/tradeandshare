@@ -41,8 +41,8 @@ function remember(tsType, value, display) {
 	if (tsType == 'tslPeople') {
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?contact_user_mixed=' + encodeURI(value);
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/';
-		set_cookie('launch[tslPeople][value]', encodeURI(value), 365, '/');
-		set_cookie('launch[tslPeople][display]', encodeURI(display), 365, '/');
+		set_cookie('launch[tslPeople][value]', (value), 365, '/');
+		set_cookie('launch[tslPeople][display]', (display), 365, '/');
 	}
 	else {
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
