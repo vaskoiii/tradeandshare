@@ -40,7 +40,6 @@ function remember(tsType, value, display) {
 	var my_link;
 	if (tsType == 'tslPeople') {
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?contact_user_mixed=' + encodeURI(value);
-		my_link = 'https://{$_SERVER['HTTP_HOST']}/';
 		set_cookie('launch[tslPeople][value]', (value), 365, '/');
 		set_cookie('launch[tslPeople][display]', (display), 365, '/');
 	}
