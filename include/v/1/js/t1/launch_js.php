@@ -39,11 +39,12 @@ function set_cookie( name, value, expires, path, domain, secure ) {
 function remember(tsType, value, display) {
 	var my_link;
 	if (tsType == 'tslPeople') {
-		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?contact_user_mixed=' + encodeURI(value);
+		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?type=contact&contact_user_mixed=' + encodeURI(value);
 		set_cookie('launch[tslPeople][value]', (value), 365, '/');
 		set_cookie('launch[tslPeople][display]', (display), 365, '/');
 	}
 	else {
+		// todo forward to the portal_process
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
 		set_cookie('launch[tsl][value]', value, 365, '/');
 		set_cookie('launch[tsl][display]', display, 365, '/');

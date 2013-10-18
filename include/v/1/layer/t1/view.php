@@ -60,8 +60,8 @@ if ($x['preload']['focus'] == 'view')
 			case 'contact': # needed because sometimes ONLY lock_user_id exists for contact_view
 			case 'user': 
 				if (isset_gp('lock_user_id')) { ?>
-					<li><a href="<?= ffm('list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'item_list'); ?></a>*</li>
-					<li><a href="<?= ffm('list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'offer_list'); ?></a>*</li><?
+					<li><a href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'item_list'); ?></a>*</li>
+					<li><a href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'offer_list'); ?></a>*</li><?
 				}
 			break;
 		}
@@ -80,9 +80,9 @@ if ($x['preload']['focus'] == 'view')
 <dl>
 <dt><?= tt('page', 'new_area'); ?></dt>
 <dd>
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=newp&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=newp&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
+	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
 </dd>
 
 <?
@@ -100,7 +100,7 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 		$e1 = explode('_', $v2['page_name']); ?> 
 		<nobr>
 			<span class="spacer"><?= $config['spacer'] ?></span>
-			<a href="<?= ffm('list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+			<a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
 		</nobr><?
 	}
 	echo '</dd>';

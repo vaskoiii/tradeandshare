@@ -112,6 +112,17 @@ $interpret['lookup']['focus'] = '';
 $interpret['lookup']['preview'] = array('');
 $interpret['lookup']['expand'] = array('');
 
+# todo integrate into process_data_translation()
+# unsets the corresponding variables if they were set
+if ($interpret['lookup']['user_id'] && !$interpret['lookup']['contact_id'])
+	$interpret['lookup']['contact_id'] = '';
+if (!$interpret['lookup']['user_id'] && $interpret['lookup']['contact_id'])
+	$interpret['lookup']['user_id'] = '';
+if ($interpret['lookup']['lock_user_id'] && !$interpret['lookup']['lock_contact_id'])
+	$interpret['lookup']['lock_contact_id'] = '';
+if (!$interpret['lookup']['lock_user_id'] && $interpret['lookup']['lock_contact_id'])
+	$interpret['lookup']['lock_user_id'] = '';
+
 if ($interpret['lookup'])
 	$s1 = http_build_query($interpret['lookup']);
 else
