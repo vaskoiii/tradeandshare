@@ -806,11 +806,11 @@ function process_does_exist() {
 	$id = & $process['action_miscellaneous']['id'];
 	$lookup = & $interpret['lookup'];
 
-
 	if($message)
 		return $message;
 
-	// get special values!
+	# get special values!
+	# i_ for "inactive"
 	if ($lookup['xor_contact_name'])
 		$lookup['i_xor_contact_id'] = get_db_single_value('
 				id
@@ -994,7 +994,7 @@ function process_does_exist() {
 					LIMIT
 						1
 				';
-				$result = mysql_query($result) OR die(mysql_error());
+				$result = mysql_query($sql) OR die(mysql_error());
 			}
 		break;
 		case 'groupmate':
@@ -1067,7 +1067,7 @@ function process_does_exist() {
 					LIMIT
 						1
 				';
-				$result = mysql_query($result) OR die(mysql_error());
+				$result = mysql_query($sql) OR die(mysql_error());
 			}
 		break;
 		case 'teammate':
@@ -1202,6 +1202,12 @@ function process_does_exist() {
 	if ($does_exist) {
 	if ($x['name'] == 'edit_process') {
 	switch($type) {
+		case 'group':
+			# no reason to not be able to update if it exists
+			# todo deal with change the name of a group to a group that already existed but was deleted
+			# currently adds another group with the submitted info and you have to delete the one you were editing after
+			# 2012-10-16 vaskoiii
+		break;
 		case 'profile':
 		case 'user':
 			if (!$message) // allows custom message for this function() ONLY!

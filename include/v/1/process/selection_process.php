@@ -18,19 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: Do specified action on selection
-# 2013-10 only using a 1-listing selection with the following 3 action cases below
-# TODO: consider commenting out unused logic 2013-10-10 vaskoiii
-
-switch(get_gp('action')) {
-case 'delete': # delete teammate: new logic for vote_list 2013-10-11 vaskoiii
-	case 'remember':
-	case 'forget':
-	break;
-	default:
-		die('action case not tested');
-	break;
-}
 
 add_translation('element', 'error_field_missing');
 add_translation('element', 'transaction_complete');
@@ -40,6 +27,31 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $login_us
 $process = array(); # Sent to process
 $interpret = array(); # Interpreted from $process
 $interpret['lookup'] = array();
+
+# Contents/Description: Do specified action on selection
+# 2013-10 only using a 1-listing selection with the following 3 action cases below
+# TODO: consider commenting out unused logic 2013-10-10 vaskoiii
+
+$action = get_gp('action');
+$type = get_gp('list_name');
+switch(get_gp('action')) {
+	case 'delete': # delete teammate: new logic for vote_list 2013-10-11 vaskoiii
+		switch($type) {
+			case 'team':
+				# $interpret['message'] = 'not allowed';
+				process_failure($type . ' ' . $action . ' case not tested - aborted');
+				exit;
+			break;
+		}
+	break;
+	case 'remember':
+	case 'forget':
+	break;
+	default:
+		# $interpret['message'] = 'not allowed';
+		die($type . ' ' . $action . ' action case not tested');
+	break;
+}
 
 # shortcuts
 $login_user_id = $_SESSION['login']['login_user_id'];

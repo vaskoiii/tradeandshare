@@ -98,19 +98,11 @@ $process['form_info'] = get_action_header_1();
 foreach($process['form_info'] as $k1 => $v1)
 	$process['form_info'][$k1] = get_gp($k1);
 
-$process['action_miscellaneous']['id'] = '';
-if (isset_gp('id'))
-	$process['action_miscellaneous']['id'] = get_gp('id');
-
-$process['action_miscellaneous']['load'] = '';
-if (isset_gp('load'))
-	$process['action_miscellaneous']['id'] = get_gp('load');
-
 $process['action_content_1']  = get_action_content_1($process['form_info']['type'], 'edit');
 $process['action_content_2']  = get_action_content_2($process['form_info']['type'], 'edit');
 
 # shortcuts
-$id = & $process['action_miscellaneous']['id'];
+$id = & $process['form_info']['id'];
 $lookup = & $interpret['lookup'];
 $action_content_1 = & $process['action_content_1'];
 $action_content_2 = & $process['action_content_2'];
