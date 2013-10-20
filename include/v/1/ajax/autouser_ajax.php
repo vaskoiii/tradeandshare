@@ -40,7 +40,8 @@ $data['not_user_id'] = array();
 
 # Maybe we have to get an array of usernames that were already used (easiest)
 # Get contacts with user names
-if (get_gp('unused') == 1) {
+# maybe can't use variables in the ajax
+# if (get_gp('unused') == 1) {
 	$sql = '
 		SELECT
 			lcu.user_id
@@ -49,14 +50,15 @@ if (get_gp('unused') == 1) {
 			' . $config['mysql']['prefix'] . 'link_contact_user lcu
 		WHERE
 			c.id = lcu.contact_id AND
-			c.user_id = ' . (int)$_SESSION['login']['login_user_id']
-	;
+			c.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' AND
+			c.active = 1
+	';
 	# no limit because we have to get all of the values
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$data['not_user_id'][$row['user_id']] = $row['user_id'];
 	}
-}
+# }
 
 # second 5 are user matches (for contact/user pairs)
 $sql = '
