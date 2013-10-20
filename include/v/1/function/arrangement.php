@@ -324,8 +324,9 @@ function get_action_content_1($type = false, $name = false) {
 				case 'contact':
 					$array = array(
 						'contact_user_mixed' => '',
-						'user_name' => '',
+						# order switch
 						'contact_name' => '',
+						'user_name' => '',
 						'accept_friend' => '',
 					);
 				break;

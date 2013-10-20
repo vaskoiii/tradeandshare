@@ -12,4 +12,8 @@ jQuery(function($){
 		width: '200px',
 		ajax: '/index.php?x=/autopage_ajax/'
 	});
+	$('input[name=user_name]').autoComplete({
+		width: '200px',
+		ajax: '/index.php?x=/autouser_ajax/?unused=1'
+	});
 });

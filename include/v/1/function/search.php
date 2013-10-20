@@ -479,7 +479,6 @@ function get_default_value($input, $load, & $x = null) {
 # maybe load should be the first parameter 2012-03-15 vaskoiii
 function print_container(& $container, & $listing = null, & $key = null, & $translation = null, $load = '', & $option = null) {
 
-
 	# todo: these globals should not be used! 2012-03-07 vaskoiii
 	if (!$listing) {
 		global $data;
@@ -518,6 +517,8 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 
 	if (!empty($container)) {
 	foreach($container as $k1 => $v1) {
+
+	$s3 = ''; # reset each run;
 
 	if ($k1 == 'background_theme_name')
 		;#die('v1=' . $v1);
@@ -747,7 +748,12 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 				<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
-		case 'contact_user_mixed': ?>
+		case 'contact_user_mixed':
+			if ($load == 'action') {
+			if ($x['load'][$load]['type'] == 'contact') {
+			if ($x['load'][$load]['name'] == 'edit') {
+			}}}
+			else { ?>
 			<div class="k"><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name"><?= to_html($config['unabstracted_prefix']) . tt('element', 'user_name') . to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><?
 				$s1 = ''; ?> 
@@ -773,8 +779,14 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				}
 				?>" />
 			</div><?
+			}
 		break;
-		case 'lock_contact_user_mixed': ?> 
+		case 'lock_contact_user_mixed':
+			if ($load == 'action') {
+			if ($x['load'][$load]['type'] == 'contact') {
+			if ($x['load'][$load]['name'] == 'edit') {
+			}}}
+			else { ?>
 			<div class="k"><span class="lock_contact_name"><?= tt('element', 'lock_contact_name'); ?></span> <span class="lock_user_name"><?= to_html($config['unabstracted_prefix']); ?><?= tt('element', 'lock_user_name'); ?><?= to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?
 
@@ -789,14 +801,32 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					: ''
 				);
 			} ?>" /></div><?
+			}
 		break;
 		case 'lock_user_name':
 		case 'lock_contact_name':
-			# dont show these fields they are ambiguous though there is some backend logic that is still needed (just not display stuff).
-		break;
+			# might need to be shown on contact_edit only
+			# $s3 = ''; # at begining of foreach()
+			$s3 = 'lock_';
+		# nobreak;
 		case 'user_name':
 		case 'contact_name': 
-			# also ambiguous
+			if ($load == 'action') {
+			if ($x['load'][$load]['type'] == 'contact') {
+			if ($x['load'][$load]['name'] == 'edit') {
+				# need a special classname for the ajax ?> 
+				<div class="k"><span class="<?= $s3.$k1; ?>"><?= tt('element', $s3.$k1); ?></span></div>
+				<div class="v"><input type="text" class="<?= $s3.$k1; ?>" name="<?= $s3.$k1; ?>" value="<?
+					if ($_SESSION['process']['failure'])
+						echo $_SESSION['process']['search_content_2'][$s3.$k1];
+					else {
+						if ($k1 == 'user_name') {
+							echo $key['contact_id']['result'][$listing['contact_id']]['user_name'];
+						}
+						echo $container[$s3.$k1];
+					}
+				?>" /></div><?
+			} } }
 		break;
 		default: ?>
 		<span valign="top">

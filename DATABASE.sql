@@ -2624,3 +2624,7 @@ insert into ts.ts_page set parent_id = 321, file_id = 27, name = 'autopage_ajax'
 
 -- why not have this option on the launcher?
 update ts_page set launch=1 where name like '%_portal';
+
+-- =)
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '27', 'autouser_ajax', '1', '2', '2', '2', '2');
+

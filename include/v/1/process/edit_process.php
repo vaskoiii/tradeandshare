@@ -162,6 +162,15 @@ switch ($k2) {
 			$s1 = 'lock_';
 		switch ($process['form_info']['type']) {
 			case 'contact':
+				# special case use normal fields
+				contact_user_mixed_split('action_content_1', $s1, 1); # previous logic
+				# override
+				if ($k1 == 'action_content_1') {
+					$process[$k1][$s1 . 'contact_name'] = get_gp($s1 . 'contact_name');
+					$process[$k1][$s1 . 'user_name'] = get_gp($s1 . 'user_name');
+				}
+				
+			break;
 			case 'note':
 			case 'groupmate':
 				contact_user_mixed_split('action_content_1', $s1, 1);
@@ -314,6 +323,12 @@ switch($type) {
 		if (!$action_content_1['user_name']) {
 			$message = tt('element', 'error') . ' : ' . tt('element', 'accept_friend') . ' + ' . tt('element', 'user_name');
 		} }
+		# todo fix so that contact name can include any characters except ( and ) 2013-10-20 vaskoiii
+		# todo requires deeper fixing with javascript ie) launcher, ajax, url encoding/decoding
+		$s1 = '/[^a-zA-Z0-9 ]/i';
+		if (preg_match($s1,$action_content_1['contact_name']))
+			$message = tt('element', 'error') . ' : ' . tt('element', 'contact_name') . ' = ' . tt('element', 'invalid_entry');
+		unset($s1);
 	break;
 	case 'profile':
 		if ($action_content_1['accept_usage_policy'] != 1)
