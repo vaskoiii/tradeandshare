@@ -36,6 +36,12 @@ $data['theme']['color'] = $s1;
 
 # extra translation  it is done again below.
 add_translation('page', 'main');
+# elements for now
+add_translation('element', 'page_parent');
+add_translation('element', 'page_next');
+add_translation('element', 'page_previous');
+add_translation('element', 'page_last');
+add_translation('element', 'page_first');
 do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']);
 
 $data['css']['theme_name'] = 'theme_' . $data['theme']['color']; # like using a function paramerter for the include below
@@ -46,6 +52,22 @@ $data['lock_query'] = get_lock_query();
 
 # reuse data from the ajax
 include('v/1/ajax/autopage_ajax.php');
+# custom (back/next/previous/first/last)
+#print_r($data);
+$a1 = array(
+	'page_parent',
+	'page_next',
+	'page_previous',
+	'page_last',
+	'page_first',
+);
+foreach ($a1 as $k1 => $v1) {
+	$data['json'][] = array(
+		'value' => $v1,
+		'display' => tt('element', $v1),
+	);
+}
+
 $pageJson = json_encode($data['json']);
 
 // slow?
@@ -84,6 +106,8 @@ if ($_SESSION['login']['login_user_id']) {
 }
 else
 	$peopleJson = '';
+
+$request_uri=  $_SERVER['REQUEST_URI'];
 
 # Easy customization of the empty pages (ordinarily style doesnt go in the engine pages)
 # don't forget target="_top"

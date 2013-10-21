@@ -44,13 +44,29 @@ function remember(tsType, value, display) {
 		set_cookie('launch[tslPeople][display]', (display), 365, '/');
 	}
 	else {
-		// todo forward to the portal_process
-		my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
-		set_cookie('launch[tsl][value]', value, 365, '/');
-		set_cookie('launch[tsl][display]', display, 365, '/');
-		// ADD LOCK
-		if (value.match(RegExp('_list', '')) || value.match(RegExp('_edit', '')) || value.match('main') || value.match(''))
-			my_link += '{$data['lock_query']}';
+		switch (value) {
+			case 'page_parent':
+			case 'page_next':
+			case 'page_previous':
+			case 'page_first':
+			case 'page_last':
+				// from the top window location we can go back/next/last/etc
+				// it is easier to deal with xx and qq as custom and start from scratch
+				// alert(window.top.location.href);
+				my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?type=go&where=' + value + '&xx=' + encodeURIComponent(window.top.location.pathname) + '&qq=' + encodeURIComponent(window.top.location.search);
+				set_cookie('launch[tsl][value]', value, 365, '/');
+				set_cookie('launch[tsl][display]', display, 365, '/');
+			break;
+			default:
+				// todo forward to the portal_process
+				my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
+				set_cookie('launch[tsl][value]', value, 365, '/');
+				set_cookie('launch[tsl][display]', display, 365, '/');
+				// ADD LOCK
+				if (value.match(RegExp('_list', '')) || value.match(RegExp('_edit', '')) || value.match('main') || value.match(''))
+					my_link += '{$data['lock_query']}';
+			break;
+		}
 	}
 	window.open(my_link, '_top');
 } 

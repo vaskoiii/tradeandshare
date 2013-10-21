@@ -2628,3 +2628,5 @@ update ts_page set launch=1 where name like '%_portal';
 -- =)
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '27', 'autouser_ajax', '1', '2', '2', '2', '2');
 
+-- first/next/previous/last/parent
+INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'page_parent'), (NULL, 'page_next'), (NULL, 'page_previous'), (NULL, 'page_first'), (NULL, 'page_last');
