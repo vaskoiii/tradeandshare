@@ -749,11 +749,13 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
 		case 'contact_user_mixed':
+			$b2 = 2;
 			if ($load == 'action') {
 			if ($x['load'][$load]['type'] == 'contact') {
 			if ($x['load'][$load]['name'] == 'edit') {
+				$b2 = 1;
 			}}}
-			else { ?>
+			if ($b2 == 2) { ?>
 			<div class="k"><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name"><?= to_html($config['unabstracted_prefix']) . tt('element', 'user_name') . to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><?
 				$s1 = ''; ?> 
@@ -782,11 +784,13 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			}
 		break;
 		case 'lock_contact_user_mixed':
+			$b2 = 2;
 			if ($load == 'action') {
 			if ($x['load'][$load]['type'] == 'contact') {
 			if ($x['load'][$load]['name'] == 'edit') {
+				$b2 = 1;
 			}}}
-			else { ?>
+			if ($b2 == 2) { ?>
 			<div class="k"><span class="lock_contact_name"><?= tt('element', 'lock_contact_name'); ?></span> <span class="lock_user_name"><?= to_html($config['unabstracted_prefix']); ?><?= tt('element', 'lock_user_name'); ?><?= to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?
 
@@ -814,6 +818,8 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			if ($load == 'action') {
 			if ($x['load'][$load]['type'] == 'contact') {
 			if ($x['load'][$load]['name'] == 'edit') {
+				# todo rename this to unused_user_name/unused_lock_user_name if we need to differentiate
+				# we already do login_user_name to differentiate
 				# need a special classname for the ajax ?> 
 				<div class="k"><span class="<?= $s3.$k1; ?>"><?= tt('element', $s3.$k1); ?></span></div>
 				<div class="v"><input type="text" class="<?= $s3.$k1; ?>" name="<?= $s3.$k1; ?>" value="<?
