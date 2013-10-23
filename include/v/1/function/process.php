@@ -1298,7 +1298,7 @@ function process_success($message,  $location = false, $amod = array()) {
 		exit;
 	}
 	else {
-		$s1 = $process['action_miscellaneous']['load'];
+		$s1 = $process['form_info']['load'];
 		$_SESSION['interpret']['preload']['focus'] = $s1;
 		$interpret['preload']['focus'] = 'action';
 
