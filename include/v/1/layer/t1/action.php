@@ -204,9 +204,16 @@ switch($k1) {
 <div class="menu_2">
 <ul><?
 	# todo make sure id is ONLY used for action if used at all 2012-05-02 vaskoiii
-	if ($x['load']['action']['id']) { ?> 
-		<li><a href="./<?= ffm('id=&action_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
+	# form clearing
+	$b1 = 2;
+	if (get_gp('action_tag_id'))
+		$b1 = 1;
+	elseif ($x['load']['action']['id'])
+		$b1 = 1;
+	if ($b1 == 1) { ?> 
+		<li><a href="./<?= ffm('id=&action_id=&action_tag_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
 	}
+
 	if (!empty($data['action']['response']['action_footer_2'])) {
 	foreach($data['action']['response']['action_footer_2'] as $k1 => $v1) {
 	switch($k1) {
