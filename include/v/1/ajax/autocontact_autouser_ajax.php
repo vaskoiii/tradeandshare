@@ -23,6 +23,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Allow: value = ''
 $value = get_gp('value');
 $all = get_boolean_gp('all'); # use to drop the limits ( Dont test against 0: true = 1 AND false = 2 )
+$contact_only = get_boolean_gp('contact_only'); # use to drop the limits ( Dont test against 0: true = 1 AND false = 2 )
 
 # placeholder for when we want the result set to have differnt styles
 # $style = get_gp('style');
@@ -57,6 +58,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	);
 	$data['contact_id'][$row['contact_id']] = $row['contact_id'];
 }
+if ($contact_only != 1) { # hack for the contact_launcher
 if (!empty($data['contact_id'])) {
 	$sql = '
 		SELECT
@@ -127,6 +129,7 @@ if (!empty($data['user_id'])) {
 		$data['autouser'][$row['user_id']]['value'] = html_entity_decode(strip_tags($data['autouser'][$row['user_id']]['display']));
 	}
 }
+} # /if ($contact_only != 1)
 
 # help issues with PHP json_encode() prior to 5.3.0 (and possibly after)
 if (is_array($data['autocontact']) && is_array($data['autouser']))

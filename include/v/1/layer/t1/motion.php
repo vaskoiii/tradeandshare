@@ -74,13 +74,14 @@ foreach($data['motion']['response'] as $k1 => $v1) {
 if (!empty($v1)) {
 foreach($v1 as $k2 => $v2) {
 switch($k2) {
-	case 'load_javascript':
+	case 'accept_friend':
 	case 'accept_usage_policy':
-	case 'remember_login':
-	case 'notify_teammate_received':
-	case 'notify_offer_received':
 	case 'feature_lock':
 	case 'feature_minnotify':
+	case 'load_javascript':
+	case 'notify_offer_received':
+	case 'notify_teammate_received':
+	case 'remember_login':
 		# dont override checkboxes
 	break;
 	// Special variable ONLY used on invitation!

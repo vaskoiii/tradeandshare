@@ -750,11 +750,15 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		break;
 		case 'contact_user_mixed':
 			$b2 = 2;
-			if ($load == 'action') {
-			if ($x['load'][$load]['type'] == 'contact') {
-			if ($x['load'][$load]['name'] == 'edit') {
-				$b2 = 1;
-			}}}
+			switch($load) {
+				case 'motion':
+				case 'action':
+					if ($x['load'][$load]['type'] == 'contact') {
+					if ($x['load'][$load]['name'] == 'edit') {
+						$b2 = 1;
+					} }
+				break;
+			}
 			if ($b2 == 2) { ?>
 			<div class="k"><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name"><?= to_html($config['unabstracted_prefix']) . tt('element', 'user_name') . to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><?
@@ -785,11 +789,15 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		break;
 		case 'lock_contact_user_mixed':
 			$b2 = 2;
-			if ($load == 'action') {
-			if ($x['load'][$load]['type'] == 'contact') {
-			if ($x['load'][$load]['name'] == 'edit') {
-				$b2 = 1;
-			}}}
+			switch($load) {
+				case 'motion':
+				case 'action':
+					if ($x['load'][$load]['type'] == 'contact') {
+					if ($x['load'][$load]['name'] == 'edit') {
+						$b2 = 1;
+					} }
+				break;
+			}
 			if ($b2 == 2) { ?>
 			<div class="k"><span class="lock_contact_name"><?= tt('element', 'lock_contact_name'); ?></span> <span class="lock_user_name"><?= to_html($config['unabstracted_prefix']); ?><?= tt('element', 'lock_user_name'); ?><?= to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?
@@ -815,9 +823,17 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		# nobreak;
 		case 'user_name':
 		case 'contact_name': 
-			if ($load == 'action') {
-			if ($x['load'][$load]['type'] == 'contact') {
-			if ($x['load'][$load]['name'] == 'edit') {
+			$b2 = 2;
+			switch($load) {
+				case 'motion':
+				case 'action':
+					if ($x['load'][$load]['type'] == 'contact') {
+					if ($x['load'][$load]['name'] == 'edit') {
+						$b2 = 1;
+					} }
+				break;
+			}
+			if ($b2 == 1) {
 				# todo rename this to unused_user_name/unused_lock_user_name if we need to differentiate
 				# we already do login_user_name to differentiate
 				# need a special classname for the ajax ?> 
@@ -832,7 +848,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 						echo $container[$s3.$k1];
 					}
 				?>" /></div><?
-			} } }
+			}
 		break;
 		default: ?>
 		<span valign="top">

@@ -961,7 +961,7 @@ switch($type) {
 					set
 						active = 1
 					where
-						user_id = ' . (int)$lookup['user_id'] . ',
+						user_id = ' . (int)$lookup['user_id'] . ' AND
 						team_id = ' . (int)$i1 . '
 					limit
 						1
@@ -972,8 +972,45 @@ switch($type) {
 		}
 		else {
 			# check if user is on team
-
 			# if is then remove from team
+			$s1 = '<*' . $_SESSION['login']['login_user_name'] .  '>';
+			$i1 = get_db_single_value('
+					ltu.id
+				FROM
+					' . $config['mysql']['prefix'] . 'team t,
+					' . $config['mysql']['prefix'] . 'link_team_user ltu
+					
+				WHERE
+					t.id = ltu.team_id AND
+					t.name = ' . to_sql($s1) . ' AND
+					t.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' AND
+					ltu.user_id = ' . (int)$lookup['user_id']
+			);
+			if ($i1) {
+				$sql = '
+					UPDATE
+						' . $config['mysql']['prefix'] . 'link_team_user
+					SET
+						active = 2
+					WHERE
+						id = ' . (int)$i1;
+				;
+				$result = mysql_query($sql) or die(mysql_error());
+			}
+		}
+		if (!$lookup['user_id']) {
+			# we deleted the user_id so when we go back we can not have user_id_in the url
+
+			# (applies to the view page only)
+			if ($x['form_info']['load'] == 'motion') {
+				$a1 = array(
+					'lock_user_id' => '',
+					'user_id' => '',
+					'lock_contact_id' => $interpret['lookup']['contact_id'],
+				);
+				process_success(tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : ''), false, $a1);
+			}
+
 		}
 	break;
 }

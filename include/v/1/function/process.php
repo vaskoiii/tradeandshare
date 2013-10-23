@@ -803,7 +803,7 @@ function process_does_exist() {
 	$message = & $interpret['message'];
 	$prefix = & $config['mysql']['prefix'];
 	$action_content_1 = & $process['action_content_1'];
-	$id = & $process['action_miscellaneous']['id'];
+	$id = & $process['form_info']['id'];
 	$lookup = & $interpret['lookup'];
 
 	if($message)
@@ -1278,7 +1278,7 @@ function process_failure($message, $location = false) {
 	}
 }
 
-function process_success($message,  $location = false) {
+function process_success($message,  $location = false, $amod = array()) {
 	global $process;
 	global $x;
 	global $q;
@@ -1308,6 +1308,10 @@ function process_success($message,  $location = false) {
 		$a1['focus'] = '';
 		$a1['preview'] = array(''); 
 		$a1['expand'] = array('');
+
+
+		if (!empty($amod))
+			$a1 = array_merge($amod, $a1);
 
 		# profile_set naming would eliminate the need for this extra part
 		switch($process['form_info']['type']) {

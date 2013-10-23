@@ -197,11 +197,23 @@ function gettsl_idocument(tsType) {
 	return tsl_idocument;
 }
 function launch(tsType, event) {
-	if (!document.getElementById(tsType + '_iframe')) {
+	var tsOtherType;
+	if (tsType == 'tsl') {
+		tsOtherType = 'tslPeople';
+	}
+	if (tsType == 'tslPeople') {
+		tsOtherType = 'tsl';
+	}
+	var o1 = document.getElementById(tsType + '_iframe');
+	var o2 = document.getElementById(tsOtherType + '_iframe');
+	if (!o1) {
 		createtsl_iframe(tsType);
 		showtsl_iframe(tsType);
-	} else {
+		killtsl_iframe(tsOtherType);
+	}
+	else {
 		killtsl_iframe(tsType);
+		killtsl_iframe(tsOtherType);
 	}
 	return true; // if not can't type.
 	// after calling launch(); return false; if not launcher position is wrong!

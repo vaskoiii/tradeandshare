@@ -36,6 +36,7 @@ $data['theme']['color'] = $s1;
 
 # extra translation  it is done again below.
 add_translation('page', 'main');
+add_translation('page', 'login_set');
 # elements for now
 add_translation('element', 'page_parent');
 add_translation('element', 'page_next');
@@ -70,8 +71,9 @@ foreach ($a1 as $k1 => $v1) {
 
 $pageJson = json_encode($data['json']);
 
-// slow?
+# username overflows the launcher and there is no logic to search for user name as of 2013-10-23 vaskoiii
 $_GET['all'] = 1;
+$_GET['contact_only'] = 1;
 if ($_SESSION['login']['login_user_id']) {
 	$data['json'] = array(); # clear the previous page data
 	include('v/1/ajax/autocontact_autouser_ajax.php');
@@ -145,7 +147,7 @@ $data['launch']['tslPeople']['empty'] = <<<HTML
 	<a href="{$s1}" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
 	</td>
 	<td valign="center" style="padding-left: 5px;">
-	<a href="{$s1}" target="_top" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a>)</td>
+	<a href="{$s1}" target="_top" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a></td>
  </tr></table>
 HTML;
 }
