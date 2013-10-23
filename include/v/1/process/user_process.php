@@ -55,23 +55,13 @@ if (empty($lookup['user_password']) && !empty($action_content_1['user_password_u
 	$lookup['user_password'] = md5($action_content_1['user_password_unencrypted_again']); # super simple password encryption
 
 # error
-# these guys are really global so they probably dont need parameters. 2012-03-10 vaskoiii
-process_field_missing('action_content_1');
-process_does_not_exist('action_content_1');
-process_does_exist('action_content_1');
+# more relevant error messages should be at the top
 if (!$message) {
-	if ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
-		$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
-	elseif (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name']))
-		$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
-	elseif (preg_match("/[<>]/", $action_content_1['login_user_name']))
-		$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'reserved_character') . ' : <>';
-	elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
-		$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
-	elseif (!$lookup['invite_id']) {
+	# dont make users waste time fixing error messages 1 by 1 if they wont even be able to register in the end
+	if (!$lookup['invite_id']) {
 		if ($_SESSION['login']['login_user_name'] == $action_content_1['invite_user_name']) {
 			if ($action_content_1['invite_password'] != 'peer_authenticated')
-				$message = tt('element', 'invite_password') . ' != ' . 'peer_authenticated'; // special hardcoded value
+				$message = tt('element', 'invite_password') . ' != ' . 'peer_authenticated'; # special hardcoded value
 			else {
 				$sql = '
 					INSERT INTO
@@ -92,8 +82,22 @@ if (!$message) {
 			$message = tt('element', 'invite_user_name') . ' + ' . tt('element', 'invite_password') . ' : ' . tt('element', 'error_invalid_entry');
 		}
 	}
+	elseif ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
+		$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
+	elseif (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name']))
+		$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
+	elseif (preg_match("/[<>]/", $action_content_1['login_user_name']))
+		$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'reserved_character') . ' : <>';
+	elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
+		$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
 }
 
+# these guys are really global so they probably dont need parameters. 2012-03-10 vaskoiii
+process_field_missing('action_content_1');
+process_does_not_exist('action_content_1');
+process_does_exist('action_content_1');
+
+# failure
 process_failure($message);
 
 # main_add_edit

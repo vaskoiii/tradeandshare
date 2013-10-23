@@ -29,6 +29,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="content_box"> <?
 	if (!$_SESSION['process']['failure']) {
+	if (!empty($data['result']['result']['listing'])) {
 	foreach ($data['result']['result']['listing'] as $k1 => $v1) { ?> 
 	<p><?
 	print_listing_template(
@@ -42,7 +43,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		# , $style
 	); ?> 
 	</p><?
-	} }
+	} } }
 
 	if (!$data['result']['result']['total'] || $_SESSION['process']['failure']) { 
 		if ($_SESSION['interpret']['failure']) { ?> 

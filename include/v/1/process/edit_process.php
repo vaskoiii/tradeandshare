@@ -689,7 +689,7 @@ switch($type) {
 		# todo integrate these variables into $tsmail 2012-04-10 vaskoiii
 		$email_sent = false;
 		$email_subject = $config['title_prefix'] . 'Invite Link' . $config['spacer'] . 'Valid 1 Week ';
-		$email_body = 'https://' . $_SERVER['HTTP_HOST'] . '/user_edit/?invite_user_id=' . to_url($login_user_id) . '&invite_password=' . to_url($lookup['invite_password']);
+		$email_body = 'https://' . $_SERVER['HTTP_HOST'] . '/user_edit/?action_invite_user_id=' . to_url($login_user_id) . '&action_invite_password=' . to_url($lookup['invite_password']);
 
 		$tsmail = array();
 		$tsmail['data']['search']['response']['search_miscellaneous']['feature_minnotify'] = 1;

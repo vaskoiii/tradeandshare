@@ -307,8 +307,17 @@ if ($x['load']['action']['name'])
 	include($x['site']['i'] . 'layer/action.php');
 switch($x['load']['list']['name']) {
 	case 'list':
-		include($x['site']['i'] . 'layer/search.php');
-		include($x['site']['i'] . 'layer/result.php');
+		# dont show user names if not logged in
+		$b1 = 2;
+		if (!$_SESSION['login']['login_user_id']) {
+		if ($x['page']['name'] == 'user_edit') {
+			$b1 = 1;
+		} }
+		if ($b1 == 2) {
+			include($x['site']['i'] . 'layer/search.php');
+			include($x['site']['i'] . 'layer/result.php');
+		}
+		unset($b1);
 	break;
 	case 'doc':
 		# not yet...
@@ -334,8 +343,17 @@ if ($x['load']['action']['name'])
 	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'action.php');
 switch($x['load']['list']['name']) {
 	case 'list':
-		include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'search.php');
-		include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'result.php');
+		# dont show user names if not logged in
+		$b1 = 2;
+		if (!$_SESSION['login']['login_user_id']) {
+		if ($x['page']['name'] == 'user_edit') {
+			$b1 = 1;
+		} }
+		if ($b1 == 2) {
+			include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'search.php');
+			include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'result.php');
+		}
+		unset($b1);
 	break;
 	case 'doc':
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php'); ?> 

@@ -59,6 +59,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				case 'invite_edit':
 				case 'profile_edit':
 				break;
+				case 'user_edit':
+					# dont show edit button when registering
+					if (!$_SESSION['login']['login_user_id'])
+						break;
+				# nobreak;
 				default:
 				if ($x['load']['action']['type']) {?> 
 					<a href="javascript: even_more_toggle('action_box', 'list_title_box');"><?
@@ -93,9 +98,24 @@ if ($x['preload']['focus'] == 'action')
 
 # action box start ?> 
 <span id="action_box"  style="display: <?= get_action_style_display(); ?>;">
-<div class="content">
-<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
-<input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $x['load']['action']['name']; ?>_process/" />
+<div class="content"><?
+# special case when not logged in
+# todo separate page for this?
+$b1 = 2;
+if (!$_SESSION['login']['login_user_id']) {
+if ($x['page']['name'] == 'user_edit') {
+	$b1 = 1;
+} }
+if ($b1 == 1) { ?> 
+	<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
+	<input type="hidden" name ="x" value="<?= to_html($x['.']); ?>user_process/" /><?
+}
+else { ?> 
+	<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
+	<input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $x['load']['action']['name']; ?>_process/" /><?
+}
+unset($b1);
+?> 
 <input type="hidden" name="q" value="<?= ff('', 1); ?>" />
 <input type="hidden" name="load" value="action" />
 <input type="hidden" name="type" value="<?= $x['load']['action']['type']; ?>" />

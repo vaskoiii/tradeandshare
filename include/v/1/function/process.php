@@ -706,13 +706,20 @@ function process_field_missing($container = 'edit_content_1') {
 	$arrangement = & $process[$container];
 	$message = & $interpret['message'];
 
-	if ($x['name'] == 'edit_process') # includes: /user_edit/?id=X AND /user_edit/
+	$b1 = 2;
+	if ($x['name'] == 'edit_process') # does: include('user_edit.php');
+		$b1 = 1;
+	if ($x['name'] == 'user_process') # special process file
+		$b1 = 1;
+	if ($b1)
 	switch($process['form_info']['type']) {
 		case 'user':
 			if ($arrangement['accept_usage_policy'] != 1)
 				$field_missing = 'accept_usage_policy';
 		break;
 	}
+	unset($b1);
+
 	if ($field_missing)
 		$message = tt('element', $field_missing) . ' : ' . tt('element', 'error_field_missing');
 
