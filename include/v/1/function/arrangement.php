@@ -384,6 +384,7 @@ function get_action_content_1($type = false, $name = false) {
 						'user_password_unencrypted' => '',
 						'user_password_unencrypted_again' => '',
 						'user_email' => '',
+						'invite_id' => '',
 						'invite_user_name' => '',
 						'invite_password' => '',
 						'accept_usage_policy' => '',

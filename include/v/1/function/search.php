@@ -530,6 +530,9 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		# case 'kind_name_translation_name':
 		# todo create less ambiguity by creating a separate case
 		# break;
+		case 'invite_id': ?>
+			<input type="hidden" name="invite_id" value="<?= get_gp('action_invite_id'); ?>" /><?
+		break;
 		case 'kind_name_name': # tricky because engine uses generic values instead of the more specific translation_kind_name_name 2012-03-10 vaskoiii ?> 
 			<span valign="top">
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>

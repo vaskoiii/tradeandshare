@@ -99,13 +99,11 @@ if ($x['preload']['focus'] == 'action')
 # action box start ?> 
 <span id="action_box"  style="display: <?= get_action_style_display(); ?>;">
 <div class="content"><?
-# special case when not logged in
 # todo separate page for this?
 $b1 = 2;
-if (!$_SESSION['login']['login_user_id']) {
 if ($x['page']['name'] == 'user_edit') {
 	$b1 = 1;
-} }
+}
 if ($b1 == 1) { ?> 
 	<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
 	<input type="hidden" name ="x" value="<?= to_html($x['.']); ?>user_process/" /><?
@@ -120,7 +118,6 @@ unset($b1);
 <input type="hidden" name="load" value="action" />
 <input type="hidden" name="type" value="<?= $x['load']['action']['type']; ?>" />
 <input type="hidden" name="id" value="<?= (int)$x['load']['action']['id']; ?>" /><?
-
 
 # values are overridden if they are redeclared
 if (!empty($data['action']['response'])) {

@@ -45,60 +45,160 @@ switch ($k2) {
 } } } } }
 
 # shortcut
+$prefix = & $config['mysql']['prefix'];
 $lookup = & $interpret['lookup'];
 $action_content_1 = & $process['action_content_1'];
+$interpret['message'] = ''; # initialize to string
 $message = & $interpret['message'];
+
 
 # translation
 process_data_translation('action_content_1');
 if (empty($lookup['user_password']) && !empty($action_content_1['user_password_unencrypted_again']))
 	$lookup['user_password'] = md5($action_content_1['user_password_unencrypted_again']); # super simple password encryption
 
-# error
-# more relevant error messages should be at the top
-if (!$message) {
-	# dont make users waste time fixing error messages 1 by 1 if they wont even be able to register in the end
-	if (!$lookup['invite_id']) {
-		if ($_SESSION['login']['login_user_name'] == $action_content_1['invite_user_name']) {
-			if ($action_content_1['invite_password'] != 'peer_authenticated')
-				$message = tt('element', 'invite_password') . ' != ' . 'peer_authenticated'; # special hardcoded value
-			else {
-				$sql = '
-					INSERT INTO
-						' . $config['mysql']['prefix'] . 'invite
-					SET
-						user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
-						email = ' . to_sql($action_content_1['user_email']) . ',
-						modified = CURRENT_TIMESTAMP,
-						password = "peer_authenticated",
-						used = 1,
-						active = 1
-				';
-				$result = mysql_query($sql) or die(mysql_error());
-				$lookup['invite_id'] = mysql_insert_id($config['mysql_resource']);
-			}
-		}
-		else {
-			$message = tt('element', 'invite_user_name') . ' + ' . tt('element', 'invite_password') . ' : ' . tt('element', 'error_invalid_entry');
-		}
+# custom translation for invitation
+$lookup['invite_id'] = get_db_single_value('
+		id
+	FROM
+		' . $prefix . 'invite
+	WHERE
+		id = ' . (int)$action_content_1['invite_id']
+, 0);
+
+$lookup['invite_inactive'] = 1;
+$lookup['invite_used'] = 1;
+$lookup['invite_expired'] = 1;
+$lookup['invite_invalid'] = 1; # 2 types
+	$lookup['invite_unauthenticated'] = 1; # NOT [peer_authenticated]
+	$lookup['invite_mismatched'] = 1; # NOT invite user/password mismatch
+
+if ($lookup['invite_id']) {
+	if (get_db_single_value('
+			1
+		FROM
+			' . $prefix . 'invite
+		WHERE
+			id = ' . $lookup['invite_id'] . ' AND
+			active = 1
+	', 0))
+		$lookup['invite_inactive'] = 2;
+	if (get_db_single_value('
+			1
+		FROM
+			' . $prefix . 'invite
+		WHERE
+			id = ' . $lookup['invite_id'] . ' AND
+			used = 2
+	', 0))
+		$lookup['invite_used'] = 2;
+	if (get_db_single_value('
+			1
+		FROM
+			' . $prefix . 'invite
+		WHERE
+			id = ' . (int)$lookup['invite_id'] . ' AND
+			user_id = ' . (int)$lookup['invite_user_id'] . ' AND
+			password = ' . to_sql($action_content_1['invite_password']) . '
+	', 0)) {
+		$lookup['invite_invalid'] = 2;
+		$lookup['invite_mismatched'] = 2;
 	}
-	elseif ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
-		$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
-	elseif (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name']))
-		$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
-	elseif (preg_match("/[<>]/", $action_content_1['login_user_name']))
-		$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'reserved_character') . ' : <>';
-	elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
-		$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
+	if (get_db_single_value('
+			id
+		FROM
+			' . $prefix . 'invite
+		WHERE
+			id = ' . (int)$lookup['invite_id'] . ' AND
+			modified >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+	', 0))
+		$lookup['invite_expired'] = 2;
+}
+# peer_authenticated (alternate signup method)
+if ($_SESSION['login']['login_user_id']) {
+if ($_SESSION['login']['login_user_name'] == $action_content_1['invite_user_name']) {
+if ($action_content_1['invite_password'] == 'peer_authenticated') { # hardcode [peer_authenticated]
+	$lookup['invite_invalid'] = 2;
+	$lookup['invite_unauthenticated'] = 2;
+} } }
+
+# error
+
+# more relevant error messages should be at the top
+# dont make users waste time fixing error messages 1 by 1 if they wont even be able to register in the end
+if (!$message) {
+	# missing field
+	if (!$action_content_1['invite_id'] && $lookup['invite_unauthenticated'] == 1)
+		$message = tt('element', 'invite_id') . ' : ' . tt('element', 'field_missing');
+	elseif (!$action_content_1['invite_user_name'])
+		$message = tt('element', 'invite_user_name') . ' : ' . tt('element', 'field_missing');
+	elseif (!$action_content_1['invite_password'])
+		$message = tt('element', 'invite_password') . ' : ' . tt('element', 'field_missing');
+}
+if (!$message) {
+if ($lookup['invite_unauthenticated'] == 1) {
+	# invite errors
+	if (!$lookup['invite_id'])
+		$message = tt('element', 'invite_id') . ' : ' . tt('element', 'error_does_not_exist');
+	elseif ($lookup['invite_inactive'] == 1)
+		$message = tt('element', 'invite_id') . ' : ' . tt('element', 'error_invite_inactive');
+	elseif ($lookup['invite_used'] == 1)
+		$message = tt('element', 'invite') . ' : ' . tt('element', 'error_used_entry');
+	elseif ($lookup['invite_expired'] == 1)
+		$message = tt('element', 'invite') . ' : ' . tt('element', 'error_expired_entry');
+} }
+
+if (!$message) {
+	if ($lookup['invite_invalid'] == 1) {
+		$message = tt('element', 'invite') . ' : ' . tt('element', 'error_invalid_entry');
+		if ($lookup['invite_unauthenticated'] == 1)
+			$message .= ' | ' . tt('element', 'error_unauthenticated_entry');
+		if ($lookup['invite_mismatched'] == 1)
+			$message .= ' | ' . tt('element', 'error_mismatched_entry');
+	}
 }
 
-# these guys are really global so they probably dont need parameters. 2012-03-10 vaskoiii
+
+
+# functions with global variable scope
 process_field_missing('action_content_1');
 process_does_not_exist('action_content_1');
 process_does_exist('action_content_1');
 
+# check these difficult cases after
+if (!$message) {
+	if (preg_match("/[^a-z0-9]/i",$action_content_1['login_user_name']))
+		$message = tt('element', 'login_user_name') . ' : ' . tt('element', 'error_invalid_entry');
+	elseif (preg_match("/[<>]/", $action_content_1['login_user_name']))
+		$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'reserved_character') . ' : <>';
+	elseif ($action_content_1['user_password_unencrypted'] != $action_content_1['user_password_unencrypted_again']) 
+		$message = tt('element', 'user_password') . ' : ' . tt('element', 'error_mismatch');
+	elseif (!preg_match("/.*@.*\..*/", $action_content_1['user_email']) | preg_match("/(<|>)/", $action_content_1['user_email'])) 
+		$message = tt('element', 'user_email') . ' : ' . tt('element', 'error_invalid_entry');
+}
+
 # failure
 process_failure($message);
+
+# create an invite on the fly
+# note: an extra invite will be generated if the random password generated for an invite = [peer_authenticated]
+# todo: make a check when generating the password that it is not equal to peer_authenticated
+# only 8 character passwords or so are currently generated so it will never equal 'peer_authenticated'
+if ($lookup['invite_unauthenticated'] == 2) {
+	$sql = '
+		INSERT INTO
+			' . $config['mysql']['prefix'] . 'invite
+		SET
+			user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
+			email = ' . to_sql($action_content_1['user_email']) . ',
+			modified = CURRENT_TIMESTAMP,
+			password = "peer_authenticated",
+			used = 1,
+			active = 1
+	';
+	$result = mysql_query($sql) or die(mysql_error());
+	$lookup['invite_id'] = mysql_insert_id($config['mysql_resource']);
+}
 
 # main_add_edit
 $sql = '

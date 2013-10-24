@@ -380,24 +380,8 @@ function process_data_translation($container) {
 					active = 1
 			', 0);
 		break;
-
-		// this is bundled up as the real checker as to whether or not the invite_user_name and invite_password are valid!!!!!
-		case 'invite_password':
-		if ($output['invite_user_id'])
-			$output['invite_id'] = get_db_single_value('
-					id
-				FROM
-					' . $prefix . 'invite
-				WHERE
-					user_id = ' . (int)$output['invite_user_id'] . ' AND
-					password = ' . to_sql($input[$k1]) . ' AND
-					modified >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY) AND
-					used = 2 AND
-					active = 1
-			');
-		break;
-		// user_name and contact_name are XOR on many pages!
-		// eventually we could change the logic to ONLY deal with xor_user_name or xor_contact_name
+		# user_name and contact_name are XOR on many pages!
+		# eventually we could change the logic to ONLY deal with xor_user_name or xor_contact_name
 		case 'user_name':
 			if ($input['user_name'])
 				$output['user_id'] = get_db_single_value('
@@ -730,6 +714,7 @@ function process_field_missing($container = 'edit_content_1') {
 			;
 		}
 	else switch($k1) {
+		case 'invite_id': # handled in user_process.php (sometimes needed sometimes not)
 		case 'accept_default':
 		case 'accept_usage_policy':
 		case 'accept_friend':
@@ -742,11 +727,12 @@ function process_field_missing($container = 'edit_content_1') {
 		case 'user_password':
 		case 'user_password_unencrypted':
 		case 'user_password_unencrypted_again':
-			
-			if ($x['name'] != 'edit_process')
-			if ($process['form_info']['type'] != 'profile')
-				if (!$arrangement[$k1])
-					$message = tt('element', $k1) . ' : ' . tt('element', 'error_field_missing');
+			# does not get checked if edit_process
+			if ($x['name'] != 'edit_process') {
+			if ($process['form_info']['type'] != 'profile') {
+			if (!$arrangement[$k1]) {
+				$message = tt('element', $k1) . ' : ' . tt('element', 'error_field_missing');
+			} } }
 		break;
 		# Will run through 2x
 		case 'user_name':
@@ -865,7 +851,7 @@ function process_does_exist() {
 			WHERE
 				name = ' . to_sql($action_content_1['login_user_name']) . ' AND
 				active != 1
-		');
+		', 0);
 	if ($action_content_1['group_name'])
 		$lookup['i_group_id'] = get_db_single_value('
 				id
@@ -1126,9 +1112,11 @@ function process_does_exist() {
 		case 'user':
 			if ($lookup['login_user_id'])
 				$does_exist = true;
+			# there are no inactive users 2013-10-23
+			# only way to inactivate users is to manually do it in the database
+			# todo once inactive users are supported the logic for TS will have to be rechecked
 			elseif ($lookup['i_login_user_id'])
 				$did_exist = true;
-				
 		break;
 		case 'profile':
 			//hmmmm
@@ -1147,7 +1135,7 @@ function process_does_exist() {
 	} }
 	if (!$message) {
 	if ($did_exist) {
-	if ($x['name'] == 'edit_process') {
+	if ($x['name'] == 'edit_process' || $x['name'] == 'user_process') {
 		switch($type) {
 			case 'teammate':
 				#todo test this case 2012-04-10 vaskoiii
@@ -1207,7 +1195,8 @@ function process_does_exist() {
 
 	if (!$message) {
 	if ($does_exist) {
-	if ($x['name'] == 'edit_process') {
+	# dont forget the special user_process page
+	if ($x['name'] == 'edit_process' || $x['name'] == 'user_process') {
 	switch($type) {
 		case 'group':
 			# no reason to not be able to update if it exists

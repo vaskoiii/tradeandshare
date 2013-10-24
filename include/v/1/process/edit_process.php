@@ -180,9 +180,6 @@ switch ($k2) {
 			break;
 		}
 	break;
-	case 'login_user_name':
-		$process[$k1][$k2] = $_SESSION['login']['login_user_name']; # Emergen C 2012-02-02 vaskoiii
-	break;
 	case 'notify_offer_received':
 	case 'notify_teammate_received':
 	case 'feature_lock':
@@ -192,6 +189,7 @@ switch ($k2) {
 	case 'accept_default':
 		$process[$k1][$k2] = get_boolean_gp($k2);
 	break;
+	case 'login_user_name':
 	default:
 		if (str_match('_description', $k2))
 			$process[$k1][$k2] = trimmage(get_gp($k2));
@@ -333,6 +331,11 @@ switch($type) {
 	case 'profile':
 		if ($action_content_1['accept_usage_policy'] != 1)
 			$message = tt('element', 'accept_usage_policy') . ' : ' . tt('element', 'field_missing');
+		# no changing usernames! has the potential to cause havok in the database.
+		elseif ($_SESSION['login']['login_user_name'] != $action_content_1['login_user_name']) {
+			$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'error_uneditable') . ' : ' . tt('element', 'resetting');
+			$action_content_1['login_user_name'] = $_SESSION['login']['login_user_name']; # Emergen C 2012-02-02 vaskoiii
+		}
 	break;
 }
 
@@ -689,7 +692,7 @@ switch($type) {
 		# todo integrate these variables into $tsmail 2012-04-10 vaskoiii
 		$email_sent = false;
 		$email_subject = $config['title_prefix'] . 'Invite Link' . $config['spacer'] . 'Valid 1 Week ';
-		$email_body = 'https://' . $_SERVER['HTTP_HOST'] . '/user_edit/?action_invite_user_id=' . to_url($login_user_id) . '&action_invite_password=' . to_url($lookup['invite_password']);
+		$email_body = 'https://' . $_SERVER['HTTP_HOST'] . '/user_edit/?action_invite_id=' . (int)$lookup['invite_id'] . '&action_invite_user_id=' . to_url($login_user_id) . '&action_invite_password=' . to_url($lookup['invite_password']);
 
 		$tsmail = array();
 		$tsmail['data']['search']['response']['search_miscellaneous']['feature_minnotify'] = 1;
