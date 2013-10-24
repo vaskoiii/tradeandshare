@@ -199,6 +199,7 @@ function get_action_content_1($type = false, $name = false) {
 						'login_user_name' => '',
 						'login_user_password_unencrypted' => '',
 						'remember_login' => '',
+						'login_request_uri' => '', # redirect
 					);
 				break;
 				case 'dialect':

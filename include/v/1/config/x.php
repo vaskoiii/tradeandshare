@@ -177,7 +177,7 @@ switch ($x['page']['name']) {
 			ts_set_cookie('theme', 'background_theme_id', $_SESSION['theme']['background_theme_id']);
 			ts_set_cookie('theme', 'launcher_theme_name', $_SESSION['theme']['launcher_theme_name']);
 			ts_set_cookie('theme', 'launcher_theme_id', $_SESSION['theme']['launcher_theme_id']);
-			# uncomment for default themes:w
+			# uncomment for default themes
 			#$_SESSION['theme'] =  array(
 			#	'theme_name' => 'theme_purple',
 			#	'theme_id' => '6',
@@ -221,12 +221,10 @@ switch ($x['page']['name']) {
 			case 'login_set_process':
 				header('HTTP/1.0 200 Found');
 				include('v/1/process/login_set_process.php');
-				# login_process doesn't header anywhere...
+				# login_set_process.php doesnt header anywhere so it is done below with process_failure/success()
 				if ($interpret['message']) {
-					# todo we really need to get the data structure for action_content_1
-					foreach($process as $k1 => $v1) {
-						$_SESSION['process'][$k1] = $v1;
-					}
+					foreach($process as $k1 => $v1)
+						$_SESSION['process']['action_content_1'][$k1] = $v1;
 					process_failure($interpret['message']);
 				}
 				elseif (get_gp('login_request_uri'))
@@ -243,17 +241,16 @@ switch ($x['page']['name']) {
 		}
 		# HEADER IF AUTOLOGIN FAILS
 		if (!$_SESSION['login']['login_user_id'] && $x['page']['login'] == 1) {
-			# not sure if the get and post are forwarded correctly acter partitioning out the content_1 and content_2 etc... 2012-03-19 vaskoiii
-			foreach($_POST as $k1 => $v1)
-				$_SESSION['process'][$k1] = $v1;
-			foreach($_GET as $k1 => $v1)
-				$_SESSION['process'][$k1] = $v1;
-			# _process PAGE REQUESTED ( Doesnt happen normally but untested sending a query sting to a process file)
-			if (str_match('index.php', $_SERVER['REQUEST_URI']))
-				$_SESSION['process']['login_request_uri'] = $x['.'] . get_q_query($x['level']); 
-			# NON_process PAGE REQUESTED
+
+			$_SESSION['process']['action_content_1'] = get_action_content_1('login', 'set'); 
+			foreach ($_SESSION['process']['action_content_1'] as $k1 => $v1) {
+				$_SESSION['process']['action_content_1'][$k1] = get_gp($k1);
+			}
+			# todo build a redirect that will forward submitted data GET/POST to the correct place ie) http_build_query();
+			if (str_match('index.php', $_SERVER['REQUEST_URI'])) # if a process page go the last known page
+				$_SESSION['process']['action_content_1']['login_request_uri'] = $x['..'] . get_q_query($x['level']); 
 			else
-				$_SESSION['process']['login_request_uri'] = $_SERVER['REQUEST_URI'];
+				$_SESSION['process']['action_content_1']['login_request_uri'] = $_SERVER['REQUEST_URI'];
 			header_debug($x['.'] . 'login_set/');
 			header('location: ' . $x['.'] . 'login_set/');
 			exit;

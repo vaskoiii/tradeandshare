@@ -565,6 +565,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			unset($container['enabled']);
 		break;
 		// REDIRECT!
+		case 'login_request_uri':
 		case 'redirect': ?>
 			<div class="k"><?= tt('element', $k1); ?>:</div>
 			<div class="v"><?= to_html($v1); ?></div>

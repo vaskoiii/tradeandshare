@@ -38,15 +38,16 @@ $interpret['lookup'] = array();
 # shortcut
 $action_content_1 = & $process['action_content_1'];
 
-# Fields that have if(isset_gp()) are OPTIONAL fields... non optional fields do NOT get this!
-$action_content_1['login_user_name'] = get_gp('login_user_name');
-$action_content_1['login_user_password'] = get_gp('login_user_password');
+$action_content_1 = get_action_content_1('login', 'set');
+
+foreach($action_content_1 as $k1 => $v1)
+	$action_content_1[$k1] = get_gp($k1);
+
+# custom variable settting
+$action_content_1['login_user_password'] = get_gp('login_user_password'); # not login_user_password_unencrypted
 if (!$action_content_1['login_user_password'])
-	$action_content_1['login_user_password_unencrypted'] = get_gp('login_user_password_unencrypted'); // Special case because we don't actually store this in the db...
-if (get_boolean_gp('remember_login') == 1)
-	$action_content_1['remember_login'] = 1;
-else
-	$action_content_1['remember_login'] = 0;
+	$action_content_1['login_user_password_unencrypted'] = get_gp('login_user_password_unencrypted'); # Not stored in DB
+$action_content_1['remember_login'] = get_boolean_gp('remember_login');
 
 # cookie data
 if (!$action_content_1['login_user_name'] && !$action_content_1['login_user_password']) {

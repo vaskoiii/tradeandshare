@@ -53,21 +53,20 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	} ?> 
 	<div class="table">
 		<div class="k"><span class="login_user_name"><?= tt('element', 'login_user_name'); ?></span>:</div>
-		<div class="v"><input class="login_user_name" type="input" name="login_user_name" value="<?= to_html($data['action']['response']['action_content_1']['login_user_name']); ?>" /></div>
+		<div class="v"><input class="login_user_name" type="input" name="login_user_name" value="<?= to_html($action_content_1['login_user_name']); ?>" /></div>
 		
 		<span valign="top">
 			<div class="k"><span class="login_user_password_unencrypted"><?= tt('element', 'login_user_password_unencrypted'); ?></span>:</div>
-			<div class="v"><input class="login_user_password_unencrypted" type="password" name="login_user_password_unencrypted" value="<?= to_html($data['action']['response']['action_content_1']['login_user_password_unencrypted']); ?>" maxlength="255" /></div>
+			<div class="v"><input class="login_user_password_unencrypted" type="password" name="login_user_password_unencrypted" value="<?= to_html($action_content_1['login_user_password_unencrypted']); ?>" maxlength="255" /></div>
 		</span>
 		<span valign="top">
 			<div class="k"><span class="remember_login"><?= tt('element', 'remember_login'); ?></span></div>
-			<div class="v"><input class="remember_login" type="checkbox" name="remember_login" <?= ($data['action']['response']['action_content_1']['remember_login']) ? 'checked="checked"' : ''; ?> /></div>
-		</span><?
-		// we maybe user get_gp('login_request_uri') instead and this is tied into config/x.php
-		if ($_SESSION['process']['login_request_uri']) { ?>
+			<div class="v"><input class="remember_login" type="checkbox" name="remember_login" <?= ($action_content_1['remember_login'] == 1) ? 'checked="checked"' : ''; ?> /></div>
+		</span>
+			<? # careful with redirect ?> 
+			<input type="hidden" name="login_request_uri" value="<?= to_html($action_content_1['login_request_uri']); ?>" />
 			<div class="k"><span class="redirect"><?= tt('element', 'redirect'); ?></span></div>
-			<div class="v"><span class="redirect"><?= to_html($_SESSION['process']['login_request_uri']); ?></span></div><?
-		} ?>
+			<div class="v"><span class="redirect"><?= to_html($action_content_1['login_request_uri']); ?></span></div>
 	</div>
 	<div class="menu_1">
 		<ul>
