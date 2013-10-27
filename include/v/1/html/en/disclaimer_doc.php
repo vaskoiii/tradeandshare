@@ -24,9 +24,9 @@ up_date('2009-11-22'); ?>
 
 <div class="doc_box">
 <h3>General Public License</h3>
-<p>Copyright 2003-2012 John Vasko III</p>
+<p>Copyright 2003-2013 John Vasko III</p>
 
-<p>Every year in the range, inclusive, really is a “copyrightable” year that would be listed individually.</p>
+<p>Every year in the range (2003-2013), inclusive, really is a “copyrightable” year that would be listed individually.</p>
 
 <p>This document is part of Trade and Share.</p>
 

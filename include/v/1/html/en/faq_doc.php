@@ -77,7 +77,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 
 <div class="doc_box">
 	<h3>Tab Navigation in Firefox?</h3>
-	<p>In firefox press "Tab" and "Shift + Tab" to easily navigate through TS links and forms by using the keyboard. Additionally pressing enter will submit your form you are on or follow the hyperlink you have selected.</p>
+	<p>In Firefox press "Tab" and "Shift + Tab" to easily navigate through TS links and forms by using the keyboard. Additionally pressing enter will submit your form you are on or follow the hyperlink you have selected.</p>
 	<p>With the exception of the landing page when logged in, all pages have a default tab focus to help minimize the times of pressing "Tab" to get to where you want to be.</p>
 </div>
 
@@ -93,7 +93,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 
 <div class="doc_box">
 	<h3>What is the significance of <?= tt('element', 'tag_name'); ?></h3>
-	<p><?= tt('element', 'tag_name'); ?> helps enforce correct placement of items. Ideally <?= tt('element', 'tag_name'); ?> is only in english. From there these english "parts" can be translated to many different languages. <?= tt('element', 'tag_name'); ?> is also intended used in the computation of supply and demand.</p>
+	<p><?= tt('element', 'tag_name'); ?> helps enforce correct placement of items. Ideally <?= tt('element', 'tag_name'); ?> is only in English. From there these English "parts" can be translated to many different languages. <?= tt('element', 'tag_name'); ?> is also intended used in the computation of supply and demand.</p>
 	<p>It should also be noted that the parent of <?= tt('element', 'tag_name'); ?> is essentially the "context" of the corresponding <?= tt('element', 'tag_name'); ?>. ie) parent of <?= tt('element', 'tag_name'); ?> = [Skateboard] and <?= tt('element', 'tag_name'); ?> = [Wheel]</p>
 </div>
 
@@ -295,18 +295,18 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 <div class="doc_box">
 	<h3>How do I verify someone's identity?</h3>
 	<p>See the <a href="/metail_list/"><?= tt('page', 'metail_list'); ?></a> page for the corresponding user.</p>
-	<p>Eventually TS may incorporate photos of faces as this is very important for identifying people, but for now a link to useful identification information somewhere online is acceptable.  ie) a link to your facebook profile...</p> 
+	<p>Eventually TS may incorporate photos of faces as this is very important for identifying people, but for now a link to useful identification information somewhere online is acceptable.  ie) a link to your Facebook profile...</p> 
 </div>
 
 <div class="doc_box">
 	<h3>Configuration?</h3>
 	<p>See <a href="/config_report/"><?= tt('page', 'config_report'); ?></a>. From there there are a several configuration options.</p>
-	<p>Most of the configuration should be self-explanitory. It should be noted as well that logged in users have additional configuration options. Some of the non-self-explanatory configuration options are shown below:</p>
+	<p>Most of the configuration should be self-explanatory. It should be noted as well that logged in users have additional configuration options. Some of the non-self-explanatory configuration options are shown below:</p>
 	<dl>
 		<dt><?= tt('element', 'feature_minnotify'); ?></dt>
 		<dd>Make it so that your email notification include only a subject and link (The bare minimum notification).</dd>
 		<dt><?= tt('element', 'feature_lock'); ?></dt>
-		<dd>Allow changin the focus of displayed results for the entire site by "locking" a specific interest group.</dd>
+		<dd>Allow changing the focus of displayed results for the entire site by "locking" a specific interest group.</dd>
 	</dl>
 </div>
 
@@ -375,9 +375,9 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 		<dt>Team &lt;|*|&gt;</dt>
 			<dd>Special team that everyone is a part of.</dd>
 		<dt>Team &lt;[0-9a-z]&gt;</dt>
-			<dd>Author only team. [0-9a-z] is the regular expression to match any series of consecutive mixed digits and lowercase english letters corresponding to a <?= tt('element', 'user_name'); ?>.</dd>
+			<dd>Author only team. [0-9a-z] is the regular expression to match any series of consecutive mixed digits and lowercase English letters corresponding to a <?= tt('element', 'user_name'); ?>.</dd>
 		<dt>Team &lt;*[0-9a-z]&gt;</dt>
-			<dd>User default team. AKA friends. Once again [0-9a-z] is the regular expression to match any series of consecutive mixed digits and lowercase english letters corresponding to a <?= tt('element', 'user_name'); ?>.</dd>
+			<dd>User default team. AKA friends. Once again [0-9a-z] is the regular expression to match any series of consecutive mixed digits and lowercase English letters corresponding to a <?= tt('element', 'user_name'); ?>.</dd>
 	</dl>
 </div>
 

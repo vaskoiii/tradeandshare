@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: All about Trade and Share
 
-up_date('2012-02-29'); 
+up_date('2013-10-29'); 
 
 # LATEST ?> 
 <!--
@@ -57,7 +57,7 @@ up_date('2012-02-29');
 	<h3>TS Explained (Detailed)</h3>
 	<p>TS is an economic system of gifting goods and services based on a mix of personal and publicly-available-collective knowledge of individuals to those who are more deserving. It is a kind of donation based economy. TS will used the term [Identity-Based Merit System] to refer to this kind of system. The end goal is a self-regulating donation oriented economy.</p>
 	<p>One concern in an [Identity-Based Merit System] is that collective knowledge of an individual is shared to some extent to allow identity to be validated (resulting in some loss of privacy). In a centralized Identity-Based Merit System identity theft can be a big concern because many people are unknown. However, with smaller communities and a more decentralized P2P Identity-Based Merit system identity theft should be less of a concern as it will be harder to falsify one's identity. See also: <a href="https://en.wikipedia.org/wiki/Monkeysphere">https://en.wikipedia.org/wiki/Monkeysphere</a></p>
-	<p>The current architecture of TS is a centralized model (designed as a proof of concept) but is intended to be moved to a decentralized model. In this way the would be no central points to amass too much infomation/power. See also: <a href="https://en.wikipedia.org/wiki/Decentralized">https://en.wikipedia.org/wiki/Decentralized</a></p>
+	<p>The current architecture of TS is a centralized model (designed as a proof of concept) but is intended to be moved to a decentralized model. In this way the would be no central points to amass too much information/power. See also: <a href="https://en.wikipedia.org/wiki/Decentralized">https://en.wikipedia.org/wiki/Decentralized</a></p>
 	<p>TS could also be described as a continual voting system when specifying your wants and needs. This contrasts with a traditional poll in that TS allows you to change your vote (or what you want) at any time, whereas as in a traditional poll you can no longer change your vote once it is cast. The goal with TS as a continual voting system is to have things that people want or don't want constantly evaluated directly rather than being abstractly worked out through monetary means.</p>
 	<p>Since TS is an [Identity-Based Merit System] rather than a [Monetary-Based Merit System], it is unique from other websites out there including ebay, craigslist, etc. because TS emphasizes "who you are" translating to what you deserve rather than "how much money you have" translating to what you deserve.</p>
 	<p>Some of the main ideas that are used by TS are not entirely unique, but when used together they do present a medium that is truly different. These ideas include:</p>
@@ -71,23 +71,24 @@ up_date('2012-02-29');
 </div>
 <div class="doc_box">
 	<h3>Identity</h3>
-	<p>Basically your identity is who you are. It is a mix of public and private knowledge about you. Private knowledge will come from personal relationships and information NOT listed on TS.  Public knowledge will come from information on TS such as:</p>
+	<p>Basically your identity is who you are. It is a mix of public and private knowledge about you. Private knowledge will come from personal relationships and information NOT listed on TS. Public knowledge is intended to be suggestive and not as an absolute. It will come from information on TS such as:</p>
 	<ul>
-		<li>One's Ratings.</li>
+		<li>One's Ratings</li>
 		<ul>
 			<li>Each user is allowed to rate other users as many times as they like.</li>
 			<li>You can specify who sees the ratings you make.</li>
  			<li>Users can change their ratings of other users at any time.</li>
 			<li>A user's report is then the average of the average viewable source user ratings on the destination user.</li>
+			<li>Applicable ratings may only come from a specific community.</li>
 
 		</ul>
-		<li>One's Assets.</li>
+		<li>One's Assets</li>
 		<ul>
 			<li>Important to be tied to one's identity alongside one's ratings.</li>
 			<li>Extensions of who a person is.</li>
 			<li>What goods/services you have listed on TS.</li>
 		</ul>
-		<li>More.</li>
+		<li>More</li>
 		<ul>
 			<li>Any action you perform on TS that will directly affect other users.</li>
 			<li>Other miscellaneous transactions associated with your identity.</li>
@@ -95,6 +96,20 @@ up_date('2012-02-29');
 		</ul>
 	</ul>
 	<p>Public knowledge serves as an important and portable means of demonstrating merit, especially to those who do NOT know you or to those you THINK you know.  It should also be noted that the public knowledge contained on TS is made to serve ONLY as a suggested evaluation of one's merit... NOT as an absolute.</p>
+</div>
+<div class="doc_box">
+	<h3>Voting</h3>
+	<p>Voting has also been integrated into TS so that it can be used as a democratic medium to approve/disapprove of various things. Voting is intended to be transparent and accountable (2 key factors in avoiding corruption). Note that it is possible to hide votes by limiting them to be viewed by only certain teams. However, in the even that a vote is not visible it is intended to not count as it can not be seen or verified. Voting is not an absolute but is intended to serve as a guide for what is best for the whole or a specific community. TS Voting is also intended to raise awareness that there are other more democratic systems that people may not be familiar with. See also: <a href="https://en.wikipedia.org/wiki/Voting">https://en.wikipedia.org/wiki/Voting</a></p>
+	<ul>
+		<li>Voting Computation (Similar to that of Ratings)</li>
+		<ul>
+			<li>Each user is allowed to vote on an item as many times as they like.</li>
+			<li>You can specify who sees the votes you make.</li>
+ 			<li>Users can change their votes at any time.</li>
+			<li>An item's vote report is then the average of the average viewable votes per user.</li>
+			<li>Applicable votes may only come from a specific community.</li>
+		</ul>
+	</ul>
 </div>
 <div class="doc_box">
 	<h3>Personal Communities</h3>
@@ -105,7 +120,7 @@ up_date('2012-02-29');
 </div>
 <div class="doc_box">
 	<h3>Non-Monetary Means</h3>
-	<p>Because monetary systems are often misrepresentative of merit, TS explores feasible alternatives for use in today's society. TS attempts to represent value in terms of real world goods/services (NOT worthless paper) as follows:</p>
+	<p>Because monetary systems are often mis-representative of merit, TS explores feasible alternatives for use in today's society. TS attempts to represent value in terms of real world goods/services (NOT worthless paper) as follows:</p>
 	<ul>
 		<li>Supply of a particular good/service is evaluated.</li>
 		<li>Demand of a particular good/service is evaluated.</li>
@@ -141,7 +156,7 @@ up_date('2012-02-29');
 	<ul>
 		<li>Working Toward Sustainability</li>
 		<ul>
-			<li>Prefering something available (and possibly more functional) even if it is old, as opposed to preferring something new (and possibly less functional) to help combat hoarding and/or wasting resources.</li>
+			<li>Preferring something available (and possibly more functional) even if it is old, as opposed to preferring something new (and possibly less functional) to help combat hoarding and/or wasting resources.</li>
 		</ul>
 		<li>Patience</li>
 		<ul>
@@ -174,7 +189,7 @@ up_date('2012-02-29');
 <div class="doc_box">
 	<h3>Requirements</h3>
 	<p>Minimal: Web browser with support for HTML and COOKIES.</p>
-	<p>Recommended: Current web browser with FULL Javascript Support.</p>
+	<p>Recommended: Current web browser with FULL JavaScript Support.</p>
 	<p>Basically: Everything from smart phones to desktop computers.</p>
 </div>
 <div class="doc_box">
@@ -219,7 +234,7 @@ up_date('2012-02-29');
 	<ol>
 		<li>
 			Many times people have free time and valuable skills to offer.<br>
-			These skills could easily benifit the community...<br>
+			These skills could easily benefit the community...<br>
 			If only the community knew what you did!!!
 		</li>
 		<li>
