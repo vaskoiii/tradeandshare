@@ -17,8 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+$b1 = 1;
+if ($_SESSION['login']['login_user_id']) {
+	if ($_SESSION['interpret']['failure'] == 1)
+		$b1 = 2;
+}
+else
+	$b1 = 2;
 ?> 
-<body<?= $_SESSION['login']['login_user_id'] ? ' onLoad="javascript: document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);">
+<body<?= $b1 == 1 ? ' onLoad="javascript: document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);">
 <div id="header"><? // preload div must be coordinated with the launcher and also duplicated for the main page ?> 
 
 <div style="background: url('/v/1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
