@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+# Issue: not sure if includes are wanted in this file
 # Contents/Description: A bunch of selection actions that should probably be put in the database!!! ?> 
 
 <div id="result"><!--result-->
@@ -53,71 +54,183 @@ if ($x['preload']['focus'] == 'view')
 	} ?> 
 	</div>
 
+<?/*
 	<div class="menu_1">
-	<ul><?
-		# Item | Message
-		switch($x['load']['view']['type']) {
-			case 'contact': # needed because sometimes ONLY lock_user_id exists for contact_view
-			case 'user': 
-				if (isset_gp('lock_user_id')) { ?>
-					<li><a href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'item_list'); ?></a>*</li>
-					<li><a href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"><?= tt('page', 'offer_list'); ?></a>*</li><?
+		<ul>
+			<li>
+				<a
+					id="item_f_swap1"
+					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+					onclick="javascript: more_toggle_swap('item_f'); return false;"
+				><?= tt('page', 'item_list'); ?></a>
+				<a
+					id="item_f_swap2"
+					style="display: none; font-weight: bold;"
+					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+				><?= tt('page', 'item_list'); ?></a>
+			</li>
+			<li>
+				<a
+					id="offer_f_swap1"
+					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+					onclick="javascript: more_toggle_swap('offer_f'); return false;"
+				><?= tt('page', 'offer_list'); ?></a>
+				<a
+					id="offer_f_swap2"
+					style="display: none; font-weight: bold;"
+					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+				><?= tt('page', 'offer_list'); ?></a>
+			</li>
+			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="view_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
+		</ul>
+		<div id="view_menu" style="display: none;">
+		<div class="content_box" style="margin-top: -10px; display: inline-table; text-align: left;">
+		<dl>
+			<dt><?= tt('page', 'new_area'); ?></dt>
+			<dd><?
+				# strong font indicates a page reload
+				# could also have an intermediate page explaining what these pages do
+				# so they dont start in bold 2014-01-03 vaskoiii ?> 
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="top_report/"><?= tt('page', 'top_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="new_report/"><?= tt('page', 'new_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="search_report/"><?= tt('page', 'search_report'); ?></a>
+			</dd><?
+			foreach ($data['new_report']['page_id'] as $k1 => $v1) {
+				switch ($v1['page_name']) {
+					case 'ts_area':
+					case 'new_area':
+					break;
+					default: ?> 
+						<dt><?= tt('page', $v1['page_name']); ?></dt><dd><?
+					break;
 				}
-			break;
-		}
-		# Sitemap
-		switch($x['load']['view']['type']) {
-			case 'incident':
-			case 'meritopic':
-			break;
-			default: ?> 
-				<? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?>
-				<span class="spacer">&gt;&gt;</span> <a id="view_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
+				if (!empty($v1['page_id'])) {
+				foreach ($v1['page_id'] as $k2 => $v2) { ?> 
+					<nobr>
+					<span class="spacer"><?= $config['spacer']; ?></span><?
+					if (0) { # todo make these work! 2014-01-04 vaskoiii
+					if (str_match('_list', $v2['page_name'])) {
+						$s1 = str_replace('_list', '', $v2['page_name']); ?> 
+						<a id="<?= to_html($s1); ?>_q_swap1" href="<?= $s1; ?>_edit/" onclick="javascript: more_toggle_swap('<?= $s1; ?>_q'); return false;"><?= tt('page', $s1 . '_list'); ?></a>
+						<a id="<?= $s1; ?>_q_swap2" style="display: none;" href="<?= $s1; ?>_list/"><strong><?= tt('page', $s1 . '_list'); ?></strong></a><?
+					} }
+					else { ?> 
+						<a href="/<?= $v2['page_name']; ?>/"><?= tt('page', $v2['page_name']); ?></a><?
+					} ?> 
+					</nobr><?
+				} }
+				switch ($v1['page_name']) {
+					case 'ts_area':
+					case 'new_area':
+					break;
+					default:
+						echo '</dd>';
+					break;
+				}
+			} ?>
+		</dl>
+		</div>
+		</div>
+	</div>
+*/?>
+        <div class="menu_1">
+        <ul><?
+                # Item | Message
+                switch($x['load']['view']['type']) {
+                        case 'contact': # needed because sometimes ONLY lock_user_id exists for contact_view
+                        case 'user':
+                                if (isset_gp('lock_user_id')) { ?>
 
-<div id="view_menu" style="margin-top: 10px; display: none">
+
+					<li>
+						<a
+							id="item_q_swap1"
+							href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+							onclick="javascript: if (document.getElementById('offer_q_box').style.display == 'block') more_toggle_swap('offer_q'); more_toggle_swap('item_q'); return false;"
+						><?= tt('page', 'item_list'); ?></a>
+						<a
+							id="item_q_swap2"
+							style="display: none; font-weight: bold;"
+							href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+						><?= tt('page', 'item_list'); ?></a>
+						*
+					</li>
+					<li>
+						<a
+							id="offer_q_swap1"
+							href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+							onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
+						><?= tt('page', 'offer_list'); ?></a>
+						<a
+							id="offer_q_swap2"
+							style="display: none; font-weight: bold;"
+							href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+						><?= tt('page', 'offer_list'); ?></a>
+						*
+					</li><?
+
+
+
+                                }
+                        break;
+                }
+                # Sitemap
+                switch($x['load']['view']['type']) {
+                        case 'incident':
+                        case 'meritopic':
+                        break;
+                        default: ?>
+                                <? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?>
+                                <span class="spacer">&gt;&gt;</span> <a id="view_menu2_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu2'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
+
+<div id="view_menu2" style="margin-top: 10px; display: none">
 <table>
 <tr><td>
 <dl>
 <dt><?= tt('page', 'new_area'); ?></dt>
 <dd>
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=newp&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
-	<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
+        <span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
+        <span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=new&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
+        <span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
 </dd>
 
 <?
 foreach ($data['new_report']['page_id'] as $k1 => $v1) {
-	switch ($v1['page_name']) {
-		case 'ts_area':
-		case 'new_area':
-		break;
-		default:
-	echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
-		break;
-	}
-	if (!empty($v1['page_id']))
-	foreach ($v1['page_id'] as $k2 => $v2) { 
-		$e1 = explode('_', $v2['page_name']); ?> 
-		<nobr>
-			<span class="spacer"><?= $config['spacer'] ?></span>
-			<a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
-		</nobr><?
-	}
-	echo '</dd>';
+        switch ($v1['page_name']) {
+                case 'ts_area':
+                case 'new_area':
+                break;
+                default:
+        echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
+                break;
+        }
+        if (!empty($v1['page_id']))
+        foreach ($v1['page_id'] as $k2 => $v2) {
+                $e1 = explode('_', $v2['page_name']); ?>
+                <nobr>
+                        <span class="spacer"><?= $config['spacer'] ?></span>
+                        <a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+                </nobr><?
+        }
+        echo '</dd>';
 } ?>
 </dl>
 </td></tr>
 </table>
 </div><?
 
-			break;
-		} ?> 
-	</ul>
-	</div>
+                        break;
+                } ?>
+        </ul>
+        </div>
 	<div class="menu_2">
 	</div>
+</div><?
 
 
-</div>
+// include('v/1/layer/t1/quick.php');
+
+
+?>
 
 </div><!--/result-->

@@ -54,6 +54,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		} ?> 
 	</div><?
 
+	# todo include in x not here but the closing div!
 	include('v/1/inline/t1/header_helper.php'); ?>
 
 </div>

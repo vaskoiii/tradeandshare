@@ -45,6 +45,7 @@ if ($config['debug'] == 1) { ?>
 		'_SESSION' => 'none',
 		'_COOKIE' => 'none',
 		# 'authentication' => 'none',
+		'edit' => 'none', # added for edit structure on every page
 		'data' => 'none',
 		'option' => 'none',
 		'key' => 'none',
@@ -77,7 +78,7 @@ if ($config['debug'] == 1) { ?>
 			if (!empty($data))
 			foreach($data as $k2 => $v2) { ?>
 				<div class="debug_variable">
-					<h3>$data['<?= $k2; ?>']</h3>
+					<h3><?= '$data[\'' . $k2 .'\']'; ?></h3>
 					<a id="debug_<?= $k2; ?>_toggle" href="javascript: more_toggle('debug_<?= $k2; ?>');"><?= tt('element', 'more'); ?></a> 
 					<pre id="debug_<?= $k2; ?>" style="display: <?= $v1; ?>;"><?
 						echo to_html(print_r($data[$k2], 1)); ?> 

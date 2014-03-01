@@ -755,6 +755,9 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'contact_user_mixed':
 			$b2 = 2;
 			switch($load) {
+				case 'fast':
+					$b2 = 1; # only print for quick
+				break;
 				case 'motion':
 				case 'action':
 					if ($x['load'][$load]['type'] == 'contact') {
@@ -770,6 +773,23 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				<input class="<?= $k1; ?>" type="text" name="<?= $k1; ?>" value="<?
 				if ($_SESSION['interpret']['failure'] == 1) {
 					echo $container['contact_user_mixed'];
+				}
+				else if ($load == 'quick') {
+
+					# todo this is extra work and could be implemented without the overhead
+					$i1 = (int)$_GET['contact_id'];
+					if (!$i1)
+						$i1 = (int)$_GET['lock_contact_id'];
+					$i2 = (int)$_GET['user_id'];
+					if (!$i2)
+						$i2 = (int)$_GET['lock_user_id'];
+
+					$a1 = array();
+					contact_user_mixed_combine($a1, $i2, $i1, $_SESSION['login']['login_user_id']);
+
+					# echo '<pre>'; print_r($empty_listing); echo '</pre>'; exit;
+
+					echo $a1['contact_name'] . ' (' . $a1['user_name'] . ')';
 				}
 				else {
 					# dont forget to account for the possible destination_user_id 2012-03-27 vaskoiii

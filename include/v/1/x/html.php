@@ -26,11 +26,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 header('HTTP/1.0 200 Found');
 
 include($x['site']['i'] . '/inline/head.php');
-include($x['site']['i'] . 'inline/header.php');
-include($x['site']['i'] . 'inline/footer.php');
+include($x['site']['i'] . '/inline/header.php');
+
+include($x['site']['i'] . '/inline/edit.php');
+include($x['site']['i'] . '/layer/fast.php');
+include($x['site']['i'] . '/layer/quick.php');
+
+include($x['site']['i'] . '/inline/footer.php');
+
 
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'header.php');
+include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header.php');
+
+include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
+include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php');
 
 # done just to help with readability (othewise we would just use ints) 2012-06-09 vaskoiii
@@ -45,17 +55,17 @@ $s1 = get_db_single_value('
 <div class="content_box"><?
 switch ($s1) {
 	case 'en':
-		include($x['site']['i'] . 'html/' . $s1 . '/' . $x['page']['name'] . '.php');
+		include($x['site']['i'] . '/html/' . $s1 . '/' . $x['page']['name'] . '.php');
 	break;
 	case 'jp':
 	case 'de':
 	default:
 		# todo helpful message if page is not yet translated. 2012-06-09 vaskoiii
-		include($x['site']['i'] . 'html/en/' . $x['page']['name'] . '.php');
+		include($x['site']['i'] . '/html/en/' . $x['page']['name'] . '.php');
 	break;
 } ?> 
 </div>
 <div class="menu_1"></div>
 <div class="menu_2"></div><?
 
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'footer.php');
+include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/footer.php');

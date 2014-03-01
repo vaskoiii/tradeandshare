@@ -24,19 +24,47 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <script>
-	function more_toggle(type_id_number) {
-		var asearch = document.getElementById(type_id_number);
-		if (asearch.style.display == 'none') {
-			document.getElementById(type_id_number).style.display='block';
-			if (!document.getElementById(type_id_number).innerHTML) // failsafe for crappy browsers ie) PSP
-				window.location="./<?= get_q_query_modified($x['level'], array('asearch_on' => '1')); ?>"
-			document.getElementById(type_id_number + '_toggle').innerHTML = '<?= tt('element', 'less'); ?>';
+	function more_toggle_swap(t1, refocus = false) {
+		if (refocus == false)
+			var t1_focus = document.getElementById(t1 + '_focus');
+		else
+			var t1_focus = document.getElementById(refocus);
+
+		var t1_box = document.getElementById(t1 + '_box');
+		var t1_swap1 = document.getElementById(t1 + '_swap1');
+		var t1_swap2 = document.getElementById(t1 + '_swap2');
+
+		if (t1_swap1.style.display == 'none') {
+			t1_swap1.style.display='inline';
+			t1_swap2.style.display='none';
 		}
 		else {
-			document.getElementById(type_id_number).style.display='none';
-			if (!document.getElementById(type_id_number).innerHTML) // failsafe for crappy browsers ie) PSP
-				window.location="./<?= get_q_query_modified($x['level'], array('asearch_on' => '')); ?>"
-			document.getElementById(type_id_number + '_toggle').innerHTML = '<?= tt('element', 'more'); ?>';
+			t1_swap1.style.display='none';
+			t1_swap2.style.display='inline';
+		}
+		if (t1_box.style.display == 'none') {
+			t1_box.style.display='block';
+			t1_focus.focus();
+		}
+		else {
+			t1_box.style.display='none';
+			t1_swap1.focus();
+		}
+	}
+	function more_toggle(t1) {
+		var t1_box = document.getElementById(t1); // not + '_box'
+		var t1_toggle = document.getElementById(t1 + '_toggle');
+		if (t1_box.style.display == 'none') {
+			t1_box.style.display='block';
+			if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
+				window.location="./<?= get_q_query_modified($x['level'], array('t1_box_on' => '1')); ?>"
+			t1_toggle.innerHTML = '<?= tt('element', 'less'); ?>';
+		}
+		else {
+			t1_box.style.display='none';
+			if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
+				window.location="./<?= get_q_query_modified($x['level'], array('t1_box_on' => '')); ?>"
+			t1_toggle.innerHTML = '<?= tt('element', 'more'); ?>';
 		}
 	}
 

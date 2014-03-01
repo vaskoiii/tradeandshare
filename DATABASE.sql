@@ -2630,3 +2630,6 @@ INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` ,
 
 -- first/next/previous/last/parent
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'page_parent'), (NULL, 'page_next'), (NULL, 'page_previous'), (NULL, 'page_first'), (NULL, 'page_last');
+
+
+INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'list');

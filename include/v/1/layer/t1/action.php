@@ -65,8 +65,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 						break;
 				# nobreak;
 				default:
-				if ($x['load']['action']['type']) {?> 
-					<a href="javascript: even_more_toggle('action_box', 'list_title_box');"><?
+				if ($x['load']['action']['type']) {
+					/*
 					if ($x['load']['list']['name'] == 'report'
 					 || $x['name'] == 'top_report') {
 						if ($x['load']['action']['name'] == 'edit' && $x['load']['list']['type'] == $x['load']['action']['type'])
@@ -76,12 +76,24 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 							echo tt('page', $x['load']['action']['type'] . '_list');
 						}
 					}
-					echo ' ';
-					?>Edit<span id="action_box_toggle" style="display: none;"><?=
+					?><span id="action_box_toggle" style="display: none;"><?=
+					# does this do anything 2014-01-04 vaskoiii
 					$x['part'][1] == 'edit' 
 						? tt('element', 'less')
 						: tt('element', 'more');
-					?></span></a><?= $x['load']['view']['name'] ? '*' : ''; ?><?
+					?></span></a><?= $x['load']['view']['name'] ? '*' : '';
+					*/
+					$b1 = 1;
+					if (isset($_GET['expand']))
+					if (is_array($_GET['expand']))
+					foreach ($_GET['expand'] as $k1 => $v1)
+					if ($v1 == 'action')
+						$b1 = 2;
+
+					# todo hide message associated with the form on hiding that box. same as fast and quick
+					?>
+					<a id="action_el_swap1" style="display: <?= $b1 == 1 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap2'); document.getElementById('list_title_box').style.display = 'block'; return false;"><?= tt('element', 'edit'); ?></a>
+					<a id="action_el_swap2"  style="display: <?= $b1 == 2 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap1'); document.getElementById('list_title_box').style.display = 'none'; return false;"><?= tt('element', 'list'); ?></a><?
 				}
 				break;
 			}
@@ -97,7 +109,7 @@ if ($x['preload']['focus'] == 'action')
 	print_message_bar();
 
 # action box start ?> 
-<span id="action_box"  style="display: <?= get_action_style_display(); ?>;">
+<span id="action_el_box"  style="display: <?= get_action_style_display(); ?>;">
 <div class="content"><?
 # todo separate page for this?
 $b1 = 2;

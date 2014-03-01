@@ -23,10 +23,20 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 header('HTTP/1.0 200 Found');
 include($x['site']['i'] . '/inline/head.php');
 include($x['site']['i'] . 'inline/header.php');
+
+# the fast and quick box so it can get translations
+include($x['site']['i'] . 'inline/edit.php');
+include($x['site']['i'] . 'layer/fast.php');
+include($x['site']['i'] . 'layer/quick.php');
+
 include($x['site']['i'] . '/page/' . $x['page']['name'] . '.php');
 include($x['site']['i'] . '/inline/footer.php');
 
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
 include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header.php');
+
+include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
+include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+
 include($x['site']['i'] . '/page/' . $x['site']['t'] . '/' . $x['page']['name'] . '.php');
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');

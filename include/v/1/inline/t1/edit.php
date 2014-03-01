@@ -18,27 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: Help maintain order and intended usage ?> 
-
-Box Types (Top to Bottom):
- [fast]
- [motion]
- [view]
- [quick]
- [action]
- [list]
-
-Assume:
-- [list] includes [search] + [result]
-- only 1 box type per page
-
-Similar:
-[fast] ~= [quick]
-[motion] ~= [action]
-
-Notes:
-- [set] pages are separate
-- [recover] pages are separate
-
-For URL Variable Usage See:
-~/include/v/1/x/layer.php
+# description: File may not be needed engine is shared logic with the following:
+# fast
+# quick

@@ -27,21 +27,80 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div>
 		<center><p id="ts_helper_text">Stuff you Want or Want to Share</p></center>
 	</div>
-	<div class="menu_1">
-		<center>
-		<ul>
-			<li><a href="/item_list/"><?= tt('page', 'item_list'); ?></a></li>
-			<li><a href="/offer_list/"><?= tt('page', 'offer_list'); ?></a></li>
+
+
+
+<!------------------------->
+        <div class="menu_1">
+	<center>
+		<ul><? # Item | Message
+			# swap item?
+			$b1 = 2;
+			if (isset($_GET['focus']) && $_GET['focus'] == 'fast')
+			if (
+				isset($_SESSION['process']['form_info']) && 
+				'item' == $_SESSION['process']['form_info']['type']
+			)
+				$b1 = 1;
+			# swap message?
+			$b2 = 2;
+			if (isset($_GET['focus']) && $_GET['focus'] == 'fast')
+			if (
+				isset($_SESSION['process']['form_info']) && 
+				'offer' == $_SESSION['process']['form_info']['type']
+			)
+				$b2 = 1;
+			if ($_SESSION['login']['login_user_id']) { ?> 
+				<li>
+					<a
+						id="item_f_swap1"
+						style="display: <?= $b1 == 1 ? 'none' : 'inline'; ?>;" 
+						href="/item_list/"
+						onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"
+					><?= tt('page', 'item_list'); ?></a>
+					<a
+						id="item_f_swap2"
+						style="display: <?= $b1 == 1 ? 'inline' : 'none'; ?>; font-weight: bold;"
+						href="/item_list/"
+					><?= tt('page', 'item_list'); ?></a>
+				</li>
+				<li>
+					<a
+						id="offer_f_swap1"
+						style="display: <?= $b2 == 1 ? 'none' : 'inline'; ?>;" 
+						href="/offer_list/"
+						onclick="javascript: if (document.getElementById('item_f_box').style.display == 'block') more_toggle_swap('item_f'); more_toggle_swap('offer_f');  return false;"
+					><?= tt('page', 'offer_list'); ?></a>
+					<a
+						id="offer_f_swap2"
+						style="display: <?= $b2 == 1 ? 'inline' : 'none'; ?>; font-weight: bold;"
+						href="/offer_list/"
+					><?= tt('page', 'offer_list'); ?></a>
+				</li><?
+			}
+			else { ?> 
+				<li>
+					<a href="/item_edit/" style="font-weight: bold;" ><?= tt('page', 'item_list'); ?></a>
+				</li>
+				<li>
+					<a href="/offer_edit/" style="font-weight: bold;" ><?= tt('page', 'offer_list'); ?></a>
+				</li><?
+			}
+					
+
+			# Sitemap ?> 
 			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
 		</ul>
+	
 		<div id="head_menu" style="display: none;">
-		<div class="content_box" style="margin-top: -10px; display: inline-table; text-align: left;">
-		<dl>
+			<table>
+			<tr><td>
+			<dl>
 			<dt><?= tt('page', 'new_area'); ?></dt>
 			<dd>
-				<span class="spacer"><?= $config['spacer']; ?></span><a href="top_report/"><?= tt('page', 'top_report'); ?></a>
-				<span class="spacer"><?= $config['spacer']; ?></span><a href="new_report/"><?= tt('page', 'new_report'); ?></a>
-				<span class="spacer"><?= $config['spacer']; ?></span><a href="search_report/"><?= tt('page', 'search_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="/top_report/"><?= tt('page', 'top_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="/new_report/"><?= tt('page', 'new_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="/search_report/"><?= tt('page', 'search_report'); ?></a>
 			</dd><?
 			foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 				switch ($v1['page_name']) {
@@ -49,27 +108,27 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					case 'new_area':
 					break;
 					default:
-						echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
+				echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
 					break;
 				}
-				if (!empty($v1['page_id'])) {
-				foreach ($v1['page_id'] as $k2 => $v2) { ?> 
-					<nobr><span class="spacer"><?= $config['spacer'] ?></span><a href="<?= to_html($v2['page_name']); ?>/"><?= tt('page', $v2['page_name']); ?></a></nobr><?
-				} }
-				switch ($v1['page_name']) {
-					case 'ts_area':
-					case 'new_area':
-					break;
-					default:
-						echo '</dd>';
-					break;
+				if (!empty($v1['page_id']))
+				foreach ($v1['page_id'] as $k2 => $v2) {
+					$e1 = explode('_', $v2['page_name']); ?>
+					<nobr>
+						<span class="spacer"><?= $config['spacer'] ?></span>
+						<a href="/<?= $e1['0']; ?>_<?= $e1[1]; ?>/"><?= tt('page', $v2['page_name']); ?></a>
+					</nobr><?
 				}
+				echo '</dd>';
 			} ?>
-		</dl>
+			</dl>
+			</td></tr>
+			</table>
 		</div>
-		</div>
-		</center>
-	</div>
+	</center>
+        </div>
+
+
 	<div class="menu_2">
 	</div>
 </div><?

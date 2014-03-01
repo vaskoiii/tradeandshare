@@ -173,8 +173,15 @@ if ($x['page']['name'] == 'profile_edit') {
 } }
 
 if ($b1 == 1) {
-	load_response('action_content_1', $action_content_1, $_SESSION['login']['login_user_id']);
-	load_response('action_content_2', $action_content_2, $_SESSION['login']['login_user_id']);
+	# dont do this if fast or quick is set (these reuse action_content_x) thinking about renaming to just (content_x)
+	# 2014-03-01 vaskoiii
+	if (!(
+		isset($_SESSION['process']['form_info']['load']) && 
+		$_SESSION['process']['form_info']['load'] == 'fast'
+	)) {
+		load_response('action_content_1', $action_content_1, $_SESSION['login']['login_user_id']);
+		load_response('action_content_2', $action_content_2, $_SESSION['login']['login_user_id']);
+	}
 }
 
 # hack 2012-04-09 vaskoiii

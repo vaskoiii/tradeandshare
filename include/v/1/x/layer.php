@@ -299,10 +299,14 @@ if ($x['load']['header']['name']) {
 	include($x['site']['i'] . '/inline/head.php');
 	include($x['site']['i'] . 'inline/header.php');
 }
+
+include($x['site']['i'] . 'inline/edit.php'); # the fast and quick box so it can get translations
+include($x['site']['i'] . 'layer/fast.php');
 if ($x['load']['motion']['name'])
 	include($x['site']['i'] . 'layer/motion.php');
 if ($x['load']['view']['name'])
 	include($x['site']['i'] . 'layer/view.php');
+include($x['site']['i'] . 'layer/quick.php');
 if ($x['load']['action']['name'])
 	include($x['site']['i'] . 'layer/action.php');
 switch($x['load']['list']['name']) {
@@ -335,10 +339,14 @@ if ($x['load']['header']['name']) {
 	include($x['site']['i'] . '/inline/' . $x['site']['t'] . 'head.php');
 	include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'header.php');
 }
+include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'edit.php'); # placeholder
+
+include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'fast.php');
 if ($x['load']['motion']['name'])
 	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'motion.php');
 if ($x['load']['view']['name'])
 	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'view.php');
+include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'quick.php'); # needs to be after view
 if ($x['load']['action']['name'])
 	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'action.php');
 switch($x['load']['list']['name']) {
