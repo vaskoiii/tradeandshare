@@ -41,6 +41,19 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	} ?> 
 </div><?
 include('v/1/inline/t1/header_helper.php'); ?>
+
+<?
+
+		include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
+		# todo needed?
+		include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+
+
+?>
+	<div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div>
+
+
+
 <? print_message_bar(); ?><?
 
 if ($_SESSION['login']['login_user_id']) { ?>
@@ -48,9 +61,9 @@ if ($_SESSION['login']['login_user_id']) { ?>
 <div class="splash_box">
 	<div id="main_add" style=""><?
 		if ($_SESSION['theme']['theme_name'] != 'theme_select_none') {
-			?><a href="item_edit/"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg" style="border: none;" /><?
+			?><a id="item_f_swap1" style="display: inline;" href="/item_list/" onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg" style="border: none;" /><?
 		} else { ?> 
-			<a href="item_edit/"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.png" style="border: none;" /><?
+			<a id="item_f_swap1" style="display: inline;" href="/item_list/" onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.png" style="border: none;" /><?
 		} ?><br /><?= tt('element', 'add_item'); ?></a>
 	</div>
 	<form id="main_search" name="ms" action="/index.php" method="POST">

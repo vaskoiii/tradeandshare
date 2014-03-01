@@ -133,6 +133,3 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	</div>
 </div><?
 
-if ($x['name'] == '' || $x['name'] == 'main') { ?>
-	<div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div><?
-}

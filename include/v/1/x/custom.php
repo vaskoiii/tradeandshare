@@ -40,13 +40,28 @@ switch ($x['name']) {
 	default:
 		# top report dirties the home page too much... and its not ideal for a phone screen.
 		include($x['site']['i'] . '/inline/head.php');
+
+
+		# the fast and quick box so it can get translations
+		include($x['site']['i'] . 'inline/edit.php');
+		include($x['site']['i'] . 'layer/fast.php');
+		include($x['site']['i'] . 'layer/quick.php');
+
+
 		include($x['site']['i'] . '/page/main.php');
 		#if ($_SESSION['login']['login_user_id'])
 		#	include($x['site']['i'] . '/page/top_report.php');
 		include($x['site']['i'] . '/inline/footer.php');
 
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
+
+		# todo make it so not sqeezed in main.php
+		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
+		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+
+
 		include($x['site']['i'] . '/page/' . $x['site']['t'] . '/main.php');
+
 		#if ($_SESSION['login']['login_user_id'])
 		#	include($x['site']['i'] . '/page/' . $x['site']['t'] . '/top_report.php');
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');

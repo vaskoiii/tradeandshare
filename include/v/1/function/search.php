@@ -789,7 +789,14 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 
 					# echo '<pre>'; print_r($empty_listing); echo '</pre>'; exit;
 
-					echo $a1['contact_name'] . ' (' . $a1['user_name'] . ')';
+					echo $a1['contact_name'];
+					if (
+						!empty($a1['user_name']) &&
+						!empty($a1['user_name'])
+					)
+						echo ' ';
+					if (!empty($a1['user_name']))
+						echo '(' . $a1['user_name'] . ')';
 				}
 				else {
 					# dont forget to account for the possible destination_user_id 2012-03-27 vaskoiii
