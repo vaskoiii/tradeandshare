@@ -80,10 +80,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			}
 			else { ?> 
 				<li>
-					<a href="/item_edit/" style="font-weight: bold;" ><?= tt('page', 'item_list'); ?></a>
+					<a href="/item_edit/"><?= tt('page', 'item_list'); ?></a>
 				</li>
 				<li>
-					<a href="/offer_edit/" style="font-weight: bold;" ><?= tt('page', 'offer_list'); ?></a>
+					<a href="/offer_edit/"><?= tt('page', 'offer_list'); ?></a>
 				</li><?
 			}
 					
