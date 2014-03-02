@@ -107,8 +107,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					case 'ts_area':
 					case 'new_area':
 					break;
-					default:
-				echo '<dt>'; echo tt('page', $v1['page_name']); echo '</dt><dd>';
+					default: ?> 
+						<dt><?= tt('page', $v1['page_name']); ?></dt>
+						<dd><?
 					break;
 				}
 				if (!empty($v1['page_id']))
@@ -119,7 +120,14 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 						<a href="/<?= $e1['0']; ?>_<?= $e1[1]; ?>/"><?= tt('page', $v2['page_name']); ?></a>
 					</nobr><?
 				}
-				echo '</dd>';
+				switch ($v1['page_name']) {
+					case 'ts_area':
+					case 'new_area':
+					break;
+					default: ?> 
+						</dd><?
+					break;
+				}
 			} ?>
 			</dl>
 			</td></tr>

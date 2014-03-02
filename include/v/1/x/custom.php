@@ -45,7 +45,7 @@ switch ($x['name']) {
 		# the fast and quick box so it can get translations
 		include($x['site']['i'] . 'inline/edit.php');
 		include($x['site']['i'] . 'layer/fast.php');
-		include($x['site']['i'] . 'layer/quick.php');
+		#include($x['site']['i'] . 'layer/quick.php');
 
 
 		include($x['site']['i'] . '/page/main.php');

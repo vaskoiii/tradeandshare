@@ -54,10 +54,12 @@ include('v/1/inline/t1/header_helper.php'); ?>
 
 		include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
 		# todo needed?
-		include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
 
 
+		# todo add translation
 ?>
+	<? # <div class="title"><center><h2>Welcome</h2></center></div> ?>
 	<div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div>
 
 
@@ -65,35 +67,118 @@ include('v/1/inline/t1/header_helper.php'); ?>
 <? print_message_bar(); ?><?
 
 if ($_SESSION['login']['login_user_id']) { ?>
+<?
+/*
+# 	placeholder for another box
 <div class="content">
 <div class="splash_box">
-	<div id="main_add" style=""><?
-		if ($_SESSION['theme']['theme_name'] != 'theme_select_none') {
-			?><a id="item_f_swap1" style="display: inline;" href="/item_list/" onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg" style="border: none;" /><?
-		} else { ?> 
-			<a id="item_f_swap1" style="display: inline;" href="/item_list/" onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"><img style="text-decoration: none;" alt="<?= tt('add_item'); ?>" src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.png" style="border: none;" /><?
-		} ?><br /><?= tt('element', 'add_item'); ?></a>
-	</div>
-	<form id="main_search" name="ms" action="/index.php" method="POST">
-		<input type="hidden" name="x" value="/item_list/search_process/" />
-		<input type="hidden" name="q" value="<?= ff(); ?>" />
-		<? # obsolete? 2012-02-01 ?> 
-		<input type="hidden" name="list_name" value="item_entry" />
-		<input type="hidden" name="type" value="item" />
-		<div class="main_keyword_box">
-			<? print_keyword_box('asearch_box', 0, '', 1); ?> 
-		</div>
-	</form>
 	<div class="menu_1">
 	</div>
 	<div class="menu_2">
-		<ul>
-			<li><a href="top_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'top_report'); ?></a></li>
-			<li><a href="new_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'new_report'); ?></a></li>
-			<li><a href="search_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'search_report'); ?></a></li>
-		</ul>
 	</div>
 </div>
+</div>
+*/
+?>
+
+
+<script>
+	function simple_show_hide(s1, s2) {
+		var o1 = document.getElementById(s1);
+		var o2 = document.getElementById(s2);
+		o1.style.display = 'block';
+		o2.style.display = 'none';
+		document.getElementById(s1 + '_focus').focus();
+	}
+	
+</script>
+
+
+
+
+<div class="content">
+
+	<div id="splash_search">
+	<div class="splash_box">
+		<div id="main_add">
+			<a
+				id="splash_search_focus"
+				style="display: inline;"
+				href="/item_edit/"
+				onclick="javascript: simple_show_hide('splash_edit', 'splash_search'); return false;"
+			><?
+				?><img
+					style="text-decoration: none; border: none;"
+					alt="<?= tt('element', 'add_item'); ?>"
+					src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg"
+				/><br /><?= tt('element', 'add_item'); ?><?
+			?></a>
+		</div>
+
+		<form id="main_search" name="ms" action="/index.php" method="POST">
+			<input type="hidden" name="x" value="/item_list/search_process/" />
+			<input type="hidden" name="q" value="<?= ff(); ?>" />
+			<? # obsolete? 2012-02-01 ?> 
+			<input type="hidden" name="list_name" value="item_entry" />
+			<input type="hidden" name="type" value="item" />
+			<div class="main_keyword_box">
+				<? print_keyword_box('asearch_box', 0, '', 1); ?> 
+			</div>
+		</form>
+	</div>
+	</div>
+
+	<div id="splash_edit" style="display: none;">
+	<div class="splash_box">
+		<div id="main_add" style="">
+			<a
+				id="splash_edit_focus"
+				style="display: inline;"
+				href="/item_list/"
+				onclick="javascript: simple_show_hide('splash_search', 'splash_edit'); return false;"
+			><?
+				?><img
+					style="text-decoration: none; border: none;"
+					alt="<?= tt('element', 'add_item'); ?>"
+					src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/ts_icon_256x256.png"
+					width="128px"
+					height="128px"
+				/><br /><?= tt('element', 'find_item'); ?><?
+			?></a>
+		</div>
+	</div>
+		<div>
+			<? # no need to return to the main page ?>
+			<form id="main_search" name="me" action="/index.php" method="POST">
+				<input name="x" value="/item_edit/edit_process/" type="hidden" />
+				<input name="q" value="<?= ff(); ?>" type="hidden" />
+				<input name="load" value="action" type="hidden" />
+				<input name="type" value="item" type="hidden" /><?
+				$s1 = 'item';
+				print_container($edit[$s1]['content_1'], $empty_listing, $key, $translation, 'main', $option);
+				if(!empty($edit[$s1]['content_2'])) { ?>
+					<p class="more_solo">
+						&gt;&gt; <a id="<?= to_html($s1); ?>_main_2_toggle" style="display: inline;" href="#" onclick="more_toggle('<?= to_html($s1); ?>_main_2'); return false;"><?= tt('element', 'more'); ?></a>
+					</p><?
+				} ?> 
+				<div id="<?= to_html($s1);?>_main_2" style="margin-left: 20px; margin-bottom: 15px; display: none;"><?
+					print_container($edit[$s1]['content_2'], $empty_listing, $key, $translation, 'main', $option); ?> 
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="splash_box">
+		<div class="menu_1">
+		</div>
+		<div class="menu_2">
+			<ul>
+				<li><a href="top_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'top_report'); ?></a></li>
+				<li><a href="new_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'new_report'); ?></a></li>
+				<li><a href="search_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'search_report'); ?></a></li>
+			</ul>
+		</div>
+	</div>
 </div><?
 }
 else { ?>

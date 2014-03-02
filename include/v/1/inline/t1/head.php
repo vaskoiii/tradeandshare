@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Main head for html files
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+?><!DOCTYPE html>
 <html>
 	<head>
 		<title><?= to_html(get_page_title()); ?></title>
@@ -64,7 +64,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		<link rel="stylesheet" type="text/css" media="all" href="/color_theme/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>&amp;display_id=<?= (int)$_SESSION['display']['display_id']; 
 ?>" />
 		<link rel="stylesheet" type="text/css" media="all" href="/text_style/" />
+
+		<? # todo fix bad placement:
+		include('v/1/js/t1/more_js.php'); ?> 
 	</head>
 
-<? # todo fix bad placement:
-include('v/1/js/t1/more_js.php');
