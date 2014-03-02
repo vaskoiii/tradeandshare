@@ -88,7 +88,8 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 		# todo print a separate array unless the session error was for this spot. Then print the quick array
 		if (
 			isset($_SESSION['process']['form_info']) && 
-			$s1 == $_SESSION['process']['form_info']['type']
+			$s1 == $_SESSION['process']['form_info']['type'] &&
+			$_SESSION['process']['form_info']['load'] == 'quick'
 		) {
 			print_container($quick_content_1, $empty_listing, $key, $translation, 'quick', $option);
 			if(!empty($quick_content_2)) { ?>

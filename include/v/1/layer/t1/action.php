@@ -37,10 +37,18 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			$s1 .= get_translation('page', $x['load']['action']['type'] . '_' . $x['load']['action']['name']);
 	} ?> 
 	<h2><?
-		if (get_gp('focus'))
-			print_ts_focus($s1, get_gp('focus'));
-		else
-			print_ts_focus($s1, 'action'); ?> 
+		switch($_SESSION['process']['form_info']['load']) {
+			case 'fast':
+			case 'quick':
+				print_ts_focus($s1, 'action');
+			break;
+			default:
+				if (get_gp('focus'))
+					print_ts_focus($s1, get_gp('focus'));
+				else
+					print_ts_focus($s1, 'action');
+			break;
+		} ?> 
 	</h2>
 	<p class="result_add"><?
 	switch($x['load']['action']['name']) {

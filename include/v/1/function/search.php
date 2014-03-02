@@ -479,7 +479,9 @@ function get_default_value($input, $load, & $x = null) {
 # maybe load should be the first parameter 2012-03-15 vaskoiii
 function print_container(& $container, & $listing = null, & $key = null, & $translation = null, $load = '', & $option = null) {
 
+
 	# todo: these globals should not be used! 2012-03-07 vaskoiii
+	global $edit;
 	if (!$listing) {
 		global $data;
 		$listing = & $data['action']['result']['listing'][0];
