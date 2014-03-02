@@ -789,6 +789,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					$a1 = array();
 					contact_user_mixed_combine($a1, $i2, $i1, $_SESSION['login']['login_user_id']);
 
+					echo 'aldsfk';
 					# echo '<pre>'; print_r($empty_listing); echo '</pre>'; exit;
 
 					echo $a1['contact_name'];
