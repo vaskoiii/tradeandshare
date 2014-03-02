@@ -185,7 +185,10 @@ else { ?>
 <div class="content">
 <div class="splash_box">
 	<div id="main_intro">
-		<a href="./trailer_doc/"><img src="/v/1/theme/<?= str_replace('theme_', '',  $_SESSION['theme']['theme_name']); ?>/ts_icon_256x256.png" width="128px" height="128px" /><br /><?= tt('page', 'trailer_doc'); ?></a>
+
+		<center>
+		<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="192px" height="150" /></a>
+		</center>
 	</div>
 <div class="menu_1">
 	<ul></ul>

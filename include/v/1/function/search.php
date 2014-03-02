@@ -481,7 +481,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 
 
 	# todo: these globals should not be used! 2012-03-07 vaskoiii
-	global $edit;
 	if (!$listing) {
 		global $data;
 		$listing = & $data['action']['result']['listing'][0];
