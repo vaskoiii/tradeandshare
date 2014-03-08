@@ -175,7 +175,8 @@ function killtsl_iframe(tsType) {
 		tsl_iframe = document.getElementById('tslPeople_iframe');
 	else
 		tsl_iframe = document.getElementById('tsl_iframe');
-	document.documentElement.removeChild(tsl_iframe);
+	if (tsl_iframe)
+		document.documentElement.removeChild(tsl_iframe);
 	window.parent.focus();
 }
 function gettsl_idocument(tsType) {
@@ -482,20 +483,21 @@ function getMatchArray(tsType, myString) {
 		if (tsl_idocument) {
 			tsl_idocument.getElementById('tsl_suggest_more').innerHTML = suggest_more_html;
 			tsl_0 = tsl_idocument.getElementById('tsl_0');
-			// Error her if there are no results [tsl_0 is null]
-			tsl_idocument.getElementById('tsl_suggest_one').innerHTML = tsl_0.innerHTML;
-			tsl_idocument.getElementById('tsl_suggest_one').href = tsl_0.href;
+			if (tsl_0) {
+				tsl_idocument.getElementById('tsl_suggest_one').innerHTML = tsl_0.innerHTML;
+				tsl_idocument.getElementById('tsl_suggest_one').href = tsl_0.href;
 
-			if (tsType == 'tslPeople') {
-				set_cookie('launch[tslPeople][value]', tsl_0_href, 365, '/')
-				set_cookie('launch[tslPeople][display]', tsl_0.innerHTML, 365, '/')
+				if (tsType == 'tslPeople') {
+					set_cookie('launch[tslPeople][value]', tsl_0_href, 365, '/')
+					set_cookie('launch[tslPeople][display]', tsl_0.innerHTML, 365, '/')
+				}
+				else {
+					set_cookie('launch[tsl][value]', tsl_0_href, 365, '/')
+					set_cookie('launch[tsl][display]', tsl_0.innerHTML, 365, '/')
+				}
+				tsl_0.style.display = 'none'
+				tsl_idocument.getElementById('tsl_li_0').style.display = 'none'; // For IE and FF
 			}
-			else {
-				set_cookie('launch[tsl][value]', tsl_0_href, 365, '/')
-				set_cookie('launch[tsl][display]', tsl_0.innerHTML, 365, '/')
-			}
-			tsl_0.style.display = 'none'
-			tsl_idocument.getElementById('tsl_li_0').style.display = 'none'; // For IE and FF
 		}
 	}
 }

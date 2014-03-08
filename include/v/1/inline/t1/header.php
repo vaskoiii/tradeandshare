@@ -19,7 +19,26 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?> 
 <body onLoad="javascript: document.getElementById('ts_focus').focus();" onkeydown="return checkIt(event);">
+
+
+
+
+
+
+
 <div id="header"><? # preload div must be coordinated with the launcher and also duplicated for the main page ?> 
+	<?
+	# placeholder testing link for removing iframes 2014-03-08 vaskoiii
+	if ($hh_b1 == '1') { ?> 
+		<a href="#" onclick="radical('peopler');">peopler</a>
+		<a href="#" onclick="radical('pager');">pager</a>
+		<div id="peopler_box">
+			peopler
+		</div>
+		<div id="pager_box">
+			pager
+		</div><?
+	} ?>
 	<div style="background: url('/v/1/theme/<?= to_html(str_replace('theme_', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
 	<div class="title">
 		<p id="topper"><?
