@@ -19,7 +19,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: show the data structures - show all variable spaces
-include('v/1/js/t1/more_js.php');
 if ($config['debug'] == 1) { ?>
 <div id="debugger">
 <div class="content">
