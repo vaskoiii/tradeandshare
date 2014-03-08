@@ -36,7 +36,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <form name="form_search" action="/index.php" method="POST">
 <input type="hidden" name="x" value="<?= to_html($x['.']); ?>search_process/" />
 <input type="hidden" name="type" value="lock" />
-<? print_keyword_box('search_report', 1); ?>
+<? print_keyword_box('search_report', 1); ?> 
 </form>
 
 	<div class="doc_box">
@@ -55,19 +55,19 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		if (!empty($data['custom_key']['tag_id']['count'])) {
 			echo '<dl>';
 			foreach ($data['custom_key']['tag_id']['count'] as $k1 => $v1) {
-			if ($v1 != 0) { ?>
+			if ($v1 != 0) { ?> 
 				<dt><?
 					# todo fix so that the link maintains the locking and not all url vars 2012-06-16 vaskoiii ?> 
 					<a href="item_list/<?= ff($q['raw'] . '&parent_tag_id=' . (int)$k1, $x['level']); ?>"><?= to_html($data['custom_key']['tag_id']['name'][$k1]); ?></a>
 					-
-					<?= (int)$v1; ?>
+					<?= (int)$v1; ?> 
 				</dt>
 				<dd><?= to_html($data['custom_key']['tag_id']['description'][$k1]); ?></a></dd><?
 			} }
 			echo '</dl>';
 		}
 		else
-			echo tt('element', 'no_results'); ?>
+			echo tt('element', 'no_results'); ?> 
 		</p>
 	</div>
 

@@ -818,7 +818,7 @@ function listing_menu_1($type) { ?>
 	}
 	switch($type) {
 		case 'tag':
-		case 'category': ?>
+		case 'category': ?> 
 			<input type="submit" name="merge" value="<?= get_translation('merge'); ?>" /><?
 		break;
 	}

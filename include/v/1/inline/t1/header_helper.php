@@ -114,7 +114,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				}
 				if (!empty($v1['page_id']))
 				foreach ($v1['page_id'] as $k2 => $v2) {
-					$e1 = explode('_', $v2['page_name']); ?>
+					$e1 = explode('_', $v2['page_name']); ?> 
 					<nobr>
 						<span class="spacer"><?= $config['spacer'] ?></span>
 						<a href="/<?= $e1['0']; ?>_<?= $e1[1]; ?>/"><?= tt('page', $v2['page_name']); ?></a>

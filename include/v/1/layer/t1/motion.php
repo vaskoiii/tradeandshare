@@ -47,7 +47,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				<a href="./<?= ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action', 0); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
 			}
 		break;
-		default: ?>
+		default: ?> 
 				<a href="javascript: even_more_toggle('motion_box', 'view_title_box');">Edit<span id="motion_box_toggle" style="display: none;"> <?= $x['part'][1] == 'edit' ? tt('element', 'less') : tt('element', 'more'); ?></span></a>*<?
 		break;
 	} } ?> 
@@ -107,13 +107,13 @@ switch($k2) {
 		print_container($motion_content_1, $motion_listing, $key, $translation, 'motion'); ?> 
 	</div><?
 
-	if(!empty($motion_content_2)) { ?>
+	if(!empty($motion_content_2)) { ?> 
 	<p class="more_solo">
 		&gt;&gt; <a id="motion_content_2_toggle" style="display: inline;" href="#" onclick="more_toggle('motion_content_2'); return false;"><?= tt('element', 'more'); ?></a>
 	</p><?
-	} ?>
+	} ?> 
 	<div id="motion_content_2" style="margin-left: 20px; margin-bottom: 15px; display: none;"><?
-		print_container($motion_content_2, $motion_listing, $key, $translation, 'motion'); ?>
+		print_container($motion_content_2, $motion_listing, $key, $translation, 'motion'); ?> 
 	</div>
 </div>
 
@@ -130,7 +130,7 @@ switch($k1) {
 	break;
 	case 'edit':
 	if ($x['preload']['preview'] != 'motion') {
-	if ($x['load']['motion']['id']) { ?>
+	if ($x['load']['motion']['id']) { ?> 
 		<input type="submit" name="<?= $k1; ?>" value="<?= tt('element', $k1); ?>" /><?
 	} }
 	break;

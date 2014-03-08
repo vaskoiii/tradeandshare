@@ -168,8 +168,8 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-<? # <table> and other unconventional inline notation is used to maximize compatibility ?>
-<html>
+<? # <table> and other unconventional inline notation is used to maximize compatibility
+?><html>
 <head>
 	<meta content="text/html; charset=utf-8" http-equiv="Content-Type"><? # Needed? ?> 
 	<meta name="viewport" content="width=480" /><? # Needed? Email client can squish the flexible design if necessary? ?> 

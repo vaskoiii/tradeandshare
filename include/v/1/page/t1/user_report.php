@@ -32,15 +32,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 		<p>	
 			&sum;
-			/ <?= (int)$data['user_report']['relative_rating_amount']; ?>
-			= <?= to_html($data['user_report']['relative_grade_value_average']); ?>
+			/ <?= (int)$data['user_report']['relative_rating_amount']; ?> 
+			= <?= to_html($data['user_report']['relative_grade_value_average']); ?> 
 		</p><?
 	} else { ?> 
 		<p><?= tt('element', 'error_does_not_exist'); ?></p>
 
 		<p>	
 			&sum;
-			/ <?= $data['user_report']['relative_rating_amount']; ?>
+			/ <?= $data['user_report']['relative_rating_amount']; ?> 
 			= ?
 		</p><?
 	} ?> 

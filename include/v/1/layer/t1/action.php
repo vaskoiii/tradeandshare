@@ -99,7 +99,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 						$b1 = 2;
 
 					# todo hide message associated with the form on hiding that box. same as fast and quick
-					?>
+					?> 
 					<a id="action_el_swap1" style="display: <?= $b1 == 1 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap2'); document.getElementById('list_title_box').style.display = 'block'; return false;"><?= tt('element', 'edit'); ?></a>
 					<a id="action_el_swap2"  style="display: <?= $b1 == 2 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap1'); document.getElementById('list_title_box').style.display = 'none'; return false;"><?= tt('element', 'list'); ?></a><?
 				}
@@ -181,14 +181,14 @@ switch($k2) {
 		print_container($action_content_1, $action_listing, $key, $translation, 'action', $option); ?> 
 	</div><?
 
-	if(!empty($action_content_2)) { ?>
+	if(!empty($action_content_2)) { ?> 
 	<p class="more_solo">
 		&gt;&gt; <a id="action_content_2_toggle" style="display: inline;" href="#" onclick="more_toggle('action_content_2'); return false;"><?= tt('element', 'more'); ?></a>
 	</p><?
 	} 
-?>
+?> 
 	<div id="action_content_2" style="margin-left: 20px; margin-bottom: 15px; display: none;"><?
-		print_container($action_content_2, $action_listing, $key, $translation, 'action', $option); ?>
+		print_container($action_content_2, $action_listing, $key, $translation, 'action', $option); ?> 
 	</div>
 </div>
 
@@ -201,7 +201,7 @@ switch($k1) {
 	case 'recover':
 	case 'set':
 	case 'submit': # used on confirmation pages 2012-02-10 vaskoiii
-		if (!get_gp('preview') == 1) { ?>
+		if (!get_gp('preview') == 1) { ?> 
 			<input type="submit" name="<?= $k1; ?>" value="<?= tt('element', $k1); ?>" /><?
 		}
 	break;

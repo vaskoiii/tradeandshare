@@ -19,10 +19,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: show the data structures - show all variable spaces
-if ($config['debug'] == 1) { ?>
+if ($config['debug'] == 1) { ?> 
 <div id="debugger">
 <div class="content">
-	<? # phpinfo(); ?>
+	<? # phpinfo(); ?> 
 
 	<center><h2>echo to_html(print_r($array, 1));</h2></center>
 	<br />
@@ -61,13 +61,13 @@ if ($config['debug'] == 1) { ?>
 	foreach($a1 as $k1 => $v1)
 	switch($k1) {
 		case 'global':
-		case 'instantiated': ?>
+		case 'instantiated': ?> 
 			<center><h2><?= $k1; ?></h2></center><?
 		break;
-		case 'other': ?>
+		case 'other': ?> 
 			<center><h2>Other</h2></center><?
 		break;
-		case 'config': ?>
+		case 'config': ?> 
 			<div class="debug_variable">
 				<h3>$config</h3>
 				<p>Intentionally hidden as a security precaution.</p>
@@ -75,7 +75,7 @@ if ($config['debug'] == 1) { ?>
 		break;
 		case 'data':
 			if (!empty($data))
-			foreach($data as $k2 => $v2) { ?>
+			foreach($data as $k2 => $v2) { ?> 
 				<div class="debug_variable">
 					<h3><?= '$data[\'' . $k2 .'\']'; ?></h3>
 					<a id="debug_<?= $k2; ?>_toggle" href="javascript: more_toggle('debug_<?= $k2; ?>');"><?= tt('element', 'more'); ?></a> 
@@ -89,7 +89,7 @@ if ($config['debug'] == 1) { ?>
 		case 'interpret':
 			if (!str_match('_process', $x['page']['name']))
 				break;
-		default: ?>
+		default: ?> 
 			<div class="debug_variable">
 				<h3>$<?= $k1; ?></h3>
 				<a id="debug_<?= $k1; ?>_toggle" href="javascript: more_toggle('debug_<?= $k1; ?>');"><?= tt('element', 'more'); ?><a>
@@ -101,11 +101,11 @@ if ($config['debug'] == 1) { ?>
 					case '_COOKIE': echo to_html(print_r($_COOKIE, 1)); break;
 					case '_SESSION': echo to_html(print_r($_SESSION, 1)); break;
 					default: echo to_html(print_r(${$k1}, 1)); break; # variable variables!
-				} ?>
+				} ?> 
 				</pre>
 			</div><?
 		break;
-	} ?>
+	} ?> 
 
 	<div class="debug_variable">
 		<center><h2>Temporary</h2></center><br />

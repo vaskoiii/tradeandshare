@@ -38,11 +38,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 	foreach (get_gp('row') as $k1 => $v1) { ?> 
 		<input type="hidden" name="row[]" value="<?= $v1; ?>" /><? 
-	} ?>
+	} ?> 
 
 	<div class="content_box"><?
 	switch(get_gp('action')) {
-		case 'merge': ?>
+		case 'merge': ?> 
 		<div class="table">
 		<tr>
 			<td></td>
@@ -50,7 +50,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		</tr>
 		</div><?
 		break;
-		case 'export': ?>
+		case 'export': ?> 
 		<div class="table">
 		<tr>
 			<td><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name">(<?= tt('element', 'user_name'); ?>)</span>:</td>
@@ -58,7 +58,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		</tr> 
 		</div><?
 		break;
-		case 'import': ?>
+		case 'import': ?> 
 		<div class="table"><?
 			$data['container']['search_content_box']['element']['team_required_name'] = '<|*|>'; 
 			#include($x['site']['i'] . 'inline/option.php');  obsolete! 2012-02-06 vaskoiii
@@ -73,7 +73,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			print_search_box('element'); ?> 
 		</div><?
 		break;
-	} ?>
+	} ?> 
 	</div>
 	<div class="menu_1">
 		<ul>

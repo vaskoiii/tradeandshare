@@ -20,6 +20,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Placehoder page. Currently unused. 2012-06-05 vaskoiii
 
-up_date('2009-11-22'); ?>
+up_date('2009-11-22'); ?> 
 
 <p>If there is something you would like to see in the tutorials please send us a brief descriptions of what you would like <a href="./incident_edit/">here</a>.</p>

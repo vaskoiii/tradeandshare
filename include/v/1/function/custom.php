@@ -186,7 +186,7 @@ function print_ts_focus($string, $load, & $x = null) {
 	if (!$x)
 		global $x;
 
-	if ($x['preload']['focus'] == $load) { ?>
+	if ($x['preload']['focus'] == $load) { ?> 
 		<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
 	}
 	else
@@ -620,19 +620,19 @@ function print_message_bar() {
 	$interpret = & $_SESSION['interpret'];
 	
 	// We may want to default to hiding a success message. We can do that here later...
-	if (isset($interpret['message'])) { ?>
+	if (isset($interpret['message'])) { ?> 
 		<div class="message"><?
 			# todo should be a switch ehhh. holding the form return
-			if ($interpret['notice']) { ?>
+			if ($interpret['notice']) { ?> 
 				<p class="notice"><?
 			}
-			elseif ($interpret['success']) { ?>
+			elseif ($interpret['success']) { ?> 
 				<p class="success"><?
 			}
-			else { ?>
+			else { ?> 
 				<p class="failure"><? 
-			} ?>
-				<?= to_html($interpret['message']); ?>
+			} ?> 
+				<?= to_html($interpret['message']); ?> 
 			</p>
 		</div><?
 		unset($interpret['message']);

@@ -45,7 +45,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	</form>
 	<div class="k">Hotkey:</div>
 	<div class="v">Ctrl + Shift + Period</div>
-	<? # todo: implement hotkey ie) Ctrl + Shift + . ?>
+	<? # todo: implement hotkey ie) Ctrl + Shift + . ?> 
 </div>
 
 <div class="menu_1">

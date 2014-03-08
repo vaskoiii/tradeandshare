@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
-?>
+?> 
 
 reusable scrips need to be kept forever in the reusable subdir.
 ./php_reusable

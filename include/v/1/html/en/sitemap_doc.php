@@ -122,7 +122,7 @@ function hide_other_area(string, showall) {
 		<dd><?= tt('page', 'top_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
 		<? print_sitemap_link('new_report'); ?> 
 		<dd><?= tt('page', 'new_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
-		<?= print_sitemap_link('search_report'); ?>
+		<?= print_sitemap_link('search_report'); ?> 
 		<dd><?= tt('page', 'search_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
 	</dl>
 </div>
@@ -170,9 +170,9 @@ if (!empty($v1['page_id'])) { ?>
 					default:
 						echo  '<span class="access_user_all">' . tt('element', 'access_user_all') . '</span>';
 					break;
-				} ?>
+				} ?> 
 			</dd><?
-		} ?>
+		} ?> 
 		</dl>
 	</div><?
 } }

@@ -23,5 +23,5 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 up_date('2009-11-22'); ?> 
 
 <center>
-<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="256px" height="200" /></a>
+	<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="256px" height="200" /></a>
 </center>

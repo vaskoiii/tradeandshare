@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Downloads and Links
 
-up_date('2010-11-25'); ?>
+up_date('2010-11-25'); ?> 
 
 <div class="doc_box">
 	<h3>TS Desktop</h3>

@@ -55,7 +55,7 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 						$s1 == $_SESSION['process']['form_info']['type']
 					) {
 
-						# focus on error (not standard with id="ts_focus" ?>
+						# focus on error (not standard with id="ts_focus" ?> 
 						<script> document.getElementById('<?= to_html($s1); ?>_q_focus').focus(); </script><?
 
 						# todo message bar has to print for all content box types! maybe ok if autoexpand
@@ -92,7 +92,7 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 			$_SESSION['process']['form_info']['load'] == 'quick'
 		) {
 			print_container($quick_content_1, $empty_listing, $key, $translation, 'quick', $option);
-			if(!empty($quick_content_2)) { ?>
+			if(!empty($quick_content_2)) { ?> 
 			<p class="more_solo">
 				&gt;&gt; <a id="<?= to_html($s1); ?>_quick_2_toggle" style="display: inline;" href="#" onclick="more_toggle('<?= to_html($s1); ?>_quick_2'); return false;"><?= tt('element', 'more'); ?></a>
 			</p><?
@@ -103,7 +103,7 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 		}
 		else {
 			print_container($edit[$s1]['content_1'], $empty_listing, $key, $translation, 'quick', $option);
-			if(!empty($edit[$s1]['content_2'])) { ?>
+			if(!empty($edit[$s1]['content_2'])) { ?> 
 			<p class="more_solo">
 				&gt;&gt; <a id="<?= to_html($s1); ?>_quick_2_toggle" style="display: inline;" href="#" onclick="more_toggle('<?= to_html($s1); ?>_quick_2'); return false;"><?= tt('element', 'more'); ?></a>
 			</p><?

@@ -24,7 +24,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <html>
 	<head>
 		<title><?= to_html(get_page_title()); ?></title>
-		<link rel="image_src" href="/v/1/theme/select_none/ts_icon_256x256.png" /><? # facebook autofinds this picture? ?>
+		<link rel="image_src" href="/v/1/theme/select_none/ts_icon_256x256.png" /><? # facebook autofinds this picture? ?> 
 		<meta name="description" content="Trade and Share. Stuff you want or want to share. Want it? Get it! Have it? Share it! Don't want it? Trade it! An Identity-Based Merit System." />
 		<meta name="keywords" content="Trade and Share, Identity-Based Merit System, Alternate Economy" />
 		<meta name="author" content="John Vasko III" />
@@ -33,32 +33,32 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		switch($_SESSION['display']['display_name']) {
 			case 'display_select_default':
 				# desktop browsers will likely ignore viewport and then settings will be the same as [display_width_1024_pixels]
-				# try and get the most compact view and the most versatile view simultaneously ?>
+				# try and get the most compact view and the most versatile view simultaneously ?> 
 				<meta name="viewport" content="width=320" /><?
 			break;
 			case 'display_select_none':
 				# browser decides viewport
 			break;
-			case 'display_width_320_pixels': ?>
+			case 'display_width_320_pixels': ?> 
 				<meta name="viewport" content="width=320" /><?
 			break;
 			case 'display_width_480_pixels': ?> 
 				<meta name="viewport" content="width=480" /><?
 			break;
-			case 'display_width_1024_pixels': ?>
+			case 'display_width_1024_pixels': ?> 
 				<meta name="viewport" content="width=1024" /><?
 			break;
 		} 
 
 		# COMPATIBILITY MODE
-		if ($_SESSION['load']['load_javascript'] != 2) { ?>
+		if ($_SESSION['load']['load_javascript'] != 2) { ?> 
 			<script src="/launch_js/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>"></script>
 			<script src="/v/1/autocomplete/jquery-1.4.2.min.js"></script>
 			<script src="/v/1/autocomplete/jquery.metadata.js"></script>
 			<script src="/v/1/autocomplete/jquery.auto-complete.iii.js"></script>
 			<script src="/v/1/autocomplete/jquery.ts.js"></script>
 			<link rel="stylesheet" type="text/css" href="/v/1/autocomplete/jquery.auto-complete.css" /><?
-		} ?>
+		} ?> 
 
 		<link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
 		<link rel="stylesheet" type="text/css" media="all" href="/color_theme/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>&amp;display_id=<?= (int)$_SESSION['display']['display_id']; 
@@ -79,7 +79,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					display: none;
 					width: 300px;
 					height: 200px;
-
 					// debug
 					border: 20px solid red;
 					background: green;

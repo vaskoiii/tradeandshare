@@ -21,7 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Miscellaneous Javascript that should be included in ts.
 
 # todo currenly used as an include but should not be used as such. Should be included in the header! 2012-02-02
-?>
+?> 
 
 <script>
 	function more_toggle_swap(t1, refocus = false) {
@@ -73,5 +73,5 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		more_toggle(id2);
 	}
 
-	<? # todo toggle_selection() for allowing a selection to have an action on it. but first all actions must be allowed per item! ?>
+	<? # todo toggle_selection() for allowing a selection to have an action on it. but first all actions must be allowed per item! ?> 
 </script>

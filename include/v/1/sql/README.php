@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
-?>
+?> 
 
 Keep an incremental change of sql changes as they are made so that when time comes to upload to the live server we can at least have some sort of transaction log as to what was done.
 

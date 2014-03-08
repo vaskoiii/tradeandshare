@@ -67,7 +67,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <form name="form_search" action="/index.php" method="POST">
 <input type="hidden" name="x" value="<?= to_html($x['.']); ?>search_process/" />
 <input type="hidden" name="type" value="lock" />
-<? print_keyword_box('search_report', 1); ?>
+<? print_keyword_box('search_report', 1); ?> 
 </form> <? 
 
 foreach ($data['new_report']['page_id'] as $k1 => $v1) {
@@ -86,7 +86,7 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 			default:
 				echo '<br />';
 			break;
-		} ?>
+		} ?> 
 		<h4><?= tt('page', $v1['page_name']); ?></h4>
 		<div><?
 		$data['crappy_variable'] = false;
@@ -95,13 +95,13 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 			if ($v2['new_amount']) { ?> 
 				<p class="list_new">
 					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
-					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?>
+					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?> 
 				</p><?
 			} 
-			elseif (!$v2['view_when']) { ?>
+			elseif (!$v2['view_when']) { ?> 
 				<p class="list_unseen">
 					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
-					<?= tt('element', 'unseen'); ?>
+					<?= tt('element', 'unseen'); ?> 
 				</p><?
 			} else { ?> 
 				<p class="list_seen">
@@ -117,13 +117,13 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 			if ($v2['new_amount']) { ?> 
 				<p class="list_new">
 					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
-					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?>
+					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?> 
 				</p><?
 			} 
-			elseif (!$v2['view_when']) { ?>
+			elseif (!$v2['view_when']) { ?> 
 				<p class="list_unseen">
 					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
-					<?= tt('element', 'unseen'); ?>
+					<?= tt('element', 'unseen'); ?> 
 				</p><?
 			} else { ?> 
 				<p class="list_seen">

@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Release of liability
 
-up_date('2013-10-29'); ?>
+up_date('2013-10-29'); ?> 
 
 <div class="doc_box">
 <h3>General Public License</h3>

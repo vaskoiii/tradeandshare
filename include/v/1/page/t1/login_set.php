@@ -28,7 +28,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	print_message_bar(); ?> 
 	<div class="content">
 	<div id="action_content_1">
-<? ################### ?>
+<? ################### ?> 
 
 
 <form name="fs" action="/index.php" method="POST"> 
@@ -41,14 +41,14 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		case 'container':
 			// Do NOT set [container] as a string when it should be an array!
 		break;
-		default: ?>
+		default: ?> 
 			<input type="hidden" name="<?= to_html($k1); ?>" value="<?= to_html($v1); ?>" /><?
 		break;
 	} } }
-	foreach($_POST as $k1 => $v1) { ?>
+	foreach($_POST as $k1 => $v1) { ?> 
 		<input type="hidden" name="<?= to_html($k1); ?>" value="<?= to_html($v1); ?>" /><?
 	}
-	foreach($_GET as $k1 => $v1) { ?>
+	foreach($_GET as $k1 => $v1) { ?> 
 		<input type="hidden" name="<?= to_html($k1); ?>" value="<?= to_html($v1); ?>" /><?
 	} ?> 
 	<div class="table">

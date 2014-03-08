@@ -32,7 +32,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 
 <div class="content_box"><?
-	if ($_SESSION['login']['login_user_name']) { ?>
+	if ($_SESSION['login']['login_user_name']) { ?> 
 		<div class="doc_box">
 			<h3><?= tt('page', 'profile_edit'); ?></h3>
 			<p>

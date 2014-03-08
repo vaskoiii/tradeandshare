@@ -64,7 +64,7 @@ add_translation('status', 'status_wanted');
 
 do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']);
 
- // LATEST ?>
+ // LATEST ?> 
 <div class="notice" style="margin: 0px -18px; margin-top: -10px;">
 	Latest Modifications...
 </div>
@@ -119,7 +119,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 	<p>Please note that TS only allows you to use one email address for notifications so please choose what is best for you.</p>
 </div>
 
-<? // BEGINNER ?>
+<? // BEGINNER ?> 
 <div class="notice" style="margin: 0px -18px; margin-top: -5px;">
 	Below are beginner FAQs. Easier FAQ's closer to the top. 
 </div>
@@ -253,7 +253,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 </div>
 
 
-<? // NOTICE ?>
+<? // NOTICE ?> 
 <div class="notice" style="margin: 0px -18px; margin-top: -5px;">
 	Below are more advanced FAQs. Easier FAQ's are close to the top.
 </div>

@@ -55,12 +55,13 @@ function print_keyword_box($toggle = 'asearch_box', $lock_only = false, $load = 
 			}
 			break;
 		}
-		if ($lock_only == 1) { ?>
+		if ($lock_only == 1) { ?> 
 			<input type="submit" value="<?= tt('element', 'search_mixed'); ?>" /><?
-		} else { ?>
+		} else { ?> 
 			<input type="submit" value="<?= tt('element', 'find_' . to_html($t1)); ?>" /><?
-		} ?>
-		<nobr><span class="keyword_part">
+		} ?> 
+		<nobr>
+		<span class="keyword_part">
 		<span class="spacer">&gt;&gt;</span>
 		<a class="keyword_part"
 			id="<?= to_html($toggle); ?>_toggle" 
@@ -107,8 +108,9 @@ function print_keyword_box($toggle = 'asearch_box', $lock_only = false, $load = 
 			}
 			if (isset_gp($t1 . '_uid'))
 				$n1++; # count also uid (not yet present in a container)
-		echo $n1 . ')'; ?>
-		</nobr></span>
+		echo $n1 . ')'; ?> 
+		</span>
+		</nobr>
 	</div>
 	<br clear="all" /><?
 
@@ -120,15 +122,13 @@ if (!is_array($a1))
 	$a1 = array();
 #if(in_array($load, $a1) && $_SESSION['interpret']['failure'])
 if (in_array($load, $a1))
-	$b1 = 1;
-
-?>
+	$b1 = 1; ?> 
 	<div id="<?= to_html($toggle); ?>" style="<?= ($b1 == 1) ? 'display: block;' : 'display: none;'; ?>">
-		<? if ($lock_only != 1) { ?>
+		<? if ($lock_only != 1) { ?> 
 		<div class="nonlock_box"><?
 			print_container($data['search']['response']['search_content_1'], $listing, $key, $translation, $load, $option); ?> 
 		</div><?
-		} ?>
+		} ?> 
 		<div class="lock_box"><?
 			print_container($data['search']['response']['search_content_2'], $listing, $key, $translation, $load, $option); ?> 
 		</div><?
@@ -151,13 +151,13 @@ if (in_array($load, $a1))
 					if (isset_gp($s1 . '_uid'))
 						$s2 = get_gp($s1 . '_uid');
 					elseif ($_SESSION['process']['search_miscellaneous'][$s1 . '_uid'])
-						$s2 = $_SESSION['process']['search_miscellaneous'][$s1 . '_uid']; ?>
+						$s2 = $_SESSION['process']['search_miscellaneous'][$s1 . '_uid']; ?> 
 					<input class="uid" type="text" name="<?= to_html($s1 . '_uid'); ?>" value="<?= to_html($s2); ?>" />
 				</div><?
 				# use if you dont want the add feed link to appear on the main page...
 				$s1 = $x['load']['list']['type'];
 				if (!$x['load']['list']['type'])
-					$s1 = 'item'; ?>
+					$s1 = 'item'; ?> 
 				<div class="k">
 					<span class="extra"><?= tt('element', 'extra'); ?></span>:
 				</div>
@@ -531,7 +531,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		# case 'kind_name_translation_name':
 		# todo create less ambiguity by creating a separate case
 		# break;
-		case 'invite_id': ?>
+		case 'invite_id': ?> 
 			<input type="hidden" name="invite_id" value="<?= get_gp('action_invite_id'); ?>" /><?
 		break;
 		case 'kind_name_name': # tricky because engine uses generic values instead of the more specific translation_kind_name_name 2012-03-10 vaskoiii ?> 
@@ -567,7 +567,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		break;
 		// REDIRECT!
 		case 'login_request_uri':
-		case 'redirect': ?>
+		case 'redirect': ?> 
 			<div class="k"><?= tt('element', $k1); ?>:</div>
 			<div class="v"><?= to_html($v1); ?></div>
 			<input type="hidden" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" /><?
@@ -597,7 +597,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		// case to not appear straight away - feed_edit only fields
 		/*
 		case 'page_name':
-		case 'feed_query': ?>
+		case 'feed_query': ?> 
 			<input type="hidden" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" /><?
 		break;	
 		*/
@@ -663,7 +663,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			if ($x['load']['action']['type'] == str_replace('_name', '', $k1))
 				$i1 = 1; # alternatively we could define another input type for use in this case 2012-03-08 vaskoiii
 
-			if ($i1 == 2) { ?>
+			if ($i1 == 2) { ?> 
 			<select onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="<?= $k1; ?>" name="<?= $k1; ?>">
 				<option></option><?
 				$b1 = 2; # reset master select
@@ -686,7 +686,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					if ($b1 == 1 && $v1 == $k2) { ?> 
 						 selected="selected" <?
 					} 
-					elseif (get_gp($load_ . $k1) == $v2) { # Needed if value is set in the URL ?>
+					elseif (get_gp($load_ . $k1) == $v2) { # Needed if value is set in the URL ?> 
 						 selected="selected" <?
 					}
 					elseif ($b1 != 1) {
@@ -724,7 +724,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 						case 'launcher_theme_name':
 							echo tt('theme', $k2);
 						break;
-						default:?>
+						default:?> 
 							<?= tt(str_replace(array('lock_', '_name'), array('', ''), $k1), $k2); ?><?
 						break;
 					} ?> 
@@ -742,14 +742,14 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		break;
 		# BOOLEAN implementation
 		# recommend: 1 = true and 2 = false to avoid using a 0 in the data type
-		case 'load_javascript': ?>
+		case 'load_javascript': ?> 
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
 		case 'feature_lock':
 		case 'feature_minnotify':
 		case 'notify_offer_received':
-		case 'notify_teammate_received': ?>
+		case 'notify_teammate_received': ?> 
 				<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 				<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 == 'true' || $v1 == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
@@ -764,7 +764,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					} }
 				break;
 			}
-			if ($b2 == 2) { ?>
+			if ($b2 == 2) { ?> 
 			<div class="k"><span class="contact_name"><?= tt('element', 'contact_name'); ?></span> <span class="user_name"><?= to_html($config['unabstracted_prefix']) . tt('element', 'user_name') . to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><?
 				$s1 = ''; ?> 
@@ -830,7 +830,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					} }
 				break;
 			}
-			if ($b2 == 2) { ?>
+			if ($b2 == 2) { ?> 
 			<div class="k"><span class="lock_contact_name"><?= tt('element', 'lock_contact_name'); ?></span> <span class="lock_user_name"><?= to_html($config['unabstracted_prefix']); ?><?= tt('element', 'lock_user_name'); ?><?= to_html($config['unabstracted_suffix']); ?></span>:</div>
 			<div class="v"><input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?
 
@@ -882,20 +882,20 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				?>" /></div><?
 			}
 		break;
-		default: ?>
+		default: ?> 
 		<span valign="top">
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><?
-				if ( !str_match('_description', $k1) ) { ?>
+				if ( !str_match('_description', $k1) ) { ?> 
 					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
 				}
-				else { ?>
-					<? # textarea display hacks 2012-02-26 vaskoiii ?>
+				else { ?> 
+					<? # textarea display hacks 2012-02-26 vaskoiii ?> 
 					<div class="textarea">
 						<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="<?= $k1; ?>" maxlength="255" /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
 					</div>
 					&nbsp;<?
-				} ?>
+				} ?> 
 			</div>
 		</span><?
 		break;

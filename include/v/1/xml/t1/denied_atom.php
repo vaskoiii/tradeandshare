@@ -22,11 +22,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo: add translations (currently only in english)
 # todo: make to_xml check for the pattern ]]> or whatever the terminating thing of cdata is.
 
-echo '<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/css" href="/text_style/" ?>
-';
-?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+echo '<?xml-stylesheet type="text/css" href="/text_style/" ?>' . "\n";
+?><feed xmlns="http://www.w3.org/2005/Atom">
 	<title><?= to_xml(('Trade and Share')); ?></title>
 	<link href="<?= 'https://' . $_SERVER['HTTP_HOST']; ?>" />
 	<subtitle><?= to_xml(('Want it? Get it! Have it? Share it! Don\'t want it? Trade it!')); ?></subtitle>

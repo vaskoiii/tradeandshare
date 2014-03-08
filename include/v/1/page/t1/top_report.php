@@ -43,16 +43,16 @@ if ($x['name'] == 'top_report') {
 	<div id="list_title_box" class="title" style="display: <?= get_action_style_display(); ?>;"><?
 		$s1 = get_translation('page', 'top_report');
 		if ($x['name'] != ''
-		 && $x['name'] != 'main') { ?>
+		 && $x['name'] != 'main') { ?> 
 			<h2><? print_ts_focus($s1, 'report'); ?></h2><?
-		} else { ?>
+		} else { ?> 
 			<h2><?= to_html($s1); ?></h2><?
 		} ?> 
 		<p class="result_add">
 		</p>
 	</div><?
 	if ($x['preload']['focus'] == 'list')
-	print_message_bar(); ?>
+	print_message_bar(); ?> 
 	<div class="content">
 
 <div class="content_box">
@@ -94,9 +94,9 @@ print_keyword_box('search_report', 1); ?>
 <ul><? # hopefully the value of $datetime is still being held from the engine! if not put it in the $data array! 
 	$s1 = '';
 	if ($x['name'] == '' || $x['name'] == 'main')
-		$s1 = 'top_report/'; ?>
+		$s1 = 'top_report/'; ?> 
 	<li><a href="./<?= $s1 . ffm('list_datetime_upper_limit=', 0); ?>">|&lt;&lt;</a></li><?
-	if ($data['result']['result']['listing_key_count']) { ?>
+	if ($data['result']['result']['listing_key_count']) { ?> 
 		<li><a href="./<?= $s1 . ffm(get_lock_query('list_name=report&list_type=top&list_datetime_upper_limit=' . to_url($datetime_lower_limit)), 0); ?>"><?# tt('page', 'top_report'); ?> &gt;&gt;</a></li><?
 	} ?> 
 </ul>
