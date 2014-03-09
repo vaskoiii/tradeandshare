@@ -2633,3 +2633,6 @@ INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'page_parent'), (NULL
 
 
 INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'list');
+
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '20', 'more_js', '1', '2', '2', '2', '2');

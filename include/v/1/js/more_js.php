@@ -19,3 +19,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Miscellaneous Javascript that should be included in TS.
+
+add_translation('element', 'more');
+add_translation('element', 'less');
+
+do_translation($key, $translation);

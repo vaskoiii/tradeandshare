@@ -56,8 +56,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 						id="item_f_swap1"
 						style="display: <?= $b1 == 1 ? 'none' : 'inline'; ?>;" 
 						href="/item_list/"
-						onclick="javascript:  if (document.getElementById('offer_f_box').style.display == 'block') more_toggle_swap('offer_f'); more_toggle_swap('item_f'); return false;"
 					><?= tt('page', 'item_list'); ?></a>
+					<script>
+						document.getElementById('item_f_swap1').onclick = function() {
+							if (document.getElementById('offer_f_box').style.display == 'block')
+								more_toggle_swap('offer_f');
+							more_toggle_swap('item_f');
+							return false;
+						}
+					</script>
 					<a
 						id="item_f_swap2"
 						style="display: <?= $b1 == 1 ? 'inline' : 'none'; ?>; font-weight: bold;"
@@ -69,8 +76,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 						id="offer_f_swap1"
 						style="display: <?= $b2 == 1 ? 'none' : 'inline'; ?>;" 
 						href="/offer_list/"
-						onclick="javascript: if (document.getElementById('item_f_box').style.display == 'block') more_toggle_swap('item_f'); more_toggle_swap('offer_f');  return false;"
 					><?= tt('page', 'offer_list'); ?></a>
+					<script>
+						document.getElementById('offer_f_swap1').onclick = function() {
+							if (document.getElementById('item_f_box').style.display == 'block')
+								more_toggle_swap('item_f');
+							more_toggle_swap('offer_f');
+							return false;
+						}
+					</script>
 					<a
 						id="offer_f_swap2"
 						style="display: <?= $b2 == 1 ? 'inline' : 'none'; ?>; font-weight: bold;"
@@ -89,7 +103,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					
 
 			# Sitemap ?> 
-			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('head_menu'); ?>'); return false;"/><?= tt('element', 'more'); ?></a></span>
+			<span style="text-align: left; display: inline-block; width: 90px;"><span class="spacer">&gt;&gt;</span> <a id="head_menu_toggle" href="/sitemap_doc/" onclick="more_toggle('head_menu'); return false;"/><?= tt('element', 'more'); ?></a></span>
 		</ul>
 	
 		<div id="head_menu" style="display: none;">

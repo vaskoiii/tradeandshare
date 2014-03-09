@@ -20,58 +20,61 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Miscellaneous Javascript that should be included in ts.
 
-# todo currenly used as an include but should not be used as such. Should be included in the header! 2012-02-02
-?> 
+$s1 = tt('element', 'more');
+$s2 = tt('element', 'less');
+$s3 =  get_q_query_modified($x['level'], array('t1_box_on' => '1'));
 
-<script>
-	function more_toggle_swap(t1, refocus = false) {
-		if (refocus == false)
-			var t1_focus = document.getElementById(t1 + '_focus');
-		else
-			var t1_focus = document.getElementById(refocus);
 
-		var t1_box = document.getElementById(t1 + '_box');
-		var t1_swap1 = document.getElementById(t1 + '_swap1');
-		var t1_swap2 = document.getElementById(t1 + '_swap2');
+echo <<<JAVASCRIPT
 
-		if (t1_swap1.style.display == 'none') {
-			t1_swap1.style.display='inline';
-			t1_swap2.style.display='none';
-		}
-		else {
-			t1_swap1.style.display='none';
-			t1_swap2.style.display='inline';
-		}
-		if (t1_box.style.display == 'none') {
-			t1_box.style.display='block';
-			t1_focus.focus();
-		}
-		else {
-			t1_box.style.display='none';
-			t1_swap1.focus();
-		}
+function more_toggle_swap(t1, refocus) {
+   	refocus = typeof refocus !== 'undefined' ? true : false; // browser compatible default parameter
+	if (refocus == false)
+		var t1_focus = document.getElementById(t1 + '_focus');
+	else
+		var t1_focus = document.getElementById(refocus);
+
+	var t1_box = document.getElementById(t1 + '_box');
+	var t1_swap1 = document.getElementById(t1 + '_swap1');
+	var t1_swap2 = document.getElementById(t1 + '_swap2');
+
+	if (t1_swap1.style.display == 'none') {
+		t1_swap1.style.display='inline';
+		t1_swap2.style.display='none';
 	}
-	function more_toggle(t1) {
-		var t1_box = document.getElementById(t1); // not + '_box'
-		var t1_toggle = document.getElementById(t1 + '_toggle');
-		if (t1_box.style.display == 'none') {
-			t1_box.style.display='block';
-			if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
-				window.location="./<?= get_q_query_modified($x['level'], array('t1_box_on' => '1')); ?>"
-			t1_toggle.innerHTML = '<?= tt('element', 'less'); ?>';
-		}
-		else {
-			t1_box.style.display='none';
-			if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
-				window.location="./<?= get_q_query_modified($x['level'], array('t1_box_on' => '')); ?>"
-			t1_toggle.innerHTML = '<?= tt('element', 'more'); ?>';
-		}
+	else {
+		t1_swap1.style.display='none';
+		t1_swap2.style.display='inline';
 	}
-
-	function even_more_toggle(id1, id2) {
-		more_toggle(id1);
-		more_toggle(id2);
+	if (t1_box.style.display == 'none') {
+		t1_box.style.display='block';
+		t1_focus.focus();
 	}
+	else {
+		t1_box.style.display='none';
+		t1_swap1.focus();
+	}
+}
+function more_toggle(t1) {
+	var t1_box = document.getElementById(t1); // not + '_box'
+	var t1_toggle = document.getElementById(t1 + '_toggle');
+	if (t1_box.style.display == 'none') {
+		t1_box.style.display='block';
+		if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
+			window.location='./$s3';
+		t1_toggle.innerHTML = '$s2';
+	}
+	else {
+		t1_box.style.display='none';
+		if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
+			window.location='./$s3';
+		t1_toggle.innerHTML = '$s1';
+	}
+}
 
-	<? # todo toggle_selection() for allowing a selection to have an action on it. but first all actions must be allowed per item! ?> 
-</script>
+function even_more_toggle(id1, id2) {
+	more_toggle(id1);
+	more_toggle(id2);
+}
+
+JAVASCRIPT;

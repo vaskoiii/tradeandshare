@@ -51,7 +51,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		} 
 
 		# COMPATIBILITY MODE
+		# todo make liST not dependent on JS 2014-03-09 vaskoiii
+		# ideally js can still be used for showing and hiding but otherwise no!
 		if ($_SESSION['load']['load_javascript'] != 2) { ?> 
+			<script src="/more_js/"></script>
 			<script src="/launch_js/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>"></script>
 			<script src="/v/1/autocomplete/jquery-1.4.2.min.js"></script>
 			<script src="/v/1/autocomplete/jquery.metadata.js"></script>
@@ -64,9 +67,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		<link rel="stylesheet" type="text/css" media="all" href="/color_theme/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>&amp;display_id=<?= (int)$_SESSION['display']['display_id']; 
 ?>" />
 		<link rel="stylesheet" type="text/css" media="all" href="/text_style/" />
-
-		<? # todo fix bad placement:
-		include('v/1/js/t1/more_js.php'); ?> 
 		<?
 		# todo placeholder for removing iframes
 		# only issue is that we may lose the separate color choice for the launcher
