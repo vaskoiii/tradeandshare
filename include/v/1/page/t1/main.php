@@ -52,16 +52,6 @@ include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php'); ?>
 <div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div>
 <? print_message_bar(); ?><?
 if ($_SESSION['login']['login_user_id']) { ?> 
-	<script>
-		function simple_show_hide(s1, s2) {
-			var o1 = document.getElementById(s1);
-			var o2 = document.getElementById(s2);
-			o1.style.display = 'block';
-			o2.style.display = 'none';
-			document.getElementById(s1 + '_focus').focus();
-		}
-		
-	</script>
 	<div class="content">
 		<div id="splash_search">
 		<div class="splash_box">
@@ -86,6 +76,8 @@ if ($_SESSION['login']['login_user_id']) { ?>
 				<input type="hidden" name="type" value="item" />
 				<div class="main_keyword_box">
 					<? print_keyword_box('asearch_box', 0, '', 1); ?> 
+				</div>
+				<div class="menu_1">
 				</div>
 			</form>
 		</div>
@@ -126,12 +118,16 @@ if ($_SESSION['login']['login_user_id']) { ?>
 					<div id="<?= to_html($s1);?>_main_2" style="margin-left: 20px; margin-bottom: 15px; display: none;"><?
 						print_container($edit[$s1]['content_2'], $empty_listing, $key, $translation, 'main', $option); ?> 
 					</div>
+					<div class="menu_1">
+						<ul>
+							<input type="submit" value="<?= tt('element', 'add'); ?>" />
+						</ul>
+					</div>
+					
 				</form>
 			</div>
 		</div>
 		<div class="splash_box">
-			<div class="menu_1">
-			</div>
 			<div class="menu_2">
 				<ul>
 					<li><a href="top_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'top_report'); ?></a></li>
@@ -148,7 +144,7 @@ else { ?>
 			<div id="main_intro">
 
 				<center>
-				<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="192px" height="150" /></a>
+				<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="224px" height="175" /></a>
 				</center>
 			</div>
 		<div class="menu_1">

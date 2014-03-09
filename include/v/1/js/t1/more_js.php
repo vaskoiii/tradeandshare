@@ -77,4 +77,12 @@ function even_more_toggle(id1, id2) {
 	more_toggle(id2);
 }
 
+function simple_show_hide(s1, s2) {
+	var o1 = document.getElementById(s1);
+	var o2 = document.getElementById(s2);
+	o1.style.display = 'block';
+	o2.style.display = 'none';
+	document.getElementById(s1 + '_focus').focus();
+}
+
 JAVASCRIPT;

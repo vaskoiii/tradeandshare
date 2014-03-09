@@ -67,49 +67,5 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		<link rel="stylesheet" type="text/css" media="all" href="/color_theme/?theme_id=<?= $_SESSION['theme']['theme_id']; ?>&amp;display_id=<?= (int)$_SESSION['display']['display_id']; 
 ?>" />
 		<link rel="stylesheet" type="text/css" media="all" href="/text_style/" />
-		<?
-		# todo placeholder for removing iframes
-		# only issue is that we may lose the separate color choice for the launcher
-		$hh_b1 = 2; // dont use this variable anymore after implementation 2014-03-08 vaskoiii
-		if ($hh_b1 == 1) { ?> 
-			<style>
-				#pager_box,
-				#peopler_box {
-					position: absolute;
-					display: none;
-					width: 300px;
-					height: 200px;
-					// debug
-					border: 20px solid red;
-					background: green;
-					
-					}
-			</style>
-			<script>
-				function radical(tsType) {
-					var lb = document.getElementById(tsType + '_box');
-					// todo get this without the px part ie) lb.style.width
-					lbW = '300';
-					lbH = '200';
-					console.log(lb.style);
-					console.log(iii_clientWidth());
-					var topPx = iii_scrollTop() + (iii_clientHeight() / 3) - (lbH / 2);
-					if (topPx <= 0) {
-						topPx = 0;
-					}
-					var leftPx = (iii_scrollLeft() + (iii_clientWidth() / 2)) - (lbW / 2);
-					if (leftPx <= 0) {
-						leftPx = 0;
-					}
-					lb.style.top = topPx + 'px';
-					lb.style.left = leftPx + 'px';
-					lb.style.display = 'block';
-					// if (tsType == 'tslPeople')
-					// 	setTimeout("gettsl_idocument('tslPeople').getElementById('tsl_input').focus()", 0);
-					// else
-					// 	setTimeout("gettsl_idocument('tsl').getElementById('tsl_input').focus()", 0);
-				}
-			</script><?
-		} ?> 
 	</head>
 

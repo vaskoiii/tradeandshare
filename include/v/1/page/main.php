@@ -27,6 +27,8 @@ if ($_SESSION['login']['login_user_id'] && !empty($_SESSION['lock']) && $_SESSIO
 	exit;
 }
 
+add_translation('element', 'edit');
+add_translation('element', 'add');
 add_translation('boolean', 'false');
 add_translation('boolean', 'true');
 add_translation('element', 'add_feed');
