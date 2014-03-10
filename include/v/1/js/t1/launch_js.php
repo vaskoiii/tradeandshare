@@ -298,107 +298,82 @@ function createtsl_iframe(tsType) {
 			tsl_main_box.style.background = '{$data['css']['c1']}';
 			tsl_meat_box.appendChild(tsl_main_box); //[
 
+			var tsl_form;
+			tsl_form = tsl_idocument.createElement('form');
+			tsl_form.id = 'tsl_form';
+			tsl_form.style.position = 'relative';
+			tsl_form.style.top = '0px';
+			tsl_form.style.margin = '0px';
+			tsl_form.style.padding = '0px';
+			tsl_form.setAttribute('onSubmit', 'window.parent.location=tsl_suggest_one.href;');
+			tsl_main_box.appendChild(tsl_form); //[
+				var tsl_x;
+				tsl_x = tsl_idocument.createElement('a');
+				tsl_x.id = 'tsl_x';
 
-			// placeholder
-			if (tsType == 'placeholdeRtslPeople') {
-				var tsl_form;
-				tsl_form = tsl_idocument.createElement('form');
-				tsl_form.id = 'tsl_form';
-				tsl_form.style.position = 'relative';
-				tsl_form.style.top = '0px';
-				tsl_form.style.margin = '0px';
-				tsl_form.style.padding = '0px';
-				tsl_main_box.appendChild(tsl_form); //[
-					
-					var tsl_p;
-					tsl_p = tsl_idocument.createElement('p');
-					tsl_p.id = 'tsl_p';
-					tsl_p.style.fontWeight = 'bold';
-					tsl_p.innerHTML = 'TS Alternative Launcher Placeholder';
-					tsl_p.style.color = 'black';
-					tsl_form.appendChild(tsl_p);
+				// switch
+				tsl_x.href = 'javascript:top.killtsl_iframe("' + tsType + '");';
 
-				//]
-			}
-			else {
-				var tsl_form;
-				tsl_form = tsl_idocument.createElement('form');
-				tsl_form.id = 'tsl_form';
-				tsl_form.style.position = 'relative';
-				tsl_form.style.top = '0px';
-				tsl_form.style.margin = '0px';
-				tsl_form.style.padding = '0px';
-				tsl_form.setAttribute('onSubmit', 'window.parent.location=tsl_suggest_one.href;');
-				tsl_main_box.appendChild(tsl_form); //[
-					var tsl_x;
-					tsl_x = tsl_idocument.createElement('a');
-					tsl_x.id = 'tsl_x';
+				tsl_x.innerHTML = 'TS';
+				tsl_x.style.marginRight = '10px';
+				tsl_x.style.color = 'black';
+				tsl_x.style.fontWeight = 'bold';
+				tsl_x.style.fontSize = '+1.5em';
+				tsl_form.appendChild(tsl_x);
+				var tsl_suggest_one;
+				tsl_suggest_one = tsl_idocument.createElement('a');
+				tsl_suggest_one.id = 'tsl_suggest_one';
+				tsl_suggest_one.target = '_top';
 
-					// switch
-					tsl_x.href = 'javascript:top.killtsl_iframe("' + tsType + '");';
+				// switch
+				if (tsType == 'tslPeople') {
+					tsl_suggest_one.href = 'javascript:top.remember("tslPeople", "{$_COOKIE["launch"]["tslPeople"]["value"]}", "{$_COOKIE["launch"]["tslPeople"]["display"]}");';
+					tsl_suggest_one.innerHTML = '{$_COOKIE["launch"]["tslPeople"]["display"]}';
+				}
+				else {
+					tsl_suggest_one.href = 'javascript:top.remember("tsl", "{$_COOKIE['launch']['tsl']['value']}", "{$_COOKIE['launch']['tsl']['display']}");';
+					tsl_suggest_one.innerHTML = '{$_COOKIE['launch']['tsl']['display']}';
+				}
 
-					tsl_x.innerHTML = 'TS';
-					tsl_x.style.marginRight = '10px';
-					tsl_x.style.color = 'black';
-					tsl_x.style.fontWeight = 'bold';
-					tsl_x.style.fontSize = '+1.5em';
-					tsl_form.appendChild(tsl_x);
-					var tsl_suggest_one;
-					tsl_suggest_one = tsl_idocument.createElement('a');
-					tsl_suggest_one.id = 'tsl_suggest_one';
-					tsl_suggest_one.target = '_top';
+				tsl_suggest_one.style.color = 'black';
+				tsl_suggest_one.style.fontWeight = 'bold';
+				tsl_suggest_one.style.fontSize = '+1.5em';
+				tsl_form.appendChild(tsl_suggest_one);
+				var tsl_br;
+				tsl_br = tsl_idocument.createElement('br');
+				tsl_form.appendChild(tsl_br);
+				var tsl_input;
+				tsl_input = tsl_idocument.createElement('input');
+				tsl_input.id = 'tsl_input';
+				tsl_input.style.width = '200px';
+				tsl_input.style.background = '#fefefe';
+				tsl_input.style.color = '#010101';
+				tsl_input.type = "text";
+				tsl_input.autocomplete = "off";
 
-					// switch
-					if (tsType == 'tslPeople') {
-						tsl_suggest_one.href = 'javascript:top.remember("tslPeople", "{$_COOKIE["launch"]["tslPeople"]["value"]}", "{$_COOKIE["launch"]["tslPeople"]["display"]}");';
-						tsl_suggest_one.innerHTML = '{$_COOKIE["launch"]["tslPeople"]["display"]}';
-					}
-					else {
-						tsl_suggest_one.href = 'javascript:top.remember("tsl", "{$_COOKIE['launch']['tsl']['value']}", "{$_COOKIE['launch']['tsl']['display']}");';
-						tsl_suggest_one.innerHTML = '{$_COOKIE['launch']['tsl']['display']}';
-					}
+				//switch
+				tsl_input.setAttribute('onkeyup', 'window.top.showHint("' + tsType + '", this.value);');
 
-					tsl_suggest_one.style.color = 'black';
-					tsl_suggest_one.style.fontWeight = 'bold';
-					tsl_suggest_one.style.fontSize = '+1.5em';
-					tsl_form.appendChild(tsl_suggest_one);
-					var tsl_br;
-					tsl_br = tsl_idocument.createElement('br');
-					tsl_form.appendChild(tsl_br);
-					var tsl_input;
-					tsl_input = tsl_idocument.createElement('input');
-					tsl_input.id = 'tsl_input';
-					tsl_input.style.width = '200px';
-					tsl_input.style.background = '#fefefe';
-					tsl_input.style.color = '#010101';
-					tsl_input.type = "text";
-					tsl_input.autocomplete = "off";
-
-					//switch
-					tsl_input.setAttribute('onkeyup', 'window.top.showHint("' + tsType + '", this.value);');
-
-					tsl_input.style.background.color = '#ffffff';
-					tsl_form.appendChild(tsl_input);
-					var tsl_launch;
-					tsl_launch = tsl_idocument.createElement('input');
-					tsl_launch.id = 'tsl_launch';
-					tsl_launch.type = "submit";
-					tsl_launch.value = "!";
-					tsl_launch.style.margin = '5px';
-					tsl_launch.style.background = '#fefefe';
-					tsl_launch.style.color = '#010101';
-					tsl_input.type = "text";
-					tsl_form.appendChild(tsl_launch);
-					var tsl_hr; // border is not an option because the title can expand dynamically
-					tsl_hr = tsl_idocument.createElement('hr');
-					tsl_hr.style.background = '#ffffff';
-					tsl_hr.style.border = 'none';
-					tsl_hr.style.height = '2px';
-					tsl_hr.style.margin = '0px -20px 0px -20px';
-					tsl_form.appendChild(tsl_hr);
-				//]
-			// ]
-
+				tsl_input.style.background.color = '#ffffff';
+				tsl_form.appendChild(tsl_input);
+				var tsl_launch;
+				tsl_launch = tsl_idocument.createElement('input');
+				tsl_launch.id = 'tsl_launch';
+				tsl_launch.type = "submit";
+				tsl_launch.value = "!";
+				tsl_launch.style.margin = '5px';
+				tsl_launch.style.background = '#fefefe';
+				tsl_launch.style.color = '#010101';
+				tsl_input.type = "text";
+				tsl_form.appendChild(tsl_launch);
+				var tsl_hr; // border is not an option because the title can expand dynamically
+				tsl_hr = tsl_idocument.createElement('hr');
+				tsl_hr.style.background = '#ffffff';
+				tsl_hr.style.border = 'none';
+				tsl_hr.style.height = '2px';
+				tsl_hr.style.margin = '0px -20px 0px -20px';
+				tsl_form.appendChild(tsl_hr);
+			//]
 			// JUICE
 			var tsl_alternative_box;
 			tsl_alternative_box = tsl_idocument.createElement('div');
@@ -413,7 +388,6 @@ function createtsl_iframe(tsType) {
 				tsl_suggest_more.innerHTML = getSuggestMoreEmptyInput(tsType);
 				tsl_alternative_box.appendChild(tsl_suggest_more);
 			//]
-			}
 		}
 	}
 }
