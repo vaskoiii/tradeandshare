@@ -26,7 +26,8 @@ if ($_SESSION['login']['login_user_id']) {
 else
 	$b1 = 2;
 ?> 
-<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);">
+<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);"><?
+include('v/1/inline/t1/test.php'); ?> 
 <div id="header">
 <div style="background: url('/v/1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
 <div class="title">

@@ -35,18 +35,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		</i>
 		</p>
 		<p class="middle_foot"><?
-			# placeholder
-			/* if ($_SESSION['load']['load_javascript'] == 1) { ?>
-				<a href="#" onclick="javascript: launch(event); return false;">Launcher</a>: <nobr>ctrl+shift+space/L</nobr><?
-			} */?> 
+			# placeholder ?> 
 		</p>
 		<p class="bottom_foot">
 			<nobr>&copy; 2003-<?= to_html(date('Y')); ?> Trade and Share GPL</nobr>
 		</p>
 		<div class="menu_1">
 			<ul>
-				<li><a href="#" alt="/page_portal" onclick="launch('tsl', event); return false;"><?= tt('page', 'page_portal'); ?></a></li>
-				<li><a href="#" alt="/people_portal/" onclick="launch('tslPeople'); return false;"><?= tt('page', 'people_portal'); ?></a></li>
+				<li><a href="#" alt="/page_portal/" onclick="launch('pager', event); return false;"><?= tt('page', 'page_portal'); ?></a></li>
+				<li><a href="#" alt="/people_portal/" onclick="launch('peopler'); return false;"><?= tt('page', 'people_portal'); ?></a></li>
 			</ul>
 		</div>
 		<div class="menu_2" style="margin-bottom: 0px;">

@@ -102,53 +102,54 @@ if ($_SESSION['login']['login_user_id']) {
 		$data['json'][$k1]['value'] = str_replace($a1, $a2, $data['json'][$k1]['value']);
 		$data['json'][$k1]['display'] = str_replace($a1, $a2, $data['json'][$k1]['display']);
 	}
-	//print_r($data['json']);
-
 	$peopleJson = json_encode($data['json']);
 }
 else
 	$peopleJson = '';
 
-$request_uri=  $_SERVER['REQUEST_URI'];
+# needed?
+$request_uri =  $_SERVER['REQUEST_URI'];
 
 # Easy customization of the empty pages (ordinarily style doesnt go in the engine pages)
 # don't forget target="_top"
 # whitespace in the fist column otherwise preg_replace() doesnt work right and the launcher wont load
-$data['launch']['tsl']['empty'] = <<<HTML
+$data['launch']['pager']['empty'] = <<<HTML
  <table><tr>
 	<td>
-		<a href="/" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a>
+		<a href="/"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a>
 	</td>
-	<td valign="center" style="padding-left: 5px;">
-	<a href="/" target="_top" style="color: #000;">{$translation['page_name']['result']['main']['translation_name']}</a></td>
+	<td class="td2">
+		<a href="/" style="color: #000;">{$translation['page_name']['result']['main']['translation_name']}</a></td>
  </tr></table>
 HTML;
-$data['launch']['tsl']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tsl']['empty']);
+$data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 
 # people launcher
 if ($_SESSION['login']['login_user_id']) {
 $s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
-$data['launch']['tsl']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tsl']['empty']);
-$data['launch']['tslPeople']['empty'] = <<<HTML
+$data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
+$data['launch']['peopler']['empty'] = <<<HTML
  <table><tr>
 	<td>
-	<a href="{$s1}" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+		<a href="{$s1}"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
 	</td>
-	<td valign="center" style="padding-left: 5px;">
-	Me (<a href="{$s1}" target="_top" style="color: #000;">{$_SESSION['login']['login_user_name']}</a>)</td>
+	<td class="td2">
+		Me (<a href="{$s1}" style="color: #000;">{$_SESSION['login']['login_user_name']}</a>)
+	</td>
  </tr></table>
 HTML;
 }
 else {
 $s1 = '/login_set/';
-$data['launch']['tslPeople']['empty'] = <<<HTML
+$data['launch']['peopler']['empty'] = <<<HTML
  <table><tr>
 	<td>
-	<a href="{$s1}" target="_top" style="margin-left: -20px;"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+		<a href="{$s1}"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
 	</td>
-	<td valign="center" style="padding-left: 5px;">
-	<a href="{$s1}" target="_top" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a></td>
+	<td class="td2">
+		<a href="{$s1}" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a>
+	</td>
  </tr></table>
 HTML;
 }
-$data['launch']['tslPeople']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['tslPeople']['empty']);
+$data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);

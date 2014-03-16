@@ -18,11 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: Javascript functionality for a launcher with [ctrl + shift + space] to launch any standalone TS page.
+# Contents/Description: Javascript functionality for a launcher with a hotkey:
+#  Pager: [ctrl + shift + ,] 
+#  Peopler: [ctrl + shift + .] 
+#  Original Compatibility: [ctrl + shift + space] 
+
+# Hardcoded
+# 	lbW = '300';
+# 	lbH = '200';
 
 echo <<<JAVASCRIPT
-
-function set_cookie( name, value, expires, path, domain, secure ) {
+function simple_hide(s1) {
+	document.getElementById(s1).style.display = 'none';
+}
+function set_cookie(name, value, expires, path, domain, secure) {
 	var today = new Date();
 	today.setTime( today.getTime() );
 	if ( expires ) {
@@ -35,33 +44,31 @@ function set_cookie( name, value, expires, path, domain, secure ) {
 		( ( domain ) ? ";domain=" + domain : "" ) +
 		( ( secure ) ? ";secure" : "" );
 }
-
 function remember(tsType, value, display) {
 	var my_link;
-	if (tsType == 'tslPeople') {
+	if (tsType == 'peopler') {
 		my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?type=contact&contact_user_mixed=' + encodeURI(value);
-		set_cookie('launch[tslPeople][value]', (value), 365, '/');
-		set_cookie('launch[tslPeople][display]', (display), 365, '/');
+		set_cookie('launch[peopler][value]', (value), 365, '/');
+		set_cookie('launch[peopler][display]', (display), 365, '/');
 	}
 	else {
 		switch (value) {
+			// placeholders if we want to do this kind of launching?
 			case 'page_parent':
 			case 'page_next':
 			case 'page_previous':
 			case 'page_first':
 			case 'page_last':
-				// from the top window location we can go back/next/last/etc
-				// it is easier to deal with xx and qq as custom and start from scratch
-				// alert(window.top.location.href);
-				my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?type=go&where=' + value + '&xx=' + encodeURIComponent(window.top.location.pathname) + '&qq=' + encodeURIComponent(window.top.location.search);
-				set_cookie('launch[tsl][value]', value, 365, '/');
-				set_cookie('launch[tsl][display]', display, 365, '/');
+				// easier to deal with xx and qq as custom and start from scratch
+				my_link = 'https://{$_SERVER['HTTP_HOST']}/portal_process/?type=go&where=' + value + '&xx=' + encodeURIComponent(document.location.pathname) + '&qq=' + encodeURIComponent(document.location.search);
+				set_cookie('launch[pager][value]', value, 365, '/');
+				set_cookie('launch[pager][display]', display, 365, '/');
 			break;
 			default:
 				// todo forward to the portal_process
 				my_link = 'https://{$_SERVER['HTTP_HOST']}/' + value + '/';
-				set_cookie('launch[tsl][value]', value, 365, '/');
-				set_cookie('launch[tsl][display]', display, 365, '/');
+				set_cookie('launch[pager][value]', value, 365, '/');
+				set_cookie('launch[pager][display]', display, 365, '/');
 				// ADD LOCK
 				if (value.match(RegExp('_list', '')) || value.match(RegExp('_edit', '')) || value.match('main') || value.match(''))
 					my_link += '{$data['lock_query']}';
@@ -70,42 +77,14 @@ function remember(tsType, value, display) {
 	}
 	window.open(my_link, '_top');
 } 
-
-function showtsl_iframe(tsType) {
-
-	var tsl_iframe = document.getElementById(tsType + '_iframe');
-
-	var tsl_iframewidth = tsl_iframe.offsetWidth;
-	var tsl_iframeheight = tsl_iframe.offsetHeight;
-	var topposition = iii_scrollTop() + (iii_clientHeight() / 3) - (tsl_iframeheight / 2);
-	if (topposition <= 0) {
-		topposition = 0;
-	}
-	var leftposition = iii_scrollLeft() + (iii_clientWidth() / 2) - (tsl_iframewidth / 2);
-	if (leftposition <= 0) {
-		leftposition = 0;
-	}
-	tsl_iframe.style.top = topposition + "px";
-	tsl_iframe.style.left = leftposition + "px";
-	tsl_iframe.style.visibility = "visible";
-	
-	if (tsType == 'tslPeople')
-		setTimeout("gettsl_idocument('tslPeople').getElementById('tsl_input').focus()", 0);
-	else
-		setTimeout("gettsl_idocument('tsl').getElementById('tsl_input').focus()", 0);
-}
-
 function iii_clientWidth() {
 	// Most important one for accuracy
-	//alert(document.documentElement.offsetHeight + ' - ' + window.innerWidth  + ' - ' + document.documentElement.clientWidth + ' - ' + document.body.clentWidth  ); 
 	return iii_getLowestGTZ ( [
 		document.documentElement ? document.documentElement.clientWidth : 0,
 		window.innerWidth ? window.innerWidth : 0,
-		//document.body ? document.body.clientWidth : 0,
 		document.documentElement.offsetWidth ? document.documentElement.offsetWidth : 0,
 	] );
 }
-
 function iii_scrollLeft() {
 	return iii_getLowestGTZ ( [
 		window.pageXOffset ? window.pageXOffset : 0,
@@ -120,7 +99,6 @@ function iii_scrollTop() {
 		document.body ? document.body.scrollTop : 0,
 	] );
 }
-
 function iii_clientHeight() {
 	return iii_getLowestGTZ ( [
 		window.innerHeight ? window.innerHeight : 0,
@@ -128,7 +106,6 @@ function iii_clientHeight() {
 		document.body ? document.body.clientHeight : 0,
 	] );
 }
-
 function iii_getLowestGTZ(myArray) {
 	// GTZ Greater Than Zero
 	myArray.sort;
@@ -139,265 +116,68 @@ function iii_getLowestGTZ(myArray) {
 	}
 	return 0;
 }
-/*
-function iii_getMedian(myArray) {
-	// Lots of differnt ways to try and make the browser display things in the right place.
-	var middleOne = null;
-	if (myArray.length == 0) {
-		return null;
+function radicalize(tsType) {
+	var lb = document.getElementById(tsType + '_box');
+	lbW = '300';
+	lbH = '200';
+	var topPx = iii_scrollTop() + (iii_clientHeight() / 3) - (lbH / 2);
+	if (topPx <= 0) {
+		topPx = 0;
 	}
- 	else {
-		myArray.sort;
-		if (myArray.length%2) {
-			middleOne = (myArray.length - 1) / 2;
-		}
-		else {
-			middleOne = (myArray.length) / 2;
-		}
+	var leftPx = (iii_scrollLeft() + (iii_clientWidth() / 2)) - (lbW / 2);
+	if (leftPx <= 0) {
+		leftPx = 0;
 	}
-	return myArray[middleOne];
-}
-
-function iii_getFirstGTZ(myArray) {
-	// GTZ Greater Than Zero
-	for(var i in myArray) {
-		if (myArray[i] > 0) {
-			return myArray[i]
-		}
-	}
-	return 0;
-}
-*/
-
-function killtsl_iframe(tsType) {
-	var tsl_iframe;
-	if (tsType == 'tslPeople')
-		tsl_iframe = document.getElementById('tslPeople_iframe');
-	else
-		tsl_iframe = document.getElementById('tsl_iframe');
-	if (tsl_iframe)
-		document.documentElement.removeChild(tsl_iframe);
-	window.parent.focus();
-}
-function gettsl_idocument(tsType) {
-	var tsl_iframe;
-	if (tsType == 'tslPeople')
-		tsl_iframe = document.getElementById('tslPeople_iframe');
-	else
-		tsl_iframe = document.getElementById('tsl_iframe');
-	var tsl_idocument;
-	if (tsl_iframe.contentDocument) {
-		tsl_idocument = tsl_iframe.contentDocument;
-	}
-	else if (tsl_iframe.contentWindow) {
-		tsl_idocument = tsl_iframe.contentWindow.document;
-	}
-	else if (window.frames[tsl_iframe.name]) {
-		tsl_idocument = window.frames[tsl_iframe.name].document;
-	}
-	return tsl_idocument;
+	lb.style.top = topPx + 'px';
+	lb.style.left = leftPx + 'px';
 }
 function launch(tsType, event) {
 	var tsOtherType;
-	if (tsType == 'tsl') {
-		tsOtherType = 'tslPeople';
+	if (tsType == 'pager') {
+		tsOtherType = 'peopler';
 	}
-	if (tsType == 'tslPeople') {
-		tsOtherType = 'tsl';
+	if (tsType == 'peopler') {
+		tsOtherType = 'pager';
 	}
-	var o1 = document.getElementById(tsType + '_iframe');
-	var o2 = document.getElementById(tsOtherType + '_iframe');
-	if (!o1) {
-		createtsl_iframe(tsType);
-		showtsl_iframe(tsType);
-		killtsl_iframe(tsOtherType);
-	}
+	var o1 = document.getElementById(tsType + '_box');
+	var o2 = document.getElementById(tsOtherType + '_box');
+	if (o1.style.display == 'block')
+		o1.style.display = 'none';
 	else {
-		killtsl_iframe(tsType);
-		killtsl_iframe(tsOtherType);
+		o1.style.display = 'block';
+		radicalize(tsType);
+		document.getElementById(tsType + '_input').focus();
 	}
+	o2.style.display = 'none';
 	return true; // if not can't type.
 	// after calling launch(); return false; if not launcher position is wrong!
 }
-
 function checkIt(event) {
 	// comma 188 ,
 	// space 32 deprecated
 	if (event.keyCode == 32 | event.keyCode == 188) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch('tsl', event);
+			launch('pager', event);
 			return false;
 		}
 	}
 	// period 190 .
 	else if (event.keyCode == 190) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch('tslPeople', event);
+			launch('peopler', event);
 			return false;
-		}
-	}
-	// alert('shift=' + event.shiftKey + ' :: ctrl=' + event.ctrlKey + ' :: meta=' + event.metaKey + ' :: alt=' + event.altKey + ' :: code=' + event.keyCode);
-}
-
-function createtsl_iframe(tsType) {
-
-	var tsl_iframe;
-	tsl_iframe = document.createElement('iframe');
-
-	if (tsType == 'tslPeople') {
-		tsl_iframe.id = 'tslPeople_iframe';
-		tsl_iframe.name = 'tslPeople_iframe';
-	}
-	else {
-		tsl_iframe.id = 'tsl_iframe';
-		tsl_iframe.name = 'tsl_iframe';
-	}
-	
-	tsl_iframe.setAttribute('border', '0px');
-	tsl_iframe.setAttribute('vspace', '0px');
-	tsl_iframe.setAttribute('hspace', '0px');
-	tsl_iframe.setAttribute('marginwidth', '0px');
-	tsl_iframe.setAttribute('marginheight', '0px');
-	tsl_iframe.setAttribute('scrolling', 'no');
-	tsl_iframe.style.position = 'absolute';
-	tsl_iframe.style.top = '-9999px';
-
-	// http://en.wikipedia.org/wiki/Display_resolution
-	// Smallest Display Listed is 320px x 200px
-	tsl_iframe.style.width = '298px'; // 298 + (2) 1px borders = 300px
-	tsl_iframe.style.height = '198px'; // 198 + (2) 1px borders = 200px
-	tsl_iframe.style.border = '1px solid white';
-	document.documentElement.appendChild(tsl_iframe);
-	if (tsl_iframe) {
-		var tsl_idocument = gettsl_idocument(tsType);
-		if (tsl_idocument) {
-			tsl_idocument.open(); // IE hack
-			tsl_idocument.close(); // IE hack
-			tsl_idocument.body.setAttribute('onKeyDown', 'return window.parent.checkIt(event, navigator.appName);');
-			tsl_idocument.body.style.background = '{$data['css']['c0']}';
-
-				var tsl_meat_box; // All Content
-				tsl_meat_box = tsl_idocument.createElement('div');
-				tsl_meat_box.id = 'tsl_meat_box';
-				tsl_meat_box.style.height = '190px';
-				tsl_idocument.body.appendChild(tsl_meat_box);
-
-				var tsl_juice_box; // Fancy bottom Bar
-				tsl_juice_box = tsl_idocument.createElement('div');
-				tsl_juice_box.id = 'tsl_juice_box';
-				tsl_juice_box.style.height = '10px';
-				tsl_juice_box.style.borderTop = '1px solid #ffffff';
-				tsl_juice_box.style.background = '{$data['css']['c2']}';
-				tsl_idocument.body.appendChild(tsl_juice_box);
-
-			// MEAT
-			var tsl_main_box;
-			tsl_main_box = tsl_idocument.createElement('div');
-			tsl_main_box.id = 'tsl_main_box';
-			tsl_main_box.style.padding = '5px 20px 0px 20px';
-			tsl_main_box.style.background = '{$data['css']['c1']}';
-			tsl_meat_box.appendChild(tsl_main_box); //[
-
-			var tsl_form;
-			tsl_form = tsl_idocument.createElement('form');
-			tsl_form.id = 'tsl_form';
-			tsl_form.style.position = 'relative';
-			tsl_form.style.top = '0px';
-			tsl_form.style.margin = '0px';
-			tsl_form.style.padding = '0px';
-			tsl_form.setAttribute('onSubmit', 'window.parent.location=tsl_suggest_one.href;');
-			tsl_main_box.appendChild(tsl_form); //[
-				var tsl_x;
-				tsl_x = tsl_idocument.createElement('a');
-				tsl_x.id = 'tsl_x';
-
-				// switch
-				tsl_x.href = 'javascript:top.killtsl_iframe("' + tsType + '");';
-
-				tsl_x.innerHTML = 'TS';
-				tsl_x.style.marginRight = '10px';
-				tsl_x.style.color = 'black';
-				tsl_x.style.fontWeight = 'bold';
-				tsl_x.style.fontSize = '+1.5em';
-				tsl_form.appendChild(tsl_x);
-				var tsl_suggest_one;
-				tsl_suggest_one = tsl_idocument.createElement('a');
-				tsl_suggest_one.id = 'tsl_suggest_one';
-				tsl_suggest_one.target = '_top';
-
-				// switch
-				if (tsType == 'tslPeople') {
-					tsl_suggest_one.href = 'javascript:top.remember("tslPeople", "{$_COOKIE["launch"]["tslPeople"]["value"]}", "{$_COOKIE["launch"]["tslPeople"]["display"]}");';
-					tsl_suggest_one.innerHTML = '{$_COOKIE["launch"]["tslPeople"]["display"]}';
-				}
-				else {
-					tsl_suggest_one.href = 'javascript:top.remember("tsl", "{$_COOKIE['launch']['tsl']['value']}", "{$_COOKIE['launch']['tsl']['display']}");';
-					tsl_suggest_one.innerHTML = '{$_COOKIE['launch']['tsl']['display']}';
-				}
-
-				tsl_suggest_one.style.color = 'black';
-				tsl_suggest_one.style.fontWeight = 'bold';
-				tsl_suggest_one.style.fontSize = '+1.5em';
-				tsl_form.appendChild(tsl_suggest_one);
-				var tsl_br;
-				tsl_br = tsl_idocument.createElement('br');
-				tsl_form.appendChild(tsl_br);
-				var tsl_input;
-				tsl_input = tsl_idocument.createElement('input');
-				tsl_input.id = 'tsl_input';
-				tsl_input.style.width = '200px';
-				tsl_input.style.background = '#fefefe';
-				tsl_input.style.color = '#010101';
-				tsl_input.type = "text";
-				tsl_input.autocomplete = "off";
-
-				//switch
-				tsl_input.setAttribute('onkeyup', 'window.top.showHint("' + tsType + '", this.value);');
-
-				tsl_input.style.background.color = '#ffffff';
-				tsl_form.appendChild(tsl_input);
-				var tsl_launch;
-				tsl_launch = tsl_idocument.createElement('input');
-				tsl_launch.id = 'tsl_launch';
-				tsl_launch.type = "submit";
-				tsl_launch.value = "!";
-				tsl_launch.style.margin = '5px';
-				tsl_launch.style.background = '#fefefe';
-				tsl_launch.style.color = '#010101';
-				tsl_input.type = "text";
-				tsl_form.appendChild(tsl_launch);
-				var tsl_hr; // border is not an option because the title can expand dynamically
-				tsl_hr = tsl_idocument.createElement('hr');
-				tsl_hr.style.background = '#ffffff';
-				tsl_hr.style.border = 'none';
-				tsl_hr.style.height = '2px';
-				tsl_hr.style.margin = '0px -20px 0px -20px';
-				tsl_form.appendChild(tsl_hr);
-			//]
-			// JUICE
-			var tsl_alternative_box;
-			tsl_alternative_box = tsl_idocument.createElement('div');
-			tsl_alternative_box.id = 'tsl_alternative_box';
-			tsl_meat_box.appendChild(tsl_alternative_box); //[
-				var tsl_suggest_more;
-				tsl_suggest_more = tsl_idocument.createElement('ul');
-				tsl_suggest_more.id = 'tsl_suggest_more';
-				tsl_suggest_more.style.margin = '5px 40px 0px 40px';
-				tsl_suggest_more.style.padding = '0px';	
-				// used in 2x places (on creation and on input length of 0)
-				tsl_suggest_more.innerHTML = getSuggestMoreEmptyInput(tsType);
-				tsl_alternative_box.appendChild(tsl_suggest_more);
-			//]
 		}
 	}
 }
 function getMatchArray(tsType, myString) {
-
-	if (tsType == 'tslPeople')
-		var tsl = JSON.parse('{$peopleJson}');
-	else
-		var tsl = JSON.parse('{$pageJson}');
-
+	switch(tsType) {
+		case 'peopler':
+			var tsl = JSON.parse('{$peopleJson}');
+		break;
+		case 'pager':
+			var tsl = JSON.parse('{$pageJson}');
+		break;
+	}
 	var tsl_match = new Array();
 	var tsl_limit = 5;
 	var tsl_matched = 0;
@@ -415,17 +195,12 @@ function getMatchArray(tsType, myString) {
 			suggest_even_more_html = '<li>&gt;&gt;</li>';
 		}
 	}
-
-
 	var suggest_more_html = '';
-
 	// to print a message with no result put it here
 	if (tsl_matched == 0)
 		suggest_more_html = getSuggestMoreNoResult();
-
 	var i = 0;
 	var tsl_0_href;
-	
 	for (var k1 in tsl_match) {
 		if (i == 0)
 			tsl_0_href = k1;
@@ -434,44 +209,29 @@ function getMatchArray(tsType, myString) {
 		// todo make this work
 		// s1 = s1.replace('/\+/g', ' ');
 		var s1 = tsl_match[k1];
-		
-		if (tsType == 'tslPeople') {
-			suggest_more_html += '<li id="tsl_li_' + i + '"><a style="color: black;" id="tsl_' + i 
-			+ '" href="javascript:window.parent.remember(\'tslPeople\', \'' + k1 + '\',\'' + tsl_match[k1] + '\');" target="_top">' + s1 + '</a></li>';
-		}
-		else {
-			suggest_more_html += '<li id="tsl_li_' + i + '"><a style="color: black;" id="tsl_' + i 
-			+ '" href="javascript:window.parent.remember(\'tsl\', \'' + k1 + '\',\'' + tsl_match[k1] + '\');" target="_top">' + s1 + '</a></li>';
-		}
+		suggest_more_html += '<li id="' + tsType + '_li_' + i + '"><a style="color: black;" id="' + tsType+ '_' + i +
+			'" href="javascript:remember(\'' + tsType + '\', \'' + k1 + '\',\'' + tsl_match[k1] + '\');">' +
+			s1 + '</a></li>';
 		i++;
 	}
 	suggest_more_html += suggest_even_more_html;
-
-	if (tsType == 'tslPeople')
-		tsl_iframe = document.getElementById('tslPeople_iframe');
-	else
-		tsl_iframe = document.getElementById('tsl_iframe');
-
-	if (tsl_iframe) {
-		tsl_idocument = gettsl_idocument(tsType);
-		if (tsl_idocument) {
-			tsl_idocument.getElementById('tsl_suggest_more').innerHTML = suggest_more_html;
-			tsl_0 = tsl_idocument.getElementById('tsl_0');
-			if (tsl_0) {
-				tsl_idocument.getElementById('tsl_suggest_one').innerHTML = tsl_0.innerHTML;
-				tsl_idocument.getElementById('tsl_suggest_one').href = tsl_0.href;
-
-				if (tsType == 'tslPeople') {
-					set_cookie('launch[tslPeople][value]', tsl_0_href, 365, '/')
-					set_cookie('launch[tslPeople][display]', tsl_0.innerHTML, 365, '/')
-				}
-				else {
-					set_cookie('launch[tsl][value]', tsl_0_href, 365, '/')
-					set_cookie('launch[tsl][display]', tsl_0.innerHTML, 365, '/')
-				}
-				tsl_0.style.display = 'none'
-				tsl_idocument.getElementById('tsl_li_0').style.display = 'none'; // For IE and FF
+	var tsl_suggest_more = document.getElementById(tsType + '_suggest_more');
+	if (tsl_suggest_more) {
+			tsl_suggest_more.innerHTML = suggest_more_html;
+		var tsl_0 = document.getElementById(tsType + '_0');
+		if (tsl_0) {
+			var tsl_suggest_one = document.getElementById(tsType + '_suggest_one');
+			if (tsl_suggest_one) {
+				tsl_suggest_one.innerHTML = tsl_0.innerHTML;
+				tsl_suggest_one.href = tsl_0.href;
 			}
+			var tsl_li_0 = document.getElementById(tsType + '_li_0');
+			if (tsl_li_0) {
+				tsl_li_0.style.display = 'none';
+			}
+
+			set_cookie('launch[' + tsType + '][value]', tsl_0_href, 365, '/')
+			set_cookie('launch[' + tsType + '][display]', tsl_0.innerHTML, 365, '/')
 		}
 	}
 }
@@ -479,29 +239,24 @@ function getMatchArray(tsType, myString) {
 function getSuggestMoreNoResult() {
 	return '';
 }
-// If empty input text | first launch
+// empty input | first launch
 function getSuggestMoreEmptyInput(tsType) {
-	if (tsType == 'tslPeople')
-		return '{$data['launch']['tslPeople']['empty']}';
-	else
-		return '{$data['launch']['tsl']['empty']}';
-}
-
-function showHint(tsType, str) {
-	// for some reason the next line fails for tslPeople
-	tsl_iframe = document.getElementById(tsType + '_iframe');
-	if (tsl_iframe) {
-		tsl_idocument = gettsl_idocument(tsType);
-		if (tsl_idocument) {
-			if (str.length==0) { 
-				tsl_idocument.getElementById('tsl_suggest_more').innerHTML=getSuggestMoreEmptyInput(tsType);
-				return;
-			}
-			else {
-				getMatchArray(tsType, str);
-			}
-		}
+	switch(tsType) {
+		case 'peopler':
+			return '{$data['launch']['peopler']['empty']}';
+		break;
+		case 'pager':
+			return '{$data['launch']['pager']['empty']}';
+		break;
 	}
 }
-//createElement();
+function showHint(tsType, s1) {
+	if (s1.length == 0) { 
+		document.getElementById(tsType + '_suggest_more').innerHTML = getSuggestMoreEmptyInput(tsType);
+		return;
+	}
+	else {
+		getMatchArray(tsType, s1);
+	}
+}
 JAVASCRIPT;

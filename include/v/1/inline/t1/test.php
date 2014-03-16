@@ -22,120 +22,126 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # also in head.php AND new_report.php
 # include($x['site']['i'] . '/inline/site_map.php');
 
-# Contents/Description: Test file for potential future integration - Current contents are a exploration to replace the iframe ?>
-
-<script>
-	function radical(tsType) {
-		var lb = document.getElementById(tsType + '_box');
-		// todo get this without the px part ie) lb.style.width
-		lbW = '300';
-		lbH = '200';
-		console.log(lb.style);
-		console.log(iii_clientWidth());
-		var topPx = iii_scrollTop() + (iii_clientHeight() / 3) - (lbH / 2);
-		if (topPx <= 0) {
-			topPx = 0;
-		}
-		var leftPx = (iii_scrollLeft() + (iii_clientWidth() / 2)) - (lbW / 2);
-		if (leftPx <= 0) {
-			leftPx = 0;
-		}
-		lb.style.top = topPx + 'px';
-		lb.style.left = leftPx + 'px';
-		lb.style.display = 'block';
-		// if (tsType == 'tslPeople')
-		// 	setTimeout("gettsl_idocument('tslPeople').getElementById('tsl_input').focus()", 0);
-		// else
-		// 	setTimeout("gettsl_idocument('tsl').getElementById('tsl_input').focus()", 0);
-	}
-</script><?
-# placeholder testing link for removing iframes 2014-03-08 vaskoiii ?> 
-<a href="#" onclick="radical('peopler');">peopler</a>
-<a href="#" onclick="radical('pager');">pager</a>
-<div id="peopler_box">
-	peopler
-</div>
-<?
-// todo get dynamically from php colors
-// todo have a link on the box by default for /peopler/
-?> 
+# Description: Test file for potential future integration
+# Current contents are a exploration to replace the iframe
+# Issue: colors are not yet dynamic
+# 	Not integrated in to a non test file even though this file is critical to TS!
+?>
 <style>
-	#pager_box,
 	#peopler_box {
+		border: 1px solid #fff; 
 		position: absolute;
-		display: none;
 		width: 300px;
 		height: 200px;
-		 background: green;
-		// debug
-		 border: 2px solid #fff;
+		background: red;
 		}
+	#pager_box {
+		border: 1px solid #fff; 
+		position: absolute;
+		width: 300px;
+		height: 200px;
+		background: green;
+		}
+		#peopler_meat_box,
+		#pager_meat_box { 
+			height: 190px;
+			}
+		#peopler_form,
+		#pager_form {
+			padding: 5px 20px 0px;
+			background: orange;
+			}
+		#peopler_x,
+		#pager_x {
+			margin-right: 10px;
+			color: black;
+			font-weight: bold;
+			font-size: 1.5em;
+			}
+		#peopler_suggest_one,
+		#pager_suggest_one {
+			color: black;
+			font-weight: bold;
+			font-size: 1.5em;
+			}
+		#peopler_input,
+		#pager_input {
+			width: 200px;
+			background: #ffe;
+			color: #001;
+			}
+		#peopler_launch,
+		#pager_launch {
+			margin: 5px;
+			background: #ffe,
+			color: #001; 
+			}
+		#peopler_hr,
+		#pager_hr {
+			background: #ffe;
+			border: medium none;
+			height: 2px;
+			margin: 0px -20px;
+			}
+		#peopler_suggest_more,
+		#pager_suggest_more {
+			margin: 5px 40px 0px;
+			padding: 0px;
+			}
+		#peopler_juice_box,
+		#pager_juice_box {
+			height: 10px;
+			border-top: 1px solid #ffe;
+			background: blue;
+			}
+		#peopler_alternative_box .td2,
+		#pager_alternative_box .td2{
+			margin-left: 5px;
+			padding-left: 5px;
+			}
 </style>
-<style>
-	#pager_meat_box { 
-		height: 190px;
-		}
-	#pager_form {
-		padding: 5px 20px 0px;
-		background: none repeat scroll 0% 0% rgb(164, 164, 164);
-		}
-	#pager_x {
-		margin-right: 10px;
-		color: black;
-		font-weight: bold;
-		font-size: 1.5em;
-		}
-	#pager_suggest_one {
-		color: black; font-weight: bold; font-size: 1.5em;
-		}
-	#pager_input {
-		width: 200px; background: none repeat scroll 0% 0% rgb(254, 254, 254); color: rgb(1, 1, 1);
-		}
-	#pager_launch {
-		margin: 5px; background: none repeat scroll 0% 0% rgb(254, 254, 254); color: rgb(1, 1, 1);
-		}
-	#pager_hr {
-		background: none repeat scroll 0% 0% rgb(255, 255, 255); border: medium none; height: 2px; margin: 0px -20px;
-		}
-	#pager_suggest_more {
-		margin: 5px 40px 0px; padding: 0px;
-		}
-	#pager_juice_box {
-		height: 10px; border-top: 1px solid rgb(255, 255, 255); background: none repeat scroll 0% 0% rgb(100, 100, 100);
-		}
-</style>
-<script>
-	function simple_hide(s1) {
-		document.getElementById(s1).style.display = 'none';
-	}
-</script>
-<div id="pager_box" style="border: 1px solid #fff;">
+<div id="pager_box" style="display: none;">
 	<div id="pager_meat_box">
 		<div id="pager_main_box">
 			<form onsubmit="window.parent.location = pager_suggest_one.href;" id="pager_form">
 				<a href="javascript:simple_hide('pager_box')" id="pager_x">TS</a>
-				<a href="javascript:top.remember('tsl', 'login_set', 'Enter');" target="_top" id="pager_suggest_one">Enter</a>
+				<a href="javascript:top.remember('pager', '<?= $_COOKIE['launch']['pager']['value']; ?>', '<?= $_COOKIE["launch"]["pager"]["display"]; ?>');" target="_top" id="pager_suggest_one"><?= $_COOKIE["launch"]["pager"]["display"]; ?></a>
 				<br />
-				<input onkeyup="window.top.showHint('tsl', this.value);" autocomplete="off" id="pager_input" type="text">
+				<input onkeyup="showHint('pager', this.value);" autocomplete="off" id="pager_input" type="text">
 				<input value="!" id="pager_launch" type="submit">
 				<hr id="pager_hr">
 			</form>
 		</div>
 		<div id="pager_alternative_box">
 			<ul id="pager_suggest_more">
-				<table><tbody><tr>
-					<td>
-						<a href="/" target="_top" style="margin-left: -20px;">
-						<img src="/v/1/theme/black/ts_icon.png"></a>
-					</td>
-					<td style="padding-left: 5px;" valign="center">
-						<a href="/" target="_top" style="color: #000;">Home</a>
-						<br />
-						<a href="/" target="_top" style="color: #000;">Peopler</a>
-					</td>
-				</tr></tbody></table>
+				<!-- populated with js -->
 			</ul>
 		</div>
 	</div>
 	<div style="" id="pager_juice_box"></div>
-</div><?
+</div>
+<div id="peopler_box" style="display: none;">
+	<div id="peopler_meat_box">
+		<div id="peopler_main_box">
+			<form onsubmit="window.parent.location = peopler_suggest_one.href;" id="peopler_form">
+				<a href="javascript:simple_hide('peopler_box')" id="peopler_x">TS</a>
+				<a href="javascript:top.remember('peopler', '<?= $_COOKIE['launch']['peopler']['value']; ?>', '<?= $_COOKIE["launch"]["peopler"]["display"]; ?>');" target="_top" id="peopler_suggest_one"><?= $_COOKIE["launch"]["peopler"]["display"]; ?></a>
+				<br />
+				<input onkeyup="showHint('peopler', this.value);" autocomplete="off" id="peopler_input" type="text">
+				<input value="!" id="peopler_launch" type="submit">
+				<hr id="peopler_hr">
+			</form>
+		</div>
+		<div id="peopler_alternative_box">
+			<ul id="peopler_suggest_more">
+				<!-- populated with js -->
+			</ul>
+		</div>
+	</div>
+	<div id="peopler_juice_box"></div>
+</div>
+
+<script>
+	document.getElementById('peopler_suggest_more').innerHTML = getSuggestMoreEmptyInput('peopler');
+	document.getElementById('pager_suggest_more').innerHTML = getSuggestMoreEmptyInput('pager');
+</script>

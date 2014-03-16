@@ -21,7 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <body onLoad="javascript: document.getElementById('ts_focus').focus();" onkeydown="return checkIt(event);">
 
 <div id="header"><? # preload div must be coordinated with the launcher and also duplicated for the main page
-	if (0) {
+	if (1) {
 		# todo placeholder for removing iframes
 		include('v/1/inline/t1/test.php');
 	} ?> 
