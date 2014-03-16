@@ -100,12 +100,27 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			padding-left: 5px;
 			}
 </style>
+<script>
+function tsSubmit(tsType) {
+	switch(tsType) {
+		case 'peopler':
+			alert(peopler_suggest_one.href);
+			window.parent.location = peopler_suggest_one.href;
+		break;
+		case 'pager':
+			alert(pager_suggest_one.href);
+			window.parent.location = pager_suggest_one.href;
+		break;
+	}
+	// window.open('/about_doc/', '_self');
+}
+</script>
 <div id="pager_box" style="display: none;">
 	<div id="pager_meat_box">
 		<div id="pager_main_box">
-			<form onsubmit="window.parent.location = pager_suggest_one.href;" id="pager_form">
+			<form name="peopler_form" onsubmit="tsSubmit('pager'); return false;" id="pager_form">
 				<a href="javascript:simple_hide('pager_box')" id="pager_x">TS</a>
-				<a href="javascript:top.remember('pager', '<?= $_COOKIE['launch']['pager']['value']; ?>', '<?= $_COOKIE["launch"]["pager"]["display"]; ?>');" target="_top" id="pager_suggest_one"><?= $_COOKIE["launch"]["pager"]["display"]; ?></a>
+				<a href="javascript:remember('pager','<?= $_COOKIE['launch']['pager']['value']; ?>','<?= $_COOKIE["launch"]["pager"]["display"]; ?>');" id="pager_suggest_one"><?= $_COOKIE["launch"]["pager"]["display"]; ?></a>
 				<br />
 				<input onkeyup="showHint('pager', this.value);" autocomplete="off" id="pager_input" type="text">
 				<input value="!" id="pager_launch" type="submit">
@@ -123,9 +138,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div id="peopler_box" style="display: none;">
 	<div id="peopler_meat_box">
 		<div id="peopler_main_box">
-			<form onsubmit="window.parent.location = peopler_suggest_one.href;" id="peopler_form">
+			<form name="peopler_form" onsubmit="tsSubmit('peopler'); return false;" id="peopler_form">
 				<a href="javascript:simple_hide('peopler_box')" id="peopler_x">TS</a>
-				<a href="javascript:top.remember('peopler', '<?= $_COOKIE['launch']['peopler']['value']; ?>', '<?= $_COOKIE["launch"]["peopler"]["display"]; ?>');" target="_top" id="peopler_suggest_one"><?= $_COOKIE["launch"]["peopler"]["display"]; ?></a>
+				<a href="javascript:top.remember('peopler','<?= $_COOKIE['launch']['peopler']['value']; ?>','<?= $_COOKIE["launch"]["peopler"]["display"]; ?>');" id="peopler_suggest_one"><?= $_COOKIE["launch"]["peopler"]["display"]; ?></a>
 				<br />
 				<input onkeyup="showHint('peopler', this.value);" autocomplete="off" id="peopler_input" type="text">
 				<input value="!" id="peopler_launch" type="submit">
