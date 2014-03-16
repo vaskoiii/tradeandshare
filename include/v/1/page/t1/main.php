@@ -142,9 +142,13 @@ else { ?>
 	<div class="content">
 		<div class="splash_box">
 			<div id="main_intro">
-
 				<center>
-				<a href="/v/1/video/ts_give_to_billy.avi"><img src="/v/1/video/ts_give_to_billy_preview.jpg" width="224px" height="175" /></a>
+					<video width="224px" height="175px" controls />
+						<source src="/v/1/video/list_share.mp4" type="video/mp4" /><? # MP4 = H264 video / AAC audio ?> 
+						<source src="/v/1/video/list_share.ogg" type="video/ogg" /><? # Ogg = Theora video / Vorbis audio ?> 
+						<source src="/v/1/video/list_share.webm" type="video/webm" /><? # WebM = VP8 video / Vorbis audio ?> 
+						Your browser does not support the video tag.
+					</video> 
 				</center>
 			</div>
 		<div class="menu_1">
