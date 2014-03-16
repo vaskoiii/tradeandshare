@@ -104,15 +104,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 function tsSubmit(tsType) {
 	switch(tsType) {
 		case 'peopler':
-			alert(peopler_suggest_one.href);
-			window.parent.location = peopler_suggest_one.href;
+			window.parent.location = document.getElementById('peopler_suggest_one').href;
 		break;
 		case 'pager':
-			alert(pager_suggest_one.href);
-			window.parent.location = pager_suggest_one.href;
+			window.parent.location = document.getElementById('pager_suggest_one').href;
 		break;
 	}
-	// window.open('/about_doc/', '_self');
 }
 </script>
 <div id="pager_box" style="display: none;">
