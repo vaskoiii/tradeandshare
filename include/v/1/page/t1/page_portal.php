@@ -18,17 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description:  ?> 
-
-<div id="result">
-	<div class="title">
-		<h2><?= get_translation('page', $x['page']['name']); # no focus! ?></h2>
-		<div class="result_add">
-		</div>
-	</div><?
-	print_message_bar();
-	?> 
-	<div class="content">
+include('v/1/inline/t1/header_after.php'); ?> 
 
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">

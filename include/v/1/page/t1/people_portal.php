@@ -20,17 +20,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Fastest way to get to the contact (user) center
 # This page can be customize since the launcher is differnt from the rest of the site
-?> 
 
-<div id="result">
-	<div class="title">
-		<h2><?= get_translation('page', $x['page']['name']); ?></h2>
-		<div class="result_add">
-		</div>
-	</div><?
-	print_message_bar(); ?> 
+include('v/1/inline/t1/header_after.php'); ?> 
 
-<div class="content">
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">
 		<input type="hidden" name ="x" value="/people_portal/portal_process/" />

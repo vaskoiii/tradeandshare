@@ -26,31 +26,45 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Current contents are a exploration to replace the iframe
 # Issue: colors are not yet dynamic
 # 	Not integrated in to a non test file even though this file is critical to TS!
+
+# Modified to support 128px by 128px images 2014-03-29 vaskoiii
 ?>
 <style>
 	#peopler_box {
 		border: 1px solid #fff; 
 		position: absolute;
 		width: 300px;
-		height: 200px;
+		height: 220px;
 		background: red;
 		}
+	#scanner_box,
 	#pager_box {
 		border: 1px solid #fff; 
 		position: absolute;
 		width: 300px;
-		height: 200px;
+		height: 220px;
 		background: green;
 		}
+		#scanner_box img,
+		#peopler_box img,
+		#pager_box img{ 
+			margin: 0px;
+			padding: 0px;
+			width: 64px;
+			height: 64px;
+			}
+		#scanner_meat_box,
 		#peopler_meat_box,
 		#pager_meat_box { 
-			height: 190px;
+			height: 210px;
 			}
+		#scanner_form,
 		#peopler_form,
 		#pager_form {
-			padding: 5px 20px 0px;
+			padding: 5px 10px 0px;
 			background: orange;
 			}
+		#scanner_x,
 		#peopler_x,
 		#pager_x {
 			margin-right: 10px;
@@ -58,46 +72,58 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			font-weight: bold;
 			font-size: 1.5em;
 			}
+		#scanner_suggest_one,
 		#peopler_suggest_one,
 		#pager_suggest_one {
 			color: black;
 			font-weight: bold;
 			font-size: 1.5em;
 			}
+		#scanner_input,
 		#peopler_input,
 		#pager_input {
 			width: 200px;
 			background: #ffe;
 			color: #001;
 			}
+		#scanner_launch,
 		#peopler_launch,
 		#pager_launch {
 			margin: 5px;
 			background: #ffe,
 			color: #001; 
 			}
+		#scanner_hr,
 		#peopler_hr,
 		#pager_hr {
 			background: #ffe;
 			border: medium none;
 			height: 2px;
-			margin: 0px -20px;
+			margin: 0px -10px;
 			}
+		#scanner_suggest_more,
 		#peopler_suggest_more,
 		#pager_suggest_more {
-			margin: 5px 40px 0px;
+			margin: 5px 15px 0px;
 			padding: 0px;
 			}
+		#scanner_juice_box,
 		#peopler_juice_box,
 		#pager_juice_box {
 			height: 10px;
 			border-top: 1px solid #ffe;
 			background: blue;
 			}
+		#scanner_alternative_box .td2,
 		#peopler_alternative_box .td2,
 		#pager_alternative_box .td2{
 			margin-left: 5px;
 			padding-left: 5px;
+			}
+		#scanner_box li,
+		#peopler_box li,
+		#pager_box li{ 
+			margin: 0px 0px 0px 20px;
 			}
 </style>
 <script>
@@ -152,8 +178,29 @@ function tsSubmit(tsType) {
 	</div>
 	<div id="peopler_juice_box"></div>
 </div>
+<div id="scanner_box" style="display: none;">
+	<div id="scanner_meat_box">
+		<div id="scanner_main_box">
+			<form name="scanner_form" onsubmit="tsSubmit('scanner'); return false;" id="scanner_form">
+				<a href="javascript:simple_hide('scanner_box')" id="scanner_x">TS</a>
+				<a href="javascript:top.remember('scanner','<?= $_COOKIE['launch']['scanner']['value']; ?>','<?= $_COOKIE["launch"]["scanner"]["display"]; ?>');" id="scanner_suggest_one"><?= $_COOKIE["launch"]["scanner"]["display"]; ?>Public Key</a>
+				<br />
+				<input onkeyup="showHint('scanner', this.value);" autocomplete="off" id="scanner_input" type="text">
+				<input value="!" id="scanner_launch" type="submit">
+				<hr id="scanner_hr">
+			</form>
+		</div>
+		<div id="scanner_alternative_box">
+			<ul id="scanner_suggest_more">
+				<!-- populated with js -->
+			</ul>
+		</div>
+	</div>
+	<div id="scanner_juice_box"></div>
+</div>
 
 <script>
+	document.getElementById('scanner_suggest_more').innerHTML = getSuggestMoreEmptyInput('scanner');
 	document.getElementById('peopler_suggest_more').innerHTML = getSuggestMoreEmptyInput('peopler');
 	document.getElementById('pager_suggest_more').innerHTML = getSuggestMoreEmptyInput('pager');
 </script>

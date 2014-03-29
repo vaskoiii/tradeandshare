@@ -2636,3 +2636,7 @@ INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'list');
 
 
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '20', 'more_js', '1', '2', '2', '2', '2');
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '174', '14', 'guest_portal', '20', '1', '2', '1', '2'), ( NULL , '174', '14', 'host_portal', '24', '1', '2', '1', '2');
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '174', '14', 'scan_portal', '19', '1', '2', '1', '2');
+DELETE FROM `ts`.`ts_page` WHERE `ts_page`.`id` = 428 LIMIT 1;

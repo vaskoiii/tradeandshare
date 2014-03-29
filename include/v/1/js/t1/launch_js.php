@@ -119,7 +119,7 @@ function iii_getLowestGTZ(myArray) {
 function radicalize(tsType) {
 	var lb = document.getElementById(tsType + '_box');
 	lbW = '300';
-	lbH = '200';
+	lbH = '220';
 	var topPx = iii_scrollTop() + (iii_clientHeight() / 3) - (lbH / 2);
 	if (topPx <= 0) {
 		topPx = 0;
@@ -133,14 +133,22 @@ function radicalize(tsType) {
 }
 function launch(tsType, event) {
 	var tsOtherType;
+	var tsanotherType;
 	if (tsType == 'pager') {
 		tsOtherType = 'peopler';
+		tsAnotherType = 'scanner';
 	}
 	if (tsType == 'peopler') {
 		tsOtherType = 'pager';
+		tsAnotherType = 'scanner';
+	}
+	if (tsType == 'scanner') {
+		tsOtherType = 'peopler';
+		tsAnotherType = 'pager';
 	}
 	var o1 = document.getElementById(tsType + '_box');
 	var o2 = document.getElementById(tsOtherType + '_box');
+	var o3 = document.getElementById(tsAnotherType + '_box');
 	if (o1.style.display == 'block')
 		o1.style.display = 'none';
 	else {
@@ -149,6 +157,7 @@ function launch(tsType, event) {
 		document.getElementById(tsType + '_input').focus();
 	}
 	o2.style.display = 'none';
+	o3.style.display = 'none';
 	return true; // if not can't type.
 	// after calling launch(); return false; if not launcher position is wrong!
 }
@@ -165,6 +174,13 @@ function checkIt(event) {
 	else if (event.keyCode == 190) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
 			launch('peopler', event);
+			return false;
+		}
+	}
+	// slash 191
+	else if (event.keyCode == 191) {
+		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
+			launch('scanner', event);
 			return false;
 		}
 	}
@@ -247,6 +263,9 @@ function getSuggestMoreEmptyInput(tsType) {
 		break;
 		case 'pager':
 			return '{$data['launch']['pager']['empty']}';
+		break;
+		case 'scanner':
+			return '{$data['launch']['scanner']['empty']}';
 		break;
 	}
 }

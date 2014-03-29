@@ -127,11 +127,12 @@ $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch'][
 # people launcher
 if ($_SESSION['login']['login_user_id']) {
 $s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
+$s2 = '/v/1/theme/select_none/ts_icon_256x256.png';
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 $data['launch']['peopler']['empty'] = <<<HTML
  <table><tr>
 	<td>
-		<a href="{$s1}"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+		<a href="{$s1}"><img src="{$s2}" /></a>
 	</td>
 	<td class="td2">
 		Me (<a href="{$s1}" style="color: #000;">{$_SESSION['login']['login_user_name']}</a>)
@@ -144,7 +145,7 @@ $s1 = '/login_set/';
 $data['launch']['peopler']['empty'] = <<<HTML
  <table><tr>
 	<td>
-		<a href="{$s1}"><img src="/v/1/theme/select_none/ts_icon.png" /></a>
+		<a href="{$s1}"><img src="{$s2}" /></a>
 	</td>
 	<td class="td2">
 		<a href="{$s1}" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a>
@@ -153,3 +154,20 @@ $data['launch']['peopler']['empty'] = <<<HTML
 HTML;
 }
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
+
+# todo: scan launcher
+$s1 = '/host_portal/?public_key=TODO';
+$s2 = '/phpqrcode/temp/list.png';
+$data['launch']['scanner']['empty'] = <<<HTML
+ <table><tr>
+	<td>
+		<a href="{$s1}"><img src="{$s2}" /></a>
+	</td>
+	<td class="td2">
+		<a href="{$s1}" style="color: #000;">TODO: Found</a>
+		<br />
+		<a href="{$s1}TODO" style="color: #000;">TODO: NOT Found</a>
+	</td>
+ </tr></table>
+HTML;
+$data['launch']['scanner']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['scanner']['empty']);
