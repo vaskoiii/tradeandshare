@@ -129,6 +129,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <script>
 function tsSubmit(tsType) {
 	switch(tsType) {
+		case 'scanner':
+			var o1 = document.getElementById('scanner_input');
+			window.parent.location =  '/host_portal/?public_key=' + encodeURIComponent(o1.value); 
+		break;
 		case 'peopler':
 			window.parent.location = document.getElementById('peopler_suggest_one').href;
 		break;
@@ -183,9 +187,9 @@ function tsSubmit(tsType) {
 		<div id="scanner_main_box">
 			<form name="scanner_form" onsubmit="tsSubmit('scanner'); return false;" id="scanner_form">
 				<a href="javascript:simple_hide('scanner_box')" id="scanner_x">TS</a>
-				<a href="javascript:top.remember('scanner','<?= $_COOKIE['launch']['scanner']['value']; ?>','<?= $_COOKIE["launch"]["scanner"]["display"]; ?>');" id="scanner_suggest_one"><?= $_COOKIE["launch"]["scanner"]["display"]; ?>Public Key</a>
+				<a href="/host_portal/" id="scanner_suggest_one">Public Key</a>
 				<br />
-				<input onkeyup="showHint('scanner', this.value);" autocomplete="off" id="scanner_input" type="text">
+				<input id="scanner_input" type="text">
 				<input value="!" id="scanner_launch" type="submit">
 				<hr id="scanner_hr">
 			</form>

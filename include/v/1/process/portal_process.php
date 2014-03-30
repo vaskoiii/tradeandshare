@@ -58,6 +58,11 @@ foreach($process['form_info'] as $k1 => $v1)
 # todo use this instead of hardcoding in the switch below
 # $process['action_content_1'] = get_action_content_1($process['form_info']['type']);
 switch ($process['form_info']['type']) {
+	case 'scan':
+		$process['action_content_1'] = array(
+			'public_key' => get_gp('public_key'),
+		);
+	break;
 	case 'go': # not actually a list type
 		$process['action_content_1'] = array(
 			'where' => get_gp('where'),
@@ -90,8 +95,6 @@ foreach($process['action_content_1'] as $k1 => $v1) {
 */
 
 switch($process['form_info']['type']) {
-	case 'page':
-	break;
 	case 'contact':
 	case 'people':
 		contact_user_mixed_split('action_content_1', '', 1);
@@ -240,6 +243,11 @@ switch($process['form_info']['type']) {
 				$s1 = $s3 . (!empty($a1) ? '?' : '') . http_build_query($a1);
 			break;
 		}
+	break;
+	case 'scan':
+		# todo hash lookup based on the submitted public key
+		# ie) ?sha1=pUbLiC_kEy
+		$s1 = '/host_portal/?public_key=' . to_url($process['action_content_1']['public_key']);
 	break;
 	case 'page':
 		$s1 = '/' . $process['action_content_1']['page_name'] . '/';

@@ -44,8 +44,16 @@ include('v/1/inline/t1/header_after.php');
 if (get_gp('public_key') != 'TODO') { ?> 
 	<div class="content_box">
 		<div class="doc_box">
-			<h3>Public Key Not Found</h3>
+			<h3>TODO: Public Key Not Found</h3>
 			<div class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></div>
+		</div>
+		<div class="doc_box">
+			<h3>TODO: Try Again</h3>
+			<form>
+				Public Key: 
+				<input type="text" />
+				<input type="submit" value="submit" />
+			</form>
 		</div>
 	</div><?
 }
@@ -54,16 +62,16 @@ else { ?>
 		<div class="doc_box">
 			<h3>Accountability</h3>
 			<dl>
-				<dt class="user_name">Face</dt>
+				<dt><span class="user_name">Face</span>:</dt>
 				<dd><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" /></dd>
-				<dt class="contact_name">SHA1</dt>
+				<dt><span class="contact_name">SHA1</span>:</dt>
 				<dd class="contact_name"><?= sha1($s1); ?></dd>
 			</dl>
 			<span class="spacer">&gt;&gt;</span>
 			<a id="public_key_toggle" href="/" onclick="more_toggle('public_key'); return false;"/>More</a></span>
-			<div id="public_key" style="display: none;">
+			<div id="public_key" style="display: none; margin-left: 20px; padding-top: 10px;">
 				<dl>
-					<dt class="uid">Public Key</dt>
+					<dt><span class="uid">Public Key</span>:</dt>
 					<dd class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></dd>
 				</dl>
 			</div>
@@ -90,13 +98,15 @@ else { ?>
 			</ul>
 		</div>
 		<div class="doc_box">
-			<h3>Classify</h3>
-			<p>TODO: allow adding or removing users from teams quickly</p>
-			<ul>
-				<li><input type="checkbox" /><a href=""><span class="team_name">Team1</span></a></li>
-				<li><input type="checkbox" /><a href=""><span class="team_name">Team2</span></a></li>
-				<li><input type="checkbox" /><a href=""><span class="team_name">Team3</span></a></li>
-			</ul>
+			<h3>TODO: Classify</h3>
+			<form>
+				<ul>
+					<li><input type="checkbox" /><a href=""><span class="team_name">Team1</span></a></li>
+					<li><input type="checkbox" /><a href=""><span class="team_name">Team2</span></a></li>
+					<li><input type="checkbox" /><a href=""><span class="team_name">Team3</span></a></li>
+				</ul>
+				<input style="margin-left: 10px; margin-top: 15px;" type="submit" value="submit" onclick="alert('TODO: add functionality.'); return false;" />
+			</form>
 		</div>
 	</div><?
 } ?> 
