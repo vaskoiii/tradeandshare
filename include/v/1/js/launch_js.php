@@ -20,6 +20,16 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: quickly navigate through most translated pages on TS.
 
+
+$public_key = get_db_single_value('value from ' . $config['mysql']['prefix'] . 'pubkey where user_id = ' . (int)$_SESSION['login']['login_user_id'], false);
+
+# todo these keys should not be public | use fread() instead
+# todo not sure if this needs to run every time
+# todo do not hardcode the document_root
+if ($public_key) {
+	include('phpqrcode/qrlib.php');
+	QRcode::png('https://list.vaskos.com/host_portal/?public_key=' . to_url($public_key), '/www/site/list/public/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png', 'L', 4, 2);
+}
 # setcookie used from javascript in the launcher this only sets the initial value
 if(!isset($_COOKIE['launch'])) {
 	$_COOKIE['launch'] =  array(
@@ -154,20 +164,31 @@ $data['launch']['peopler']['empty'] = <<<HTML
 HTML;
 }
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
-
-# todo: scan launcher
-$s1 = '/host_portal/?public_key=TODO';
-$s2 = '/phpqrcode/temp/list.png';
+if ($public_key) {
+$s1 = '/host_portal/?public_key=' . to_url($public_key);
+$s2 = '/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png';
+$s3 = to_html($_SESSION['login']['login_user_name']);
 $data['launch']['scanner']['empty'] = <<<HTML
  <table><tr>
 	<td>
 		<a href="{$s1}"><img src="{$s2}" /></a>
 	</td>
 	<td class="td2">
-		<a href="{$s1}" style="color: #000;">TODO: Found</a>
-		<br />
-		<a href="{$s1}TODO" style="color: #000;">TODO: NOT Found</a>
+		<a href="{$s1}" style="color: #000;">{$s3}</a>
 	</td>
  </tr></table>
 HTML;
+}
+else {
+$data['launch']['scanner']['empty'] = <<<HTML
+ <table><tr>
+	<td>
+		No PubKey
+	</td>
+	<td class="td2">
+		<a href="/profile_edit/">Add PubKey</a>
+	</td>
+ </tr></table>
+HTML;
+}
 $data['launch']['scanner']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['scanner']['empty']);

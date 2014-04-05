@@ -528,6 +528,19 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		echo '<div class="k">' . to_html($k1) . '</div>';
 	}
 	else switch($k1) {
+		case 'face_md5': ?> 
+			<span valign="top">
+				<div class="k"><span class="user_name"><?= tt('element', $k1); ?></span>:</div>
+				<div class="v">
+					<input type="file" style="margin: 5px; border: 2px inset #eee;" />
+					<br />
+					<img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" /><? # ts_icon.png ?> 
+				</div>
+			<span><?
+		break;
+		case 'face_extension':
+		# case 'pubkey_value':
+		break;
 		# case 'kind_name_translation_name':
 		# todo create less ambiguity by creating a separate case
 		# break;

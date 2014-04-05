@@ -22,26 +22,17 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Todo: this should actually lookup the user by Public Key NOT lock_user_id in order to create a more portable identification system
 
-$s1 = 'MIICgzCCAewCCQDxDqlEvwdIuzANBgkqhkiG9w0BAQUFADCBhTELMAkGA1UEBhMC
-xVMxEzARBgNVBAgTCkNhbGlmb3JuaWExEjAQBgNVBAcTCVNhbiBEaWVnbzEPMA0G
-A1UEChMGVmFza29zMRMwEQYDVQQDEwp2YXNrb3MuY29tMScwJQYJKoZIhvcNAQkB
-FhhhZG1pbmlzdHJhdG9yQHZhc2tvcy5jb20wHhcNMDkwMTI5MTk1MzA2WhcNMTAw
-MTI5MTk1MzA2WjCBhTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEx
-ejAQBgNVBAcTCVNhbiBEaWVnbzEPMA0GA1UEChMGVmFza29zMRMwEQYDVQQDEwp2
-YXNrb3MuY29tMScwJQYJKoZIhvcNAQkBFhhhZG1pbmlzdHJhdG9yQHZhc2tvcy5j
-b20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMiGJAoGBALf46G7mC0i8QrUN4vF6lwoS
-DTil5ix5EvKgaYYffcKkDqL+Jq8K1/r8ClkSEXfDnkMi1z+y8aoAWdUmqfyI6+Lm
-8CFYsse8weD6vofpswNffaIfs96OfI3mLr5Mvh+3aA/rdqW5IEgQCpnMpub/myIw
-SQ71Jq94HswPUkUhzjBHAgMBAAEwDQYJKoZIhvcNAqEFBQADgYEAepuA2rG3L69/
-W67BseGNghzr0x2QM5EylziliaYRPVBvuzSHutpDp+Kesndcvh82o4E9JPPPve1X
-TrLW6z676ZtcYyT6tZyNt6ZVIay7EeBWqF6QNSmb970FuJmY8Jdwuq02Ix3eU4Hr
-YP9YW/hvE4EJQWTst8AngnZ0PiIi8zc=';
+$s1 = get_gp('public_key');
+#todo insert a newline after every 64 characters
+
+
 
 include('v/1/inline/t1/header_after.php');
 
+$s2 = get_db_single_value('user_id from ' . $config['mysql']['prefix'] . 'pubkey where value = ' . to_sql($s1), false);
 
 # todo if public key from qr code not found
-if (get_gp('public_key') != 'TODO') { ?> 
+if (!$s2) { ?> 
 	<div class="content_box">
 		<div class="doc_box">
 			<h3>TODO: Public Key Not Found</h3>
@@ -49,15 +40,29 @@ if (get_gp('public_key') != 'TODO') { ?>
 		</div>
 		<div class="doc_box">
 			<h3>TODO: Try Again</h3>
-			<form>
+			<form action="." method="get">
 				Public Key: 
-				<input type="text" />
+				<input type="text" name="public_key" />
 				<input type="submit" value="submit" />
 			</form>
 		</div>
 	</div><?
 }
-else { ?> 
+else {
+	# todo we have to get everything for the username with the specified public key
+	$a1 = array();
+	$sql = '
+		select
+			name
+		from
+			' . $config['mysql']['prefix'] . 'user
+		where
+			id = ' . (int)$s2
+	;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		$a1 = $row;
+	} ?> 
 	<div class="content_box">
 		<div class="doc_box">
 			<h3>Accountability</h3>
@@ -81,7 +86,7 @@ else { ?>
 		<div class="doc_box">
 			<h3>Transparency</h3>
 			<ul>
-				<li><a href="./contact_view/?lock_user_id=<?= (int)$_SESSION['login']['login_user_id']; ?>&list_name=list&list_type=rating&direction_id=1"><span class="import">Ratings</span></a></li>
+				<li><a href="./contact_view/?lock_user_id=<?= (int)$s2; ?>&list_name=list&list_type=rating&direction_id=1"><span class="import">Ratings</span></a></li>
 			</ul>
 			<ul><?
 				# todo show teams that both you and the scaned user are on.
@@ -92,9 +97,9 @@ else { ?>
 					from
 						' . $config['mysql']['prefix'] . 'team
 					where
-						name like ' . to_sql('<' . $_SESSION['login']['login_user_name'] . '>') . '
+						name like ' . to_sql('<' . $a1['name'] . '>') . '
 				'; ?> 
-				<li><a href="./team_view/?lock_team_id=<?= (int)get_db_single_value($sql, 0); ?>"><span class="parent_tag_translation_name">&lt;<?= $_SESSION['login']['login_user_name']; ?>&gt;</span></a></li>
+				<li><a href="./team_view/?lock_team_id=<?= (int)get_db_single_value($sql, 0); ?>"><span class="parent_tag_translation_name">&lt;<?= $a1['name']; ?>&gt;</span></a></li>
 			</ul>
 		</div>
 		<div class="doc_box">

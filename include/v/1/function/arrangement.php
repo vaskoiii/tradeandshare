@@ -403,6 +403,10 @@ function get_action_content_1($type = false, $name = false) {
 						'feature_lock' => '',
 						'feature_minnotify' => '',
 						'accept_usage_policy' => '',
+						//'face_md5' => '',
+						//'face_extension' => '',
+						'pubkey_value' => '',
+
 					);
 				break;
 				case 'invited':

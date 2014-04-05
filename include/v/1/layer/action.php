@@ -170,6 +170,24 @@ if ($x['page']['name'] == 'profile_edit') {
 		while ($row = mysql_fetch_assoc($result))
 			$data['action']['response']['action_content_1'] = $row;
 	}
+
+	# pubkey & face
+	# todo
+	$data['action']['response']['action_content_1']['face_md5'] = '';
+	$data['action']['response']['action_content_1']['face_extension'] = '';
+	$data['action']['response']['action_content_1']['pubkey_value'] = '';
+	$sql = '
+		select
+			value
+		from
+			' . $config['mysql']['prefix'] . 'pubkey
+		where
+			user_id = ' . (int)$_SESSION['login']['login_user_id']
+	;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		$data['action']['response']['action_content_1']['pubkey_value'] = $row['value'];
+	}
 } }
 
 if ($b1 == 1) {

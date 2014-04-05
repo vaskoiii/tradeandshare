@@ -220,6 +220,8 @@ switch($type) {
 	case 'profile':
 		# also needs to be set for $type == user 2012-05-06 vaskoiii
 		$lookup['user_password'] = encrypt_password($action_content_1['user_password_unencrypted']);
+		# todo error checking needed?
+		$lookup['pubkey_value'] = $action_content_1['pubkey_value'];
 	break;
 	case 'category':
 	case 'tag':
@@ -669,6 +671,21 @@ switch($type) {
 		}
 	break;
 	case 'profile':
+
+		$i1 = 0;
+		$i1 = get_db_single_value('id from ' . $prefix . 'pubkey where user_id = ' . (int)$login_user_id);
+		$sql = 
+			($i1 ? 'UPDATE ' : 'INSERT INTO ')
+				. $prefix . 'pubkey
+			SET
+				user_id = ' . (int)$login_user_id . ',
+				value = ' . to_sql($lookup['pubkey_value']) . ',
+				modified = CURRENT_TIMESTAMP,
+				`default` = 1,
+				active = 1
+			' . ($i1 ? 'WHERE id = ' . (int)$i1 : '')
+		;
+		$result = mysql_query($sql) or die(mysql_error());
 		$sql = '
 			UPDATE '
 				. $prefix . 'user_more um

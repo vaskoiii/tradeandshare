@@ -2640,3 +2640,30 @@ INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` ,
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '174', '14', 'guest_portal', '20', '1', '2', '1', '2'), ( NULL , '174', '14', 'host_portal', '24', '1', '2', '1', '2');
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '174', '14', 'scan_portal', '19', '1', '2', '1', '2');
 DELETE FROM `ts`.`ts_page` WHERE `ts_page`.`id` = 428 LIMIT 1;
+
+
+
+CREATE TABLE IF NOT EXISTS `ts_face` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `md5` char(32) NOT NULL,
+  `extension` varchar(255) NOT NULL,
+  `byte` int(11) NOT NULL,
+  `modified` datetime NOT NULL,
+  `default` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `ts_pubkey` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `value` varbinary(32768) NOT NULL,
+  `modified` datetime NOT NULL,
+  `default` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `modified` (`modified`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
