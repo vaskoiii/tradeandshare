@@ -29,11 +29,12 @@ QRcode::png('https://list.vaskos.com', '/www/site/list/public/phpqrcode/temp/lis
 
 include('v/1/inline/t1/header_after.php'); ?> 
 <div class="content_box" style="text-align: center;">
-	<p><a href="/host_portal/?public_key=TODO"><img src="/phpqrcode/temp/list.png" /></a></p>
-	<p>TODO: Scan QR code for identification</p>
-	<a href="/host_portal/?public_key=TODO">Found</a>
-	:
-	<a href="/host_portal/">NOT Found</a>
+	<center>
+	<fieldset style="background: #fff; width: 300px; margin: 0px; padding: 0px;">
+		<a href="/host_portal/?public_key=TODO" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+		<a href="/host_portal/?public_key=TODO" ><img src="/phpqrcode/temp/list.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+	</fieldset>
+	</center>
 
 	<? # the foollowing may be useful but may also be overly complicated ?>
 	<!--
@@ -59,4 +60,11 @@ include('v/1/inline/t1/header_after.php'); ?>
 </div>
 
 <div class="menu_2">
+	<center>
+	<ul>
+		<li><a href="javascript: alert('TODO Printing');">Print</a></li>
+		<li><a href="/host_portal/?public_key=TODO">Found</a></li>
+		<li><a href="/host_portal/">NOT Found</a></li>
+	</ul>
+	</center> 
 </div>
