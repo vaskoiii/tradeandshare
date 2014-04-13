@@ -25,6 +25,7 @@ add_translation('page', 'note_list');
 add_translation('page', 'metail_list');
 add_translation('page', 'people_portal');
 add_translation('page', 'page_portal');
+add_translation('page', 'host_portal');
 
 do_option($option);
 do_key($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']);

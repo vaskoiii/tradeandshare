@@ -21,6 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Description: Picture sitting at the counter scanning in guests
 
 # Todo: this should actually lookup the user by Public Key NOT lock_user_id in order to create a more portable identification system
+# no way to enter a new public key from this page? depends on scanner
 
 $s1 = get_gp('public_key');
 #todo insert a newline after every 64 characters
@@ -33,19 +34,20 @@ $s2 = get_db_single_value('user_id from ' . $config['mysql']['prefix'] . 'pubkey
 
 # todo if public key from qr code not found
 if (!$s2) { ?> 
-	<div class="content_box">
-		<div class="doc_box">
-			<h3>TODO: Public Key Not Found</h3>
-			<div class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></div>
-		</div>
-		<div class="doc_box">
-			<h3>TODO: Try Again</h3>
-			<form action="." method="get">
-				Public Key: 
-				<input type="text" name="public_key" />
-				<input type="submit" value="submit" />
-			</form>
-		</div>
+	<div class="content_box"><?
+		if (isset_gp('public_key')) { ?> 
+			<div class="doc_box">
+				<h3>TODO: Public Key Not Found</h3>
+				<div class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></div>
+			</div><?
+		} ?> 
+			<div class="doc_box">
+				<form action="." method="get">
+					Public Key: 
+					<input type="text" name="public_key" />
+					<input type="submit" value="submit" />
+				</form>
+			</div>
 	</div><?
 }
 else {

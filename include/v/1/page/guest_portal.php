@@ -18,5 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Description: Picture yourself in a line of people waiting to get scanned in at the counter ?> 
+# Description: Picture yourself in a line of people waiting to get scanned in at the counter
+
+$sql = '
+	select
+		key
+	from
+		' . $config['mysql']['prefix'] . 'pubkey
+	where
+		user_id = ' . (int)$_SESSION['login']['login_user_id']
+;
+
 

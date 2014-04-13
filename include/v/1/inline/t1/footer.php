@@ -44,6 +44,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<ul>
 				<li><a href="#" alt="/page_portal/" onclick="launch('pager', event); return false;"><?= tt('page', 'page_portal'); ?></a></li>
 				<li><a href="#" alt="/people_portal/" onclick="launch('peopler'); return false;"><?= tt('page', 'people_portal'); ?></a></li>
+				<li><a href="#" alt="/host_portal/" onclick="launch('scanner'); return false;"><?= tt('page', 'host_portal'); ?></a></li>
 			</ul>
 		</div>
 		<div class="menu_2" style="margin-bottom: 0px;">

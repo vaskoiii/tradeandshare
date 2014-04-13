@@ -25,10 +25,20 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <div id="action">
-	<div class="title">
-		<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2>
-		<div class="result_add">
-		</div>
+	<div class="title"><?
+		switch($x['page']['name']) {
+			case 'guest_portal': ?> 
+				<center>
+					<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2>
+					<div class="result_add"></div>
+				</center><?
+			break;
+			default: ?> 
+				<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2>
+				<div class="result_add"></div><?
+			break;
+		} ?> 
+		
 	</div><?
 	print_message_bar(); ?> 
 	<div class="content">

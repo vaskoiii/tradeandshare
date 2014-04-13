@@ -45,6 +45,7 @@ $data['theme']['color'] = $s1;
 #$data['theme']['color'] = 'green'; # testing override 2012-03-18 vaskoiii
 
 # extra translation  it is done again below.
+add_translation('page', 'guest_portal');
 add_translation('page', 'main');
 add_translation('page', 'login_set');
 # elements for now
@@ -167,14 +168,14 @@ $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch'
 if ($public_key) {
 $s1 = '/host_portal/?public_key=' . to_url($public_key);
 $s2 = '/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png';
-$s3 = to_html($_SESSION['login']['login_user_name']);
+$s3 = tt('page', 'guest_portal');
 $data['launch']['scanner']['empty'] = <<<HTML
  <table><tr>
 	<td>
 		<a href="{$s1}"><img src="{$s2}" /></a>
 	</td>
 	<td class="td2">
-		<a href="{$s1}" style="color: #000;">{$s3}</a>
+		<a href="/guest_portal/" style="color: #000;">{$s3}</a>
 	</td>
  </tr></table>
 HTML;

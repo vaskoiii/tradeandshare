@@ -24,18 +24,26 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Dependancy:
 # http://phpqrcode.sourceforge.net/examples/index.php
 
-include('phpqrcode/qrlib.php');
-QRcode::png('https://list.vaskos.com', '/www/site/list/public/phpqrcode/temp/list.png', 'L', 4, 2);
 
+# todo move to when profile is updated
+include('phpqrcode/qrlib.php');
+QRcode::png('https://list.vaskos.com', '/www/site/list/public/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png', 'L', 4, 2);
 include('v/1/inline/t1/header_after.php'); ?> 
+
 <div class="content_box" style="text-align: center;">
 	<center>
-	<fieldset style="background: #fff; width: 300px; margin: 0px; padding: 0px;">
-		<a href="/host_portal/?public_key=TODO" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
-		<a href="/host_portal/?public_key=TODO" ><img src="/phpqrcode/temp/list.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
-	</fieldset>
+	<div style="background: #fff; width: 300px; margin: 0px; padding: 0px; border: 1px dashed #000;"><?
+		# todo use contact link instead if possible ?> 
+		<a href="./user_view/<?= ff('list_name=list&list_type=item&lock_user_id=' . (int)$_SESSION['login']['login_user_id']); ?>" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+		<a href="/host_portal/?public_key=<?= get_db_single_value('
+					value
+				from
+					' . $config['mysql']['prefix'] . 'pubkey
+				where
+					user_id = ' . (int)$_SESSION['login']['login_user_id']
+			, 0); ?>" ><img src="/phpqrcode/temp/list.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+	</div>
 	</center>
-
 	<? # the foollowing may be useful but may also be overly complicated ?>
 	<!--
 	<h3>Enter</h3>
@@ -61,10 +69,8 @@ include('v/1/inline/t1/header_after.php'); ?>
 
 <div class="menu_2">
 	<center>
-	<ul>
-		<li><a href="javascript: alert('TODO Printing');">Print</a></li>
-		<li><a href="/host_portal/?public_key=TODO">Found</a></li>
-		<li><a href="/host_portal/">NOT Found</a></li>
+	<ul><?
+		# <li><a href="javascript:window.print()">Print</a></li> ?> 
 	</ul>
 	</center> 
 </div>
