@@ -28,36 +28,34 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # 	Not integrated in to a non test file even though this file is critical to TS!
 
 # Modified to support 128px by 128px images 2014-03-29 vaskoiii
+
+# launcher theme
+$s1 = str_replace('theme_', '', $_SESSION['theme']['launcher_theme_name']);
+# added 2011-08-25
+$data['theme']['color'] = $s1;
+#$data['theme']['color'] = 'green'; # testing override 2012-03-18 vaskoiii
+$data['css']['theme_name'] = 'theme_' . $data['theme']['color']; # like using a function paramerter for the include below
+#include($x['site']['i'] . 'css/background_color.php');
+$data['css'] = array_merge($data['css'], get_background($s1));
+
 ?>
 <style>
-	#peopler_box {
-		border: 1px solid #fff; 
-		position: absolute;
-		width: 300px;
-		height: 220px;
-		background: red;
-		}
-	#scanner_box {
-		border: 1px solid #fff; 
-		position: absolute;
-		width: 300px;
-		height: 220px;
-		background: yellow;
-		}
+	#peopler_box,
+	#scanner_box,
 	#pager_box {
 		border: 1px solid #fff; 
 		position: absolute;
 		width: 300px;
-		height: 220px;
-		background: green;
+		height: 221px;
+		background: <?= $data['css']['c0']; ?>; 
 		}
 		#scanner_box img,
 		#peopler_box img,
 		#pager_box img{ 
 			margin: 0px;
 			padding: 0px;
-			width: 64px;
-			height: 64px;
+			width: 128px;
+			height: 128px;
 			}
 		#scanner_meat_box,
 		#peopler_meat_box,
@@ -68,7 +66,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		#peopler_form,
 		#pager_form {
 			padding: 5px 10px 0px;
-			background: orange;
+			background: <?= $data['css']['c1']; ?>;
 			}
 		#scanner_x,
 		#peopler_x,
@@ -118,7 +116,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		#pager_juice_box {
 			height: 10px;
 			border-top: 1px solid #ffe;
-			background: blue;
+			background: <?= $data['css']['c2']; ?>;
 			}
 		#scanner_alternative_box .td2,
 		#peopler_alternative_box .td2,

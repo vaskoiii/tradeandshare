@@ -39,7 +39,6 @@ if(!isset($_COOKIE['launch'])) {
 }
 
 $s1 = str_replace('theme_', '', $_SESSION['theme']['launcher_theme_name']);
-
 # added 2011-08-25
 $data['theme']['color'] = $s1;
 #$data['theme']['color'] = 'green'; # testing override 2012-03-18 vaskoiii
@@ -56,10 +55,6 @@ add_translation('element', 'page_previous');
 add_translation('element', 'page_last');
 add_translation('element', 'page_first');
 do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']);
-
-$data['css']['theme_name'] = 'theme_' . $data['theme']['color']; # like using a function paramerter for the include below
-#include($x['site']['i'] . 'css/background_color.php');
-$data['css'] = array_merge($data['css'], get_background($s1));
 
 $data['lock_query'] = get_lock_query();
 
@@ -126,13 +121,9 @@ $request_uri =  $_SERVER['REQUEST_URI'];
 # don't forget target="_top"
 # whitespace in the fist column otherwise preg_replace() doesnt work right and the launcher wont load
 $data['launch']['pager']['empty'] = <<<HTML
- <table><tr>
-	<td>
+	<div>
 		<a href="/"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a>
-	</td>
-	<td class="td2">
-		<a href="/" style="color: #000;">{$translation['page_name']['result']['main']['translation_name']}</a></td>
- </tr></table>
+	</div>
 HTML;
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 
@@ -142,56 +133,36 @@ $s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
 $s2 = '/v/1/theme/select_none/ts_icon_256x256.png';
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 $data['launch']['peopler']['empty'] = <<<HTML
- <table><tr>
-	<td>
+	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>
-	</td>
-	<td class="td2">
-		Me (<a href="{$s1}" style="color: #000;">{$_SESSION['login']['login_user_name']}</a>)
-	</td>
- </tr></table>
+	</div>
 HTML;
 }
 else {
 $s1 = '/login_set/';
 $data['launch']['peopler']['empty'] = <<<HTML
- <table><tr>
-	<td>
+	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>
-	</td>
-	<td class="td2">
-		<a href="{$s1}" style="color: #000;">{$translation['page_name']['result']['login_set']['translation_name']}</a>
-	</td>
- </tr></table>
+	</div>
 HTML;
 }
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
 if ($public_key) {
 $s1 = '/host_portal/?public_key=' . to_url($public_key);
 $s2 = '/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png';
-$s3 = tt('page', 'host_portal');
+$s3 = 'Me (' . to_html($_SESSION['login']['login_user_name']) . ')';
 $s4 = '/v/1/theme/select_none/ts_icon_256x256.png';
 $data['launch']['scanner']['empty'] = <<<HTML
- <table><tr>
-	<td>
+	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>
-	</td>
-	<td class="td2">
-		<a href="{$s1}" style="color: #000;">{$s3}</a>
-	</td>
- </tr></table>
+	</div>
 HTML;
 }
 else {
 $data['launch']['scanner']['empty'] = <<<HTML
- <table><tr>
-	<td>
-		No PubKey
-	</td>
-	<td class="td2">
-		<a href="/profile_edit/">Add PubKey</a>
-	</td>
- </tr></table>
+	<div>
+		<a href="/profile_edit/">Add Public Key</a>
+	</div>
 HTML;
 }
 $data['launch']['scanner']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['scanner']['empty']);

@@ -81,10 +81,15 @@ else {
 			<a id="public_key_toggle" href="/" onclick="more_toggle('public_key'); return false;"/>More</a></span>
 			<div id="public_key" style="display: none; margin-left: 20px; padding-top: 10px;">
 				<dl>
+					<? # dont display qr code and face together on the same page  ?>
+					<!-- 
+					<dt><span style="color: green;">QR Code</span>:</dt>
+					<dd><img src="/phpqrcode/temp/<?= to_html($a1['name']); ?>.png" /></dd>
+					-->
 					<dt><span class="contact_name">SHA1</span>:</dt>
 					<dd class="contact_name"><?= sha1($s1); ?></dd>
 					<dt><span class="uid">Public Key</span>:</dt>
-					<dd class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></dd>
+					<dd class="uid"><?= "\n" . $s1 . "\n"; ?></dd>
 				</dl>
 			</div>
 		</div>

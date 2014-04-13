@@ -32,3 +32,4 @@ add_translation('page', 'vote_list');
 
 
 include($x['site']['i'] . '/inline/visit_track.php');
+
