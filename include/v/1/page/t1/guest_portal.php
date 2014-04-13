@@ -34,7 +34,10 @@ include('v/1/inline/t1/header_after.php'); ?>
 	<center>
 	<div style="background: #fff; width: 300px; margin: 0px; padding: 0px; border: 1px dashed #000;"><?
 		# todo use contact link instead if possible ?> 
-		<a href="./user_view/<?= ff('list_name=list&list_type=item&lock_user_id=' . (int)$_SESSION['login']['login_user_id']); ?>" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+		<!--
+			<a href="./user_view/<?= ff('list_name=list&list_type=item&lock_user_id=' . (int)$_SESSION['login']['login_user_id']); ?>" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+		-->
+		<a href="/"><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
 		<a href="/host_portal/?public_key=<?= get_db_single_value('
 					value
 				from

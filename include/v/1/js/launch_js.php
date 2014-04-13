@@ -46,6 +46,7 @@ $data['theme']['color'] = $s1;
 
 # extra translation  it is done again below.
 add_translation('page', 'guest_portal');
+add_translation('page', 'host_portal');
 add_translation('page', 'main');
 add_translation('page', 'login_set');
 # elements for now
@@ -168,14 +169,15 @@ $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch'
 if ($public_key) {
 $s1 = '/host_portal/?public_key=' . to_url($public_key);
 $s2 = '/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png';
-$s3 = tt('page', 'guest_portal');
+$s3 = tt('page', 'host_portal');
+$s4 = '/v/1/theme/select_none/ts_icon_256x256.png';
 $data['launch']['scanner']['empty'] = <<<HTML
  <table><tr>
 	<td>
 		<a href="{$s1}"><img src="{$s2}" /></a>
 	</td>
 	<td class="td2">
-		<a href="/guest_portal/" style="color: #000;">{$s3}</a>
+		<a href="{$s1}" style="color: #000;">{$s3}</a>
 	</td>
  </tr></table>
 HTML;

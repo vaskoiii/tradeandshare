@@ -534,12 +534,11 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				<div class="v">
 					<input type="file" style="margin: 5px; border: 2px inset #eee;" />
 					<br />
-					<img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" /><? # ts_icon.png ?> 
+					<img src="/v/1/theme/select_none/ts_icon_256x256.png" style="margin: 10px; width: 128px; height: 128px;" /><? # ts_icon.png ?> 
 				</div>
 			<span><?
 		break;
 		case 'face_extension':
-		# case 'pubkey_value':
 		break;
 		# case 'kind_name_translation_name':
 		# todo create less ambiguity by creating a separate case
@@ -899,7 +898,12 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		<span valign="top">
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><?
-				if ( !str_match('_description', $k1) ) { ?> 
+				$b1 = 1;
+				if ( str_match('_description', $k1) )
+					$b1 = 2;
+				if ( str_match('pubkey', $k1) )
+					$b1 = 2;
+				if ( $b1 == 1 ) { ?> 
 					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
 				}
 				else { ?> 

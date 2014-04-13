@@ -35,19 +35,24 @@ $s2 = get_db_single_value('user_id from ' . $config['mysql']['prefix'] . 'pubkey
 # todo if public key from qr code not found
 if (!$s2) { ?> 
 	<div class="content_box"><?
-		if (isset_gp('public_key')) { ?> 
-			<div class="doc_box">
-				<h3>TODO: Public Key Not Found</h3>
-				<div class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></div>
-			</div><?
-		} ?> 
+		if (1) { ?> 
 			<div class="doc_box">
 				<form action="." method="get">
 					Public Key: 
-					<input type="text" name="public_key" />
+					<input id="focusOnThis" type="text" name="public_key" />
+					<script>
+						document.getElementById('focusOnThis').focus();
+					</script>
 					<input type="submit" value="submit" />
 				</form>
-			</div>
+			</div><?
+		}
+ 		if (isset($_GET['public_key'])) { ?> 
+			<div class="doc_box">
+				<h3>Public Key Not Found</h3>
+				<div class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></div>
+			</div><?
+		} ?> 
 	</div><?
 }
 else {
@@ -71,13 +76,13 @@ else {
 			<dl>
 				<dt><span class="user_name">Face</span>:</dt>
 				<dd><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" /></dd>
-				<dt><span class="contact_name">SHA1</span>:</dt>
-				<dd class="contact_name"><?= sha1($s1); ?></dd>
 			</dl>
 			<span class="spacer">&gt;&gt;</span>
 			<a id="public_key_toggle" href="/" onclick="more_toggle('public_key'); return false;"/>More</a></span>
 			<div id="public_key" style="display: none; margin-left: 20px; padding-top: 10px;">
 				<dl>
+					<dt><span class="contact_name">SHA1</span>:</dt>
+					<dd class="contact_name"><?= sha1($s1); ?></dd>
 					<dt><span class="uid">Public Key</span>:</dt>
 					<dd class="uid"><pre>-----BEGIN CERTIFICATE-----<?= "\n" . $s1 . "\n"; ?>-----END CERTIFICATE-----</pre></dd>
 				</dl>

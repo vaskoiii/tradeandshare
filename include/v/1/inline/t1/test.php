@@ -37,7 +37,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		height: 220px;
 		background: red;
 		}
-	#scanner_box,
+	#scanner_box {
+		border: 1px solid #fff; 
+		position: absolute;
+		width: 300px;
+		height: 220px;
+		background: yellow;
+		}
 	#pager_box {
 		border: 1px solid #fff; 
 		position: absolute;
@@ -129,9 +135,19 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <script>
 function tsSubmit(tsType) {
 	switch(tsType) {
-		case 'scanner':
+		case 'scanner': <?
+			# pushing users to use a public key ?> 
+			// user id
+			var s2 = '<?= get_db_single_value('value from ' . $config['mysql']['prefix'] . 'pubkey where user_id = ' . to_sql($_SESSION['login']['login_user_id']), false); ?>';
 			var o1 = document.getElementById('scanner_input');
-			window.parent.location =  '/host_portal/?public_key=' + encodeURIComponent(o1.value); 
+			if (o1.value)
+				window.parent.location =  '/host_portal/?public_key=' + encodeURIComponent(o1.value); 
+			else if (s2)
+				window.parent.location =  '/host_portal/?public_key=' + encodeURIComponent(s2); 
+			else {
+				alert('Please enter a public key');
+				window.parent.location =  '/profile_edit/';
+			}
 		break;
 		case 'peopler':
 			window.parent.location = document.getElementById('peopler_suggest_one').href;
@@ -187,7 +203,9 @@ function tsSubmit(tsType) {
 		<div id="scanner_main_box">
 			<form name="scanner_form" onsubmit="tsSubmit('scanner'); return false;" id="scanner_form">
 				<a href="javascript:simple_hide('scanner_box')" id="scanner_x">TS</a>
-				<a href="/host_portal/" id="scanner_suggest_one">Public Key</a>
+				<span style="font-weight: bold; font-size: 1.5em;">
+					<a href="javascript: tsSubmit('scanner');"><?= tt('page', 'host_portal'); ?> </a>
+				</span>
 				<br />
 				<input id="scanner_input" type="text">
 				<input value="!" id="scanner_launch" type="submit">
