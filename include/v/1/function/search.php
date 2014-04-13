@@ -528,6 +528,26 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		echo '<div class="k">' . to_html($k1) . '</div>';
 	}
 	else switch($k1) {
+		case 'pubkey_value': ?>
+			<span valign="top">
+				<div class="k"><span class="user_name"><?= tt('element', $k1); ?></span>:</div>
+				<div class="v">
+					<div class="textarea"><?
+						# 4096 = 2^12
+						# QR Code Alphanumeric Max: 4,296 characters
+						# (0–9, A–Z [upper-case only], space, $, %, *, +, -, ., /, :) ?> 
+						<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" maxlength="4096" name="<?= $k1; ?>" /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
+					</div><?
+					# todo input to change ?> 
+					<!-- 
+					<br />
+					<div>
+						<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>
+					</div>
+					-->
+				</div>
+			<span><?
+		break;
 		case 'face_md5': ?> 
 			<span valign="top">
 				<div class="k"><span class="user_name"><?= tt('element', $k1); ?></span>:</div>
@@ -898,12 +918,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		<span valign="top">
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><?
-				$b1 = 1;
-				if ( str_match('_description', $k1) )
-					$b1 = 2;
-				if ( str_match('pubkey', $k1) )
-					$b1 = 2;
-				if ( $b1 == 1 ) { ?> 
+				if ( !str_match('_description', $k1) ) { ?> 
 					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
 				}
 				else { ?> 
