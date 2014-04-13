@@ -122,7 +122,7 @@ $request_uri =  $_SERVER['REQUEST_URI'];
 # whitespace in the fist column otherwise preg_replace() doesnt work right and the launcher wont load
 $data['launch']['pager']['empty'] = <<<HTML
 	<div>
-		<a href="/"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon.png" /></a>
+		<a href="/"><img src="/v/1/theme/{$data['theme']['color']}/ts_icon_256x256.png" /></a>
 	</div>
 HTML;
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
