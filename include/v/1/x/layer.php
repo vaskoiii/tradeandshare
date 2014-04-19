@@ -367,7 +367,7 @@ switch($x['load']['list']['name']) {
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php'); ?> 
 		<div class="content"><div class="content_box"><?
 			$s1 = '/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php';
-			if (file_exists($config['file_path'] . 'include/' . $x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1)) {
+			if (file_exists($config['include_path'] . $x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1)) {
 				include($x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1);
 			}
 			else {

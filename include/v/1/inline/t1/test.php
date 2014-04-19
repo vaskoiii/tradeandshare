@@ -45,14 +45,14 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 	#pager_box {
 		border: 1px solid #fff; 
 		position: absolute;
-		width: 300px;
+		width: 298px;
 		height: 221px;
 		background: <?= $data['css']['c0']; ?>; 
 		}
 		#scanner_box img,
 		#peopler_box img,
 		#pager_box img{ 
-			margin: 0px;
+			margin: 0px auto;
 			padding: 0px;
 			width: 128px;
 			height: 128px;

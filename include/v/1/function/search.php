@@ -533,10 +533,12 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				<div class="k"><span class="user_name"><?= tt('element', $k1); ?></span>:</div>
 				<div class="v">
 					<div class="textarea"><?
-						# 4096 = 2^12
+						# 4096 = 2^12 = DB Supported/Intended Max Length
+						# QR Code Scanning is best with less characters ( Version 4 = Target = Up to 50 char! )
 						# QR Code Alphanumeric Max: 4,296 characters
 						# (0–9, A–Z [upper-case only], space, $, %, *, +, -, ., /, :) ?> 
-						<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" maxlength="4096" name="<?= $k1; ?>" /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
+						<textarea style="background: #ddd; color: #000;" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="" disabled /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?> (Corresponds with your QR Code)</textarea>
+						<input type="hidden" name="<?= $k1; ?>" value="<?= (int)$_SESSION['login']['login_user_id']; ?>" />
 					</div><?
 					# todo input to change ?> 
 					<!-- 
@@ -546,7 +548,8 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					</div>
 					-->
 				</div>
-			<span><?
+			<span>
+			<br /><?
 		break;
 		case 'face_md5': ?> 
 			<span valign="top">

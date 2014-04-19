@@ -27,8 +27,9 @@ $public_key = get_db_single_value('value from ' . $config['mysql']['prefix'] . '
 # todo not sure if this needs to run every time
 # todo do not hardcode the document_root
 if ($public_key) {
-	include('phpqrcode/qrlib.php');
-	QRcode::png('https://list.vaskos.com/host_portal/?public_key=' . to_url($public_key), '/www/site/list/public/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png', 'L', 4, 2);
+	# create qrcode in profile_edit
+	# include('phpqrcode/1.1.4/qrlib.php');
+	# QRcode::png('https://list.vaskos.com/host_portal/?public_key=' . to_url($public_key), '/www/site/list/public/phpqrcode/1.1.4/temp/' . $_SESSION['login']['login_user_name'] . '.png', 'L', 4, 2);
 }
 # setcookie used from javascript in the launcher this only sets the initial value
 if(!isset($_COOKIE['launch'])) {
@@ -149,9 +150,14 @@ HTML;
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
 if ($public_key) {
 $s1 = '/host_portal/?public_key=' . to_url($public_key);
-$s2 = '/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png';
-$s3 = 'Me (' . to_html($_SESSION['login']['login_user_name']) . ')';
-$s4 = '/v/1/theme/select_none/ts_icon_256x256.png';
+$i1 = get_db_single_value('
+		id
+	from
+		' . $config['mysql']['prefix'] . 'filer
+	where
+		user_id = ' . (int)$_SESSION['login']['login_user_id'] . '
+', false);
+$s2 = '/file/?id=' . (int)$i1 . '.png';
 $data['launch']['scanner']['empty'] = <<<HTML
 	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>

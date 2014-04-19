@@ -2643,27 +2643,41 @@ DELETE FROM `ts`.`ts_page` WHERE `ts_page`.`id` = 428 LIMIT 1;
 
 
 
-CREATE TABLE IF NOT EXISTS `ts_face` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `md5` char(32) NOT NULL,
-  `extension` varchar(255) NOT NULL,
-  `byte` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
-  `default` tinyint(1) NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `ts_filer` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `user_id` int(11) NOT NULL,
+	  `path` varchar(255) NOT NULL,
+	  `md5` char(32) NOT NULL,
+	  `extension` varchar(255) NOT NULL,
+	  `byte` int(11) NOT NULL,
+	  `modified` datetime NOT NULL,
+	  `default` tinyint(1) NOT NULL,
+	  `active` tinyint(1) NOT NULL,
+	  PRIMARY KEY (`id`),
+	  KEY `user_id` (`user_id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+	-- --------------------------------------------------------
+
+--
+-- Table structure for table `ts_pubkey`
+--
 
 CREATE TABLE IF NOT EXISTS `ts_pubkey` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `value` varbinary(32768) NOT NULL,
-  `modified` datetime NOT NULL,
-  `default` tinyint(1) NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `modified` (`modified`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `user_id` int(11) NOT NULL,
+	  `value` varbinary(32768) NOT NULL,
+	  `modified` datetime NOT NULL,
+	  `default` tinyint(1) NOT NULL,
+	  `active` tinyint(1) NOT NULL,
+	  PRIMARY KEY (`id`),
+	  KEY `modified` (`modified`),
+	  KEY `user_id` (`user_id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+
+
+
+-- this part is messed up. untested maybe it works - need to rebuild
+insert into ts_page values (null, 321, 11, 'file', 1, 2, 2, 2, 2);

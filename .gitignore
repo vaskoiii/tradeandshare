@@ -2,6 +2,6 @@
 !.gitignore
 git-remote-https.core
 include/v/1/config/preset.php
-public/phpqrcode/temp
+public/phpqrcode/1.1.4/temp
 history
 mail

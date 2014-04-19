@@ -20,33 +20,85 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Description: Picture yourself in a line of people waiting to get scanned in at the counter
 
-
 # Dependancy:
 # http://phpqrcode.sourceforge.net/examples/index.php
 
-
 # todo move to when profile is updated
-include('phpqrcode/qrlib.php');
-QRcode::png('https://list.vaskos.com', '/www/site/list/public/phpqrcode/temp/' . $_SESSION['login']['login_user_name'] . '.png', 'L', 4, 2);
-include('v/1/inline/t1/header_after.php'); ?> 
+# unless we implement with the md5 file system will not be scalable
 
-<div class="content_box" style="text-align: center;">
+# easiest for testing here.
+# todo Move to process for profile_edit when complete
+
+# todo if new pubkey
+
+include('v/1/inline/t1/header_after.php');
+
+
+?>
+
+<div class="content_box" style="text-align: center;"> <?
+if ($data['guest_portal']['user_id']['id']) { ?> 
 	<center>
-	<div style="background: #fff; width: 300px; margin: 0px; padding: 0px; border: 1px dashed #000;"><?
+	<div style="background: #fff; width: 278px; margin: 0px -16px; padding: 0px; margin-top: 10px; border: 1px dashed #000;"><?
+		# supposed to be printed out
 		# todo use contact link instead if possible ?> 
-		<!--
-			<a href="./user_view/<?= ff('list_name=list&list_type=item&lock_user_id=' . (int)$_SESSION['login']['login_user_id']); ?>" ><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
-		-->
-		<a href="/"><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
-		<a href="/host_portal/?public_key=<?= get_db_single_value('
-					value
-				from
-					' . $config['mysql']['prefix'] . 'pubkey
-				where
-					user_id = ' . (int)$_SESSION['login']['login_user_id']
-			, 0); ?>" ><img src="/phpqrcode/temp/list.png" style="width: 128px; height: 128px; margin: 10px 5px;" /></a>
+		<table style="margin: 4px 12px 0px 12px; width: 278px;"><tr>
+			<td style="width: 24px; height: 24px;">
+				<img src="/v/1/theme/select_none/ts_icon.png" style="width: 24px; height: 24px;" />
+			</td>
+			<td style="vertical-align: top; padding: 0px 8px; padding-top: 2px;">
+				<a href="/">https://<?= to_html($_SERVER['HTTP_HOST']); ?></a>
+			</td>
+		</tr></table>
+		<table style="margin-bottom: 8px;">
+			<tr>
+				<td>
+					<a href="/"><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 108px; height: 108px; " /></a>
+				</td>
+				<td style="vertical-align: center; font-size: 36px; font-weight: bold; line-height: 30px; padding-left: 4px;">
+					?
+					<br />
+					=
+				</td>
+				<td>
+					<a href="/host_portal/?public_key=<?= get_db_single_value('
+								value
+							from
+								' . $config['mysql']['prefix'] . 'pubkey
+							where
+								user_id = ' . (int)$_SESSION['login']['login_user_id']
+						, 0); ?>" ><img src="/file/?id=<?= (int)$data['guest_portal']['user_id']['id']; ?>" style="width: 108px; height: 108px;" /></a>
+				</td>
+			</tr>
+		</table>
 	</div>
 	</center>
+	
+	<? if (0) { ?>
+	<center>
+	<div style="background: #fff; width: 286px; margin: 0px -16px; padding: 0px; border: 1px dashed #000;">
+		<table style="margin: 8px 0px; padding: 0px;">
+			<tr>
+				<td>
+					<img src="/v/1/theme/select_none/ts_icon.png" style="width: 24px; height: 24px;" />
+				</td>
+				<td style="vertical-align: top; padding-top: 2px;">
+					<a href="/">https://<?= to_html($_SERVER['HTTP_HOST']); ?></a>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<a href="/"><img src="/v/1/theme/select_none/ts_icon_256x256.png" style="width: 256px; height: 256px; border: 1px solid black;" /></a>
+		</div>
+		<div style="font-size: 48px; font-weight: bold; margin-bottom: 5px;">
+			? =
+		</div>
+		<div style="margin-bottom: 10px;">
+			<img src="/phpqrcode/1.1.4/temp/list.png" style="width: 256px; height: 256px; border: 1px solid black;" /></a>
+		</div>
+	</div>
+	</center>
+	<? } ?> 
 	<? # the foollowing may be useful but may also be overly complicated ?>
 	<!--
 	<h3>Enter</h3>
@@ -65,6 +117,13 @@ include('v/1/inline/t1/header_after.php'); ?>
 			<dd>See your teams</dd>
 	</dl>
 	-->
+<?
+}
+else { ?>
+<center>
+	<p>Please click "Edit" on <a href="/profile_edit/">your profile</a> to get your <?= tt('page', 'guest_portal'); ?></p>
+</center><?
+} ?> 
 </div>
 
 <div class="menu_1">

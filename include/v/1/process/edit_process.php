@@ -671,7 +671,54 @@ switch($type) {
 		}
 	break;
 	case 'profile':
+		# todo delete file and db entry and reinsert (will autofix bad data)
 
+		# assuming the opposite of filer_write() - if db entry exist file already exists
+		if (!(get_db_single_value('
+				id
+			from
+				' . $config['mysql']['prefix'] . 'filer
+			where
+				user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+				path = ' . to_sql('qrcode/v1/') . '
+		'))) {
+			# if no database entry for qr code make one
+			# initially only id will be allowed
+			# file handling
+			$s1 = '/www/site/list/public/phpqrcode/1.1.4/temp/' . $_SESSION['login']['login_user_name'] . '.png';
+			include('phpqrcode/1.1.4/qrlib.php');
+
+			# todo make real public key functionality instad of the user_id hack
+			QRcode::png('https://' . $_SERVER['HTTP_HOST'] . '/host_portal/?public_key=' . (int)$_SESSION['login']['login_user_id'], $s1, 'L', 4, 2);
+
+			switch(filer_move($s1, 'qrcode/v1/')) {
+				case 'exists':
+					# die('exists');
+				break;
+				case 'error':
+					# die('error');
+				break;
+				case 'written':
+					# die('written');
+				break;
+				default:
+					# die('default');
+				break;
+			}
+
+			# remove the file
+			switch(unlink($s1)) {
+				case true:
+					# die('unlink true');
+				break;
+				case false:
+					# die('unlink false');
+				break;
+			}
+		}
+
+
+		# update pubkey based on user_id
 		$i1 = 0;
 		$i1 = get_db_single_value('id from ' . $prefix . 'pubkey where user_id = ' . (int)$login_user_id);
 		$sql = 

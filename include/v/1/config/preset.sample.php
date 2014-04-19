@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: global configuration settings! (for all of TS!)
+# Contents/Description: global configuration settings! (for all of List!)
 $config = array();
 
 # Change Every Upload
@@ -26,21 +26,22 @@ date_default_timezone_set('UTC');
 
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
-$config['email_from'] = 'TS <noreply@localhost>';
-$config['file_path'] = '/www/site/ts/';
+$config['email_from'] = 'List <noreply@localhost>';
+$config['file_path'] = '/www/site/list/file';
+$config['include_path'] = '/www/site/list/include';
 
 # Main
 $config['start_page'] = '/main/';
-$config['website_name'] = 'Trade and Share';
-$config['title_prefix'] = 'TS '; # Used on Email & Feeds & Page Title
+$config['website_name'] = 'Local List';
+$config['title_prefix'] = 'List '; # Used on Email & Feeds & Page Title
 
 # Database Connect
 $config['mysql'] = array(
 	'host' => 'localhost',
-	'user' => 'ts',
+	'user' => 'list',
 	'password' => '',
-	'database' => 'ts',
-	'prefix' => 'ts_'
+	'database' => 'list',
+	'prefix' => 'list_'
 );
 $config['mysql_resource']; # gets set from Database Connect
 

@@ -23,6 +23,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 header('HTTP/1.0 200 Found');
 
 switch ($x['name']) {
+	case 'file':
+		filer_read((int)$_GET['id']);
+		exit;
+	break;
 	case 'login_unset_process':
 		header('location: /unset_process/?unset=login');
 		exit;

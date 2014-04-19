@@ -29,4 +29,21 @@ $sql = '
 		user_id = ' . (int)$_SESSION['login']['login_user_id']
 ;
 
+$sql = '
+	select
+		*
+	from
+		' . $config['mysql']['prefix'] . 'filer
+	where
+		user_id = ' . (int)$_SESSION['login']['login_user_id'] . '
+	limit
+		1
+';
+$result = mysql_query($sql) or die(mysql_error());
+while ($row = mysql_fetch_assoc($result)) {
+
+	$data['guest_portal']['user_id'] = $row;
+
+}
+
 

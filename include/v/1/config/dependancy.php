@@ -41,6 +41,7 @@ require($x['site']['i'] . '/function/engine.php');
 require($x['site']['i'] . '/function/template.php');
 require($x['site']['i'] . '/function/lock.php');
 require($x['site']['i'] . '/function/css.php');
+require($x['site']['i'] . '/function/file.php');
 
 # form processing
 require($x['site']['i'] . '/function/process.php');
