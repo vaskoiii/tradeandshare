@@ -27,8 +27,8 @@ date_default_timezone_set('UTC');
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
 $config['email_from'] = 'List <noreply@localhost>';
-$config['file_path'] = '/www/site/list/file';
-$config['include_path'] = '/www/site/list/include';
+$config['file_path'] = '/www/site/list/file/'; # end with /
+$config['include_path'] = '/www/site/list/include/'; # end with /
 
 # Main
 $config['start_page'] = '/main/';
