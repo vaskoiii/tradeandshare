@@ -120,6 +120,9 @@ else {
 		<div class="doc_box1">
 			<h3 style="margin: 20px 0px -5px 0px;">Transparency</h3>
 			<div style="margin-left: 15px;"><?
+				if (!count($data['result']['result']['listing'])) { ?> 
+					<p>This user has no ratings</p><?
+				}
 
 				foreach ($data['result']['result']['listing'] as $k1 => $v1) {
 					# todo eliminate this
@@ -252,7 +255,10 @@ else {
 		<div class="doc_box1">
 			<h3>Shared</h3>
 			<ul>
-			<? foreach ($data['host_portal']['shared_team'] as $k1 => $v1) { ?>
+			<?
+
+			if (!empty($data['host_portal']['shared_team'])) {
+			 foreach ($data['host_portal']['shared_team'] as $k1 => $v1) { ?>
 				<li><?
 					if ($data['host_portal']['my_team'][$k1]['owner_id'] == $_SESSION['login']['login_user_id']) { ?>
 						<input type="checkbox" /><?
@@ -261,7 +267,10 @@ else {
 						echo '<input type="checkbox" disabled />'; ?> 
 					<a href="./team_view/?lock_team_id=<?= (int)$k1; ?>"><span class="parent_tag_translation_name"><?= to_html($v1['team_name']); ?></span></a>
 				</li><?
-			} ?> 
+			} } 
+			else { ?> 
+				No teams are shared<?
+			} ?>
 			</ul>
 		</div>
 	</div>
