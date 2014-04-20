@@ -21,9 +21,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Comglomerated feed also used on the landing page
 # Known Issues: Lots of tricks to treat top_report like a multilist page. Still integrating.
 
-if ($x['name'] == 'top_report') {
-	include('v/1/layer/t1/action.php');
-}
+# /user_view/?list=mixed
+# /top_report/
+include('v/1/layer/t1/action.php');
 
 # uncomment out to use page warping instead of the standart edit action box 2012-05-06 vaskoiii
 # must also remove the action.php includes ?> 
