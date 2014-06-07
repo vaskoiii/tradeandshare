@@ -2681,3 +2681,19 @@ CREATE TABLE IF NOT EXISTS `ts_pubkey` (
 
 -- this part is messed up. untested maybe it works - need to rebuild
 insert into ts_page values (null, 321, 11, 'file', 1, 2, 2, 2, 2);
+
+
+-- rough channel implementation --
+CREATE TABLE `ts`.`ts_channel` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NOT NULL ,
+`name` VARCHAR( 255 ) NOT NULL ,
+`description` VARCHAR( 255 ) NOT NULL ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `name` , `modified` )
+) ENGINE = MyISAM;
+INSERT INTO `ts`.`ts_channel` (`id`, `user_id`, `name`, `description`, `modified`, `active`) VALUES (NULL, '132', '<|*|>', '<|*|>', '2014-06-06', '1');
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '2', 'channel_edit', '1', '1', '2', '1', '1'), ( NULL , '62', '2', 'channel_list', '60', '1', '1', '1', '1'); 
+ALTER TABLE `ts_rating` ADD `channel_id` INT NOT NULL AFTER `destination_user_id` , ADD INDEX ( channel_id ); 
+update `ts_rating` set channel_id = 1;
