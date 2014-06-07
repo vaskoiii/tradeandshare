@@ -323,6 +323,7 @@ function get_mask_subject($type, $display) {
 			);
 		break;
 		case 'contact':
+		case 'channel':
 		case 'dialect':
 		case 'feed':
 		case 'news':
@@ -423,6 +424,8 @@ function get_mask_subject($type, $display) {
 				'direction_right_name' => 'direction_right_name',
 				'destination_user_name' => 'destination_user_name',
 				'destination_user_name_spacer' => '_',
+				'channel_name' => 'channel_name',
+				'channel_name_spacer' => '_',
 				'grade_name' => 'grade_name',
 			);
 		break;
@@ -518,6 +521,7 @@ function get_mask_endline($type, $display, $child) {
 	switch($type) {
 		# todo les wordy probably to show which guys dont have the endline
 		case 'category':
+		case 'channel':
 		case 'dialect':
 		case 'feedback':
 		case 'group':
@@ -594,6 +598,7 @@ function lt_add_more($type) {
 function lt_body($type) {
 	$array = array();
 	switch($type) {
+		case 'channel':
 		case 'dialect':
 		case 'feedback':
 		case 'group':

@@ -472,6 +472,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
+		case 'channel_name':
 		case 'decision_name':
 		case 'grade_name':
 		case 'meritype_name':
@@ -487,6 +488,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				)
 			. '</span>';
 		break;
+		case 'channel_description':
 		case 'group_description':
 		case 'translation_description':
 		case 'team_description':
@@ -555,6 +557,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ob_get_clean();
 			/* <a href="./location_view/<?= ffm('list_name=&list_type=&lock_location_id=' . (int)$listing['location_id'], 1); ?>"><span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></a></span><?  */
 		break;
+		case 'channel_name':
 		case 'dialect_name':
 		case 'meritopic_name':
 		case 'incident_name':

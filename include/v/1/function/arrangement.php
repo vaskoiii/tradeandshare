@@ -72,6 +72,7 @@ function get_result_footer_1($type = false, $name = false) {
 	switch($type) {
 		case 'team':
 		case 'location':
+		case 'channel':
 		case 'category':
 			$array = array(
 				'remember' => '',
@@ -372,6 +373,13 @@ function get_action_content_1($type = false, $name = false) {
 						'contact_name' => '',
 					);
 				break;
+				case 'channel':
+					$array = array(
+						'user_name' => '',
+						'channel_name' => '',
+						'channel_description' => '',
+					);
+				break;
 				case 'location':
 					$array = array(
 						'location_name' => '',
@@ -486,6 +494,7 @@ function get_search_content_1($type) {
 		break;
 		case 'rating':
 			$array = array(
+				'channel_name' => '',
 				'grade_name' => '',
 				'direction_name' => '',
 				);
@@ -544,6 +553,11 @@ function get_search_content_1($type) {
 		case 'teammate':
 			$array = array(
 				'team_name' => '',
+			);
+		break;
+		case 'channel':
+			$array = array(
+				'channel_name' => '',
 			);
 		break;
 		case 'location':

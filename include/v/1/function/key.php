@@ -650,6 +650,7 @@ function listing_key_translation(& $key, & $translation, & $base, $type, $login_
 			}
 		break;
 		default:
+
 			if ($base['result']['listing'])
 			foreach ($base['result']['listing'] as $k1 => $v1)
 			foreach ($v1 as $k2 => $v2) {
