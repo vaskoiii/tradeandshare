@@ -37,9 +37,10 @@ $type = get_gp('list_name');
 switch(get_gp('action')) {
 	case 'delete': # delete teammate: new logic for vote_list 2013-10-11 vaskoiii
 		switch($type) {
+			case 'channel':
 			case 'team':
 				# $interpret['message'] = 'not allowed';
-				process_failure($type . ' ' . $action . ' case not tested - aborted');
+				process_failure($type . ' ' . $action . ' case not yet implemented - aborted');
 				exit;
 			break;
 		}
