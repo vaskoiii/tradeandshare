@@ -77,6 +77,7 @@ function add_option($option_name, & $option = null) {
 		case 'dialect_name':
 		case 'direction_name':
 		case 'display_name':
+		case 'channel_name':
 		case 'grade_name':
 		case 'group_name':
 		case 'kind_name':
@@ -181,9 +182,11 @@ function do_option(& $option, & $key = null, & $translation = null) {
 						active = 1
 				';
 			break;
+			
 			case 'decision_name':
 			case 'direction_name':
 			case 'display_name':
+			case 'channel_name':
 			case 'grade_name':
 			case 'lock_range_name':
 			case 'meritype_name':
@@ -276,6 +279,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 					case 'decision_name':
 					case 'direction_name':
 					case 'display_name':
+					case 'channel_name':
 					case 'grade_name':
 					case 'kind_name':
 					case 'lock_location_name':

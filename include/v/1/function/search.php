@@ -672,6 +672,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'group_name': // Not translated
 
 
+		case 'channel_name':
 		case 'display_name':
 		case 'lock_location_name':
 		case 'lock_range_name':

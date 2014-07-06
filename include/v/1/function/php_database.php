@@ -598,7 +598,6 @@ function lt_add_more($type) {
 function lt_body($type) {
 	$array = array();
 	switch($type) {
-		case 'channel':
 		case 'dialect':
 		case 'feedback':
 		case 'group':
@@ -625,6 +624,10 @@ function lt_body($type) {
 			# $array = array('parent_tag_name', '+', 'tag_name', '=', 'tag_translation_description');
 		#break;
 		# todo update integrate 2012-02-27 vaskoiii
+		case 'channel':
+			# special case because we want ratings to work across languages
+			$array = array('channel_translation_description');
+		break;
 		case 'category':
 		case 'tag':
 			$array = array('tag_path', '=', 'tag_translation_description');

@@ -2697,3 +2697,10 @@ INSERT INTO `ts`.`ts_channel` (`id`, `user_id`, `name`, `description`, `modified
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '321', '2', 'channel_edit', '1', '1', '2', '1', '1'), ( NULL , '62', '2', 'channel_list', '60', '1', '1', '1', '1'); 
 ALTER TABLE `ts_rating` ADD `channel_id` INT NOT NULL AFTER `destination_user_id` , ADD INDEX ( channel_id ); 
 update `ts_rating` set channel_id = 1;
+
+
+
+-- Fixing ratings
+INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'channel', '1', '2');
+
+

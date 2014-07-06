@@ -63,6 +63,13 @@ switch($x['load']['list']['type']) {
 
 if (!empty($data['result']['result']['listing'])) {
 foreach ($data['result']['result']['listing'] as $k1 => $v1) {
+	switch($x['load']['list']['type']) {
+		case 'channel':
+			# todo fix hardcode!
+			add_key($x['load']['list']['type'], $v1['channel_id'], 'translation_name');
+			# alternatively could select translation_description
+		break;
+	}
 	key_list_listing(
 		$v1,
 		'list',

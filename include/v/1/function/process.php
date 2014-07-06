@@ -510,6 +510,7 @@ function process_data_translation($container) {
 		case 'decision_name':
 		case 'direction_name':
 		case 'display_name':
+		case 'channel_name':
 		case 'grade_name':
 		case 'lock_range_name':
 		case 'meritype_name':
@@ -623,6 +624,7 @@ function process_does_not_exist($container) {
 			case 'direction_name':
 			case 'display_name':
 			case 'element_name':
+			case 'channel_name':
 			case 'grade_name':
 			case 'invite_user_name':
 			case 'location_name':

@@ -247,6 +247,7 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 		} }
 		break;
 		case 'translation_name':
+		case 'translation_description': # added so it is more clear both are retrieved 2014-07-06 vaskoiii
 		if (!empty($v1['search'])) {
 		switch($k1) {
 			case 'element':
@@ -265,7 +266,8 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 					$sql = '
 						select
 							tra.kind_name_id as id,
-							tra.name
+							tra.name,
+							tra.description
 						from
 							' . $prefix . 'translation tra,
 							' . $prefix . 'kind ki
@@ -277,6 +279,7 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 					$result = mysql_query($sql) or die(mysql_error());
 					while ($row = mysql_fetch_assoc($result)) {
 						$key[$s1 . '_id']['result'][$row['id']][$k2] = $row['name'];
+						$key[$s1 . '_id']['result'][$row['id']]['translation_description'] = $row['description'];
 						add_translation($s1, $row['name']);
 					}
 				}
@@ -287,6 +290,7 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 		case 'direction_name':
 		case 'display_name':
 		case 'element_name':
+		case 'channel_name':
 		case 'grade_name':
 		case 'decision_name':
 		case 'kind_name':
@@ -674,6 +678,7 @@ function listing_key_translation(& $key, & $translation, & $base, $type, $login_
 					case 'status_name':
 					case 'tag_name':
 					case 'dialect_name':
+					case 'channel_name':
 					case 'grade_name':
 					case 'phase_name':
 					case 'decision_name':

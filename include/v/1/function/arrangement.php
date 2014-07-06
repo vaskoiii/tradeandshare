@@ -279,6 +279,7 @@ function get_action_content_1($type = false, $name = false) {
 				case 'rating':
 					$array = array(
 						'contact_user_mixed' => '',
+						'channel_name' => '',
 						'user_name' => '',
 						'contact_name' => '',
 						'grade_name' => '',
@@ -377,7 +378,7 @@ function get_action_content_1($type = false, $name = false) {
 					$array = array(
 						'user_name' => '',
 						'channel_name' => '',
-						'channel_description' => '',
+						'channel_translation_description' => '',
 					);
 				break;
 				case 'location':
