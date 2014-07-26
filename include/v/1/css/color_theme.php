@@ -59,29 +59,28 @@ switch($data['css']['display_name']) {
 		// browser decide
 		$data['css']['max_width'] = ''; // do not set!
 		$data['css']['max_width_minus_2'] = ''; // do not set!
-		$data['css']['description_width'] = 'width: 72%; position: absolute;';
+		$data['css']['description_width'] = 'width: 85%;';
 	break;
 	case 'display_width_320_pixels':
 		$data['css']['max_width'] = 'max-width: 300px';
 		$data['css']['max_width_minus_2'] = 'max-width: 298px;';
-		$data['css']['description_width'] = 'width: 72%; max-width: 230px; position: absolute;';
+		$data['css']['description_width'] = 'width: 85%; max-width: 230px;';
 	break;
 	case 'display_width_480_pixels':
 		$data['css']['max_width'] = 'max-width: 450px';
 		$data['css']['max_width_minus_2'] = 'max-width: 448px;';
-		$data['css']['description_width'] = 'width: 72%; max-width: 370px; position: absolute;';
+		$data['css']['description_width'] = 'width: 85%; max-width: 370px;';
 	break;
 	case 'display_width_1024_pixels':
 		$data['css']['max_width'] = 'max-width: 950px';
 		$data['css']['max_width_minus_2'] = 'max-width: 948px;';
-		$data['css']['description_width'] = 'width: 72%; max-width: 816px; position: absolute;';
+		$data['css']['description_width'] = 'width: 85%; max-width: 816px;';
 	break;
 	case 'display_select_default':
 		// most compatible
 		$data['css']['max_width'] = 'max-width: 950px';
 		$data['css']['max_width_minus_2'] = 'max-width: 948px';
-		$data['css']['description_width'] = 'width: 72%; max-width: 816px; position: absolute;';
-
+		$data['css']['description_width'] = 'width: 85%; max-width: 816px;';
 	break;
 
 }

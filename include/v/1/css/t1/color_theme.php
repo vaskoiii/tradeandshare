@@ -29,7 +29,6 @@ body {
 	}
 /*show style in vim hack <style>*/
 .keyword_part {
-	line-height: 35px;
 	}
 #ts_focus {
 	/* color: #555555; */
@@ -132,7 +131,6 @@ div {
 	}
 /* main search */
 .main_keyword_box {
-	margin-bottom: 20px;
 }
 .keyword_box {
 	margin-top: 5px;
@@ -403,9 +401,6 @@ div {
 .description_input_row {
 	height: 47px;
 	}
-checkbox, input {
-	background: pink;
-	color: red;
-	background-color: green;
-}
-
+.keyword_box input {
+	margin-bottom: 5px;
+	}
