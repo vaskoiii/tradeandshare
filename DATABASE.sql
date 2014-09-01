@@ -2703,4 +2703,33 @@ update `ts_rating` set channel_id = 1;
 -- Fixing ratings
 INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'channel', '1', '2');
 
+UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =29 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =239 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =254 LIMIT 1 ;
+
+update `ts_grade` set value = value - 1;
+
+
+UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_none' WHERE `ts_grade`.`id` =1 LIMIT 1 ;
+
+UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_quarter' WHERE `ts_grade`.`id` =2 LIMIT 1 ;
+
+UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_half' WHERE `ts_grade`.`id` =3 LIMIT 1 ;
+
+UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_triquarter' WHERE `ts_grade`.`id` =4 LIMIT 1 ;
+
+UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_full' WHERE `ts_grade`.`id` =5 LIMIT 1 ;
+
+
+UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_none' WHERE `ts_element`.`id` =192 LIMIT 1 ;
+
+UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_quarter' WHERE `ts_element`.`id` =193 LIMIT 1 ;
+
+UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_half' WHERE `ts_element`.`id` =194 LIMIT 1 ;
+
+UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_triquarter' WHERE `ts_element`.`id` =195 LIMIT 1 ;
+
+UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_full' WHERE `ts_element`.`id` =196 LIMIT 1 ;
 

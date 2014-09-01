@@ -40,34 +40,37 @@ switch ($x['name']) {
 		header('location: /user_view/?list_name=list&list_type=item&lock_user_id=' . (int)$_SESSION['login']['login_user_id']);
 		exit;
 	break;
+
+	# x/page.php may be a better choice for custom pages
+	# instead of
+	# x/custom.php
+	# ie) for:
+		# adder_report
+		# config_report
+		# contact_report
+		# new_report
+		# search_report
+		# singularity_report
+		# top_report
+		# user_report
+
 	case 'main':
-	default:
-		# top report dirties the home page too much... and its not ideal for a phone screen.
+	default: # in case the url is messed up it will still bring you home!
+
+		# how are fast and header included in main? should be uncommented here? 2014-09-01 vaskoiii
 		include($x['site']['i'] . '/inline/head.php');
-
-
-		# the fast and quick box so it can get translations
 		include($x['site']['i'] . 'inline/edit.php');
-		include($x['site']['i'] . 'layer/fast.php');
-		#include($x['site']['i'] . 'layer/quick.php');
-
-
+		# include($x['site']['i'] . 'layer/fast.php');
+		# include($x['site']['i'] . 'layer/quick.php');
+		# include($x['site']['i'] . '/inline/header.php');
 		include($x['site']['i'] . '/page/main.php');
-		#if ($_SESSION['login']['login_user_id'])
-		#	include($x['site']['i'] . '/page/top_report.php');
 		include($x['site']['i'] . '/inline/footer.php');
 
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-
-		# todo make it so not sqeezed in main.php
 		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
 		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
-
-
+		# include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header.php');
 		include($x['site']['i'] . '/page/' . $x['site']['t'] . '/main.php');
-
-		#if ($_SESSION['login']['login_user_id'])
-		#	include($x['site']['i'] . '/page/' . $x['site']['t'] . '/top_report.php');
 		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
 	break;
 }
