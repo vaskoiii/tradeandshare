@@ -18,9 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: Placeholder for user_report
-
-
+# Contents/Description: display member ratings (doesn't compute all ratings)
 ?> 
 <div class="title">
 	<h2><?= tt('page', 'user_report'); ?></h2>
@@ -29,9 +27,16 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="content_box ">
 	<p> This page is not intended to be in production it is just an attempt at a proof of concept.</p>
-	<p> Get the average of the average viewable source user rating on the destination user for "source user" members only.</p>
-	<p> When practically computing ratings the following values are used (can't make people pay if they have a negative rating)</p>
-	<p> To start only 1 "channel" is looked at and only member's user_ids are arbitrarily specified as there is not yet a member list</p>
+	<p> Calculate credit for each user (members only) by multiplying:</p>
+	<ul>
+		<li>source user average</li>
+		<li>1 / source user rating on unique users</li>
+		<li>source user membership cost as a percent of max membership cost</li>
+		<li>source user timeframe percentage for current membership period</li>
+	</ul>
+	<p> From there add up all the calculated weighted credit for each member and distribute accordingly </p>
+	<p> You can not get negative credit from ratings so no money will be owed beyond membership</p>
+	<p> To start only 1 "channel" is looked at and member user_ids are arbitrarily specified</p>
 	<style>
 		td {
 			padding-left: 20px;
@@ -71,36 +76,62 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	</p>
 	<h3>Cost</h3>
 	<p>
-		Cost per Channel: $<?= $channel[$kc1]['info']['cost']; ?> per <?= $channel[$kc1]['info']['name']; ?>
+		Max Cost per Channel: $<?= $channel[$kc1]['info']['cost']; ?> per <?= $channel[$kc1]['info']['name']; ?>
 		<br />
-		Channel Total: $<?= $d1 = count($channel[$kc1]['member_list']) * $channel[$kc1]['info']['cost']; ?>
+		Computed Channel Total: $<?= $d1 = array_sum($channel[$kc1]['weight_cost']); ?>
 		<br />
 		TS Cut (10% of Channel Total): $<?= .1 * $d1; ?>
 		<br />
-		Multiplier: <?= $d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_sum']) ; ?> 
+		Remaining to be distributed: <?= (.9 * $d1); ?>
+		<br />
+		Average Weight Sum: <?= array_sum($channel[$kc1]['average_weight_sum']); ?>
+		<br /><?
+		if (array_sum($channel[$kc1]['average_weight_sum']) != 0) { ?> 
+			Multiplier: <?= $d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ; ?><?
+		}
+		else
+			echo 'Multiplier: can not compute - No ratings'; ?> 
 	</p>
 	<p>For breakdown please see public rating list of members</p><?
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
-		# alias
-		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; ?>  
-
+		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= $kd1; ?> - Average Rating per Member</h3>
-		<p><?
-			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) { ?> 
-				<?= $k1; ?> = <?= $v1; ?><br /><?
-			} ?> 
-		</p>
+		<dl><?
+			if (!empty($kid['source_user_id_rating_average']))
+			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) {
+				$kis = & $channel[$kc1]['source_user_id'][$k1]; ?>  
+				<dt>
+					<?= $k1; ?>
+					=&gt;
+					<?= $v1 * $kis['count_weight'] * $kis['cost_weight'] * $kis['time_weight']; ?></dt>
+				</dt>
+				<dd>
+					<?= $v1; ?>
+					*
+					<?= $kis['count_weight']; ?>
+					*
+					<?= $kis['cost_weight']; ?>
+					*
+					<?= $kis['time_weight']; ?>
+				</dd><?
+			}
+			else
+				echo 'No ratings'; ?> 
+		</dl><?
+			if (!empty($kid['source_user_id_rating_average'])) { ?> 
 		<p>
 			&sum;
 			/
 			<?= count($kid['source_user_id_rating_average']); ?>
 			=
-			<?= $channel[$kc1]['average_average'][$kd1]; ?>
+			<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
 		</p>
 		<p>
-			$<?= $channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); ?> 
+			<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
+			$<?= $d2 * $channel[$kc1]['average_weight_sum'][$kd1]; ?>
 		</p><?
+			}
 	}
 } ?> 
 </div>
