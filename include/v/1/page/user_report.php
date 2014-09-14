@@ -23,13 +23,25 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo: logic is needed for membership - ie) member_list is not yet implemented 
 # todo: test multiple channels
 
-# not doing a full rating list (ie. hidden ratings) because only visable votes can be transparent and accountable
+# not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
 # also decentralization is important and hidden will not be practical if hidden and decentralized
 
+# todo incorporate all channels ie:
+$sql = '
+	select
+		channel_id
+	from
+		' . $config['mysql']['prefix'] . 'rating
+	group by
+		channel_id
+	order_by
+		channel_id asc
+';
+
 $data['user_report']['channel_list'] = array(
-	'test' => array(
+	'1' => array(
 		'info' => array(
-			'name' => 'nice',
+			'name' => '<|*|>',
 			'cost' => 100, # maybe should be max cost
 			'time' => 30,
 		),
@@ -77,6 +89,7 @@ foreach ($channel as $kc1 => $vc1) {
 				WHERE
 					r.source_user_id != r.destination_user_id and
 					r.grade_id = g.id AND
+					r.channel_id = ' . (int)$kc1 . ' and
 					r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
 					r.source_user_id = ' . (int)$v1 . ' and 
 					r.destination_user_id = ' . (int)($kd1) . ' and
@@ -112,6 +125,7 @@ foreach ($channel as $kc1 => $vc1) {
 				source_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
 				destination_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
 				source_user_id != destination_user_id and
+				channel_id = ' . (int)$kc1 . ' and
 				team_id = ' . (int)$config['everyone_team_id'] . ' and 
 				source_user_id = ' . (int)$ks1 . ' and 
 				active = 1
