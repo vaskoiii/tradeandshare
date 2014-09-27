@@ -2704,32 +2704,80 @@ update `ts_rating` set channel_id = 1;
 INSERT INTO `ts`.`ts_kind` ( `id` , `name` , `translation` , `minder`) VALUES ( NULL , 'channel', '1', '2');
 
 UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =29 LIMIT 1 ;
-
 UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =239 LIMIT 1 ;
-
 UPDATE `ts`.`ts_page` SET `file_id` = '14' WHERE `ts_page`.`id` =254 LIMIT 1 ;
-
 update `ts_grade` set value = value - 1;
 
-
 UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_none' WHERE `ts_grade`.`id` =1 LIMIT 1 ;
-
 UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_quarter' WHERE `ts_grade`.`id` =2 LIMIT 1 ;
-
 UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_half' WHERE `ts_grade`.`id` =3 LIMIT 1 ;
-
 UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_triquarter' WHERE `ts_grade`.`id` =4 LIMIT 1 ;
-
 UPDATE `ts`.`ts_grade` SET `name` = 'grade_merit_full' WHERE `ts_grade`.`id` =5 LIMIT 1 ;
 
-
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_none' WHERE `ts_element`.`id` =192 LIMIT 1 ;
-
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_quarter' WHERE `ts_element`.`id` =193 LIMIT 1 ;
-
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_half' WHERE `ts_element`.`id` =194 LIMIT 1 ;
-
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_triquarter' WHERE `ts_element`.`id` =195 LIMIT 1 ;
-
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_full' WHERE `ts_element`.`id` =196 LIMIT 1 ;
 
+
+
+
+
+
+
+
+-- Membership
+-- Membership
+-- Membership
+CREATE TABLE `ts`.`ts_membership` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NOT NULL ,
+`channel_id` INT NOT NULL ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `user_id` , `channel_id` , `modified` )
+) ENGINE = InnoDB;
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES
+	( NULL , '64', '2', 'membership_list', '80', '1', '1', '1', '1'),
+	( NULL , '321', '2', 'membership_edit', '1', '2', '2', '1', '1')
+;
+
+-- Renewal 
+CREATE TABLE `ts`.`ts_renewal` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NOT NULL ,
+`channel_id` INT NOT NULL ,
+`rating_value` DOUBLE NOT NULL,
+`value` DOUBLE NOT NULL ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `user_id` , `channel_id` , `modified` )
+) ENGINE = InnoDB;
+
+-- add channel cost?
+CREATE TABLE `ts`.`ts_cost` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NOT NULL ,
+`channel_id` INT NOT NULL ,
+`value` DOUBLE NOT NULL ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `user_id` , `channel_id` , `modified` )
+) ENGINE = InnoDB;
+
+-- Balance
+-- figure out how to get the balance and do conversion for various currency sources
+-- easy way is to just force people to convert to a certain currency before purchase
+-- for now assume all us dollars
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES
+	( NULL , '321', '2', 'renewal_edit', '100', '2', '2', '1', '1'),
+	( NULL , '351', '2', 'renewal_list', '101', '2', '2', '1', '1')
+;
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES
+	( NULL , '321', '2', 'cost_edit', '103', '1', '2', '1', '1'),
+	( NULL , '351', '2', 'cost_list', '104', '2', '2', '1', '1')
+;

@@ -316,10 +316,33 @@ function get_mask_subject($type, $display) {
 	# $display is used but barely. It is still good to have because it allows more flexibility and doesnt hurt 2012-02-26 vaskoiii
 	$array = array();
 	switch($type) {
+		case 'membership':
+			$array = array(
+				'channel_name' => 'channel_name',
+				'channel_spacer' => '_',
+				'remaining_time' => 'remaining_time', # actually min time/max time (calculated value)
+			);
+		break;
+		case 'renewal':
+			$array = array(
+				'channel_name' => 'channel_name',
+				'channel_spacer' => '_',
+				'rating_value' => 'rating_value',
+				'rating_value_spacer' => '_',
+				'renewal_value' => 'renewal_value',
+			);
+		break;
+		case 'cost':
+			$array = array(
+				'channel_name' => 'channel_name',
+				'channel_spacer' => '_',
+				'cost_value' => 'cost_value',
+			);
+		break;
 		case 'category':
 		case 'tag':
 			$array = array(
-				'tag_name' => 'tag_name'
+				'tag_name' => 'tag_name',
 			);
 		break;
 		case 'contact':

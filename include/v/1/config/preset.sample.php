@@ -74,5 +74,8 @@ $config['spacer'] = ' - '; # Used on output display to separate elements
 $config['mark'] = '~'; # Special charter used for parsing of URL variable names (choose from: ~-ABCDEFGHIJKLMNOPQRSTUVWXYZ)
 $config['category_exploder'] = '<>'; # NEEDED! (dont comment out) # todo change to "path_exploder"
 
+$config['cycle_start'] = '2014-09-21 00:00:00'; # datetime
+$config['cycle_length'] = 30; # days per cycle
+
 # Template 1
 $config['t1/']['result_amount_per_page'] = 10;

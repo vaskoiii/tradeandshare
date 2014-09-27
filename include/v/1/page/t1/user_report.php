@@ -66,7 +66,18 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<td>merit_full</td>
 			<td>4</td>
 		</tr>
-	</table><?
+	</table>
+	<h3>Cycle</h3>
+	<p>
+		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd']; ?>
+		to
+		<?= $data['user_report']['cycle_restart']['previous_restart']; ?>
+	</p>
+	<!--
+		<p>
+			TODO: Previous Pot: $0 (only non-zero if no member to member ratings)
+		</p>
+	--><?
 
 foreach ($channel as $kc1 => $vc1) { ?> 
 	<h3>Member List</h3>

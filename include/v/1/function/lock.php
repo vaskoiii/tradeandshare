@@ -347,6 +347,7 @@ function search_lock(& $base, $type, $login_user_id) {
 			}
 		break;
 		case 'category':
+		case 'cost':
 		case 'dialect':
 		case 'feed':
 		case 'feedback':
@@ -357,11 +358,13 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'jargon':
 		case 'location':
 		case 'login':
+		case 'membership':
 		case 'meripost':
 		case 'meritopic':
 		case 'metail':
 		case 'minder':
 		case 'news':
+		case 'renewal':
 		case 'tag':
 		case 'team':
 		case 'teammate':

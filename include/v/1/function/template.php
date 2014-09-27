@@ -191,6 +191,27 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
+		case 'cost_value':
+		case 'channel_value':
+		case 'renewal_value':
+			$grab .= '$' . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
+		break;
+		case 'rating_value':
+			$grab .= $listing[$k1];
+		break;
+		case 'remaining_time':
+			/*
+			$s1 = strtotime($listing['membership_start']) + 30*24*3600;
+			$s2 = strtotime(date('Y-m-d'));
+			$s3 = $s1 - $s2;
+			if ($s3 < 0)
+				$s3 = 0;
+			$s3 /= 86400;
+			$grab .= $s3;
+			*/
+			$grab .= 'forever';
+			
+		break;
 		case 'checkbox':
 			# temporary disabled fields while we restore functionality to TS 2012-02-16 vaskoiii
 		break;
