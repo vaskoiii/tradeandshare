@@ -30,6 +30,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # unused config variable: $config['cycle_start']
 # currently overriding the cycle end/reporting date and assuming it is now for testing
 
+# todo make it so that users do not have to be manually entered into ts_renewal
+
 # not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
 # also decentralization is important and hidden will not be practical if hidden and decentralized
 

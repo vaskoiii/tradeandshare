@@ -323,6 +323,11 @@ function get_mask_subject($type, $display) {
 				'remaining_time' => 'remaining_time', # actually min time/max time (calculated value)
 			);
 		break;
+		case 'transaction':
+			$array = array(
+				'transaction_value' => 'transaction_value',
+			);
+		break;
 		case 'renewal':
 			$array = array(
 				'channel_name' => 'channel_name',
@@ -674,6 +679,14 @@ function lt_more($type) {
 function lt_detail($type) {
 	$array = array();
 	switch($type) {
+		case 'transaction':
+			$array = array(
+				'class_id' =>'class_id',
+				'class_id_spacer' => '_',
+				'class_name_id' => 'class_name_id',
+				'class_name_spacer' => '_',
+			);
+		break;
 		case 'feed':
 			$array = array('dialect_name', '_');
 		break;

@@ -191,11 +191,19 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
+		case 'transaction_value':
 		case 'cost_value':
 		case 'channel_value':
 		case 'renewal_value':
 			$grab .= '$' . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
 		break;
+
+		# todo print human readable data for:
+		case 'class_id':
+		case 'class_name_id':
+			$grab .= to_html($k1) . ': ' . $listing[$k1]; 
+		break;
+
 		case 'rating_value':
 			$grab .= $listing[$k1];
 		break;

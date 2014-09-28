@@ -751,6 +751,23 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
+		case 'transaction':
+			$select[] = 't1.id AS transaction_id';
+			$select[] = 't1.class_id';
+			$select[] = 't1.class_name_id';
+			$select[] = 't1.value as transaction_value';
+
+			# membership duration taken from config
+			$select[] = 't1.modified';
+			$from[] = $prefix . 'transaction t1';
+				$where[] = 't1.active = 1';
+			# should probably work like translation to get the class data by iid
+			$where[] = 't1.user_id = u.id';
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
 		case 'minder': 
 			$select[] = 't1.id as minder_id';
 			$select[] = 't1.kind_id';

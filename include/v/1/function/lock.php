@@ -368,6 +368,7 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'tag':
 		case 'team':
 		case 'teammate':
+		case 'transaction':
 		case 'translation':
 		case 'user':
 		case 'vote':

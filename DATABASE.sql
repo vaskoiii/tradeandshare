@@ -2781,3 +2781,36 @@ INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` ,
 	( NULL , '321', '2', 'cost_edit', '103', '1', '2', '1', '1'),
 	( NULL , '351', '2', 'cost_list', '104', '2', '2', '1', '1')
 ;
+
+
+-- Additional membership tweaks
+-- autorenew
+-- balance
+-- class
+ALTER TABLE `ts_membership` ADD `autorenew` TINYINT( 1 ) NOT NULL AFTER `modified` ;
+
+CREATE TABLE `ts`.`ts_class` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`name` VARCHAR( 255 ) NOT NULL
+) ENGINE = InnoDB;
+
+CREATE TABLE `ts`.`ts_transaction` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NOT NULL ,
+`class_id` INT NOT NULL ,
+`class_name_id` INT NOT NULL ,
+`value` DOUBLE NOT NULL ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `user_id` , `class_id` , `class_name_id` , `modified` )
+) ENGINE = InnoDB;
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES
+	( NULL , '351', '2', 'transaction_list', '90', '1', '2', '1', '1'),
+	( NULL , '321', '2', 'transaction_edit', '1', '2', '2', '1', '1')
+;
+
+INSERT INTO `ts`.`ts_class` ( `id` , `name`) VALUES
+	( NULL , 'manual'),
+	( NULL , 'channel')
+;
