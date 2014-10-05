@@ -2814,3 +2814,13 @@ INSERT INTO `ts`.`ts_class` ( `id` , `name`) VALUES
 	( NULL , 'manual'),
 	( NULL , 'channel')
 ;
+
+CREATE TABLE `ts`.`ts_cycle` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`modified` DATETIME NOT NULL ,
+`active` TINYINT( 1 ) NOT NULL ,
+INDEX ( `modified` )
+) ENGINE = InnoDB;
+
+ALTER TABLE `ts_rating` ADD `cycle_id` INT NOT NULL AFTER `id` , ADD INDEX ( cycle_id );
+

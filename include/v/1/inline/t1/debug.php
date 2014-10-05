@@ -45,7 +45,7 @@ if ($config['debug'] == 1) { ?>
 		'_COOKIE' => 'none',
 		# 'authentication' => 'none',
 		'edit' => 'none', # added for edit structure on every page
-		'data' => 'none',
+		'data' => 'none', # possible to uncomment certain sections below ( todo use array )
 		'option' => 'none',
 		'key' => 'none',
 		'translation' => 'none',
@@ -75,14 +75,22 @@ if ($config['debug'] == 1) { ?>
 		break;
 		case 'data':
 			if (!empty($data))
-			foreach($data as $k2 => $v2) { ?> 
-				<div class="debug_variable">
-					<h3><?= '$data[\'' . $k2 .'\']'; ?></h3>
-					<a id="debug_<?= $k2; ?>_toggle" href="javascript: more_toggle('debug_<?= $k2; ?>');"><?= tt('element', 'more'); ?></a> 
-					<pre id="debug_<?= $k2; ?>" style="display: <?= $v1; ?>;"><?
-						echo to_html(print_r($data[$k2], 1)); ?> 
-					</pre>
-				</div><?
+			foreach($data as $k2 => $v2) {
+				switch($k2) {
+					# auto_open what debugs
+					case 'user_report':
+						$v1 = 'block';
+					# nobreak;
+					default: ?> 
+						<div class="debug_variable">
+							<h3><?= '$data[\'' . $k2 .'\']'; ?></h3>
+							<a id="debug_<?= $k2; ?>_toggle" href="javascript: more_toggle('debug_<?= $k2; ?>');"><?= tt('element', 'more'); ?></a> 
+							<pre id="debug_<?= $k2; ?>" style="display: <?= $v1; ?>;"><?
+								echo to_html(print_r($data[$k2], 1)); ?> 
+							</pre>
+						</div><?
+					break;
+				}
 			}
 		break;
 		case 'process':

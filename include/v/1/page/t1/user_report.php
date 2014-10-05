@@ -71,7 +71,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<p>
 		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd']; ?>
 		to
-		<?= $data['user_report']['cycle_restart']['previous_restart']; ?>
+		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-1x']; ?>
 	</p>
 	<!--
 		<p>
@@ -85,24 +85,27 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	<p>
 		Total: <?= count($channel[$kc1]['member_list']); ?> 
 	</p>
-	<h3>Cost</h3>
-	<p>
-		Max Cost per Channel: $<?= $channel[$kc1]['info']['cost']; ?> per <?= $channel[$kc1]['info']['name']; ?>
-		<br />
-		Computed Channel Total: $<?= $d1 = array_sum($channel[$kc1]['weight_cost']); ?>
-		<br />
-		TS Cut (10% of Channel Total): $<?= .1 * $d1; ?>
-		<br />
-		Remaining to be distributed: <?= (.9 * $d1); ?>
-		<br />
-		Average Weight Sum: <?= array_sum($channel[$kc1]['average_weight_sum']); ?>
-		<br /><?
+	<h3>Cost Before</h3>
+	<dl>
+		<dt>Max Cost per Channel</dt>
+		<dd>$<?= $channel[$kc1]['info']['before_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
+		<dt>Computed Channel Total</dt>
+		<dd>$<?= $d1 = array_sum($channel[$kc1]['weight_cost']['combined']); ?></dd>
+		<dt>TS Cut (10% of Channel Total)</dt>
+		<dd>$<?= .1 * $d1; ?></dd>
+		<dt>Remaining to be distributed</dt>
+		<dd>$<?= (.9 * $d1); ?></dd>
+		<dt>Average Weight Sum</dt>
+		<dd><?= array_sum($channel[$kc1]['average_weight_sum']); ?></dd><?
 		if (array_sum($channel[$kc1]['average_weight_sum']) != 0) { ?> 
-			Multiplier: <?= $d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ; ?><?
+			<dt>Multiplier</dt>
+			<dd><?= $d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ; ?></dd><?
 		}
-		else
-			echo 'Multiplier: can not compute - No ratings'; ?> 
-	</p>
+		else { ?>
+			<dt>Multiplier</dt>
+			<dd>can not compute - No ratings'; ?></dd><?
+		} ?> 
+	</dl>
 	<p>For breakdown please see public rating list of members</p><?
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
@@ -119,12 +122,19 @@ foreach ($channel as $kc1 => $vc1) { ?>
 				</dt>
 				<dd>
 					<?= $v1; ?>
-					*
-					<?= $kis['count_weight']; ?>
-					*
-					<?= $kis['cost_weight']; ?>
-					*
-					<?= $kis['time_weight']; ?>
+					* (
+						<?= $kis['count_weight']; ?>
+					)
+					* (
+						<?= !empty($kis['before']['cost_weight']) ? $kis['before']['cost_weight'] : 0; ?>
+						+
+						<?= !empty($kis['after']['cost_weight']) ? $kis['after']['cost_weight'] : 0; ?>
+					)
+					* (
+						<?= !empty($kis['before']['time_weight']) ? $kis['before']['time_weight'] : 0; ?>
+						+
+						<?= !empty($kis['after']['time_weight']) ? $kis['after']['time_weight'] : 0; ?>
+					)
 				</dd><?
 			}
 			else

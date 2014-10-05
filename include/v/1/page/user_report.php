@@ -20,29 +20,27 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # description: compute the payout for users based on members to members only. (Do not compute all ratings)
 
+# not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
+# also decentralization is important and hidden will not be practical if hidden and decentralized
+
 # todo: test multiple channels
 
 # todo figure out what to do with no member to member ratings at all
 # maybe just hold the pot until next time and do a check. note that rating yourself anything above 0 value would mean you get the whole pot!-10% for TS
 
-# todo get computation date
-# keep adding $config['cycle_length'] days to the start until we have the correct day?
-# unused config variable: $config['cycle_start']
-# currently overriding the cycle end/reporting date and assuming it is now for testing
+# todo computation dates
+# - use ts_cycle
+# - implement the cycle_list page ie) show human readable dates in the subject
+# - fix unused config variable: $config['cycle_start']
+# - fix currently overriding the cycle end/reporting date and assuming it is now for testing
 
 # todo make it so that users do not have to be manually entered into ts_renewal
-
-# not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
-# also decentralization is important and hidden will not be practical if hidden and decentralized
 
 # day of report making (end of cycle)
 $data['user_report']['cycle_restart']['yyyy-mm-dd'] = date('Y-m-d');
 $cycle_restart = & $data['user_report']['cycle_restart']; # alias
-$a1 = explode('-', $cycle_restart['yyyy-mm-dd']);
-$cycle_restart['yyyy'] = $a1[0];
-$cycle_restart['mm'] = $a1[1];
-$cycle_restart['dd'] = $a1[2];
-$cycle_restart['previous_restart'] = date('Y-m-d', (mktime(0, 0, 0, $cycle_restart['mm'], $cycle_restart['dd'], $cycle_restart['yyyy']) - 30*86400));
+$cycle_restart['yyyy-mm-dd-1x'] = date('Y-m-d', strtotime($cycle_restart['yyyy-mm-dd']) - 30*86400);
+$cycle_restart['yyyy-mm-dd-2x'] = date('Y-m-d', strtotime($cycle_restart['yyyy-mm-dd']) - 60*86400);
 
 $sql = '
 	select
@@ -50,7 +48,7 @@ $sql = '
 	from
 		' . $config['mysql']['prefix'] . 'renewal
 	where
-		modified >= ' . to_sql($cycle_restart['previous_restart']) . '
+		modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
 	group by
 		channel_id
 	order by
@@ -63,36 +61,61 @@ while ($row = mysql_fetch_assoc($result)) {
 	$channel[$row['channel_id']] = array();
 }
 foreach($channel as $k1 => $v1) {
-	$sql = '
-		select
-			cnl.name,
-			ct.value as cost, -- max cost?
-			' . (int)$config['cycle_length'] . ' as time
-		from
-			' . $config['mysql']['prefix'] . 'channel cnl,
-			' . $config['mysql']['prefix'] . 'cost ct
-		where
-			cnl.id = ct.channel_id and
-			cnl.id = ' . (int)$k1
-	;
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result))
-		$channel[$k1]['info'] = $row;
-	$sql = '
-		select
-			user_id
-		from
-			' . $config['mysql']['prefix'] . 'renewal rnal
-		where
-			channel_id = ' . (int)$k1 . ' and
-			modified >= ' . to_sql($cycle_restart['previous_restart'])
-	;
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result))
-		$channel[$k1]['member_list'][$row['user_id']] = $row['user_id'];
+	# todo 
+	# cost has to have had the price set 1 month previous to be valid
+	# todo indicate noncurrent prices on display of cost_list
+	if (1) { # before
+		$sql = '
+			select
+				cnl.name,
+				' . (int)$config['cycle_length'] . ' as time,
+				ct.value as before_cost
+			from
+				' . $config['mysql']['prefix'] . 'channel cnl,
+				' . $config['mysql']['prefix'] . 'cost ct
+			where
+				cnl.id = ct.channel_id and
+				cnl.id = ' . (int)$k1 . ' and
+				ct.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . '
+			order by
+				ct.modified desc
+			limit
+				1 
+		';
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result))
+			$channel[$k1]['info'] = $row;
+	}
+	if (1) { # after
+		$channel[$k1]['info']['after_cost'] = get_db_single_value('
+				ct.value as after_cost -- max cost?
+			from
+				' . $config['mysql']['prefix'] . 'cost ct
+			where
+				ct.channel_id = ' . (int)$k1 . ' and
+				ct.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd']) . '
+			order by
+				ct.modified desc
+		');
+		$sql = '
+			select
+				user_id
+			from
+				' . $config['mysql']['prefix'] . 'renewal rnal
+			where
+				channel_id = ' . (int)$k1 . ' and
+				-- >= may not have anyone in the current cycle
+				modified > ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
+		;
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result))
+			$channel[$k1]['member_list'][$row['user_id']] = $row['user_id'];
+	}
 
-	$channel[$k1]['member_cost'] = array(); # how much paid for the timeframe ie) discounted membership from good rating?
-	$channel[$k1]['member_time'] = array(); # days (out of $config['cycle_length'])
+	$channel[$k1]['member_cost']['before'] = array();
+	$channel[$k1]['member_time']['before'] = array();
+	$channel[$k1]['member_cost']['after'] = array();
+	$channel[$k1]['member_time']['after'] = array();
 	$channel[$k1]['average_weight_sum'] = array();
 }
 foreach ($channel as $kc1 => $vc1) {
@@ -103,10 +126,8 @@ foreach ($channel as $kc1 => $vc1) {
 	}
 	# destination user
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
-		# alias
-		$kid = & $channel[$kc1]['destination_user_id'][$kd1];
-		# get sum
-		foreach ($channel[$kc1]['member_list'] as $k1 => $v1) {
+		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
+		foreach ($channel[$kc1]['member_list'] as $k1 => $v1) { # get sum
 			$sql = '
 				select
 					source_user_id,
@@ -122,6 +143,8 @@ foreach ($channel as $kc1 => $vc1) {
 					r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
 					r.source_user_id = ' . (int)$v1 . ' and 
 					r.destination_user_id = ' . (int)($kd1) . ' and
+					-- modified < ' . $cycle_restart['yyyy-mm-dd'] . ' and 
+					-- modified >= ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
 					r.active = 1
 			';
 			$result = mysql_query($sql) or die(mysql_error());
@@ -145,6 +168,8 @@ foreach ($channel as $kc1 => $vc1) {
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
 		$kis['user_rating_count'] = 0;
+		# todo uncomment the modified so that only the timeframe for ratings is accounted not ratings for all time
+		# currently all ratings for all time are accounted for
 		$sql = '
 			select
 				count(distinct destination_user_id) as user_rating_count
@@ -157,6 +182,8 @@ foreach ($channel as $kc1 => $vc1) {
 				channel_id = ' . (int)$kc1 . ' and
 				team_id = ' . (int)$config['everyone_team_id'] . ' and 
 				source_user_id = ' . (int)$ks1 . ' and 
+				-- modified < ' . $cycle_restart['yyyy-mm-dd'] . ' and 
+				-- modified >= ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
 				active = 1
 		';
 		$result = mysql_query($sql) or die(mysql_error());
@@ -174,57 +201,120 @@ foreach ($channel as $kc1 => $vc1) {
 			$kis['count_weight'] = 1 / $kis['user_rating_count'];
 			# self-rating is not counted
 	}
-	# how much paid for the timeframe ie) discounted membership from good rating
-	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
-		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		$sql = '
-			select
-				rating_value,
-				value as renewal_value
-			from
-				' . $config['mysql']['prefix'] . 'renewal
-			where
-				user_id = ' . (int)$ks1 . ' and
-				-- inequalities are intended
-				modified < ' . to_sql($cycle_restart['yyyy-mm-dd']) . ' and
-				modified >= ' . to_sql($cycle_restart['previous_restart'])
-		;
-		$result = mysql_query($sql) or die(mysql_error());
-		while($row = mysql_fetch_assoc($result)) {
-			$kis['previous_average'] = $row['rating_value'];
-			$kis['member_cost'] = $row['renewal_value']; # $
-			# todo get channel cost based on value 1 month ago
-			$kis['cost_weight'] = $kis['member_cost'] / $channel[$kc1]['info']['cost'];
-			$channel[$kc1]['member_cost'][$ks1] = $kis['member_cost'];
-		}
-	}
 	# time with the current membership period?
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		$sql = '
-			select
-				modified
-			from
-				' . $config['mysql']['prefix'] . 'renewal
-			where
-				-- inequalities are intended
-				modified < ' . to_sql($cycle_restart['yyyy-mm-dd']) . ' and
-				modified >= ' . to_sql($cycle_restart['previous_restart'])
-		;
-		$result = mysql_query($sql) or die(mysql_error());
-		while($row = mysql_fetch_assoc($result)) {
-			$kis['member_restart'] = $row['modified'];
-			$kis['member_time'] = (strtotime($cycle_restart['yyyy-mm-dd']) - strtotime($kis['member_restart']))/86400 ;
-			$kis['time_weight'] = $kis['member_time'] / $config['cycle_length'];
-			$channel[$kc1]['member_time'][$ks1] = $kis['member_time'];
+		if (1) { # before
+			$channel[$kc1]['member_time']['before'][$ks1] = 0;
+			$sql = '
+				select
+					modified
+				from
+					' . $config['mysql']['prefix'] . 'renewal
+				where
+					modified < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					modified > ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					-- user_id not factored in?
+					user_id = ' . (int)$ks1 . '
+			';
+			$result = mysql_query($sql) or die(mysql_error());
+			while($row = mysql_fetch_assoc($result)) {
+				$kis['before']['member_restart'] = $row['modified'];
+				$kis['before']['member_time'] = (strtotime($cycle_restart['yyyy-mm-dd-1x']) - strtotime($kis['before']['member_restart']))/86400 ;
+				$kis['before']['time_weight'] = $kis['before']['member_time'] / $config['cycle_length'];
+				$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
+			}
+		}
+		$channel[$kc1]['member_time']['after'][$ks1] = 0;
+		if (1) { # after
+			$sql = '
+				select
+					modified
+				from
+					' . $config['mysql']['prefix'] . 'renewal
+				where
+					-- inequalities as intended
+					modified < ' . to_sql($cycle_restart['yyyy-mm-dd']) . ' and
+					modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					user_id = ' . (int)$ks1 . '
+			';
+			$result = mysql_query($sql) or die(mysql_error());
+			while($row = mysql_fetch_assoc($result)) {
+				$kis['after']['member_restart'] = $row['modified'];
+				$kis['after']['member_time'] = (strtotime($cycle_restart['yyyy-mm-dd']) - strtotime($kis['after']['member_restart']))/86400 ;
+				$kis['after']['time_weight'] = $kis['after']['member_time'] / $config['cycle_length'];
+				$channel[$kc1]['member_time']['after'][$ks1] = $kis['after']['member_time'];
+			}
+		}
+	}
+	# how much paid for the timeframe ie) discounted membership from good rating
+	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
+		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
+		$channel[$kc1]['member_cost']['before'][$ks1] = 0;
+		if (!empty($kis['before'])) { # before
+			$sql = '
+				select
+					rating_value,
+					value as renewal_value
+				from
+					' . $config['mysql']['prefix'] . 'renewal
+				where
+					user_id = ' . (int)$ks1 . ' and
+					modified < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					modified > ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
+			;
+			$result = mysql_query($sql) or die(mysql_error());
+			while($row = mysql_fetch_assoc($result)) {
+				$kis['before']['previous_average'] = $row['rating_value'];
+				$kis['before']['member_cost'] = $row['renewal_value']; # $
+				# todo get channel cost based on value 1 month ago ie) price change is invalid if it wasnt up for a month
+				$kis['before']['cost_weight'] = $kis['member_cost'] / $channel[$kc1]['info']['before_cost'];
+				if (!empty($kis['before']['member_cost']))
+					$channel[$kc1]['member_cost']['before'][$ks1] = $kis['before']['member_cost'];
+			}
+		}
+		$channel[$kc1]['member_cost']['after'][$ks1] = 0;
+		if (!empty($kis['after'])) { # after
+			$sql = '
+				select
+					rating_value,
+					value as renewal_value
+				from
+					' . $config['mysql']['prefix'] . 'renewal
+				where
+					user_id = ' . (int)$ks1 . ' and
+					-- inequalities as intended (different from above because encompases entire cycle)
+					modified < ' . to_sql($cycle_restart['yyyy-mm-dd']) . ' and
+					modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-1x'])
+			;
+			$result = mysql_query($sql) or die(mysql_error());
+			while($row = mysql_fetch_assoc($result)) {
+				$kis['after']['previous_average'] = $row['rating_value'];
+				$kis['after']['member_cost'] = $row['renewal_value']; # $
+				$kis['after']['cost_weight'] = $kis['after']['member_cost'] / $channel[$kc1]['info']['after_cost'];
+				if (!empty($kis['after']['member_cost']))
+					$channel[$kc1]['member_cost']['after'][$ks1] = $kis['after']['member_cost'];
+			}
 		}
 	}
 	## weighted cost
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		$kis['weight_cost'] = $kis['member_cost'] * $kis['cost_weight'] * $kis['time_weight']; 
-		# helper array - duplicates data =( - could also do a foreach
-		$channel[$kc1]['weight_cost'][$ks1] = $kis['weight_cost'];
+		$channel[$kc1]['weight_cost']['before'][$ks1] = 0;
+		if (!empty($kis['before'])) { # before
+			$kis['before']['weight_cost'] = $kis['before']['member_cost'] * $kis['before']['cost_weight'] * $kis['before']['time_weight']; 
+			$channel[$kc1]['weight_cost']['before'][$ks1] = $kis['before']['weight_cost'];
+		}
+		$channel[$kc1]['weight_cost']['after'][$ks1] = 0;
+		if (!empty($kis['after'])) { # after
+			$kis['after']['weight_cost'] = $kis['after']['member_cost'] * $kis['after']['cost_weight'] * $kis['after']['time_weight']; 
+
+			$channel[$kc1]['weight_cost']['after'][$ks1] = $kis['after']['weight_cost'];
+		}
+		if (1) { # combined
+			# helper array ( but duplicates data )
+			$channel[$kc1]['weight_cost']['combined'][$ks1] = $kis['before']['weight_cost'] + $kis['after']['weight_cost'];
+		}
 	}
 	### compute weighted averages
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
@@ -232,7 +322,16 @@ foreach ($channel as $kc1 => $vc1) {
 		if (!empty($kid['source_user_id_rating_average']))
 		foreach ($kid['source_user_id_rating_average'] as $k1 => $v1) {
 			$kis = & $channel[$kc1]['source_user_id'][$k1]; # alias
-			$kid['source_user_id_rating_weight'][$k1] = $v1 * $kis['count_weight'] * $kis['cost_weight'] * $kis['time_weight'];
+			$kid['source_user_id_rating_weight'][$k1] =
+				$v1 *
+				$kis['count_weight'] * (
+					$kis['before']['cost_weight'] +
+					$kis['after']['cost_weight']
+				) * (
+					$kis['before']['time_weight'] +
+					$kis['after']['time_weight']
+				)
+			;
 		}
 	}
 	# average_weight_sum
