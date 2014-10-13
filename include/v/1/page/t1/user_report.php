@@ -69,9 +69,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	</table>
 	<h3>Cycle</h3>
 	<p>
-		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd']; ?>
-		to
 		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-1x']; ?>
+		to
+		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-2x']; ?>
 	</p>
 	<!--
 		<p>
@@ -87,10 +87,12 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	</p>
 	<h3>Cost Before</h3>
 	<dl>
-		<dt>Max Cost per Channel</dt>
+		<dt>Max Cost per Channel before</dt>
 		<dd>$<?= $channel[$kc1]['info']['before_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
+		<dt>Max Cost per Channel after</dt>
+		<dd>$<?= $channel[$kc1]['info']['after_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
 		<dt>Computed Channel Total</dt>
-		<dd>$<?= $d1 = array_sum($channel[$kc1]['weight_cost']['combined']); ?></dd>
+		<dd>$<?= $d1 = array_sum($channel[$kc1]['computed_cost']['combined']); ?></dd>
 		<dt>TS Cut (10% of Channel Total)</dt>
 		<dd>$<?= .1 * $d1; ?></dd>
 		<dt>Remaining to be distributed</dt>
@@ -114,45 +116,52 @@ foreach ($channel as $kc1 => $vc1) { ?>
 		<dl><?
 			if (!empty($kid['source_user_id_rating_average']))
 			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) {
-				$kis = & $channel[$kc1]['source_user_id'][$k1]; ?>  
+				$kis = & $channel[$kc1]['source_user_id'][$k1];
+				$kisb = & $kis['before'];
+				$kisa = & $kis['after'];
+				?>  
 				<dt>
 					<?= $k1; ?>
 					=&gt;
-					<?= $v1 * $kis['count_weight'] * $kis['cost_weight'] * $kis['time_weight']; ?></dt>
-				</dt>
-				<dd>
 					<?= $v1; ?>
-					* (
-						<?= $kis['count_weight']; ?>
-					)
-					* (
-						<?= !empty($kis['before']['cost_weight']) ? $kis['before']['cost_weight'] : 0; ?>
-						+
-						<?= !empty($kis['after']['cost_weight']) ? $kis['after']['cost_weight'] : 0; ?>
-					)
-					* (
-						<?= !empty($kis['before']['time_weight']) ? $kis['before']['time_weight'] : 0; ?>
-						+
-						<?= !empty($kis['after']['time_weight']) ? $kis['after']['time_weight'] : 0; ?>
-					)
+				</dt>
+				<dd><?
+				echo
+
+					' ( ' . 
+						$v1 . ' * ' . 
+						$kis['count_weight'] . ' * ' . 
+						$kisb['cost_weight'] . ' * ' . 
+						$kisb['time_weight'] .
+					' )  + ' .
+					' ( ' . 
+						$v1 . ' * ' . 
+						$kis['count_weight'] . ' * ' . 
+						$kisa['cost_weight'] . ' * ' . 
+						$kisa['time_weight'] .
+					' ) '
+				; ?>  = <?=
+					$kid['source_user_id_rating_weight'][$k1]; ?> 
 				</dd><?
 			}
 			else
 				echo 'No ratings'; ?> 
 		</dl><?
-			if (!empty($kid['source_user_id_rating_average'])) { ?> 
-		<p>
-			&sum;
-			/
-			<?= count($kid['source_user_id_rating_average']); ?>
-			=
-			<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
-		</p>
-		<p>
-			<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
-			$<?= $d2 * $channel[$kc1]['average_weight_sum'][$kd1]; ?>
-		</p><?
-			}
+		if (!empty($kid['source_user_id_rating_average'])) { ?> 
+			<p>
+				Total:
+				<?= count($kid['source_user_id_rating_average']); ?>
+			</p>
+			<p>
+				&sum;
+				=
+				<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
+			</p>
+			<p>
+				<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
+				$<?= $d2 * $channel[$kc1]['average_weight_sum'][$kd1]; ?>
+			</p><?
+		}
 	}
 } ?> 
 </div>

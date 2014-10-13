@@ -337,6 +337,17 @@ function get_mask_subject($type, $display) {
 				'renewal_value' => 'renewal_value',
 			);
 		break;
+		case 'cycle':
+			$array = array(
+				'channel_name' => 'channel_name',
+				'channel_spacer' => '_',
+				'cycle_start' => 'cycle_start',
+				'cycle_start_space' => '_',
+				'cycle_offset' => 'cycle_offset',
+				'cycle_offset_spacer' => '_',
+				'cycle_value' => 'cycle_value',
+			);
+		break;
 		case 'cost':
 			$array = array(
 				'channel_name' => 'channel_name',

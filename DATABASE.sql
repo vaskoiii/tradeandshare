@@ -2824,3 +2824,71 @@ INDEX ( `modified` )
 
 ALTER TABLE `ts_rating` ADD `cycle_id` INT NOT NULL AFTER `id` , ADD INDEX ( cycle_id );
 
+
+-- timeline
+CREATE TABLE `ts`.`ts_point` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`name` VARCHAR( 255 ) NOT NULL
+) ENGINE = InnoDB;
+
+
+INSERT INTO `ts`.`ts_point`
+( `id` , `name`)
+VALUES
+	( NULL , 'start'),
+	( NULL , 'continue'),
+	( NULL , 'end')
+;
+
+ALTER TABLE `ts_renewal` ADD `point_id` INT NOT NULL AFTER `id` , ADD INDEX ( `point_id` ) ;
+
+INSERT INTO `ts`.`ts_page`
+( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`)
+VALUES
+	( NULL , '321', '2', 'cycle_edit', '95', '2', '2', '1', '1'),
+	( NULL , '351', '2', 'cycle_list', '96', '2', '2', '1', '1')
+;
+
+ALTER TABLE `ts_renewal` ADD `cycle_id` INT NOT NULL AFTER `id` , ADD INDEX ( cycle_id ); 
+
+
+-- lots of new thinking
+ALTER TABLE `ts_renewal` ADD `autorenew` TINYINT( 1 ) NOT NULL AFTER `modified` ;
+ALTER TABLE `ts_cycle` ADD `user_id` INT NOT NULL AFTER `id` , ADD INDEX ( user_id ) ;
+ALTER TABLE `ts_channel` ADD `value` DOUBLE NOT NULL AFTER `name` ;
+ALTER TABLE `ts_cycle` ADD `value` INT NOT NULL AFTER `user_id` ;
+ALTER TABLE `ts_channel` ADD `cycle_id` INT NOT NULL AFTER `id` ;
+ALTER TABLE `ts_channel` ADD INDEX ( `cycle_id` ) ;
+ALTER TABLE `ts_cycle` ADD `channel_id` INT NOT NULL , ADD INDEX ( channel_id ) ;
+ALTER TABLE `ts_cycle` DROP `user_id` ;
+ALTER TABLE `ts_cycle` ADD `offset` INT NOT NULL AFTER `value` ;
+ALTER TABLE `ts_channel` ADD `offset` INT NOT NULL AFTER `value` ;
+ALTER TABLE `ts_channel` ADD `description` VARCHAR( 255 ) NOT NULL AFTER `name` ;
+ALTER TABLE `ts_cycle` ADD `start` DATETIME NOT NULL AFTER `offset` , ADD INDEX ( START ) ;
+ALTER TABLE `ts_cycle` DROP `channel_id`;
+ALTER TABLE `ts_cycle` ADD `channel_id` INT NOT NULL AFTER `id` , ADD INDEX ( channel_id ) ;
+
+
+INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`)
+VALUES ( NULL , '68', '3', 'member_area', '10', '2', '2', '1', '2');
+
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =440 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =437 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =436 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =434 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =431 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `parent_id` = '441' WHERE `ts_page`.`id` =430 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `monitor` = '1' WHERE `ts_page`.`id` =436 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `launch` = '1', `monitor` = '1' WHERE `ts_page`.`id` =440 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `monitor` = '1' WHERE `ts_page`.`id` =437 LIMIT 1 ; 
+UPDATE `ts`.`ts_page` SET `launch` = '1', `monitor` = '1' WHERE `ts_page`.`id` =434 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '90' WHERE `ts_page`.`id` =441 LIMIT 1 ;
+
+UPDATE `ts`.`ts_page` SET `order` = '65' WHERE `ts_page`.`id` =440 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '75' WHERE `ts_page`.`id` =437 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '85' WHERE `ts_page`.`id` =436 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `order` = '70' WHERE `ts_page`.`id` =434 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `monitor` = '2' WHERE `ts_page`.`id` =436 LIMIT 1 ;
+UPDATE `ts`.`ts_page` SET `monitor` = '2' WHERE `ts_page`.`id` =431 LIMIT 1 ;

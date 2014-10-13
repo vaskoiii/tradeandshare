@@ -698,7 +698,10 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			if (isset_gp('team_id'))
 				$where_x[] = 't.id = ' . to_sql(get_gp('team_id'));
 		break;
-		case 'membership':
+		# placeholders
+		case 'channelifer': # todo channelifer is to channel as category is to tag
+		break;
+		case 'membership': # todo membership is to renew as category is to tag
 			$select[] = 't1.id AS membership_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
@@ -714,7 +717,31 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'renewal':
+		case 'cycle': # log
+			$select[] = 't1.id AS cycle_id';
+			$select[] = 't1.value AS cycle_value';
+			$select[] = 't1.start AS cycle_start';
+			$select[] = 't1.offset AS cycle_offset';
+			$select[] = 't1.modified';
+			$select[] = 'cnl.id as channel_id';
+			$select[] = 'cnl.name as channel_name';
+			$from[] = $prefix . 'cycle t1';
+				$where[] = 't1.active = 1';
+			# join to renewal and there may be nobody
+			# $from[] = $prefix . 'renewal rnwl';
+			# $where[] = 'rnwl.user_id = u.id';
+			# $where[] = 'rnwl.cycle_id = t1.id';
+			# join to channel and you will only get owners
+			$from[] = $prefix . 'channel cnl';
+			$where[] = 'cnl.user_id = u.id';
+			$where[] = 'cnl.id = t1.channel_id';
+			# both
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
+		case 'byecycle': # log
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
@@ -733,7 +760,26 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'cost':
+		case 'renewal': # log
+			$select[] = 't1.id AS renewal_id';
+			$select[] = 'cnl.id as channel_id';
+			$select[] = 'cnl.name as channel_name';
+			$select[] = 't1.rating_value';
+			$select[] = 't1.value as renewal_value';
+
+			# membership duration taken from config
+			$select[] = 't1.modified';
+			$from[] = $prefix . 'renewal t1';
+				$where[] = 't1.active = 1';
+			$from[] = $prefix . 'channel cnl';
+			$where[] = 't1.user_id = u.id';
+			$where[] = 't1.channel_id = cnl.id';
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
+		case 'cost': # log
 			$select[] = 't1.id AS cost_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
@@ -751,7 +797,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'transaction':
+		case 'transaction': # log
 			$select[] = 't1.id AS transaction_id';
 			$select[] = 't1.class_id';
 			$select[] = 't1.class_name_id';

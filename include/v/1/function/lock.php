@@ -348,6 +348,9 @@ function search_lock(& $base, $type, $login_user_id) {
 		break;
 		case 'category':
 		case 'cost':
+		case 'cycle':
+		# todo join to the renewal table to see what particular user was participating in what cycle
+		# todo alternatively join to the channel table - cycles = children of channel
 		case 'dialect':
 		case 'feed':
 		case 'feedback':
