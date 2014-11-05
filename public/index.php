@@ -1,1 +1,1 @@
-<? require('v/version.php'); ?>
+<? require('list/version.php');

@@ -2892,3 +2892,6 @@ UPDATE `ts`.`ts_page` SET `order` = '85' WHERE `ts_page`.`id` =436 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `order` = '70' WHERE `ts_page`.`id` =434 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `monitor` = '2' WHERE `ts_page`.`id` =436 LIMIT 1 ;
 UPDATE `ts`.`ts_page` SET `monitor` = '2' WHERE `ts_page`.`id` =431 LIMIT 1 ;
+
+update ts_file set path = 'list/v1/x/';
+update ts_filer set path = 'list/v1/qrcode';

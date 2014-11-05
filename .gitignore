@@ -1,10 +1,10 @@
 .*
 !.gitignore
 git-remote-https.core
-include/v/1/config/preset.php
+include/list/v1/config/preset.php
 public/phpqrcode/1.1.4/temp
-file/qrcode/v1
-file/home/v1
-file/face/v1
+file/list/v1/qrcode
+file/list/v1/home
+file/list/v1/face
 history
 mail
