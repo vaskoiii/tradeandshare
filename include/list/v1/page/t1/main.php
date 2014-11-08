@@ -27,9 +27,9 @@ else
 	$b1 = 2;
 ?> 
 <body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);"><?
-include('v/1/inline/t1/test.php'); # despite the name test.php launcher will fail if omitted 2014-09-01 vaskoiii ?> 
+include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will fail if omitted 2014-09-01 vaskoiii ?> 
 <div id="header">
-<div style="background: url('/v/1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
+<div style="background: url('/list/v1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
 <div class="title">
 	<p id="topper"><?
 		if (isset($_SESSION['login']['login_user_id'])) { ?> 
@@ -48,7 +48,7 @@ include('v/1/inline/t1/test.php'); # despite the name test.php launcher will fai
 		<h1 id="website_name"><a href="/"><nobr><?= $config['website_name']; ?></nobr></a></h1><?
 	} ?> 
 </div><?
-include('v/1/inline/t1/header_helper.php');
+include('list/v1/inline/t1/header_helper.php');
 include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php'); ?> 
 <div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div>
 <? print_message_bar(); ?><?
@@ -145,9 +145,9 @@ else { ?>
 			<div id="main_intro">
 				<center>
 					<video width="224px" height="175px" controls />
-						<source src="/v/1/video/list_share.mp4" type="video/mp4" /><? # MP4 = H264 video / AAC audio ?> 
-						<source src="/v/1/video/list_share.ogg" type="video/ogg" /><? # Ogg = Theora video / Vorbis audio ?> 
-						<source src="/v/1/video/list_share.webm" type="video/webm" /><? # WebM = VP8 video / Vorbis audio ?> 
+						<source src="/list/v1/video/list_share.mp4" type="video/mp4" /><? # MP4 = H264 video / AAC audio ?> 
+						<source src="/list/v1/video/list_share.ogg" type="video/ogg" /><? # Ogg = Theora video / Vorbis audio ?> 
+						<source src="/list/v1/video/list_share.webm" type="video/webm" /><? # WebM = VP8 video / Vorbis audio ?> 
 						Your browser does not support the video tag.
 					</video> 
 				</center>

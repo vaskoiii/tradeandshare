@@ -23,7 +23,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # /user_view/?list=mixed
 # /top_report/
-include('v/1/layer/t1/action.php');
+include('list/v1/layer/t1/action.php');
 
 # uncomment out to use page warping instead of the standart edit action box 2012-05-06 vaskoiii
 # must also remove the action.php includes ?> 
