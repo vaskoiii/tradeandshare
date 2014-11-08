@@ -763,6 +763,9 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 		case 'renewal': # log
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
+			$select[] = 't1.cycle_id';
+			$select[] = 't1.point_id';
+			$select[] = 't1.autorenew';
 			$select[] = 'cnl.name as channel_name';
 			$select[] = 't1.rating_value';
 			$select[] = 't1.value as renewal_value';

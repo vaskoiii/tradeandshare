@@ -191,6 +191,38 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
+		case 'point_name':
+			# todo eventually should be the translated values received from the translation array
+			switch($listing['point_id']) {
+				case '1':
+					$grab .= 'start';
+				break;
+				case '2':
+					$grab .= 'continue';
+				break;
+				case '3':
+					$grab .= 'end';
+				break;
+				default:
+					$grab .= 'noooooo!';
+				break;
+				
+			}
+		break;
+		case 'autorenew':
+			switch($listing['autorenew']) {
+				case '1':
+					$grab .= 'autorenew';
+				break;
+				default:
+					$grab .= ':(';
+				break;
+					
+			}
+		break;
+		case 'cycle_id':
+			$grab .= 'TODO cycle_id: ' . $listing[$k1];
+		break;
 		case 'transaction_value':
 		case 'cost_value':
 		case 'channel_value':

@@ -19,7 +19,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?> 
 
-reusable scrips need to be kept forever in the reusable subdir.
+reusable scripts need to be kept forever in the reusable subdir.
 ./php_reusable
 
 all one time scripts go in this folder and can be deleted after use and should be prefixed as:

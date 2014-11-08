@@ -332,17 +332,23 @@ function get_mask_subject($type, $display) {
 			$array = array(
 				'channel_name' => 'channel_name',
 				'channel_spacer' => '_',
+				'cycle_id' => 'cycle_id',
+				'cycle_id_spacer' => '_',
+				'point_name' => 'point_name',
+				'point_name_spacer' => '_',
 				'rating_value' => 'rating_value',
 				'rating_value_spacer' => '_',
 				'renewal_value' => 'renewal_value',
+				'renewal_value_space' => '_',
+				'autorenew' => 'autorenew',
 			);
 		break;
 		case 'cycle':
 			$array = array(
 				'channel_name' => 'channel_name',
-				'channel_spacer' => '_',
+				'channel_name_spacer' => '_',
 				'cycle_start' => 'cycle_start',
-				'cycle_start_space' => '_',
+				'cycle_start_spacer' => '_',
 				'cycle_offset' => 'cycle_offset',
 				'cycle_offset_spacer' => '_',
 				'cycle_value' => 'cycle_value',
