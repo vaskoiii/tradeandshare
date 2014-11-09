@@ -204,9 +204,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					$grab .= 'end';
 				break;
 				default:
-					$grab .= 'noooooo!';
+					$grab .= 'unknown';
 				break;
-				
 			}
 		break;
 		case 'autorenew':
