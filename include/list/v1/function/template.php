@@ -535,7 +535,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
-		case 'channel_name':
 		case 'decision_name':
 		case 'grade_name':
 		case 'meritype_name':
@@ -551,6 +550,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				)
 			. '</span>';
 		break;
+		case 'channel_description':
 		case 'group_description':
 		case 'translation_description':
 		case 'team_description':
@@ -576,21 +576,20 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				)
 			. '</span>';
 		break;
-		# channel description should actually be from a translation
-		# new type of lookup won't always exist for other users so we have to use the key
-		case 'channel_translation_description':
-			$grab .= " \n" . '<span ' . $dattrib . ' class="' . $v1 . '">'
-				# . '!'
-				. (
-					(
-						$listing['channel_id'] && 
-						$key['channel_id']['result'][ $listing['channel_id'] ]['translation_description']
-					) 
-						? a_link_replace($key['channel_id']['result'][ $listing['channel_id'] ]['translation_description']) 
-						: tt('element', 'unset')
-				)
-			. '</span>';
-		break;
+		# translated channels will likely cause divergence - not what we want 2014-11-11 vaskoiii
+		# case 'channel_translation_description':
+		# 	$grab .= " \n" . '<span ' . $dattrib . ' class="' . $v1 . '">'
+		# 		# . '!'
+		# 		. (
+		# 			(
+		# 				$listing['channel_id'] && 
+		# 				$key['channel_id']['result'][ $listing['channel_id'] ]['translation_description']
+		# 			) 
+		# 				? a_link_replace($key['channel_id']['result'][ $listing['channel_id'] ]['translation_description']) 
+		# 				: tt('element', 'unset')
+		# 		)
+		# 	. '</span>';
+		# break;
 		case 'tag_translation_description':
 			$grab .= " \n" . '<span ' . $dattrib . ' class="' . $v1 . '">'
 				# . '!'

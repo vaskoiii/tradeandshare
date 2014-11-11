@@ -670,8 +670,9 @@ function lt_body($type) {
 		#break;
 		# todo update integrate 2012-02-27 vaskoiii
 		case 'channel':
-			# special case because we want ratings to work across languages
-			$array = array('channel_translation_description');
+			# we do not want ratings to work across languages (causes divergence)
+			# $array = array('channel_translation_description');
+			$array = array('channel_description');
 		break;
 		case 'category':
 		case 'tag':

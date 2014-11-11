@@ -2895,3 +2895,14 @@ UPDATE `ts`.`ts_page` SET `monitor` = '2' WHERE `ts_page`.`id` =431 LIMIT 1 ;
 
 update ts_file set path = 'list/v1/x/';
 update ts_filer set path = 'list/v1/qrcode/';
+
+
+alter table ts_channel drop cycle_id;
+alter table ts_channel drop value;
+alter table ts_channel drop offset;
+
+
+ALTER TABLE `ts_channel` ADD `parent_id` INT NOT NULL AFTER `id` , ADD INDEX ( `parent_id` );
+UPDATE `ts`.`ts_kind` SET `translation` = '2' WHERE `ts_kind`.`id` =19;
+
+

@@ -496,7 +496,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.id as channel_id';
 			$select[] = 't1.user_id as user_id';
 			$select[] = 't1.name as channel_name';
-			# channel description is through the translation table
+			$select[] = 't1.description as channel_description';
+			# channel description is intentionally not translated because it will cause divergence
 			$select[] = 't1.modified';
 			$from[] = $prefix . 'channel t1';
 			$where[] = '1'; # implode(' , ', $where) stops complaining
