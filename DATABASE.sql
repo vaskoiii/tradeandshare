@@ -2906,3 +2906,9 @@ ALTER TABLE `ts_channel` ADD `parent_id` INT NOT NULL AFTER `id` , ADD INDEX ( `
 UPDATE `ts`.`ts_kind` SET `translation` = '2' WHERE `ts_kind`.`id` =19;
 
 
+-- https://en.wikipedia.org/wiki/Slowly_changing_dimension
+ALTER TABLE `ts_channel` ADD `offset` int NOT NULL AFTER `description`;
+ALTER TABLE `ts_channel` ADD `value` double NOT NULL AFTER `offset`;
+
+alter table ts_cycle drop offset;
+alter table ts_cycle drop value;

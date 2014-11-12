@@ -128,7 +128,7 @@ foreach($channel as $k1 => $v1) {
 			select
 				cnl.name,
 				' . (int)$config['cycle_length'] . ' as time,
-				cce.value as before_cost
+				cnl.value as before_cost
 			from
 				' . $config['mysql']['prefix'] . 'channel cnl,
 				' . $config['mysql']['prefix'] . 'cycle cce
@@ -159,10 +159,12 @@ foreach($channel as $k1 => $v1) {
 		# 		ct.modified desc
 		# ');
 		$channel[$k1]['info']['after_cost'] = get_db_single_value('
-				cce.value as after_cost -- max cost?
+				cnl.value as after_cost -- max cost?
 			from
-				' . $config['mysql']['prefix'] . 'cycle cce
+				' . $config['mysql']['prefix'] . 'cycle cce,
+				' . $config['mysql']['prefix'] . 'channel cnl
 			where
+				cnl.id = cce.channel_id and
 				cce.channel_id = ' . (int)$k1 . ' and
 				-- disabled for testing
 				-- cce.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
