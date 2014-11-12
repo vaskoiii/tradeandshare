@@ -346,12 +346,6 @@ function get_mask_subject($type, $display) {
 		case 'cycle':
 			$array = array(
 				'channel_name' => 'channel_name',
-				'channel_name_spacer' => '_',
-				'cycle_start' => 'cycle_start',
-				'cycle_start_spacer' => '_',
-				'cycle_offset' => 'cycle_offset',
-				'cycle_offset_spacer' => '_',
-				'cycle_value' => 'cycle_value',
 			);
 		break;
 		case 'cost':
@@ -367,8 +361,16 @@ function get_mask_subject($type, $display) {
 				'tag_name' => 'tag_name',
 			);
 		break;
-		case 'contact':
 		case 'channel':
+			$array = array(
+				$type . '_name' => $type . '_name',
+				'channel_name_spacer' => '_',
+				'channel_offset' => 'channel_offset',
+				'channel_offset_spacer' => '_',
+				'channel_value' => 'channel_value',
+			);
+		break;
+		case 'contact':
 		case 'dialect':
 		case 'feed':
 		case 'news':

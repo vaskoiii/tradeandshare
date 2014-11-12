@@ -2912,3 +2912,5 @@ ALTER TABLE `ts_channel` ADD `value` double NOT NULL AFTER `offset`;
 
 alter table ts_cycle drop offset;
 alter table ts_cycle drop value;
+alter table ts_cycle drop `start`;
+alter table ts_renewal drop channel_id;

@@ -174,13 +174,15 @@ foreach($channel as $k1 => $v1) {
 		');
 		$sql = '
 			select
-				user_id
+				rnal.user_id
 			from
-				' . $config['mysql']['prefix'] . 'renewal rnal
+				' . $config['mysql']['prefix'] . 'renewal rnal,
+				' . $config['mysql']['prefix'] . 'cycle cce
 			where
-				channel_id = ' . (int)$k1 . ' and
+				rnal.cycle_id = cce.id and
+				cce.channel_id = ' . (int)$k1 . ' and
 				-- >= may not have anyone in the current cycle
-				modified > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
+				rnal.modified > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
 		;
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result))

@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: All about Trade and Share
 
-up_date('2013-10-29'); 
+up_date('2014-11-11'); 
 
 # LATEST ?> 
 <!--
@@ -75,12 +75,22 @@ up_date('2013-10-29');
 	<ul>
 		<li>One's Ratings</li>
 		<ul>
+			<li>Warning: Ratings and membership are still evolving at <a href="./user_report">user report</a>.</li>
 			<li>Each user is allowed to rate other users as many times as they like.</li>
 			<li>You can specify who sees the ratings you make.</li>
- 			<li>Users can change their ratings of other users at any time.</li>
-			<li>A user's report is then the average of the average viewable source user ratings on the destination user.</li>
-			<li>Applicable ratings may only come from a specific community.</li>
-
+ 			<li>Users can change their ratings of other users at any time unless they are committed to the log used in calculating membership payouts</li>
+			<li>A review period is provided for ratings that will be permanent.</li>
+			<li>Applicable ratings come from a specific channel (community).</li>
+			<li>Used to distribute wealth.</li>
+			<li>
+				Rating computations can be found by examining the source code at:
+				<br />
+				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/user_report.php">github (engine)</a>
+				<br />
+				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/t1/user_report.php">github (template)</a>
+			</li>
+			<li>Physics involved that supply data for the computation are spreadout through: Rating, Channel, Cycle, and Renewal.</li>
+			<li>A user's report was originally intended to be the average of the average viewable source user ratings on the destination user.</li>
 		</ul>
 		<li>One's Assets</li>
 		<ul>

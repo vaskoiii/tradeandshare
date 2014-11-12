@@ -497,6 +497,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.user_id as user_id';
 			$select[] = 't1.name as channel_name';
 			$select[] = 't1.description as channel_description';
+			$select[] = 't1.value AS channel_value';
+			$select[] = 't1.offset AS channel_offset';
 			# channel description is intentionally not translated because it will cause divergence
 			$select[] = 't1.modified';
 			$from[] = $prefix . 'channel t1';
@@ -720,9 +722,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 		break;
 		case 'cycle': # log
 			$select[] = 't1.id AS cycle_id';
-			$select[] = 't1.value AS cycle_value';
-			$select[] = 't1.start AS cycle_start';
-			$select[] = 't1.offset AS cycle_offset';
 			$select[] = 't1.modified';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';

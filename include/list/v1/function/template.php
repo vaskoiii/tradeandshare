@@ -225,7 +225,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'transaction_value':
 		case 'cost_value':
 		case 'channel_value':
-		case 'cycle_value':
+		// case 'cycle_value':
 		case 'renewal_value':
 			$grab .= '$' . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
 		break;
@@ -236,8 +236,10 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= to_html($k1) . ': ' . $listing[$k1]; 
 		break;
 
-		case 'cycle_offset':
-		case 'cycle_start':
+		case 'channel_offset':
+		// case 'cycle_start':
+			$grab .= $listing[$k1] . ' day';
+		break;
 		case 'rating_value':
 			$grab .= $listing[$k1];
 		break;
