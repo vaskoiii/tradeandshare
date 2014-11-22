@@ -245,6 +245,31 @@ function get_action_content_1($type = false, $name = false) {
 		case 'edit':
 		default:
 			switch($type) {
+				case 'channel':
+					$array = array(
+						'user_name' => '',
+						'channel_name' => '',
+						'channel_offset' => '',
+						'channel_value' => '',
+						'channel_description' => '',
+					);
+				break;
+				case 'renewal':
+					$array = array(
+						'channel_name' => '',
+						# 'point_name' => '',
+						# autorenew may not be needed in the database but is easiest to understand for the end user
+						# autorenew means point_name = continue
+						'autorenew' => '',
+					);
+				break;
+				# case 'cycle':
+				# 	cycles are created indirectly by renewals/channels
+				# break;
+				case 'renewal':
+					$array = array(
+					);
+				break;
 				case 'invite':
 					$array = array(
 						'invite_email' => '',
@@ -372,13 +397,6 @@ function get_action_content_1($type = false, $name = false) {
 						'contact_user_mixed' => '',
 						'user_name' => '',
 						'contact_name' => '',
-					);
-				break;
-				case 'channel':
-					$array = array(
-						'user_name' => '',
-						'channel_name' => '',
-						'channel_translation_description' => '',
 					);
 				break;
 				case 'location':

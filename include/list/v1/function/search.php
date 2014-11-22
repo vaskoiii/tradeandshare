@@ -672,6 +672,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		case 'group_name': // Not translated
 
 
+		case 'point_name':
 		case 'channel_name':
 		case 'display_name':
 		case 'lock_location_name':
@@ -782,6 +783,10 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
+
+		# todo autorenew: grab membership info "latest" membership info for modification
+		case 'autorenew':
+
 		case 'feature_lock':
 		case 'feature_minnotify':
 		case 'notify_offer_received':

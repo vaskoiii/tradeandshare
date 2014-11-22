@@ -71,13 +71,15 @@ function add_option($option_name, & $option = null) {
 	if (!$option)
 		global $option;
 	switch($option_name) { 
+		case 'channel_name':
+		case 'point_name':
+
 		case 'parent_tag_path':
 		case 'parent_tag_name':
 		case 'default_boolean_name':
 		case 'dialect_name':
 		case 'direction_name':
 		case 'display_name':
-		case 'channel_name':
 		case 'grade_name':
 		case 'group_name':
 		case 'kind_name':
@@ -183,10 +185,12 @@ function do_option(& $option, & $key = null, & $translation = null) {
 				';
 			break;
 			
+			case 'channel_name':
+			case 'point_name':
+
 			case 'decision_name':
 			case 'direction_name':
 			case 'display_name':
-			case 'channel_name':
 			case 'grade_name':
 			case 'lock_range_name':
 			case 'meritype_name':
@@ -279,7 +283,8 @@ function do_option(& $option, & $key = null, & $translation = null) {
 					case 'decision_name':
 					case 'direction_name':
 					case 'display_name':
-					case 'channel_name':
+					# translating channel name may cause confusion
+					# case 'channel_name':
 					case 'grade_name':
 					case 'kind_name':
 					case 'lock_location_name':

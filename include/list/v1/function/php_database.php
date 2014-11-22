@@ -346,6 +346,8 @@ function get_mask_subject($type, $display) {
 		case 'cycle':
 			$array = array(
 				'channel_name' => 'channel_name',
+				# 'channel_name_spacer' => '_',
+				# 'modified_yyyy_mm_dd' => 'modified_yyyy_mm_dd',
 			);
 		break;
 		case 'cost':

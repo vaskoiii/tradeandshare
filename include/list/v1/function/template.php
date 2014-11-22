@@ -647,6 +647,11 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				. to_html($listing[$v1])
 			. '</span>';
 		break;
+		# case 'modified_yyyy_mm_dd':
+		# 	$grab .= '<span class="modified">'
+		# 		. to_html(date('Y-m-d', strtotime($listing['modified'])))
+		# 	. '</span>';
+		# break;
 		case 'parent_tag_translation_name':
 			$grab .= '<span class="parent_tag_translation_name">'
 				. kk('tag', $listing['parent_tag_id'], 'translation_name', $listing['parent_tag_path'], $key)
