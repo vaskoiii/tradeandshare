@@ -105,7 +105,7 @@ foreach ($channel as $kc1 => $vc1) { ?>
 		}
 		else { ?>
 			<dt>Multiplier</dt>
-			<dd>can not compute - No ratings'; ?></dd><?
+			<dd>can not compute - No ratings</dd><?
 		} ?> 
 	</dl>
 	<p>For breakdown please see public rating list of members</p><?

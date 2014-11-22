@@ -741,25 +741,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'byecycle': # log
-			$select[] = 't1.id AS renewal_id';
-			$select[] = 'cnl.id as channel_id';
-			$select[] = 'cnl.name as channel_name';
-			$select[] = 't1.rating_value';
-			$select[] = 't1.value as renewal_value';
-
-			# membership duration taken from config
-			$select[] = 't1.modified';
-			$from[] = $prefix . 'renewal t1';
-				$where[] = 't1.active = 1';
-			$from[] = $prefix . 'channel cnl';
-			$where[] = 't1.user_id = u.id';
-			$where[] = 't1.channel_id = cnl.id';
-			if (isset_gp('keyword'))
-				$where_x[] = '(
-					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
-				)';
-		break;
 		case 'renewal': # log
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
@@ -775,8 +756,11 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'renewal t1';
 				$where[] = 't1.active = 1';
 			$from[] = $prefix . 'channel cnl';
+			$from[] = $prefix . 'cycle cce';
 			$where[] = 't1.user_id = u.id';
-			$where[] = 't1.channel_id = cnl.id';
+			$where[] = 't1.cycle_id = cce.id';
+			$where[] = 'cce.channel_id = cnl.id';
+			
 			if (isset_gp('keyword'))
 				$where_x[] = '(
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
