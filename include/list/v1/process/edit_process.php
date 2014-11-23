@@ -33,13 +33,13 @@ switch (get_gp('type')) {
 	# todo add translations
 	case 'dialect':
 		# intended to be added in future but not necessary now 2012-04-28 vaskoiii
-	case 'channel':
-		process_failure('Not Allowed Yet (Under Construction)');
-	break;
 	case 'minder':
 		# requires memorizing the correct kind_name_name/kind_name_id - remeber/forget only requires 1 click 2012-04-20 vaskoiii
 		process_failure('Not Allowed');
 	break;
+	# member
+	case 'channel':
+	case 'renewal':
 	# special
 	case 'invite':
 	case 'profile':
@@ -123,9 +123,22 @@ switch($process['form_info']['type']) {
 	case 'invite':
 		$lookup['invite_password'] = get_random_string();
 	break;
+
 	case 'user':
 		# first registration separate file
 		include('list/v1/process/user_process.php');
+		exit;
+	break;
+
+	# member?
+	case 'channel':
+		# separate for now until can merge
+		include('list/v1/process/channel_process.php');
+		exit;
+	break;
+	case 'renewal':
+		# separate for now until can merge (if can)
+		include('list/v1/process/renewal_process.php');
 		exit;
 	break;
 }
@@ -200,6 +213,7 @@ switch ($k2) {
 			$process[$k1][$k2] = get_gp($k2);
 	break;
 }
+
 
 # TRANSLATIONS for messages
 if ($process)

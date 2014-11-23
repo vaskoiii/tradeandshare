@@ -84,18 +84,6 @@ $sql = '
 	order by
 		cce.channel_id asc
 ';
-# $sql = '
-# 	select
-# 		channel_id
-# 	from
-# 		' . $config['mysql']['prefix'] . 'renewal
-# 	where
-# 		modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
-# 	group by
-# 		channel_id
-# 	order by
-# 		channel_id asc
-# ';
 $result = mysql_query($sql) or die(mysql_error());
 $data['user_report']['channel_list'] = array();
 $channel = & $data['user_report']['channel_list']; # alias
@@ -107,23 +95,6 @@ foreach($channel as $k1 => $v1) {
 	# cost has to have had the price set 1 month previous to be valid
 	# todo indicate noncurrent prices on display of cost_list
 	if (1) { # before
-		# $sql = '
-		# 	select
-		# 		cnl.name,
-		# 		' . (int)$config['cycle_length'] . ' as time,
-		# 		cnl.value as before_cost
-		# 	from
-		# 		' . $config['mysql']['prefix'] . 'channel cnl,
-		# 		' . $config['mysql']['prefix'] . 'cost ct
-		# 	where
-		# 		cnl.id = ct.channel_id and
-		# 		cnl.id = ' . (int)$k1 . ' and
-		# 		ct.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
-		# 	order by
-		# 		ct.modified desc
-		# 	limit
-		# 		1 
-		# ';
 		$sql = '
 			select
 				cnl.name,
@@ -148,16 +119,6 @@ foreach($channel as $k1 => $v1) {
 			$channel[$k1]['info'] = $row;
 	}
 	if (1) { # after
-		# $channel[$k1]['info']['after_cost'] = get_db_single_value('
-		# 		ct.value as after_cost -- max cost?
-		# 	from
-		# 		' . $config['mysql']['prefix'] . 'cost ct
-		# 	where
-		# 		ct.channel_id = ' . (int)$k1 . ' and
-		# 		ct.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . '
-		# 	order by
-		# 		ct.modified desc
-		# ');
 		$channel[$k1]['info']['after_cost'] = get_db_single_value('
 				cnl.value as after_cost -- max cost?
 			from

@@ -247,7 +247,7 @@ function get_action_content_1($type = false, $name = false) {
 			switch($type) {
 				case 'channel':
 					$array = array(
-						'user_name' => '',
+						# 'user_name' => '',
 						'channel_name' => '',
 						'channel_offset' => '',
 						'channel_value' => '',
@@ -266,10 +266,6 @@ function get_action_content_1($type = false, $name = false) {
 				# case 'cycle':
 				# 	cycles are created indirectly by renewals/channels
 				# break;
-				case 'renewal':
-					$array = array(
-					);
-				break;
 				case 'invite':
 					$array = array(
 						'invite_email' => '',

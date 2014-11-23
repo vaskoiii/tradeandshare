@@ -716,6 +716,7 @@ function process_field_missing($container = 'edit_content_1') {
 			;
 		}
 	else switch($k1) {
+		case 'autorenew':
 		case 'invite_id': # handled in user_process.php (sometimes needed sometimes not)
 		case 'accept_default':
 		case 'accept_usage_policy':
@@ -1200,6 +1201,12 @@ function process_does_exist() {
 	# dont forget the special user_process page
 	if ($x['name'] == 'edit_process' || $x['name'] == 'user_process') {
 	switch($type) {
+		# case 'channel':
+		# 	# channel is kept as a log
+		# 	# modifications have a special set of rules and can only happen after 2 future ending cycles
+		# 	# the updating process is custom
+		# 	# placeholder (separate for now)
+		# break;
 		case 'group':
 			# no reason to not be able to update if it exists
 			# todo deal with change the name of a group to a group that already existed but was deleted
