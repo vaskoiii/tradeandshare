@@ -71,8 +71,8 @@ process_field_missing('action_content_1');
 if (!$lookup['channel_parent_id']) {
 	$message = tt('element', 'channel_name') . ' : ' . tt('element', 'error_does_not_exist');
 }
-# if (empty($message))
-# 	$message = 'forced fail: too abstract for the generic edit process - most checks are going to be custom';
+if (empty($message))
+	$message = 'forced fail: too abstract for the generic edit process - most checks are going to be custom';
 process_failure($message);
 
 # do it!
@@ -81,121 +81,9 @@ process_failure($message);
 # CYCLE!
 ######################
 
-# prerequire
-# - cycle when channel is created
-# - all previous cycles with no breaks!
-
-# get 3 most recent non-future cycles
-# min cycles that can exist at this point?
-$sql = '
-	select
-		cce.id as cycle_id,
-		cce.modified as cycle_modified,
-		cnl.id as channel_id,
-		cnl.parent_id as channel_parent_id,
-		cnl.modified as channel_modified
-	from
-		' . $prefix . 'cycle cce,
-		' . $prefix . 'channel cnl
-	where
-		cnl.id = cce.channel_id and
-		cnl.id = ' . (int)$lookup['channel_parent_id'] . ' and
-		cce.modified < now() and
-		cce.active = 1 and
-		cnl.active = 1
-	order by
-		cce.modified desc
-	limit
-		3
-';
-
-$i1 = 1;
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	switch ($i1) {
-		case '1':
-			# if brand new team does this contain the channel data for inserting a renewal
-			$cycle['current'] = $row;
-		break;
-		case '2':
-			# key for current channel data when inseting renewal
-			$cycle['previous'] = $row;
-		break;
-		case '3':
-			$cycle['prepre'] = $row;
-		break;
-	}
-	$i1++;
-}
-
-# guarantee only and at least 1 possible future cycle
-$sql = '
-	select
-		cce.id as cycle_id,
-		cce.modified as cycle_modified,
-		cnl.id as channel_id,
-		cnl.parent_id as channel_parent_id,
-		cnl.modified as channel_modified
-	from
-		' . $prefix . 'cycle cce,
-		' . $prefix . 'channel cnl
-	where
-		cnl.id = cce.channel_id and
-		cnl.id = ' . (int)$lookup['channel_parent_id'] . ' and
-		cce.modified > now() and
-		cce.active = 1 and
-		cnl.active = 1
-	order by
-		cnl.modified asc
-	limit
-		1
-';
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	$cycle['future'] = $row;
-}
-if (!empty($cycle['current']['cycle_modified'])) {
-	$sql = '
-		select
-			id as channel_id,
-			parent_id as channel_parent_id,
-			value as channel_value,
-			offset as channel_offset
-		from
-			' . $prefix . 'channel
-		where
-			modified < ' . to_sql($cycle['current']['cycle_modified']) . ' and 
-			id = ' . (int)$lookup['channel_parent_id'] . '
-		order by
-			modified desc
-		limit
-			1
-	';
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		# overwriting should overwrite with same values if they exist
-		$cycle['future']['channel_id'] = $row['channel_id'];
-		$cycle['future']['channel_parent_id'] = $row['channel_parent_id'];
-		$cycle['future']['channel_value'] = $row['channel_value'];
-		$cycle['future']['channel_offset'] = $row['channel_offset'];
-
-		$cycle['future']['cycle_modified'] = date('Y-m-d', strtotime($cycle['current']['cycle_modified']) + $row['channel_offset']*86400);
-	}
-}
-# ensure future cycle exists in db
-if (empty($cycle['future']['cycle_id'])) {
-	$sql = '
-		insert into
-			' . $prefix . 'cycle
-		set
-			modified = ' . to_sql($cycle['future']['cycle_modified']) . ',
-			channel_id = ' . (int)$cycle['future']['channel_id'] . ',
-			active = 1
-	';
-	$result = mysql_query($sql) or die(mysql_error());
-	$cycle['future']['cycle_id'] = mysql_insert_id();
-}
-# future cycle now exists
+$data['cycle'] = array();
+get_cycle_array($data['cycle'], $lookup['channel_parent_id']);
+$cycle = & $data['cycle'];
 
 ######################
 # RENEWAL!
@@ -206,7 +94,7 @@ $sql = '
 	select
 		rnal.id as renewal_id,
 		rnal.point_id,
-		rnal.modified as renewal_modified
+		rnal.start as renewal_start
 	from
 		' . $prefix . 'renewal rnal,
 		' . $prefix . 'cycle cce,
@@ -216,71 +104,12 @@ $sql = '
 		cnl.id = cce.channel_id and
 		cnl.parent_id = ' . (int)$lookup['channel_parent_id'] . ' and
 		rnal.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
-		rnal.modified >= now() and
+		rnal.start >= now() and
 		rnal.active = 1 and
 		cce.active = 1 and
 		cnl.active = 1
 	order by
-		rnal.modified desc
-	limit
-		1
-';
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	$renewal['future'] = $row;
-}
-# get most recent renewal data
-$sql = '
-	select
-		rnal.id as renewal_id,
-		rnal.point_id,
-		rnal.modified as renewal_modified
-	from
-		' . $prefix . 'renewal rnal,
-		' . $prefix . 'cycle cce,
-		' . $prefix . 'channel cnl
-	where
-		cce.id = rnal.cycle_id and
-		cnl.id = cce.channel_id and
-		cnl.parent_id = ' . (int)$lookup['channel_parent_id'] . ' and
-		rnal.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
-		rnal.modified >= now() and
-		rnal.active = 1 and
-		cce.active = 1 and
-		cnl.active = 1
-	order by
-		rnal.modified desc
-	limit
-		1
-';
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	$renewal['future'] = $row;
-}
-# echo '<pre>'; print_r($renewal); echo '</pre>';
-
-
-# get most recent renewal data
-$sql = '
-	select
-		rnal.id as renewal_id,
-		rnal.point_id,
-		rnal.modified as renewal_modified
-	from
-		' . $prefix . 'renewal rnal,
-		' . $prefix . 'cycle cce,
-		' . $prefix . 'channel cnl
-	where
-		cce.id = rnal.cycle_id and
-		cnl.id = cce.channel_id and
-		cnl.parent_id = ' . (int)$lookup['channel_parent_id'] . ' and
-		rnal.user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
-		rnal.modified >= now() and
-		rnal.active = 1 and
-		cce.active = 1 and
-		cnl.active = 1
-	order by
-		rnal.modified desc
+		rnal.start desc
 	limit
 		1
 ';
@@ -289,11 +118,22 @@ while ($row = mysql_fetch_assoc($result)) {
 	$renewal['future'] = $row;
 }
 
-# not keeping track of when the renewal was actually modified (form submitted)!
+# not keeping track of when the renewal was actually start (form submitted)!
 if (!empty($renewal['future'])) {
 	# future cycle?
-	$i1 = strtotime($renewal['modified']);
-	if ($i1 >= strtotime($cycle['future']['modified'])) {
+	$i1 = strtotime($renewal['start']);
+	if ($i1 >= strtotime($cycle['future']['start'])) {
+
+
+		$sql = '
+			insert into
+				' . $prefix . 'renewal
+			set
+				point_id = ' . (int)$lookup['point_id'] . '
+				id = ' . (int)$renewal['future']['renewal_id'] . '
+		';
+		# since only 1 renewal is possible per cycle cycle_id and id can be used to find the parent renewal
+				
 		$sql = '
 			update
 				' . $prefix . 'renewal
@@ -308,6 +148,7 @@ if (!empty($renewal['future'])) {
 	}
 }
 # new/expired membership
+# continuing memberships will be processed by cron
 else {
 	# todo compute payment # base on start and finish of
 	# 2 renewals ago
@@ -316,12 +157,17 @@ else {
 
 	# if less than 2 renewals
 	# just use $cycle['future']['channel_value']
-	$cycle['future']['computed_renewal_value'] = $cycle['future']['channel_value'];
+
+	$d1 = $renewal['future']['renewal_to_cycle_value'] = get_renewal_to_cycle_length($todo_user_id, $todo_cycle_id) * $cycle['future']['channel_value'];
+	$d2 = $renewal['future']['cycle_to_renewal_value'] = get_cycle_to_renewal_length($todo_user_id, $todo_cycle_id) * $cycle['future']['channel_value'];
+	$renewal['future']['computed_renewal_value'] = $d1 + $d2;
 
 	# todo compute value from:
 	# $cycle['future']['channel_value'];
 	# $cycle['future']['my_rating_value']
 	$cycle['future']['computed_rating_value'] = 0;
+
+	# todo ts_transaction will be another computation of computed_rating_value and computed_renewal_value
 
 	$a1 = array(
 		# start point
@@ -330,6 +176,11 @@ else {
 		$lookup['point_id'],
 	);
 	foreach ($a1 as $k1 => $v1) {
+		# fix the start time
+		# todo calculate % into current cycle
+		# todo calculate cost for remaintder of cycle
+		# todo calculate % into future cycle
+		# todo calculate cost for first part of future cycle
 		$sql = '
 			insert into
 				' . $prefix . 'renewal
@@ -338,6 +189,7 @@ else {
 				user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
 				rating_value = ' . (int)$cycle['future']['computed_rating_value'] . ',
 				value = ' . (double)$cycle['future']['computed_renewal_value'] . ',
+				start = now(),
 				modified = now(),
 				active = 1
 		';
@@ -345,6 +197,13 @@ else {
 }
 
 # todo funds charge transaction will happen 1 day before in cron
+
+# placeholders for troubleshooting
+echo '<hr />';
+echo '<h2>$cycle</h2>';
+echo '<pre>'; print_r($cycle); echo '</pre>';
+echo '<h2>$renewal</h2>';
+echo '<pre>'; print_r($renewal); echo '</pre>';
 
 # set message
 $message = 'made it to the end';

@@ -704,7 +704,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 		# placeholders
 		case 'channelifer': # todo channelifer is to channel as category is to tag
 		break;
-		case 'membership': # todo membership is to renew as category is to tag
+		case 'membership': # todo membership is to renew as category is to tag (combine into renewal?)
 			$select[] = 't1.id AS membership_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
@@ -749,6 +749,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 'cnl.name as channel_name';
 			$select[] = 't1.rating_value';
 			$select[] = 't1.value as renewal_value';
+			$select[] = 't1.start as renewal_start';
 
 			# membership duration taken from config
 			$select[] = 't1.modified';

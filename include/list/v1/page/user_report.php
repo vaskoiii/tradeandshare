@@ -78,7 +78,7 @@ $sql = '
 		' . $config['mysql']['prefix'] . 'cycle cce
 	where
 		cce.id = rnal.cycle_id and
-		rnal.modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
+		rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
 	group by
 		cce.channel_id
 	order by
@@ -107,10 +107,10 @@ foreach($channel as $k1 => $v1) {
 				cnl.id = cce.channel_id and
 				cnl.id = ' . (int)$k1 . ' and
 				-- disabled for testing
-				-- cce.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+				-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
 				1
 			order by
-				cce.modified desc
+				cce.start desc
 			limit
 				1 
 		';
@@ -128,10 +128,10 @@ foreach($channel as $k1 => $v1) {
 				cnl.id = cce.channel_id and
 				cce.channel_id = ' . (int)$k1 . ' and
 				-- disabled for testing
-				-- cce.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+				-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
 				1
 			order by
-				cce.modified desc
+				cce.start desc
 		');
 		$sql = '
 			select
@@ -143,7 +143,7 @@ foreach($channel as $k1 => $v1) {
 				rnal.cycle_id = cce.id and
 				cce.channel_id = ' . (int)$k1 . ' and
 				-- >= may not have anyone in the current cycle
-				rnal.modified > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
+				rnal.start > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
 		;
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result))
@@ -181,8 +181,8 @@ foreach ($channel as $kc1 => $vc1) {
 					r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
 					r.source_user_id = ' . (int)$v1 . ' and 
 					r.destination_user_id = ' . (int)($kd1) . ' and
-					-- modified < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-					-- modified >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
+					-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
+					-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
 					r.active = 1
 			';
 			$result = mysql_query($sql) or die(mysql_error());
@@ -206,7 +206,7 @@ foreach ($channel as $kc1 => $vc1) {
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
 		$kis['user_rating_count'] = 0;
-		# todo uncomment the modified so that only the timeframe for ratings is accounted not ratings for all time
+		# todo uncomment the start so that only the timeframe for ratings is accounted not ratings for all time
 		# currently all ratings for all time are accounted for
 		$sql = '
 			select
@@ -220,8 +220,8 @@ foreach ($channel as $kc1 => $vc1) {
 				channel_id = ' . (int)$kc1 . ' and
 				team_id = ' . (int)$config['everyone_team_id'] . ' and 
 				source_user_id = ' . (int)$ks1 . ' and 
-				-- modified < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-				-- modified >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
+				-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
+				-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
 				active = 1
 		';
 		$result = mysql_query($sql) or die(mysql_error());
@@ -250,7 +250,7 @@ foreach ($channel as $kc1 => $vc1) {
 				select
 					rnal.point_id,
 					pt.name as point_name,
-					rnal.modified
+					rnal.start
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
 					' . $config['mysql']['prefix'] . 'point pt
@@ -258,14 +258,14 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
-					rnal.modified < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-					rnal.modified >=' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
 				order by
-					rnal.modified asc
+					rnal.start asc
 			';
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
-				$kis['timeline'][$row['point_name']] = $row['modified'];
+				$kis['timeline'][$row['point_name']] = $row['start'];
 			}
 			$timeline = & $kis['timeline'];
 			if (1) {
@@ -274,7 +274,7 @@ foreach ($channel as $kc1 => $vc1) {
 				if ( empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
 					# todo fix member restart
-					# $kis['before']['member_restart'] = $row['modified'];
+					# $kis['before']['member_restart'] = $row['start'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
 						-
@@ -287,7 +287,7 @@ foreach ($channel as $kc1 => $vc1) {
 				if ( empty($timeline['start'])) {
 				if (!empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
-					# $kis['before']['member_restart'] = $row['modified'];
+					# $kis['before']['member_restart'] = $row['start'];
 					$kis['before']['member_time'] = (
 						strtotime($timeline['continue'])
 						-
@@ -353,8 +353,8 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
-					rnal.modified < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-					rnal.modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
 			;
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
@@ -388,8 +388,8 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					-- todo make sure cycle id is correct
-					rnal.modified < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-					rnal.modified >= ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
 			;
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {

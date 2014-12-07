@@ -316,6 +316,7 @@ function get_mask_subject($type, $display) {
 	# $display is used but barely. It is still good to have because it allows more flexibility and doesnt hurt 2012-02-26 vaskoiii
 	$array = array();
 	switch($type) {
+		# todo no need for this page
 		case 'membership':
 			$array = array(
 				'channel_name' => 'channel_name',
@@ -339,6 +340,8 @@ function get_mask_subject($type, $display) {
 				'rating_value' => 'rating_value',
 				'rating_value_spacer' => '_',
 				'renewal_value' => 'renewal_value',
+				'renewal_value_spacer' => '_',
+				'renewal_start' => 'renewal_start',
 			);
 		break;
 		case 'cycle':

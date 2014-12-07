@@ -2914,3 +2914,12 @@ alter table ts_cycle drop offset;
 alter table ts_cycle drop value;
 alter table ts_cycle drop `start`;
 alter table ts_renewal drop channel_id;
+
+-- 
+insert into ts_point set name = 'nextend';
+alter table ts_renewal drop autorenew;
+ALTER TABLE `ts_transaction` ADD `renewal_id` INT NOT NULL AFTER `id` , ADD INDEX ( `renewal_id` ) ;
+alter table ts_transaction drop renewal_id;
+
+ALTER TABLE `ts_cycle` ADD `start` DATETIME NOT NULL AFTER `channel_id` , ADD INDEX ( `start` ) ;
+ALTER TABLE `ts_renewal` ADD `start` DATETIME NOT NULL AFTER `value` , ADD INDEX ( `start` ) ;
