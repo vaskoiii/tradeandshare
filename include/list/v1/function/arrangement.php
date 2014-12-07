@@ -257,10 +257,7 @@ function get_action_content_1($type = false, $name = false) {
 				case 'renewal':
 					$array = array(
 						'channel_name' => '',
-						# 'point_name' => '',
-						# autorenew may not be needed in the database but is easiest to understand for the end user
-						# autorenew means point_name = continue
-						'autorenew' => '',
+						'point_name' => '',
 					);
 				break;
 				# case 'cycle':

@@ -784,9 +784,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($_SESSION['load']['load_javascript'] == 1) ? 'checked="checked"' : ''; ?> /></div><?
 		break;
 
-		# todo autorenew: grab membership info "latest" membership info for modification
-		case 'autorenew':
-
 		case 'feature_lock':
 		case 'feature_minnotify':
 		case 'notify_offer_received':

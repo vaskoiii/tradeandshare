@@ -208,17 +208,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				break;
 			}
 		break;
-		case 'autorenew':
-			switch($listing['autorenew']) {
-				case '1':
-					$grab .= 'autorenew';
-				break;
-				default:
-					$grab .= ':(';
-				break;
-					
-			}
-		break;
 		case 'cycle_id':
 			$grab .= 'TODO cycle_id: ' . $listing[$k1];
 		break;

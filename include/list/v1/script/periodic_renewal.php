@@ -3,7 +3,7 @@
 # description: process the autorenewing memberships from a cron ( first implementation will be daily )
 
 # issue
-# - hardcoded interval (31)
+# - todo: cycles and renewals need to be handled separately
 # - doesn't account for credit
 # - doesn't account for rating value
 
@@ -33,8 +33,9 @@ $sql = '
 	from
 		' . $config['mysql']['prefix'] . 'renewal
 	where
-		-- autorenew = 1 and
-		modified > DATE_SUB(NOW(), INTERVAL 31 day)
+		-- if running php periodic_renewal late might have to use date_sub()
+		modified > date_sub(now(), interval 1 day)
+		-- modified > now()
 ';
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
@@ -43,95 +44,76 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 print_r($data['renewal']);
 
-# add new cycles
-foreach ($data['cycle'] as $k1 => $v1) {
-	$sql = '
-		select
-			*
-		from
-			' . $config['mysql']['prefix'] . 'cycle
-		where
-			channel_id = ' . (int)$k1
-	;
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		$data['cycle'][$row['id']] = $row;
-	}
-	print_r($v1);
+if (empty($data['renewal']))
+	die('cant autorenew anything - future renewals DNE - please set manually' . "\n");
 
-	$p1 = & $data['cycle'][$k1];
-	$sql = '
-		insert into
-			' . $config['mysql']['prefix'] . 'cycle
-		set
-			channel_id  = ' . (int)$p1['channel_id'] . ',
-			value = ' . (int)$p1['value'] . ',
-			offset = ' . (int)$p1['offset'] . ',
-			start = date_add(' . to_sql($p1['start']) . ', interval ' . (int)$p1['offset'] . ' day),
-			modified = now(),
-			active = 1
-	';
-	# insert autrenew people with:
-	echo $sql . "\n";
-	mysql_query($sql) or die(mysql_error());
-	$data['cycle'][$k1]['new_cycle_id'] = mysql_insert_id();
+# add new cycles
+# todo function ensure_horizon_cycle($channel_id)
+# might already have some logic in renewal_process.php
+# do this manually for now
+/*
+insert into
+	ts_cycle
+set
+	modified = "",
+	channel_id = "",
+	active = 1
+*/
+
+# also manually set:
+$i1 = 40;
+foreach($data['cycle'] as $k1 => $v1) {
+	$data['cycle'][$k1]['new_cycle_id'] = 40;
 }
-print_r($data['cycle']);
+
+# print_r($data['renewal']);
 
 # insert a new entry
 foreach($data['renewal'] as $k1 => $v1) {
-	switch($v1['autorenew']) {
+	switch($v1['point_id']) {
 		case '1':
-			switch($v1['point_id']) {
-				case '1':
-					# start
-					# shouldnt happen
-				break;
-				case '2':
-					# continue
-					# todo need to compute the rating value and the charge amount
-					$sql = '
-						insert into '  .
-							$config['mysql']['prefix'] . 'renewal
-						set
-							channel_id = ' . (int)$v1['channel_id'] . ',
-							cycle_id = ' . (int)$data['cycle'][$v1['cycle_id']]['new_cycle_id'] . ',
-							point_id = 2,
-							user_id = ' . (int)$v1['user_id'] . ',
-							rating_value = ' . (double)$v1['rating_value'] . ',
-							value = ' . (double)$v1['value'] . ',
-							modified = now(),
-							autorenew = 1,
-							active = 1
-					';
-					echo $sql . "\n";
-					mysql_query($sql) or die(mysql_error());
-				break;
-				case '3':
-					# end
-					# possibly due to insufficient funds
-					# todo compute rating value as above
-					$sql = '
-						insert into '  .
-							$config['mysql']['prefix'] . 'renewal
-						set
-							channel_id = ' . (int)$v1['channel_id'] . ',
-							cycle_id = ' . (int)$data['cycle'][$v1['cycle_id']]['new_cycle_id'] . ',
-							point_id = 3,
-							user_id = ' . (int)$v1['user_id'] . ',
-							rating_value = ' . (double)$v1['rating_value'] . ',
-							value = 0,
-							modified = date_add(' . to_sql($v1['modified']) . ', interval 30 day),
-							autorenew = 1,
-							active = 1
-					';
-					echo $sql . "\n";
-					mysql_query($sql) or die(mysql_error());
-				break;
-			}
+			# start
+			# shouldnt happen
 		break;
 		case '2':
-			# no autorenew
+			# continue
+			# todo need to compute the rating value and the charge amount
+			$sql = '
+				insert into '  .
+					$config['mysql']['prefix'] . 'renewal
+				set
+					cycle_id = ' . (int)$data['cycle'][$v1['cycle_id']]['new_cycle_id'] . ',
+					point_id = 2,
+					user_id = ' . (int)$v1['user_id'] . ',
+					rating_value = ' . (double)$v1['rating_value'] . ',
+					value = ' . (double)$v1['value'] . ',
+					modified = date_add(' . to_sql($v1['modified']) . ', interval 30 day),
+					active = 1
+			';
+			echo $sql . "\n";
+			mysql_query($sql) or die(mysql_error());
 		break;
+		case '3':
+			# end
+		case '4':
+			# nextend
+			# possibly due to insufficient funds
+			# todo compute rating value as above
+			$sql = '
+				insert into '  .
+					$config['mysql']['prefix'] . 'renewal
+				set
+					cycle_id = ' . (int)$data['cycle'][$v1['cycle_id']]['new_cycle_id'] . ',
+					point_id = ' . (int)$v1['point_id'] . ',
+					user_id = ' . (int)$v1['user_id'] . ',
+					rating_value = ' . (double)$v1['rating_value'] . ',
+					value = 0,
+					modified = date_add(' . to_sql($v1['modified']) . ', interval 30 day),
+					active = 1
+			';
+			echo $sql . "\n";
+			mysql_query($sql) or die(mysql_error());
+		break;
+		
 	}
 }

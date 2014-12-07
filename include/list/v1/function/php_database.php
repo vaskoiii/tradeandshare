@@ -339,8 +339,6 @@ function get_mask_subject($type, $display) {
 				'rating_value' => 'rating_value',
 				'rating_value_spacer' => '_',
 				'renewal_value' => 'renewal_value',
-				'renewal_value_space' => '_',
-				'autorenew' => 'autorenew',
 			);
 		break;
 		case 'cycle':
