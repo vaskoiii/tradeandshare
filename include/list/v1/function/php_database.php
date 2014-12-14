@@ -342,13 +342,17 @@ function get_mask_subject($type, $display) {
 				'renewal_value' => 'renewal_value',
 				'renewal_value_spacer' => '_',
 				'renewal_start' => 'renewal_start',
+				'renewal_start_spacer' => '_',
+				'timeframe_name' => 'timeframe_name',
 			);
 		break;
 		case 'cycle':
 			$array = array(
 				'channel_name' => 'channel_name',
-				# 'channel_name_spacer' => '_',
-				# 'modified_yyyy_mm_dd' => 'modified_yyyy_mm_dd',
+				'channel_name_spacer' => '_',
+				'cycle_start' => 'cycle_start',
+				'cycle_start_spacer' => '_',
+				'timeframe_name' => 'timeframe_name',
 			);
 		break;
 		case 'cost':
@@ -371,6 +375,8 @@ function get_mask_subject($type, $display) {
 				'channel_offset' => 'channel_offset',
 				'channel_offset_spacer' => '_',
 				'channel_value' => 'channel_value',
+				'channel_value_spacer' => '_',
+				'timeframe_name' => 'timeframe_name',
 			);
 		break;
 		case 'contact':

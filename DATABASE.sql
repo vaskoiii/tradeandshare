@@ -2923,3 +2923,40 @@ alter table ts_transaction drop renewal_id;
 
 ALTER TABLE `ts_cycle` ADD `start` DATETIME NOT NULL AFTER `channel_id` , ADD INDEX ( `start` ) ;
 ALTER TABLE `ts_renewal` ADD `start` DATETIME NOT NULL AFTER `value` , ADD INDEX ( `start` ) ;
+
+
+--
+ALTER TABLE `ts_channel` ADD `timeframe_id` INT( 2 ) NOT NULL AFTER `user_id` , ADD INDEX ( `timeframe_id` );
+ALTER TABLE `ts_channel` CHANGE `timeframe_id` `timeframe_id` TINYINT NOT NULL ;
+ALTER TABLE `ts_cycle` ADD `timeframe_id` INT( 2 ) NOT NULL AFTER `channel_id` , ADD INDEX ( `timeframe_id` );
+ALTER TABLE `ts_cycle` CHANGE `timeframe_id` `timeframe_id` TINYINT NOT NULL ;
+ALTER TABLE `ts_renewal` ADD `start` DATETIME NOT NULL AFTER `value` , ADD INDEX ( `start` );
+
+
+
+CREATE TABLE IF NOT EXISTS `ts_renewage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `point_id` int(11) NOT NULL,
+  `renewal_id` int(11) NOT NULL,
+  `timeframe_id` tinyint(4) NOT NULL,
+  `modified` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `point_id` (`point_id`,`renewal_id`,`timeframe_id`,`modified`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `ts_timeframe` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+INSERT INTO `ts_timeframe` (`id`, `name`) VALUES
+(1, 'past'),
+(2, 'present'),
+(3, 'future');
+
+
+INSERT INTO `ts`.`ts_timeframe` (`id`, `name`) VALUES (NULL, 'past'), (NULL, 'present'), (NULL, 'future');
+
+--
+-- todo delete point_id and modified from renewal

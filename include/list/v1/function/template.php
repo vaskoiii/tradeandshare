@@ -623,6 +623,9 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ob_get_clean();
 			/* <a href="./location_view/<?= ffm('list_name=&list_type=&lock_location_id=' . (int)$listing['location_id'], 1); ?>"><span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></a></span><?  */
 		break;
+		case 'cycle_start':
+		case 'renewal_start':
+		case 'timeframe_name':
 		case 'channel_name':
 		case 'dialect_name':
 		case 'meritopic_name':

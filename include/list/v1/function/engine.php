@@ -499,9 +499,13 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.description as channel_description';
 			$select[] = 't1.value AS channel_value';
 			$select[] = 't1.offset AS channel_offset';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
 			# channel description is intentionally not translated because it will cause divergence
 			$select[] = 't1.modified';
 			$from[] = $prefix . 'channel t1';
+			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'tfe.id = t1.timeframe_id';
 			$where[] = '1'; # implode(' , ', $where) stops complaining
 			if (isset_gp('keyword')) {
 				$where_x[] = '(
@@ -725,7 +729,11 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 't1.modified';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
+			$select[] = 't1.start AS cycle_start';
 			$from[] = $prefix . 'cycle t1';
+			$from[] = $prefix . 'timeframe tfe';
 				$where[] = 't1.active = 1';
 			# join to renewal and there may be nobody
 			# $from[] = $prefix . 'renewal rnwl';
@@ -735,6 +743,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'channel cnl';
 			$where[] = 'cnl.user_id = u.id';
 			$where[] = 'cnl.id = t1.channel_id';
+			$where[] = 'tfe.id = t1.timeframe_id';
 			# both
 			if (isset_gp('keyword'))
 				$where_x[] = '(
@@ -745,18 +754,24 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 't1.cycle_id';
-			$select[] = 't1.point_id';
+			$select[] = 'rnae.point_id';
 			$select[] = 'cnl.name as channel_name';
 			$select[] = 't1.rating_value';
 			$select[] = 't1.value as renewal_value';
 			$select[] = 't1.start as renewal_start';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
 
 			# membership duration taken from config
-			$select[] = 't1.modified';
+			$select[] = 'rnae.modified';
 			$from[] = $prefix . 'renewal t1';
+			$from[] = $prefix . 'renewage rnae';
 				$where[] = 't1.active = 1';
 			$from[] = $prefix . 'channel cnl';
 			$from[] = $prefix . 'cycle cce';
+			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'tfe.id = rnae.timeframe_id';
+			$where[] = 't1.id = rnae.renewal_id';
 			$where[] = 't1.user_id = u.id';
 			$where[] = 't1.cycle_id = cce.id';
 			$where[] = 'cce.channel_id = cnl.id';

@@ -23,19 +23,52 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
 # also decentralization is important and hidden will not be practical if hidden and decentralized
 
+# Notes
+# - eligibility period does not get payout
+# - eligibility is required after member expiration
+# - payout is delayed for 1 cycle so members can review
+# - autorenew script runs 1 day before member expiration
+# - fees are not charged until autorenew script runs
+# - fees are automatic from your available balance
+
+# Key
+# s = start
+# c = continue
+# e = end
+# n = autorenew once then end
+# .5 = example ratio in the cycle where the member renews ( could be any ratio from 0 to 1 )
+# a|b|c|d = variable cycle length
+
 ### Cycle Diagram #################################################
 #                                                                 #
-#                     -3x      -2x      -1x       0x (process)    #
-#   timeline           |________|________|________|               #
+#                 -4d   -3c         -2b  -1a      0               #
+#   timeline       |_____|___________|____|_______|               #
+#   cycle 1              |___________|                            #
+#   cycle 2                          |____|                       #
+#   cycle 3                               |_______|               #
 #                                                                 #
-#   eligibility        |________|                                 #
-#   payout                      |________|                        #
-#   review                               |________|               #
+#   eligibility       |________|                                  #
+#   payout 1                   |_____|                            #
+#   payout 2                         |____|                       #
+#   payout 3                              |_______|               #
+#                                                                 #
+#                    .5s      .5                                  #
+#   member fee 1      |__|           .                            #
+#   member fee 2         |_____|     .                            #
+#                                                                 #
+#                             .5c      .5                         #
+#   member fee 1               |_____|    .                       #
+#   member fee 2                     |__| .                       #
+#                                                                 #
+#                                      .5c   .5                   #
+#   member fee 1                        |_|       .               #
+#   member fee 2                          |___|   .               #
 #                                                                 #
 ### Evaluating Payout Membership Renewal ##########################
 #                                                                 #
+#   nothing                                                       #
 #   start                         |______ (after)                 #
-#   continue                    __|______ (before/after)          #
+#   continue                    __|______ (before|after)          #
 #   end and start               ____|  |_ (before|ignore|after)   #
 #   end                         ______|   (before)                #
 #                                                                 #
@@ -248,14 +281,16 @@ foreach ($channel as $kc1 => $vc1) {
 			# $kis['after']['time_weight'] = 0;
 			$sql = '
 				select
-					rnal.point_id,
+					rnae.point_id,
 					pt.name as point_name,
 					rnal.start
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
+					' . $config['mysql']['prefix'] . 'renewage rnae,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
-					rnal.point_id = pt.id and
+					rnal.id = rnae.renewal_id and
+					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
@@ -348,9 +383,11 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.value as renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
+					' . $config['mysql']['prefix'] . 'renewage rnae,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
-					rnal.point_id = pt.id and
+					rnal.id = rnae.renewal_id and
+					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
@@ -382,9 +419,11 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.value as renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
+					' . $config['mysql']['prefix'] . 'renewage rnae,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
-					rnal.point_id = pt.id and
+					rnal.id = rnae.renewal_id and
+					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					-- todo make sure cycle id is correct
