@@ -2641,9 +2641,6 @@ INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` ,
 INSERT INTO `ts`.`ts_page` ( `id` , `parent_id` , `file_id` , `name` , `order` , `launch` , `monitor` , `login` , `advanced`) VALUES ( NULL , '174', '14', 'scan_portal', '19', '1', '2', '1', '2');
 DELETE FROM `ts`.`ts_page` WHERE `ts_page`.`id` = 428 LIMIT 1;
 
-
-
-
 CREATE TABLE IF NOT EXISTS `ts_filer` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `user_id` int(11) NOT NULL,
@@ -2657,8 +2654,6 @@ CREATE TABLE IF NOT EXISTS `ts_filer` (
 	  PRIMARY KEY (`id`),
 	  KEY `user_id` (`user_id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
-
-	-- --------------------------------------------------------
 
 --
 -- Table structure for table `ts_pubkey`
@@ -2676,12 +2671,8 @@ CREATE TABLE IF NOT EXISTS `ts_pubkey` (
 	  KEY `user_id` (`user_id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
-
-
-
 -- this part is messed up. untested maybe it works - need to rebuild
 insert into ts_page values (null, 321, 11, 'file', 1, 2, 2, 2, 2);
-
 
 -- rough channel implementation --
 CREATE TABLE `ts`.`ts_channel` (
@@ -2719,13 +2710,6 @@ UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_quarter' WHERE `ts_element`.`
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_half' WHERE `ts_element`.`id` =194 LIMIT 1 ;
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_triquarter' WHERE `ts_element`.`id` =195 LIMIT 1 ;
 UPDATE `ts`.`ts_element` SET `name` = 'grade_merit_full' WHERE `ts_element`.`id` =196 LIMIT 1 ;
-
-
-
-
-
-
-
 
 -- Membership
 -- Membership
@@ -2924,15 +2908,11 @@ alter table ts_transaction drop renewal_id;
 ALTER TABLE `ts_cycle` ADD `start` DATETIME NOT NULL AFTER `channel_id` , ADD INDEX ( `start` ) ;
 ALTER TABLE `ts_renewal` ADD `start` DATETIME NOT NULL AFTER `value` , ADD INDEX ( `start` ) ;
 
-
---
 ALTER TABLE `ts_channel` ADD `timeframe_id` INT( 2 ) NOT NULL AFTER `user_id` , ADD INDEX ( `timeframe_id` );
 ALTER TABLE `ts_channel` CHANGE `timeframe_id` `timeframe_id` TINYINT NOT NULL ;
 ALTER TABLE `ts_cycle` ADD `timeframe_id` INT( 2 ) NOT NULL AFTER `channel_id` , ADD INDEX ( `timeframe_id` );
 ALTER TABLE `ts_cycle` CHANGE `timeframe_id` `timeframe_id` TINYINT NOT NULL ;
 ALTER TABLE `ts_renewal` ADD `start` DATETIME NOT NULL AFTER `value` , ADD INDEX ( `start` );
-
-
 
 CREATE TABLE IF NOT EXISTS `ts_renewage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2955,8 +2935,5 @@ INSERT INTO `ts_timeframe` (`id`, `name`) VALUES
 (2, 'present'),
 (3, 'future');
 
-
 INSERT INTO `ts`.`ts_timeframe` (`id`, `name`) VALUES (NULL, 'past'), (NULL, 'present'), (NULL, 'future');
 
---
--- todo delete point_id and modified from renewal
