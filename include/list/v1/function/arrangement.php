@@ -70,9 +70,14 @@ function get_search_footer_1($type = false, $name = false) { } # placeholder
 function get_result_footer_1($type = false, $name = false) {
 
 	switch($type) {
+		case 'channel':
+			$array = array(
+				'remember' => '',
+				'forget' => '',
+			);
+		break;
 		case 'team':
 		case 'location':
-		case 'channel':
 		case 'category':
 			$array = array(
 				'remember' => '',
@@ -255,6 +260,7 @@ function get_action_content_1($type = false, $name = false) {
 					);
 				break;
 				case 'renewal':
+				case 'renewage':
 					$array = array(
 						'channel_name' => '',
 						'point_name' => '',

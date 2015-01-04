@@ -750,14 +750,15 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'renewal': # log
+		case 'renewage': # log
+			$select[] = 'rnae.id as renewage_id';
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 't1.cycle_id';
 			$select[] = 'rnae.point_id';
 			$select[] = 'cnl.name as channel_name';
-			$select[] = 't1.rating_value';
-			$select[] = 't1.value as renewal_value';
+			$select[] = 'ge_rnal.rating_value';
+			$select[] = 'ge_rnal.renewal_value';
 			$select[] = 't1.start as renewal_start';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';
@@ -767,14 +768,52 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'renewal t1';
 			$from[] = $prefix . 'renewage rnae';
 				$where[] = 't1.active = 1';
+			$from[] = $prefix . 'gauge_renewal ge_rnal';
 			$from[] = $prefix . 'channel cnl';
 			$from[] = $prefix . 'cycle cce';
 			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'ge_rnal.renewal_id = t1.id';
 			$where[] = 'tfe.id = rnae.timeframe_id';
 			$where[] = 't1.id = rnae.renewal_id';
 			$where[] = 't1.user_id = u.id';
 			$where[] = 't1.cycle_id = cce.id';
 			$where[] = 'cce.channel_id = cnl.id';
+			
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
+		case 'renewal': # log
+			# todo deprecate renewal_list as renewal is incomplete without renewage
+			$select[] = 't1.id AS renewal_id';
+			$select[] = 'cnl.id as channel_id';
+			$select[] = 't1.cycle_id';
+			$select[] = 'rnae.point_id';
+			$select[] = 'cnl.name as channel_name';
+			$select[] = 'ge_rnal.rating_value';
+			$select[] = 'ge_rnal.renewal_value';
+			$select[] = 't1.start as renewal_start';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
+
+			# membership duration taken from config
+			$select[] = 'rnae.modified';
+			$from[] = $prefix . 'renewal t1';
+			$from[] = $prefix . 'renewage rnae';
+				$where[] = 't1.active = 1';
+			$from[] = $prefix . 'gauge_renewal ge_rnal';
+			$from[] = $prefix . 'channel cnl';
+			$from[] = $prefix . 'cycle cce';
+			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'ge_rnal.renewal_id = t1.id';
+			$where[] = 'tfe.id = rnae.timeframe_id';
+			$where[] = 't1.id = rnae.renewal_id';
+			$where[] = 't1.user_id = u.id';
+			$where[] = 't1.cycle_id = cce.id';
+			$where[] = 'cce.channel_id = cnl.id';
+			# different
+			$where[] = 'rnae.timeframe_id = 2';
 			
 			if (isset_gp('keyword'))
 				$where_x[] = '(

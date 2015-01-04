@@ -40,6 +40,7 @@ switch (get_gp('type')) {
 	# member
 	case 'channel':
 	case 'renewal':
+	case 'renewage':
 	# special
 	case 'invite':
 	case 'profile':
@@ -137,6 +138,7 @@ switch($process['form_info']['type']) {
 		exit;
 	break;
 	case 'renewal':
+	case 'renewage':
 		# separate for now until can merge (if can)
 		include('list/v1/process/renewal_process.php');
 		exit;

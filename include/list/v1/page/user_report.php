@@ -90,104 +90,105 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - fix unused config variable: $config['cycle_start']
 # - fix currently overriding the cycle end/reporting date and assuming it is now for testing
 
-# todo make it so that users do not have to be manually entered into ts_renewal
+# variable
+$data['user_report']['channel_list'] = array();
 
-# day of report making (end of cycle)
-# todo get the cycle start from the cycle table
-# todo get variable cycle offset from the cycle table
-# todo 30 day unchangeable cycle length is unacceptable
-$data['user_report']['cycle_restart']['yyyy-mm-dd'] = date('Y-m-d');
-$cycle_restart = & $data['user_report']['cycle_restart']; # alias
-$cycle_restart['yyyy-mm-dd-1x'] = date('Y-m-d', strtotime($cycle_restart['yyyy-mm-dd']) - 30*86400);
-$cycle_restart['yyyy-mm-dd-2x'] = date('Y-m-d', strtotime($cycle_restart['yyyy-mm-dd']) - 60*86400);
-$cycle_restart['yyyy-mm-dd-3x'] = date('Y-m-d', strtotime($cycle_restart['yyyy-mm-dd']) - 90*86400);
+# alias
+$channel = & $data['user_report']['channel_list'];
 
-# todo get cycle 
+# get every single channel
 $sql = '
 	select
-		cce.channel_id
+		cnl.id
 	from
-		' . $config['mysql']['prefix'] . 'renewal rnal,
-		' . $config['mysql']['prefix'] . 'cycle cce
+		' . $config['mysql']['prefix'] . 'channel cnl
 	where
-		cce.id = rnal.cycle_id and
-		rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
-	group by
-		cce.channel_id
+		cnl.id = cnl.parent_id
 	order by
-		cce.channel_id asc
+		cnl.id asc
 ';
 $result = mysql_query($sql) or die(mysql_error());
-$data['user_report']['channel_list'] = array();
-$channel = & $data['user_report']['channel_list']; # alias
 while ($row = mysql_fetch_assoc($result)) {
-	$channel[$row['channel_id']] = array();
+	$channel[$row['id']] = array();
 }
-foreach($channel as $k1 => $v1) {
-	# todo 
-	# cost has to have had the price set 1 month previous to be valid
-	# todo indicate noncurrent prices on display of cost_list
-	if (1) { # before
-		$sql = '
-			select
-				cnl.name,
-				' . (int)$config['cycle_length'] . ' as time,
-				cnl.value as before_cost
-			from
-				' . $config['mysql']['prefix'] . 'channel cnl,
-				' . $config['mysql']['prefix'] . 'cycle cce
-			where
-				cnl.id = cce.channel_id and
-				cnl.id = ' . (int)$k1 . ' and
-				-- disabled for testing
-				-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-				1
-			order by
-				cce.start desc
-			limit
-				1 
-		';
-		$result = mysql_query($sql) or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result))
-			$channel[$k1]['info'] = $row;
-	}
-	if (1) { # after
-		$channel[$k1]['info']['after_cost'] = get_db_single_value('
-				cnl.value as after_cost -- max cost?
-			from
-				' . $config['mysql']['prefix'] . 'cycle cce,
-				' . $config['mysql']['prefix'] . 'channel cnl
-			where
-				cnl.id = cce.channel_id and
-				cce.channel_id = ' . (int)$k1 . ' and
-				-- disabled for testing
-				-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-				1
-			order by
-				cce.start desc
-		');
-		$sql = '
-			select
-				rnal.user_id
-			from
-				' . $config['mysql']['prefix'] . 'renewal rnal,
-				' . $config['mysql']['prefix'] . 'cycle cce
-			where
-				rnal.cycle_id = cce.id and
-				cce.channel_id = ' . (int)$k1 . ' and
-				-- >= may not have anyone in the current cycle
-				rnal.start > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
-		;
-		$result = mysql_query($sql) or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result))
-			$channel[$k1]['member_list'][$row['user_id']] = $row['user_id'];
-	}
 
-	$channel[$k1]['member_cost']['before'] = array();
-	$channel[$k1]['member_time']['before'] = array();
-	$channel[$k1]['member_cost']['after'] = array();
-	$channel[$k1]['member_time']['after'] = array();
-	$channel[$k1]['average_weight_sum'] = array();
+foreach($channel as $k1 => $v1) {
+	# calculate from 2 cycles back to 3 cycles back
+	$channel[$k1]['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($k1, date('Y-m-d H:i:s'));
+	$channel[$k1]['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($k1, $channel[$k1]['cycle_restart']['yyyy-mm-dd-1x']);
+	$channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($k1, $channel[$k1]['cycle_restart']['yyyy-mm-dd-2x']);
+
+	if (empty($channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'])) {
+		$data['user_report']['premature_channel_list'][$k1] = $channel[$k1];
+		unset($channel[$k1]); # too early to evaluate
+	}
+	else {
+		# cost has to have had the price set 1 month previous to be valid
+		# todo indicate noncurrent prices on display of cost_list
+		if (1) { # before
+			$sql = '
+				select
+					cnl.name,
+					' . (int)$config['cycle_length'] . ' as time,
+					cnl.value as before_cost
+				from
+					' . $config['mysql']['prefix'] . 'channel cnl,
+					' . $config['mysql']['prefix'] . 'cycle cce
+				where
+					cnl.id = cce.channel_id and
+					cnl.id = ' . (int)$k1 . ' and
+					-- disabled for testing
+					-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					1
+				order by
+					cce.start desc
+				limit
+					1 
+			';
+			$result = mysql_query($sql) or die(mysql_error());
+			while ($row = mysql_fetch_assoc($result))
+				$channel[$k1]['info'] = $row;
+		}
+		if (1) { # after
+			$channel[$k1]['info']['after_cost'] = get_db_single_value('
+					cnl.value as after_cost
+				from
+					' . $config['mysql']['prefix'] . 'cycle cce,
+					' . $config['mysql']['prefix'] . 'channel cnl
+				where
+					cnl.id = cce.channel_id and
+					cce.channel_id = ' . (int)$k1 . ' and
+					1
+				order by
+					cce.start desc
+			',1);
+			# todo where
+			# cnl.value ?? max cost?
+			# disabled for testing
+			# cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+			$sql = '
+				select
+					rnal.user_id
+				from
+					' . $config['mysql']['prefix'] . 'renewal rnal,
+					' . $config['mysql']['prefix'] . 'cycle cce
+				where
+					rnal.cycle_id = cce.id and
+					cce.channel_id = ' . (int)$k1 . ' and
+					rnal.start > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
+			;
+			# >= may not have anyone in the current cycle
+			$result = mysql_query($sql) or die(mysql_error());
+			while ($row = mysql_fetch_assoc($result))
+				$channel[$k1]['member_list'][$row['user_id']] = $row['user_id'];
+		}
+
+		$channel[$k1]['member_cost']['before'] = array();
+		$channel[$k1]['member_time']['before'] = array();
+		$channel[$k1]['member_cost']['after'] = array();
+		$channel[$k1]['member_time']['after'] = array();
+		$channel[$k1]['average_weight_sum'] = array();
+	}
 }
 foreach ($channel as $kc1 => $vc1) {
 	# prepare additional computation arrays
@@ -379,15 +380,17 @@ foreach ($channel as $kc1 => $vc1) {
 		if (!empty($kis['before'])) { # before
 			$sql = '
 				select
-					rnal.rating_value,
-					rnal.value as renewal_value
+					gr_rnal.rating_value,
+					gr_rnal.value as renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
 					' . $config['mysql']['prefix'] . 'renewage rnae,
+					' . $config['mysql']['prefix'] . 'gauge_renewal ge_rnal,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
 					rnal.id = rnae.renewal_id and
 					rnae.point_id = pt.id and
+					ge_rnal.renewal_id = rnal.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
@@ -415,15 +418,17 @@ foreach ($channel as $kc1 => $vc1) {
 			# $kis['after']['cost_weight'] = 0;
 			$sql = '
 				select
-					rnal.rating_value,
-					rnal.value as renewal_value
+					gr_rnal.rating_value,
+					gr_rnal.value as renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
 					' . $config['mysql']['prefix'] . 'renewage rnae,
+					' . $config['mysql']['prefix'] . 'gauge_renewal gr_rnae,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
 					rnal.id = rnae.renewal_id and
 					rnae.point_id = pt.id and
+					gr_rnal.renewal_id = rnal.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					-- todo make sure cycle id is correct

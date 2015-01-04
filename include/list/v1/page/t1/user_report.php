@@ -67,19 +67,23 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<td>4</td>
 		</tr>
 	</table>
+	<hr />
+	<!--
+		<p>
+			TODO: Previous Pot: $0 (only non-zero if no member to member ratings)
+		</p>
+	--><?
+	if (empty($channel)) { ?> 
+		<p>All channels are premature</p><?
+	}
+
+foreach ($channel as $kc1 => $vc1) { ?> 
 	<h3>Cycle</h3>
 	<p>
 		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-1x']; ?>
 		to
 		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-2x']; ?>
 	</p>
-	<!--
-		<p>
-			TODO: Previous Pot: $0 (only non-zero if no member to member ratings)
-		</p>
-	--><?
-
-foreach ($channel as $kc1 => $vc1) { ?> 
 	<h3>Member List</h3>
 	<p><?= implode(', ', $channel[$kc1]['member_list']); ?></p>
 	<p>
@@ -163,7 +167,19 @@ foreach ($channel as $kc1 => $vc1) { ?>
 			</p><?
 		}
 	}
-} ?> 
+}
+
+if (!empty($data['user_report']['premature_channel_list'])) { ?> 
+	<hr />
+	<p>Premature channel ids</p>
+	<ul><?
+	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
+		<li><?= $k1; ?></li><?
+	} ?> 
+	</ul><?
+}
+
+?> 
 </div>
 
 <div class="menu_1">

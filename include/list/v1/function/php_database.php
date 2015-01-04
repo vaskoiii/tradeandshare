@@ -329,6 +329,7 @@ function get_mask_subject($type, $display) {
 				'transaction_value' => 'transaction_value',
 			);
 		break;
+		case 'renewage':
 		case 'renewal':
 			$array = array(
 				'channel_name' => 'channel_name',

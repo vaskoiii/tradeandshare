@@ -18,50 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# description: custom code based on the timeline for modifying a channel
-# issue:
-# - really rough code!
-# - have to deal with dynamically changing cycles
-# - have to accomodate for automated daily script
+# description: allow adding a channel
 
-# cycle length
-# - min = 1 day?
-# - max = 1 year? ( probably people wont use )
-# - target = 30 days
+# see includes from:
+# edit_process.php
 
-# plan
-# get the variable cycle data first
-# future
-# current
-# previous
-# then modifying renewals will be possible
-
-# included from edit process
-/*
-$process = array(); # Send to process
-$interpret = array(); # Interpreted from $process
-$interpret['lookup'] = array();
-
-$process['form_info'] = get_action_header_1();
-foreach($process['form_info'] as $k1 => $v1)
-	$process['form_info'][$k1] = get_gp($k1);
-
-$process['action_content_1']  = get_action_content_1($process['form_info']['type'], 'edit');
-$process['action_content_2']  = get_action_content_2($process['form_info']['type'], 'edit');
-
-# shortcuts
-$id = & $process['form_info']['id'];
-$lookup = & $interpret['lookup'];
-$action_content_1 = & $process['action_content_1'];
-$action_content_2 = & $process['action_content_2'];
-$prefix = & $config['mysql']['prefix'];
-$type = & $process['form_info']['type'];
-$message = & $interpret['message'];
-$login_user_id = $_SESSION['login']['login_user_id'];
-*/
-
-
-# SET RESPONSE
 if ($process)
 foreach ($process as $k1 => $v1)
 if ($v1)
@@ -75,21 +36,49 @@ switch ($k2) {
 	break;
 }
 
-# lookup
 process_field_missing('action_content_1');
 process_data_translation('action_content_1');
 
-# if does not exist do not allow adding for now
-if (empty($lookup['channel_id'])) {
-	$message = tt('element', 'does_not_exist') . ' - can not add new channels until logic is complete';
-	# todo allow adding new channels
+if (!empty($id)) {
+	$message = 'can not modify channels until logic is complete only add';
 }
-
-if (!$message) {
-	# todo force a log when updating items
-}
-
-if (empty($message))
-	$message = 'placeholder logic only - not allowed to modify channels until they can be setup in a log';
 process_failure($message);
+
+# do it
+if (empty($id)) {
+	$sql = '
+		insert into
+			' . $prefix . 'channel
+		SET
+			user_id = ' . (int)$login_user_id . ',
+			value = ' . to_sql($action_content_1['channel_value']) . ',
+			offset = ' . to_sql($action_content_1['channel_offset']) . ',
+			name = ' . to_sql($action_content_1['channel_name']) . ',
+			description = ' . to_sql($action_content_1['channel_description']) . ',
+			parent_id = 0,
+			timeframe_id = 2,
+			modified = now(),
+			active = 1
+		' . ($id ? 'WHERE id = ' . (int)$id : '') . '
+	';
+	mysql_query($sql) or die(mysql_error());
+	$i1 = mysql_insert_id();
+	$sql = '
+		update
+			' . $prefix . 'channel
+		set
+			parent_id = ' . (int)$i1 . '
+		where
+			id = ' . (int)$i1 . '
+		limit
+			1
+	';
+	mysql_query($sql) or die(mysql_error());
+
+}
+if (!empty($id)) {
+	# todo currently an error message prevents this from happening
+}
+
+process_success(tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : ''));
 exit;

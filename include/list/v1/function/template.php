@@ -203,6 +203,9 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				case '3':
 					$grab .= 'end';
 				break;
+				case '4':
+					$grab .= 'nextend';
+				break;
 				default:
 					$grab .= 'unknown';
 				break;
@@ -276,6 +279,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			case 'translation':
 			break;
 			# not deletable:
+			case 'channel':
 			case 'incident':
 			case 'meritopic':
 			case 'tag':
