@@ -2858,3 +2858,4 @@ CREATE TABLE IF NOT EXISTS `ts_vote` (
 -- Dumping data for table `ts_vote`
 --
 
+ALTER TABLE `ts_cycle` ADD `point_id` TINYINT NOT NULL AFTER `channel_id` , ADD INDEX ( `point_id` ) ;

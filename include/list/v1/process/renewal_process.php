@@ -18,16 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# description: custom code based on the timeline for renewing a membership also handles "first" renewals and upcoming
+# description: process "first" cycles/renewals and upcoming renewals - (does not process upcoming cycles)
 
 # note
 # cycle length
-# - min = 1 day?
-# - max = 1 year? ( probably people wont use )
+# - min = 1 day? ( current timeframe_id lags by the frequency of periodic_cycle.php )
+# - max = 1 year?
 # - estimated norm = 30 days
 
 # todo allow user to confirm before billing
 # todo process funds charge transaction
+
+# variable
+$first_cycle = 0;
+$first_renewal = 0;
 
 $process['action_content_1']['channel_name'] = get_gp('channel_name');
 $process['action_content_1']['point_name'] = get_gp('point_name');
@@ -59,188 +63,61 @@ if ($lookup['point_id'] == 1) {
 	$message = tt('point', 'start') . ' : ' . tt('element', 'error');
 }
 
-$message = 'force failure until debug messages are no longer needed';
+# $message = 'force failure until debug messages are no longer needed';
 process_failure($message);
 
 # do it!
 
+$now = date('Y-m-d H:i:s');
+
 # initialize cycle
 $data['cycle'] = array(
-	'future' => array(),
+	'next' => array(),
 	'current' => array(),
 	'previous' => array(),
 );
-$fcycle = & $data['cycle']['future'];
+$ncycle = & $data['cycle']['next'];
 $ccycle = & $data['cycle']['current'];
 $pcycle = & $data['cycle']['previous'];
 
 # initialize renewal
 $data['renewal'] = array(
-	'future' => array(),
+	'next' => array(),
 	'current' => array(),
 	'previous' => array(),
 );
-$frenewal = & $data['renewal']['future'];
+$nrenewal = & $data['renewal']['next'];
 $crenewal = & $data['renewal']['current'];
 $prenewal = & $data['renewal']['previous'];
 
-# first ever cycle
-# people should not be concerened with when a cycle first starts
-function prepare_cycle_array(& $cycle, $channel_parent_id) {
-	global $prefix;
-	# cycle already inserted?
-	$i1 = get_db_single_value('
-			cce.id
-		from
-			' . $prefix . 'channel cnl,
-			' . $prefix . 'cycle cce
-		where
-			cnl.id = cce.channel_id and
-			channel_id = ' . (int)$channel_parent_id
-	,1);
-	# double check that a valid channel was supplied
-	$i2 = 0;
-	if (!$i1) {
-		$i2 = get_db_single_value('
-				parent_id
-			from
-				' . $prefix . 'channel
-			where
-				parent_id = ' . (int)$channel_parent_id
-		,1);
-	}
-	# todo allow specifying arbitrary cycle start
-	if (!empty($i2)) {
-		$sql = '
-			insert into
-				' . $prefix . 'cycle
-			set
-				channel_id = ' . (int)$channel_parent_id . ',
-				timeframe_id = 2,
-				start = now(),
-				modified = now(),
-				active = 1
-		';
-		echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		$cycle['current']['cycle_id'] = mysql_insert_id(); 
-	}
+# cycle
+$first_cycle = is_cycle_start($lookup['channel_parent_id']);
+if (!empty($first_cycle))
+	insert_cycle_start($lookup['channel_parent_id']);
+get_cycle_array($data['cycle'], $lookup['channel_parent_id'], $now);
+insert_cycle_next($data['cycle'], $lookup['channel_parent_id'], $now);
+# todo maybe can just do get_cycle_next_array()
+get_cycle_array($data['cycle'], $lookup['channel_parent_id'], $now);
 
-	# will run again when get_cycle_future_array is called (todo optimize)
-	insert_cycle_future($data['cycle'], $channel_parent_id);
-}
-
-prepare_cycle_array($data['cycle'], $lookup['channel_parent_id']);
-get_cycle_array($data['cycle'], $lookup['channel_parent_id']);
-
-# first ever renewal
-function prepare_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id, $point_id) {
-	# data from this function gets overwritten later with same data todo optimize
-	# considered first renewal if no renewals so far this cycle
-	# end/nextend are not considered renewals ( only start/continue )
-	global $prefix;
-	# alias
-	$fcycle = & $cycle['future'];
-	$ccycle = & $cycle['current'];
-	$pcycle = & $cycle['previous'];
-	$frenewal = & $renewal['future'];
-	$crenewal = & $renewal['current'];
-	$prenewal = & $renewal['previous'];
-	# current renewal
-	$i1 = get_db_single_value('
-			rnal.id
-		from
-			' . $prefix . 'renewal rnal,
-			' . $prefix . 'renewage rnae
-		where
-			rnal.id = rnae.renewal_id and
-			rnae.point_id IN (1, 2) and 
-			rnal.cycle_id = ' . (int)$ccycle['cycle_id'] . ' and
-			rnal.user_id = ' . (int)$user_id . ' and
-			rnal.active = 1
-	',1);
-	if (empty($i1)) {
-		$crenewal['renewal_start'] = date('Y-m-d H:i:s');
-		$sql = '
-			insert into
-				' . $prefix . 'renewal
-			set
-				user_id = ' . (int)$user_id . ',
-				start = '  . to_sql($crenewal['renewal_start']) . ',
-				active = 1,
-				cycle_id = ' . (int)$ccycle['cycle_id']
-		;
-		echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		$renewal['current']['renewal_id'] = mysql_insert_id();
-		$sql = '
-			insert into
-				' . $prefix . 'renewage
-			set
-				point_id = 1,
-				modified = now(),
-				timeframe_id = 2,
-				renewal_id = ' . (int)$crenewal['renewal_id']
-		;
-		echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		$sql = '
-			insert into
-				' . $prefix . 'gauge_renewal
-			set
-				renewal_id = ' . (int)$crenewal['renewal_id'] . ',
-				rating_value = 0,
-				renewal_value = ' . (double)$ccycle['channel_value']
-		;
-		echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-	}
-	insert_renewal_future($cycle, $renewal, $channel_parent_id, $user_id, $point_id);
-}
-
-prepare_renewal_array($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id, $lookup['point_id']);
+# renewal
+$first_renewal = is_renewal_start($data['cycle'], $login_user_id);
+if (!empty($first_renewal))
+	insert_renewal_start($data['cycle'], $login_user_id);
 get_renewal_array($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id);
-
-function finalize_renewal_array(& $cycle, & $renewal) {
-	# alias
-	$fcycle = & $cycle['future'];
-	$ccycle = & $cycle['current'];
-	$pcycle = & $cycle['previous'];
-	$frenewal = & $renewal['future'];
-	$crenewal = & $renewal['current'];
-	$prenewal = & $renewal['previous'];
-	# r2c
-	# todo calclulate rating
-	# todo factor in rating with value
-	$frenewal['r2c_day'] = get_day_difference($crenewal['renewal_start'], $fcycle['cycle_start']);
-	$frenewal['r2c_ratio'] = 1 - ($frenewal['r2c_day'] / $ccycle['channel_offset']);
-	$frenewal['r2c_rating'] = 0;
-	$frenewal['r2c_renewal'] = $frenewal['r2c_ratio'] * $ccycle['channel_value'];
-	# c2r
-	# todo calclulate rating
-	# todo factor in rating with value
-	$frenewal['c2r_day'] = abs($frnewal['r2c_day'] - $fcycle['channel_offset']);
-	$frenewal['c2r_ratio'] = 1 - $frenewal['r2c_ratio'];
-	$frenewal['c2r_rating'] = 0;
-	$frenewal['c2r_renewal'] = $frenewal['c2r_ratio'] * $fcycle['channel_value'];
-	# misc
-	$frenewal['renewal_start'] = get_datetime_add_day($fcycle['cycle_start'], $frenewal['r2c_ratio'] * $fcycle['channel_offset']);
-	$frenewal['gauge_rating_value'] = ($frenewal['r2c_rating'] * $frenewal['r2c_ratio']) + ($frenewal['c2r_rating'] * $frenewal['c2r_ratio']);
-	$frenewal['gauge_renewal_value'] = ($frenewal['r2c_renewal'] * $frenewal['r2c_ratio']) + ($frenewal['c2r_renewal'] * $frenewal['c2r_ratio']);
-	# todo grant payout based on:
-	# see ascii picture at ~/include/list/v1/page/user_report.php
-	# todo ts_transaction will be another computation of computed_rating_value and computed_renewal_value
-}
 finalize_renewal_array($data['cycle'], $data['renewal']);
+insert_renewal_next($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id, $lookup['point_id'], $now);
 
-if (!empty($frenewal['renewal_id'])) {
+echo '<hr><pre>'; print_r($nrenewal); echo '</pre>';
+
+# cleanup
+if (empty($first_cycle)) {
 	$sql = '
 		update
 			' . $prefix . 'renewage
 		set
 			timeframe_id = 1
 		where
-			renewal_id = ' . (int)$frenewal['renewal_id'] . '
+			renewal_id = ' . (int)$nrenewal['renewal_id'] . '
 	';
 	echo '<hr>'; echo $sql;
 	mysql_query($sql) or die(mysql_error());
@@ -249,7 +126,7 @@ if (!empty($frenewal['renewal_id'])) {
 			' . $prefix . 'renewage
 		set
 			point_id = ' . (int)$lookup['point_id'] . ',
-			renewal_id = ' . (int)$frenewal['renewal_id'] . ',
+			renewal_id = ' . (int)$nrenewal['renewal_id'] . ',
 			timeframe_id = 3,
 			modified = now()
 	';

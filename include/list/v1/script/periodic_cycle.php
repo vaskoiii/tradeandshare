@@ -17,87 +17,79 @@ $script['include_path'] = '/www/site/list/include/list/v1/';
 include($script['include_path'] . 'config/preset.php');
 include($script['include_path'] . 'inline/mysql_connect.php');
 include($script['include_path'] . 'function/main.php');
+include($script['include_path'] . 'function/member.php');
 # see also: config/dependancy.php
+
+$data['run']['datetime'] = get_run_datetime_array();
+
+# careful with inequalities
+$data['run']['after']['channel'] = array();
+
+# alias
+$rdatetime = & $data['run']['datetime'];
+$achannel = & $data['run']['after']['channel'];
+$prefix = & $config['mysql']['prefix'];
+
+print_r($rdatetime);
 
 # todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
 
-# get all cycles for "tomorrow"
+# get all cycles for "next" (indirectly obtained from channel)
 $sql = '
 	select
-		*
+		channel_id
 	from
-		' . $config['mysql']['prefix'] . 'cycle
+		' . $prefix . 'cycle
 	where
-		start > now()
-		start < date_add(now(), interval 1 day) and
+		start >= ' . to_sql($rdatetime['current']) . ' and
+		start < ' . to_sql($rdatetime['next']) . '
 ';
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
-	$data['cycle']['tomorrow'][$row['cycle_id']] = array();
+	$achannel[$row['channel_id']] = array();
 }
-print_r($data['cycle']);
+# print_r($data['channel']);
 
-if (empty($data['cycle']))
-	die('cant autorenew anything - future renewals DNE - please set manually' . "\n");
+# debug hardcode
+# $achannel[12] = array();
 
-# todo add point_id to cycle such that every single cycle isn't quired to be a db entry ie) if no members
+if (empty($achannel))
+	die('cant autorenew anything - future cycles DNE - please set manually' . "\n");
 
-# todo find offset for new cycle (not always the same)
+# todo add point_id to cycle such that every single cycle isn't required to be a db entry ie) if no members
 
-# todo compute future cycle start
+foreach ($achannel as $k1 => $v1) {
 
-# todo find channel_id for new cycle (not always the same)
+	# todo find offset for new cycle (not always the same)
+	# todo compute future cycle start
+	# todo find channel_id for new cycle (not always the same)
+	# todo insert new cycles
+	# function already does everything
+	get_cycle_array($achannel[$k1], $k1, $rdatetime['next']); 
 
-# todo insert new cycles
-
-if (0)
-foreach($data['cycle'] as $k1 => $v1) {
-	$sql = '
-		insert into '  .
-			$config['mysql']['prefix'] . 'cycle
-		set
-			modified = now(),
-			active = 1,
-			timeframe_id = 3,
-			start = 0,
-			channel_id = 0
-	';
-	# mysql_query($sql) or die(mysql_error());
+	print_r($achannel[$k1]);
 }
 
 # todo when thinking in terms of current cycle:
 # to the script current may be ahead by 1 day
-# to the ent user current should not be ahead by 1 day
+# to the end user current should not be ahead by 1 day
 # is this ok?
 
-# todo get all cycles from "today"
-$data['cycle']['today'] = array();
-$sql = '
-	select
-		*
-	from
-		' . $config['mysql']['prefix'] . 'cycle
-	where
-		start > date_sub(now(), interval 1 day) and
-		start < now()
-';
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	$data['cycle']['today'][$row['cycle_id']] = array();
-}
-print_r($data['cycle']);
-
-# todo make all cycles that started today current
+# todo make all cycles that started since last run current
 $sql = '
 	update '  .
-		$config['mysql']['prefix'] . 'cycle
+		$prefix . 'cycle
 	set
+		-- not really a modification only a changing a marker
 		modified = now(),
 		timeframe_id = 2
 	where
-		start > date_sub(now(), interval 1 day) and
-		start < now()
-';
+		start >= ' . to_sql($rdatetime['previous']) . ' and
+		start < ' . to_sql($rdatetime['current'])
+;
+print_r($sql);
 # mysql_query($sql) or die(mysql_error());
+echo "\n";
 
+exit;
 # todo make previous cycles for those channels updated above past
