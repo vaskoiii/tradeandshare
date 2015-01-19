@@ -31,6 +31,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - fees are not charged until autorenew script runs
 # - fees are automatic from your available balance
 
+# todo cycle_lenth is variable!
+# todo remove cycle_length form presets
+
 # Key
 # s = start
 # c = continue
@@ -114,9 +117,14 @@ while ($row = mysql_fetch_assoc($result)) {
 
 foreach($channel as $k1 => $v1) {
 	# calculate from 2 cycles back to 3 cycles back
-	$channel[$k1]['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($k1, date('Y-m-d H:i:s'));
-	$channel[$k1]['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($k1, $channel[$k1]['cycle_restart']['yyyy-mm-dd-1x']);
-	$channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($k1, $channel[$k1]['cycle_restart']['yyyy-mm-dd-2x']);
+	$dt1 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($k1, date('Y-m-d H:i:s'));
+	$dt2 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($k1, $dt1);
+	$dt3 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($k1, $dt2);
+
+	$config['cycle_length'] = abs((strtotime($dt3) - strtotime($dt2))/86400);
+
+	# alias
+	$cycle_restart = & $channel[$k1]['cycle_restart'];
 
 	if (empty($channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'])) {
 		$data['user_report']['premature_channel_list'][$k1] = $channel[$k1];
@@ -251,7 +259,7 @@ foreach ($channel as $kc1 => $vc1) {
 				source_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
 				destination_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
 				source_user_id != destination_user_id and
-				channel_id = ' . (int)$kc1 . ' and
+				-- channel_id = ' . (int)$kc1 . ' and
 				team_id = ' . (int)$config['everyone_team_id'] . ' and 
 				source_user_id = ' . (int)$ks1 . ' and 
 				-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
@@ -299,6 +307,7 @@ foreach ($channel as $kc1 => $vc1) {
 				order by
 					rnal.start asc
 			';
+			# echo '<hr>' . $sql;
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
 				$kis['timeline'][$row['point_name']] = $row['start'];
@@ -380,8 +389,8 @@ foreach ($channel as $kc1 => $vc1) {
 		if (!empty($kis['before'])) { # before
 			$sql = '
 				select
-					gr_rnal.rating_value,
-					gr_rnal.value as renewal_value
+					ge_rnal.rating_value,
+					ge_rnal.renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
 					' . $config['mysql']['prefix'] . 'renewage rnae,
@@ -418,17 +427,17 @@ foreach ($channel as $kc1 => $vc1) {
 			# $kis['after']['cost_weight'] = 0;
 			$sql = '
 				select
-					gr_rnal.rating_value,
-					gr_rnal.value as renewal_value
+					ge_rnal.rating_value,
+					ge_rnal.renewal_value
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
 					' . $config['mysql']['prefix'] . 'renewage rnae,
-					' . $config['mysql']['prefix'] . 'gauge_renewal gr_rnae,
+					' . $config['mysql']['prefix'] . 'gauge_renewal ge_rnal,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
 					rnal.id = rnae.renewal_id and
 					rnae.point_id = pt.id and
-					gr_rnal.renewal_id = rnal.id and
+					ge_rnal.renewal_id = rnal.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					-- todo make sure cycle id is correct

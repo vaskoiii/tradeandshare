@@ -88,7 +88,7 @@ function get_cycle_last_start($channel_parent_id, $datetime) {
 			cce.start < ' . to_sql($datetime) . ' and
 			cnl.parent_id = ' . (int)$channel_parent_id . '
 		order by
-			cce.modified desc
+			cce.id desc
 	');
 }
 
