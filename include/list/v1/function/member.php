@@ -29,8 +29,30 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo error checking on $datetime_now
 # todo filter out partial array completion ie) when one value only is set in a particular array (so functions can become more independant)
+# todo make sure get_...() does not insert or update anything
 
 # cycle/renewal
+function get_single_channel_parent_id($type, $id) {
+	global $prefix;
+	$sql = '
+			cnl.parent_id
+		from
+			' . $prefix . 'channel cnl,
+			' . $prefix . 'cycle cce
+		where
+			cce.channel_id = cnl.id and
+	';
+	switch ($type) {
+		case 'channel': # placeholder
+			$sql .= 'cnl.id = ' . (int)$id;
+		break;
+		case 'cycle':
+			$sql .= 'cce.id = ' . (int)$id;
+		break;
+	}
+	$i1 = get_db_single_value($sql,1);
+	return $i1;
+}
 function get_run_datetime_array() {
 	# get a solid run datetime for the running of this script 
 	# pecision = day (perhaps can increase precision in the next)
@@ -98,7 +120,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 	',1);
 	echo '<hr>'; var_dump($i2);
 	if (empty($i2)) {
-		echo '<hr><pre>'; print_r($renewal); echo '</pre>';
+		# echo '<hr><pre>'; print_r($renewal); echo '</pre>';
 		$nrenewal['renewal_start'] = get_datetime_add_day($crenewal['renewal_start'], $ccycle['channel_offset']);
 		$sql = '
 			insert into
@@ -144,7 +166,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	# get most recent renewal data
 
 	echo '<hr>' . $period;
-	echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
+	# echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
 
 	global $prefix;
 	switch($period) {
@@ -189,7 +211,12 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 		break;
 	}
 }
-function finalize_renewal_array(& $cycle, & $renewal) {
+# todo function name may be confusing as $nrenewal does not need to be set on calling
+# suggested improved function names
+# get_member_data
+# get_renewal_next_data
+function get_renewal_next_data(& $cycle, & $renewal) {
+	# todo incorporate $period
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
@@ -207,7 +234,7 @@ function finalize_renewal_array(& $cycle, & $renewal) {
 	# c2r
 	# todo calclulate rating
 	# todo factor in rating with value
-	$nrenewal['c2r_day'] = abs($frnewal['r2c_day'] - $ncycle['channel_offset']);
+	$nrenewal['c2r_day'] = abs($nrenewal['r2c_day'] - $ncycle['channel_offset']);
 	$nrenewal['c2r_ratio'] = 1 - $nrenewal['r2c_ratio'];
 	$nrenewal['c2r_rating'] = 0;
 	$nrenewal['c2r_renewal'] = $nrenewal['c2r_ratio'] * $ncycle['channel_value'];
@@ -303,7 +330,7 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 		if (empty($ccycle['cycle_id']))
 			get_cycle_current_array($cycle, $channel_parent_id, $datetime);
 
-		echo '<hr>'; echo '<pre>'; print_r($ccycle); echo '</pre>';
+		# echo '<hr>'; echo '<pre>'; print_r($ccycle); echo '</pre>';
 
 		# ahead of time calculation
 		$ncycle_start = date('Y-m-d H:i:s', strtotime($ccycle['cycle_start']) + $ccycle['channel_offset'] * 86400);
@@ -320,10 +347,7 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 		';
 		echo '<hr>' . $sql;
 		$result = mysql_query($sql) or die(mysql_error());
-		# todo safe to remove?
-		# $cycle['next']['cycle_id'] = mysql_insert_id();
 	}
-	# next cycle now exists
 }
 function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 	global $prefix;
@@ -332,7 +356,7 @@ function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
 	$pcycle = & $cycle['previous'];
-	# guarantee only and at least 1 possible next cycle
+
 	$sql = '
 		select
 			cce.id as cycle_id,
@@ -356,15 +380,11 @@ function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 	while ($row = mysql_fetch_assoc($result)) {
 		$cycle['next'] = $row;
 	}
-	# todo needed? rename to finalize_cycle_array() ie) better placement outside of this function?
 	get_channel_data($cycle, $channel_parent_id, 'next', $datetime);
-	# todo needed?
-	# insert_cycle_next($cycle, $channel_parent_id, $datetime);
 }
 function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 	global $prefix;
-	# get 2 most recent non-next cycles
-	# min cycles that can exist at this point?
+	# does a cycle have to exist for this function?
 	$sql = '
 		select
 			cce.id as cycle_id,
@@ -424,25 +444,51 @@ function get_cycle_array(& $cycle, $channel_parent_id, $datetime) {
 
 # first ever cycle
 function is_cycle_start($channel_parent_id) {
+	# todo have to factor in previous cycles that ended
 	global $prefix;
-	return !(get_db_single_value('
-			1
+	$i1 = get_db_single_value('
+			cce.point_id
 		from
 			' . $prefix . 'channel cnl,
 			' . $prefix . 'cycle cce
 		where
 			cnl.id = cce.channel_id and
-			channel_id = ' . (int)$channel_parent_id
-	,1));
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.point_id != 3
+		order by
+			cce.modified desc
+	',1);
+	switch($i1) {
+		case '1': # should not happen
+		case '2':
+			return 0;
+		break;
+	}
+	return 1;
 }
 function insert_cycle_start($channel_parent_id) {
 	global $prefix;
+
+
+	# if the cycle already ended use the most recent channel data
+	$i1 = get_db_single_value('
+			id
+		from
+			' . $prefix . 'channel
+		where
+			parent_id = ' . (int)$channel_parent_id . '
+		order by
+			id desc
+	');
+	if (empty($i1))
+		$i1 = $channel_parent_id;
+
 	# intention is to not be concerened with when a cycle first starts
 	$sql = '
 		insert into
 			' . $prefix . 'cycle
 		set
-			channel_id = ' . (int)$channel_parent_id . ',
+			channel_id = ' . (int)$i1 . ',
 			point_id = 1,
 			timeframe_id = 2,
 			start = now(),
@@ -451,6 +497,30 @@ function insert_cycle_start($channel_parent_id) {
 	';
 	echo '<hr>' . $sql;
 	mysql_query($sql) or die(mysql_error());
+	# previous end cycle is no longer current
+	$i2 = get_db_single_value('
+			cce.id
+		from
+			' . $prefix . 'cycle cce,
+			' . $prefix . 'channel cnl
+		where
+			cce.channel_id = cnl.id and
+			cce.point_id = 3
+		order by
+			cce.start desc
+	');
+	if (!empty($i2)) {
+		$sql = '
+			update
+				' . $prefix . 'cycle
+			set
+				timeframe_id = 1
+			where
+				id = ' . (int)$i2
+		;
+		echo "$sql\n";
+		mysql_query($sql) or die(mysql_error());
+	}
 }
 
 # first ever renewal

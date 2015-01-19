@@ -96,15 +96,14 @@ if (!empty($first_cycle))
 	insert_cycle_start($lookup['channel_parent_id']);
 get_cycle_array($data['cycle'], $lookup['channel_parent_id'], $now);
 insert_cycle_next($data['cycle'], $lookup['channel_parent_id'], $now);
-# todo maybe can just do get_cycle_next_array()
-get_cycle_array($data['cycle'], $lookup['channel_parent_id'], $now);
+get_cycle_next_array($data['cycle'], $lookup['channel_parent_id'], $now);
 
 # renewal
 $first_renewal = is_renewal_start($data['cycle'], $login_user_id);
 if (!empty($first_renewal))
 	insert_renewal_start($data['cycle'], $login_user_id);
 get_renewal_array($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id);
-finalize_renewal_array($data['cycle'], $data['renewal']);
+get_renewal_next_data($data['cycle'], $data['renewal']);
 insert_renewal_next($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id, $lookup['point_id'], $now);
 
 echo '<hr><pre>'; print_r($nrenewal); echo '</pre>';
