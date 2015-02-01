@@ -163,7 +163,7 @@ function get_single_channel_parent_id($type, $id) {
 			$sql .= 'cce.id = ' . (int)$id;
 		break;
 	}
-	$i1 = get_db_single_value($sql,1);
+	$i1 = get_db_single_value($sql,0);
 	return $i1;
 }
 function get_run_datetime_array() {
@@ -231,7 +231,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			rnal.user_id = ' . (int)$user_id . ' and
 			rnal.start > ' . to_sql($datetime) . ' and
 			rnal.active = 1
-	',1);
+	',0);
 	if ($config['debug'] == 1) {
 		echo '<hr>'; var_dump($i2);
 	}
@@ -443,15 +443,13 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 			cnl.id = cce.channel_id and
 			start > ' . to_sql($datetime) . ' and
 			channel_id = ' . (int)$channel_parent_id
-	,1);
+	,0);
 
 	# ensure next cycle exists in db
 	if (empty($ncycle_id)) {
 
 		if (empty($ccycle['cycle_id']))
 			get_cycle_current_array($cycle, $channel_parent_id, $datetime);
-
-		# echo '<hr>'; echo '<pre>'; print_r($ccycle); echo '</pre>';
 
 		# ahead of time calculation
 		$ncycle_start = date('Y-m-d H:i:s', strtotime($ccycle['cycle_start']) + $ccycle['channel_offset'] * 86400);
@@ -580,7 +578,7 @@ function is_cycle_start($channel_parent_id) {
 			cce.point_id != 3
 		order by
 			cce.modified desc
-	',1);
+	',0);
 	switch($i1) {
 		case '1': # should not happen
 		case '2':
@@ -666,7 +664,7 @@ function is_renewal_start(& $cycle, $user_id) {
 			rnal.cycle_id = ' . (int)$ccycle['cycle_id'] . ' and
 			rnal.user_id = ' . (int)$user_id . ' and
 			rnal.active = 1
-	',1));
+	',0));
 }
 function insert_renewal_start(& $cycle, $user_id) {
 	global $prefix;

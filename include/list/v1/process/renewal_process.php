@@ -138,7 +138,6 @@ if (empty($first_cycle)) {
 	mysql_query($sql) or die(mysql_error());
 }
 # continuing memberships will be processed by cron
-# echo '<hr><pre>'; print_r($data); echo '</pre>'; exit;
 
 if ($config['debug'] == 1)
 	echo '<hr>';
