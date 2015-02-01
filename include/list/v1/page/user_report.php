@@ -77,21 +77,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 #                                                                 #
 ###################################################################
 
-# todo compute rating weight for before and after
-# todo use ratings in weighted region for their respective weights ie) ratings after will 
-
-# todo weighed 1 month payout ie) if you are only eligible for 15/30 days for the payout cycle
-
 # todo test multiple channels
 
 # todo figure out what to do with no member to member ratings at all
 # maybe just hold the pot until next time and do a check. note that rating yourself anything above 0 value would mean you get the whole pot!-10% for TS
 
-# todo computation dates
-# - use ts_cycle
-# - implement the cycle_list page ie) show human readable dates in the subject
-# - fix unused config variable: $config['cycle_start']
-# - fix currently overriding the cycle end/reporting date and assuming it is now for testing
 
 # variable
 $data['user_report']['channel_list'] = array();
@@ -99,6 +89,7 @@ $data['user_report']['channel_list'] = array();
 # alias
 $channel = & $data['user_report']['channel_list'];
 
+# todo optimize
 # get every single channel
 $sql = '
 	select
@@ -116,12 +107,7 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 foreach($channel as $k1 => $v1) {
-	# calculate from 2 cycles back to 3 cycles back
-	$dt1 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($k1, date('Y-m-d H:i:s'));
-	$dt2 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($k1, $dt1);
-	$dt3 = $channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($k1, $dt2);
-
-	$config['cycle_length'] = abs((strtotime($dt3) - strtotime($dt2))/86400);
+	get_channel_cycle_restart_array($channel[$k1], $k1);
 
 	# alias
 	$cycle_restart = & $channel[$k1]['cycle_restart'];
@@ -137,7 +123,7 @@ foreach($channel as $k1 => $v1) {
 			$sql = '
 				select
 					cnl.name,
-					' . (int)$config['cycle_length'] . ' as time,
+					' . (int)$cycle_restart['length_2x_to_3x'] . ' as time,
 					cnl.value as before_cost
 				from
 					' . $config['mysql']['prefix'] . 'channel cnl,
@@ -174,21 +160,8 @@ foreach($channel as $k1 => $v1) {
 			# cnl.value ?? max cost?
 			# disabled for testing
 			# cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-			$sql = '
-				select
-					rnal.user_id
-				from
-					' . $config['mysql']['prefix'] . 'renewal rnal,
-					' . $config['mysql']['prefix'] . 'cycle cce
-				where
-					rnal.cycle_id = cce.id and
-					cce.channel_id = ' . (int)$k1 . ' and
-					rnal.start > ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
-			;
-			# >= may not have anyone in the current cycle
-			$result = mysql_query($sql) or die(mysql_error());
-			while ($row = mysql_fetch_assoc($result))
-				$channel[$k1]['member_list'][$row['user_id']] = $row['user_id'];
+
+			get_channel_member_list_array($channel[$k1], $k1);
 		}
 
 		$channel[$k1]['member_cost']['before'] = array();
@@ -206,35 +179,11 @@ foreach ($channel as $kc1 => $vc1) {
 	}
 	# destination user
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
-		foreach ($channel[$kc1]['member_list'] as $k1 => $v1) { # get sum
-			$sql = '
-				select
-					source_user_id,
-					sum(g.value) as summer,
-					count(g.value) as counter
-				FROM
-					' . $config['mysql']['prefix'] . 'rating r,
-					' . $config['mysql']['prefix'] . 'grade g
-				WHERE
-					r.source_user_id != r.destination_user_id and
-					r.grade_id = g.id AND
-					r.channel_id = ' . (int)$kc1 . ' and
-					r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
-					r.source_user_id = ' . (int)$v1 . ' and 
-					r.destination_user_id = ' . (int)($kd1) . ' and
-					-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-					-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
-					r.active = 1
-			';
-			$result = mysql_query($sql) or die(mysql_error());
-			while ($row = mysql_fetch_assoc($result)) {
-				if ($row['counter'])
-					$kid['source_user_id_rating_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
-			}
-		}
+		get_channel_destination_user_id_array($channel[$kc1], $kc1, $kd1);
 		# if a user pays membership but doesn't rate anyone that money goes into the pot but doesn't affect the ratings
 		## like paying taxes but not voting
+		# $kc1 = $channel_parent_id;
+		# $kd1 = $destination_user_id;
 		$channel[$kc1]['average_sum'][$kd1] = 0;
 		if (!empty($kid['source_user_id_rating_average']))
 			$channel[$kc1]['average_sum'][$kd1] = array_sum($kid['source_user_id_rating_average']);
@@ -243,44 +192,13 @@ foreach ($channel as $kc1 => $vc1) {
 		if (!empty($kid['source_user_id_rating_average']))
 			$channel[$kc1]['average_average'][$kd1] = array_sum($kid['source_user_id_rating_average']) / count($kid['source_user_id_rating_average']);
 	}
+
 	# source user
 	# how many users rated
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
-		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		$kis['user_rating_count'] = 0;
-		# todo uncomment the start so that only the timeframe for ratings is accounted not ratings for all time
-		# currently all ratings for all time are accounted for
-		$sql = '
-			select
-				count(distinct destination_user_id) as user_rating_count
-			FROM
-				' . $config['mysql']['prefix'] . 'rating
-			WHERE
-				source_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
-				destination_user_id in (' . implode(', ', $channel[$kc1]['member_list']) . ') and
-				source_user_id != destination_user_id and
-				-- channel_id = ' . (int)$kc1 . ' and
-				team_id = ' . (int)$config['everyone_team_id'] . ' and 
-				source_user_id = ' . (int)$ks1 . ' and 
-				-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-				-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
-				active = 1
-		';
-		$result = mysql_query($sql) or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_rating_count']) {
-				$kis['user_rating_count'] = $row['user_rating_count'];
-			}
-		}
+		get_channel_source_user_id_array($channel[$kc1], $kc1, $ks1);
 	}
-	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
-		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		if (empty($kis['user_rating_count']))
-			$kis['count_weight'] = 0;
-		else
-			$kis['count_weight'] = 1 / $kis['user_rating_count'];
-			# self-rating is not counted
-	}
+
 	# time with the current membership period?
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
@@ -318,34 +236,31 @@ foreach ($channel as $kc1 => $vc1) {
 				if (!empty($timeline['start'])) {
 				if ( empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
-					# todo fix member restart
-					# $kis['before']['member_restart'] = $row['start'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
 						-
 						strtotime($timeline['start'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['before']['member_time'] / $config['cycle_length'];
+					$kis['after']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# continue
 				if ( empty($timeline['start'])) {
 				if (!empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
-					# $kis['before']['member_restart'] = $row['start'];
 					$kis['before']['member_time'] = (
 						strtotime($timeline['continue'])
 						-
 						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $config['cycle_length'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
 						-
 						strtotime($timeline['continue'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $config['cycle_length'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['after'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# end and start
@@ -357,14 +272,14 @@ foreach ($channel as $kc1 => $vc1) {
 						-
 						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $config['cycle_length'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
 						-
 						strtotime($timeline['start'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $config['cycle_length'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['after'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# end
@@ -376,7 +291,7 @@ foreach ($channel as $kc1 => $vc1) {
 						-
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $config['cycle_length'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['after'][$ks1] = $kis['after']['member_time'];
 				} } }
 			}

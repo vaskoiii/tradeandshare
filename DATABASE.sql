@@ -2859,3 +2859,6 @@ CREATE TABLE IF NOT EXISTS `ts_vote` (
 --
 
 ALTER TABLE `ts_cycle` ADD `point_id` TINYINT NOT NULL AFTER `channel_id` , ADD INDEX ( `point_id` ) ;
+
+-- hide renewal page
+update ts_page set monitor=2, launch=2 where id=434;

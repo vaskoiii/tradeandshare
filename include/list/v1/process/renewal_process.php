@@ -106,7 +106,9 @@ get_renewal_array($data['cycle'], $data['renewal'], $lookup['channel_parent_id']
 get_renewal_next_data($data['cycle'], $data['renewal']);
 insert_renewal_next($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id, $lookup['point_id'], $now);
 
-echo '<hr><pre>'; print_r($nrenewal); echo '</pre>';
+if ($config['debug'] == 1) {
+	echo '<hr><pre>'; print_r($nrenewal); echo '</pre>';
+}
 
 # cleanup
 if (empty($first_cycle)) {
@@ -118,7 +120,9 @@ if (empty($first_cycle)) {
 		where
 			renewal_id = ' . (int)$nrenewal['renewal_id'] . '
 	';
-	echo '<hr>'; echo $sql;
+	
+	if ($config['debug'] == 1)
+		echo '<hr>' . $sql;
 	mysql_query($sql) or die(mysql_error());
 	$sql = '
 		insert into
@@ -129,11 +133,13 @@ if (empty($first_cycle)) {
 			timeframe_id = 3,
 			modified = now()
 	';
-	echo '<hr>'; echo $sql;
+	if ($config['debug'] == 1)
+		echo '<hr>' . $sql;
 	mysql_query($sql) or die(mysql_error());
 }
 # continuing memberships will be processed by cron
 # echo '<hr><pre>'; print_r($data); echo '</pre>'; exit;
 
-echo '<hr>';
+if ($config['debug'] == 1)
+	echo '<hr>';
 process_success(tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : ''));

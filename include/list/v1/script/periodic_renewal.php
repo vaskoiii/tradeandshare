@@ -3,6 +3,8 @@
 # description: process the autorenewing cycles and renewals together ( first implementation will be daily cron )
 # warning: changing a timeframe_id does not count as a modification
 
+# todo script will run in the background so debug messages may be fine
+
 # issue
 # - doesn't account for credit
 # - doesn't account for rating value

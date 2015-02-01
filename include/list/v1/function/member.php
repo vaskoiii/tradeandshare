@@ -31,6 +31,119 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo filter out partial array completion ie) when one value only is set in a particular array (so functions can become more independant)
 # todo make sure get_...() does not insert or update anything
 
+# user_report (functionizing)
+# some functions may only be used in user_report
+function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
+	# calculate from 2 cycles back to 3 cycles back
+	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
+	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($channel_parent_id, $dt1);
+	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($channel_parent_id, $dt2);
+	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
+}
+function get_channel_member_list_array(& $channel, $channel_parent_id) {
+	global $config;
+	$sql = '
+		select
+			rnal.user_id
+		from
+			' . $config['mysql']['prefix'] . 'renewal rnal,
+			' . $config['mysql']['prefix'] . 'cycle cce
+		where
+			rnal.cycle_id = cce.id and
+			cce.channel_id = ' . (int)$channel_parent_id . ' and
+			rnal.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
+			rnal.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x'])
+	;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result))
+		$channel['member_list'][$row['user_id']] = $row['user_id'];
+}
+
+function get_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
+	global $config;
+
+	# alias
+	$kid = & $channel['destination_user_id'][$destination_user_id];
+
+	foreach ($channel['member_list'] as $k1 => $v1) { # get sum
+		$sql = '
+			select
+				source_user_id,
+				sum(g.value) as summer,
+				count(g.value) as counter
+			FROM
+				' . $config['mysql']['prefix'] . 'rating r,
+				' . $config['mysql']['prefix'] . 'grade g
+			WHERE
+				r.source_user_id != r.destination_user_id and
+				r.grade_id = g.id AND
+				r.channel_id = ' . (int)$channel_parent_id . ' and
+				r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
+				r.source_user_id = ' . (int)$v1 . ' and 
+				r.destination_user_id = ' . (int)($destination_user_id) . ' and
+				-- start < ' . $channel['cycle_restart']['yyyy-mm-dd-1x'] . ' and 
+				-- start >= ' . $channel['cycle_restart']['yyyy-mm-dd-2x'] . ' and 
+				r.active = 1
+		';
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['counter'])
+				$kid['source_user_id_rating_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
+		}
+	}
+}
+
+function get_cycle_rating_average(& $channel, $channel_parent_id, $destination_user_id) {
+	# preparation for computation
+	get_channel_cycle_restart_array($channel, $channel_parent_id);
+	get_channel_member_list_array($channel, $channel_parent_id);
+	foreach ($channel['member_list'] as $k1 => $v1)
+		get_channel_destination_user_id_array($channel, $channel_parent_id, $destination_user_id);
+	# arrays are all setup
+	
+}
+
+# not yet a shared function
+function get_channel_source_user_id_array(& $channel, $channel_parent_id, $source_user_id) {
+	global $config;
+
+	# alias
+	$kis = & $channel['source_user_id'][$source_user_id];
+
+	$kis['user_rating_count'] = 0;
+	# todo uncomment parts in the sql to account for:
+	# - timframe ratings only
+	# - specified channel only
+	$sql = '
+		select
+			count(distinct destination_user_id) as user_rating_count
+		FROM
+			' . $config['mysql']['prefix'] . 'rating
+		WHERE
+			source_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			source_user_id != destination_user_id and
+			-- channel_id = ' . (int)$channel_parent_id . ' and
+			team_id = ' . (int)$config['everyone_team_id'] . ' and 
+			source_user_id = ' . (int)$source_user_id . ' and 
+			-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
+			-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
+			active = 1
+	';
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		if ($row['user_rating_count']) {
+			$kis['user_rating_count'] = $row['user_rating_count'];
+		}
+	}
+	if (empty($kis['user_rating_count']))
+		$kis['count_weight'] = 0;
+	else
+		$kis['count_weight'] = 1 / $kis['user_rating_count'];
+		# self-rating is not counted
+}
+
+
 # cycle/renewal
 function get_single_channel_parent_id($type, $id) {
 	global $prefix;
@@ -94,6 +207,7 @@ function get_cycle_last_start($channel_parent_id, $datetime) {
 
 # renewal
 function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id, $point_id, $datetime) {
+	global $config;
 	global $prefix;
 	# alias
 	$ncycle = & $cycle['next'];
@@ -118,9 +232,10 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			rnal.start > ' . to_sql($datetime) . ' and
 			rnal.active = 1
 	',1);
-	echo '<hr>'; var_dump($i2);
+	if ($config['debug'] == 1) {
+		echo '<hr>'; var_dump($i2);
+	}
 	if (empty($i2)) {
-		# echo '<hr><pre>'; print_r($renewal); echo '</pre>';
 		$nrenewal['renewal_start'] = get_datetime_add_day($crenewal['renewal_start'], $ccycle['channel_offset']);
 		$sql = '
 			insert into
@@ -131,7 +246,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				active = 1,
 				cycle_id = ' . (int)$ncycle['cycle_id']
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 		# todo rely on the "get" functions to grap all the data for the appropriate arrays instead of setting it directly
 		# $nrenewal['renewal_id'] = mysql_insert_id();
@@ -145,7 +261,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				timeframe_id = 3,
 				renewal_id = ' . (int)$i1
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 		$sql = '
 			insert into
@@ -155,7 +272,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				rating_value = 0,
 				renewal_value = ' . (double)$ncycle['channel_value']
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 		# todo grant payout based on:
 		# see ascii picture at ~/include/list/v1/page/user_report.php
@@ -165,7 +283,8 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	# channel_parent_id probably is already part of the other array
 	# get most recent renewal data
 
-	echo '<hr>' . $period;
+	if ($config['debug'] == 1)
+		echo '<hr>' . $period;
 	# echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
 
 	global $prefix;
@@ -202,7 +321,9 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 					limit
 						1
 				';
-				echo '<hr>'; echo $period; echo $sql;
+				if ($config['debug'] == 1) {
+					echo '<hr>'; echo $period; echo $sql;
+				}
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result)) {
 					$renewal[$period] = $row;
@@ -345,7 +466,8 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 				timeframe_id = 3,
 				active = 1
 		';
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		$result = mysql_query($sql) or die(mysql_error());
 	}
 }
@@ -407,7 +529,8 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 			2
 	';
 	# -- now could be the current cycle!
-	echo '<hr>' . $sql;
+	if ($config['debug'] == 1)
+		echo '<hr>' . $sql;
 	$i1 = 1;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
@@ -495,7 +618,8 @@ function insert_cycle_start($channel_parent_id) {
 			modified = now(),
 			active = 1
 	';
-	echo '<hr>' . $sql;
+	if ($config['debug'] == 1)
+		echo '<hr>' . $sql;
 	mysql_query($sql) or die(mysql_error());
 	# previous end cycle is no longer current
 	$i2 = get_db_single_value('
@@ -518,7 +642,8 @@ function insert_cycle_start($channel_parent_id) {
 			where
 				id = ' . (int)$i2
 		;
-		echo "$sql\n";
+		if ($config['debug'] == 1)
+			echo "$sql\n";
 		mysql_query($sql) or die(mysql_error());
 	}
 }
@@ -559,7 +684,8 @@ function insert_renewal_start(& $cycle, $user_id) {
 				active = 1,
 				cycle_id = ' . (int)$ccycle['cycle_id']
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 		# todo safe to remove?
 		# $renewal['current']['renewal_id'] = mysql_insert_id();
@@ -573,7 +699,8 @@ function insert_renewal_start(& $cycle, $user_id) {
 				timeframe_id = 2,
 				renewal_id = ' . (int)$i1
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 
 		$sql = '
@@ -584,7 +711,8 @@ function insert_renewal_start(& $cycle, $user_id) {
 				rating_value = 0,
 				renewal_value = ' . (double)$ccycle['channel_value']
 		;
-		echo '<hr>' . $sql;
+		if ($config['debug'] == 1)
+			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 	}
 }
