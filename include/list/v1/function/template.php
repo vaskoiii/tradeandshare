@@ -762,6 +762,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					if ($listing['source_user_id'] == $login_user_id)
 						$b1 = 1;
 					break;
+					case 'channel':
 					case 'note':
 					case 'group':
 					case 'team':
