@@ -40,28 +40,38 @@ process_field_missing('action_content_1');
 process_data_translation('action_content_1');
 
 if (!empty($id)) {
-	$message = 'can not modify channels until logic is complete only add';
+	# $message = 'can not modify channels until logic is complete only add';
 }
 process_failure($message);
 
 # do it
-if (empty($id)) {
-	$sql = '
-		insert into
-			' . $prefix . 'channel
-		SET
-			user_id = ' . (int)$login_user_id . ',
-			value = ' . to_sql($action_content_1['channel_value']) . ',
-			offset = ' . to_sql($action_content_1['channel_offset']) . ',
-			name = ' . to_sql($action_content_1['channel_name']) . ',
-			description = ' . to_sql($action_content_1['channel_description']) . ',
-			parent_id = 0,
-			timeframe_id = 2,
-			modified = now(),
-			active = 1
-		' . ($id ? 'WHERE id = ' . (int)$id : '') . '
+
+# todo rename to parent_channel_id to be more clear */ 
+$s1 = '
+	parent_id = 0,
+	timeframe_id = 3,
+';
+if (!empty($id)) {
+	$s1 = '
+		parent_id = ' . (int)$lookup['channel_id'] . ',
+		timeframe_id = 2,
 	';
-	mysql_query($sql) or die(mysql_error());
+}
+$sql = '
+	insert into
+		' . $prefix . 'channel
+	SET
+		user_id = ' . (int)$login_user_id . ',
+		value = ' . to_sql($action_content_1['channel_value']) . ',
+		offset = ' . to_sql($action_content_1['channel_offset']) . ',
+		name = ' . to_sql($action_content_1['channel_name']) . ',
+		description = ' . to_sql($action_content_1['channel_description']) . ',
+		' . $s1 . '
+		modified = now(),
+		active = 1
+';
+mysql_query($sql) or die(mysql_error());
+if (empty($id)) {
 	$i1 = mysql_insert_id();
 	$sql = '
 		update
@@ -74,10 +84,6 @@ if (empty($id)) {
 			1
 	';
 	mysql_query($sql) or die(mysql_error());
-
-}
-if (!empty($id)) {
-	# todo currently an error message prevents this from happening
 }
 
 process_success(tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : ''));
