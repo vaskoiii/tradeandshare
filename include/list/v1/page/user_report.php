@@ -155,7 +155,7 @@ foreach($channel as $k1 => $v1) {
 					1
 				order by
 					cce.start desc
-			',1);
+			');
 			# todo where
 			# cnl.value ?? max cost?
 			# disabled for testing
