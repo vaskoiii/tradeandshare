@@ -33,6 +33,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo cycle_lenth is variable!
 # todo remove cycle_length form presets
+# todo get channel cost based on value 1 month ago ie) price change is invalid if it wasnt up for a month
 
 # Key
 # s = start
@@ -260,6 +261,7 @@ foreach ($channel as $kc1 => $vc1) {
 						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 					) / 86400 ;
 					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-1x'])
@@ -332,10 +334,8 @@ foreach ($channel as $kc1 => $vc1) {
 				$kisb = & $kis['before']; # alias
 				$kisb['previous_average'] = $row['rating_value'];
 				$kisb['member_cost'] = $row['renewal_value']; # $
-				# todo get channel cost based on value 1 month ago ie) price change is invalid if it wasnt up for a month
-				# todo before cost weight doesn't take into account the fraction of time
-				$kisb['cost_weight'] = $kisb['member_cost'] / $channel[$kc1]['info']['before_cost'];
-				$kisb['cost_weight']*= $kisb['time_weight'];
+
+				$kisb['cost_weight'] = $kisb['member_cost'];
 				
 				$kisb['cost_weight_math'] = $kisb['member_cost'] . ' / ' . $channel[$kc1]['info']['before_cost'] . ' * ' . $kisb['time_weight'];
 
@@ -371,15 +371,13 @@ foreach ($channel as $kc1 => $vc1) {
 				$kisa = & $kis['after']; # alias
 				$kisa['previous_average'] = $row['rating_value'];
 				$kisa['member_cost'] = $row['renewal_value']; # $
-				# todo after cost weight doesn't take into account the fraction of time
-				$kisa['cost_weight'] = $kisa['member_cost'] / $channel[$kc1]['info']['after_cost'];
-				$kisa['cost_weight']*= $kisa['time_weight'];
-				$kisa['cost_weight_math'] = $kisa['member_cost'] . ' / ' . $channel[$kc1]['info']['before_cost'] . ' * ' . $kisa['time_weight'];
+				$kisa['cost_weight'] = $kisa['member_cost'];
 				if (!empty($kisa['member_cost']))
 					$channel[$kc1]['member_cost']['after'][$ks1] = $kisa['member_cost'];
 			}
 		}
 	}
+	if (1) {
 	## weighted cost
 	if (!empty($channel[$kc1]['source_user_id']))
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
@@ -387,21 +385,22 @@ foreach ($channel as $kc1 => $vc1) {
 		$channel[$kc1]['computed_cost']['before'][$ks1] = 0;
 		if (!empty($kis['before'])) { # before
 			$kisb = & $kis['before']; # alias
-			$kisb['computed_cost'] = $kisb['member_cost'] * $kisb['cost_weight']; # * $kisb['time_weight']; 
-			$kisb['computed_cost_math'] = $kisb['member_cost'] . ' * ' . $kisb['cost_weight']; # . ' * ' . $kisb['time_weight']; 
+			$kisb['computed_cost'] = $kisb['member_cost']  * $kisb['time_weight']; 
+			$kisb['computed_cost_math'] = $kisb['member_cost'] . ' * ' . $kisb['time_weight']; 
 			$channel[$kc1]['computed_cost']['before'][$ks1] = $kisb['computed_cost'];
 		}
 		$channel[$kc1]['computed_cost']['after'][$ks1] = 0;
 		if (!empty($kis['after'])) { # after
 			$kisa = & $kis['after']; # alias
-			$kisa['computed_cost'] = $kisa['member_cost'] * $kisa['cost_weight']; # * $kisa['time_weight']; 
-			$kisa['computed_cost_math'] = $kisa['member_cost'] . ' * ' . $kisa['cost_weight']; # . ' * ' . $kisa['time_weight']; 
+			$kisa['computed_cost'] = $kisa['member_cost'] * $kisa['time_weight']; 
+			$kisa['computed_cost_math'] = $kisa['member_cost'] . ' * ' . $kisa['time_weight']; 
 			$channel[$kc1]['computed_cost']['after'][$ks1] = $kisa['computed_cost'];
 		}
 		if (1) { # combined
 			# helper array ( but duplicates data )
 			$channel[$kc1]['computed_cost']['combined'][$ks1] = $kis['before']['computed_cost'] + $kis['after']['computed_cost'];
 		}
+	}
 	}
 	### compute weighted averages
 	if (!empty($channel[$kc1]['destination_user_id']))
@@ -410,7 +409,7 @@ foreach ($channel as $kc1 => $vc1) {
 		if (!empty($kid['source_user_id_rating_average']))
 		foreach ($kid['source_user_id_rating_average'] as $k1 => $v1) {
 			$kis = & $channel[$kc1]['source_user_id'][$k1]; # alias
-			$kisb = & $kisb; # alias
+			$kisb = & $kis['before']; # alias
 			$kisa = & $kis['after']; # alias
 			# it isnt necessary to separate ratings into before and after for:
 			# - count
@@ -431,18 +430,20 @@ foreach ($channel as $kc1 => $vc1) {
 					$kisa['time_weight']
 				)
 			;
-			$kid['source_user_id_rating_weight_math'][$k1] = 
+			$kid['source_user_id_rating_weight_math_before'][$k1] = 
 				' ( ' . 
-					$v1 . ' * ' . 
-					$kis['count_weight'] . ' * ' . 
-					$kisb['cost_weight'] . ' * ' . 
-					$kisb['time_weight'] .
-				' )  + ' .
+					$v1 . ' average * ' . 
+					$kis['count_weight'] . ' count * ' . 
+					$kisb['cost_weight'] . ' cost * ' . 
+					$kisb['time_weight'] . ' time ' .
+				' )'
+			;
+			$kid['source_user_id_rating_weight_math_after'][$k1] = 
 				' ( ' . 
-					$v1 . ' * ' . 
-					$kis['count_weight'] . ' * ' . 
-					$kisa['cost_weight'] . ' * ' . 
-					$kisa['time_weight'] .
+					$v1 . ' average * ' . 
+					$kis['count_weight'] . ' count * ' . 
+					$kisa['cost_weight'] . ' cost * ' . 
+					$kisa['time_weight'] . ' time ' . 
 				' ) '
 			;
 

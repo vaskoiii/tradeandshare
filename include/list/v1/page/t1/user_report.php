@@ -26,14 +26,24 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="content">
 
 <div class="content_box ">
-	<p>Proof of Concept: Calculate credit for each user (members only) by multiplying:</p>
+	<p>Calculate credit for each member in a given cycle by multiplying:</p>
 	<ul>
-		<li>source user average</li>
-		<li>1 / source user rating on unique users</li>
-		<li>source user membership cost as a percent of max membership cost</li>
-		<li>source user timeframe percentage for current membership period</li>
+		<li><strong>average</strong> of average unique-source-user ratings on the destination user</li>
+		<li><strong>count</strong> of unique source users giving ratings to the destination user</li>
+		<li><strong>cost</strong> of membership for the destination user</li>
+		<li><strong>time</strong> with membership for the destination user</li>
 	</ul>
-	<p>From there add up all the calculated weighted credit for each member and distribute accordingly.</p>
+	<p>Because of midcycle renewals separate into the following parts factoring in differences accordingly:</p>
+	<ul>
+		<li>time after the cycle starts but before a midcycle renewal</li>
+		<li>time after a midcycle renewal but before the cycle ends</li>
+	</ul>
+	<p>After calculating member credit above for each user, a multiplier is needed to calculate payout:</p>
+	<ul>
+		<li>take the total cost of the cycle (minus a % for TS)</li>
+		<li>divide by the sum of all user member credit</li>
+	</ul>
+	<p>The payout for indivuals is then just the multiplier times their credit.</p>
 	<h3>Merit</h3>
 	<p>
 		none: 0
@@ -45,22 +55,34 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		triquarter: 3
 		-
 		full: 4
-	</p>
-	<hr style="margin: 20px 0px;" />
-	<!--
-		<p>
-			TODO: Previous Pot: $0 (only non-zero if no member to member ratings)
-		</p>
-	--><?
-	if (empty($channel)) { ?> 
-		<p>All channels are premature</p><?
-	}
+	</p><?
+	if (!empty($data['user_report']['premature_channel_list'])) { ?> 
+		<h3>Premature Channels</h3>
+		<ul><?
+		foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
+			<li style="display: inline;"><?= $k1; ?></li><?
+		} ?> 
+		</ul><?
+	} ?> 
+</div>
+<div class="menu_1">
+</div>
+<div class="menu_2">
+</div>
+</div>
+
+
+
+<?
 
 foreach ($channel as $kc1 => $vc1) { ?> 
-	<h3>Channel</h3>
+	<div class="title">
+		<h2><?= to_html($vc1['info']['name']); ?></h2>
+	</div>
+	<div class="content">
+
+	<div class="content_box ">
 	<dl>
-		<dt>Name</dt>
-		<dd><?= to_html($vc1['info']['name']); ?></dd>
 		<dt>Length</dt>
 		<dd><?= to_html($vc1['info']['time']); ?>  Days</li></dd><?
 		# before and after cost is relative to the members ( since renewal can happen mid cycle )
@@ -71,11 +93,11 @@ foreach ($channel as $kc1 => $vc1) { ?>
 			<dd>$<?= to_html($vc1['info']['after_cost']); ?></dd><?
 		if ($vc1['cycle_restart']['yyyy-mm-dd-1x']) { ?> 
 			<dt>Cycle Start</dt>
-				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?></dd><?
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
 		}
 		if ($vc1['cycle_restart']['yyyy-mm-dd-2x']) { ?> 
 			<dt>Cycle End<dt>
-				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?></dd><?
 		} ?> 
 	</dl>
 	<h3>Member List</h3>
@@ -130,23 +152,21 @@ foreach ($channel as $kc1 => $vc1) { ?>
 					=&gt;
 					<?= $v1; ?>
 				</dt>
-				<dd><?
-				echo
-
-					' ( ' . 
-						$v1 . ' * ' . 
-						$kis['count_weight'] . ' * ' . 
-						$kisb['cost_weight'] . ' * ' . 
-						$kisb['time_weight'] .
-					' )  + ' .
-					' ( ' . 
-						$v1 . ' * ' . 
-						$kis['count_weight'] . ' * ' . 
-						$kisa['cost_weight'] . ' * ' . 
-						$kisa['time_weight'] .
-					' ) '
-				; ?>  = <?=
-					$kid['source_user_id_rating_weight'][$k1]; ?> 
+				<dd>
+					<table>
+						<tr>
+							<td> </td>
+							<td> <?= $kid['source_user_id_rating_weight_math_before'][$k1]; ?> </td>
+						</tr>
+						<tr>
+							<td style="padding-right: 10px;">+</td>
+							<td style="border-bottom: 1px solid #000; padding-bottom: 10px;"> <?= $kid['source_user_id_rating_weight_math_after'][$k1]; ?> </td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td style="padding-top: 10px;"><?= $kid['source_user_id_rating_weight'][$k1]; ?></td>
+						</tr>
+					</table>
 				</dd><?
 			}
 			else
@@ -158,11 +178,11 @@ foreach ($channel as $kc1 => $vc1) { ?>
 				<?= count($kid['source_user_id_rating_average']); ?>
 			</p>
 			<p>
-				&sum;
-				=
+				Credit:
 				<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
 			</p>
 			<p>
+				Payout:
 				<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
 				$<?= $d2 * $channel[$kc1]['average_weight_sum'][$kd1]; ?>
 			</p><?
@@ -170,15 +190,6 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	}
 }
 
-if (!empty($data['user_report']['premature_channel_list'])) { ?> 
-	<hr />
-	<p>Premature channel ids</p>
-	<ul><?
-	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<li><?= $k1; ?></li><?
-	} ?> 
-	</ul><?
-}
 
 ?> 
 </div>
