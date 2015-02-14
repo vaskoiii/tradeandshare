@@ -115,6 +115,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				<span class="spacer"><?= $config['spacer']; ?></span><a href="/top_report/"><?= tt('page', 'top_report'); ?></a>
 				<span class="spacer"><?= $config['spacer']; ?></span><a href="/new_report/"><?= tt('page', 'new_report'); ?></a>
 				<span class="spacer"><?= $config['spacer']; ?></span><a href="/search_report/"><?= tt('page', 'search_report'); ?></a>
+				<span class="spacer"><?= $config['spacer']; ?></span><a href="/user_report/"><?= tt('page', 'user_report'); ?></a>
 			</dd><?
 			foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 				switch ($v1['page_name']) {

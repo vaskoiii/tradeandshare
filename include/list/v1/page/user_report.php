@@ -173,11 +173,13 @@ foreach($channel as $k1 => $v1) {
 }
 foreach ($channel as $kc1 => $vc1) {
 	# prepare additional computation arrays
+	if (!empty($vc1['member_list']))
 	foreach ($vc1['member_list'] as $k1 => $v1) {
 		$channel[$kc1]['destination_user_id'][$k1] = array();
 		$channel[$kc1]['source_user_id'][$k1] = array();
 	}
 	# destination user
+	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		get_channel_destination_user_id_array($channel[$kc1], $kc1, $kd1);
 		# if a user pays membership but doesn't rate anyone that money goes into the pot but doesn't affect the ratings
@@ -195,11 +197,14 @@ foreach ($channel as $kc1 => $vc1) {
 
 	# source user
 	# how many users rated
+	if (!empty($channel[$kc1]['source_user_id']))
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		get_channel_source_user_id_array($channel[$kc1], $kc1, $ks1);
 	}
 
 	# time with the current membership period?
+	
+	if (!empty($channel[$kc1]['source_user_id']))
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
 		if (1) {
@@ -298,6 +303,7 @@ foreach ($channel as $kc1 => $vc1) {
 		}
 	}
 	# how much paid for the timeframe ie) discounted membership from good rating
+	if (!empty($channel[$kc1]['source_user_id']))
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
 		$channel[$kc1]['member_cost']['before'][$ks1] = 0;
@@ -374,6 +380,7 @@ foreach ($channel as $kc1 => $vc1) {
 		}
 	}
 	## weighted cost
+	if (!empty($channel[$kc1]['source_user_id']))
 	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
 		$channel[$kc1]['computed_cost']['before'][$ks1] = 0;
@@ -396,6 +403,7 @@ foreach ($channel as $kc1 => $vc1) {
 		}
 	}
 	### compute weighted averages
+	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
 		if (!empty($kid['source_user_id_rating_average']))
@@ -440,6 +448,7 @@ foreach ($channel as $kc1 => $vc1) {
 		}
 	}
 	# average_weight_sum
+	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
 		$channel[$kc1]['average_weight_sum'][$kd1] = 0;

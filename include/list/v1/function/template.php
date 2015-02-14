@@ -280,6 +280,9 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			break;
 			# not deletable:
 			case 'channel':
+			case 'cycle':
+			case 'renewal':
+			case 'renewage':
 			case 'incident':
 			case 'meritopic':
 			case 'tag':

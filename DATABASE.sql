@@ -2862,3 +2862,8 @@ ALTER TABLE `ts_cycle` ADD `point_id` TINYINT NOT NULL AFTER `channel_id` , ADD 
 
 -- hide renewal page
 update ts_page set monitor=2, launch=2 where id=434;
+
+
+-- bringing user_report into more of a reality
+update ts_page set launch = 1 where id=29;
+

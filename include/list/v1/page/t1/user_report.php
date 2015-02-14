@@ -79,13 +79,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 foreach ($channel as $kc1 => $vc1) { ?> 
 	<h3>Cycle</h3>
-	<p>
-		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-1x']; ?>
-		to
-		<?= $data['user_report']['cycle_restart']['yyyy-mm-dd-2x']; ?>
+	<p><?
+		if ($vc1['cycle_restart']['yyyy-mm-dd-1x']) {
+		if ($vc1['cycle_restart']['yyyy-mm-dd-2x']) { ?> 
+			<?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?>
+			to
+			<?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?><?
+		} } ?> 
 	</p>
 	<h3>Member List</h3>
-	<p><?= implode(', ', $channel[$kc1]['member_list']); ?></p>
+	<p><?
+		if (!empty($channel[$kc1]['member_list']))
+			echo implode(', ', $channel[$kc1]['member_list']);
+		else
+			echo 'No Members'; ?> 
+	</p>
 	<p>
 		Total: <?= count($channel[$kc1]['member_list']); ?> 
 	</p>
@@ -96,7 +104,12 @@ foreach ($channel as $kc1 => $vc1) { ?>
 		<dt>Max Cost per Channel after</dt>
 		<dd>$<?= $channel[$kc1]['info']['after_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
 		<dt>Computed Channel Total</dt>
-		<dd>$<?= $d1 = array_sum($channel[$kc1]['computed_cost']['combined']); ?></dd>
+		<dd>$<?
+			$d1 = 0;
+			if (!empty($channel[$kc1]['computed_cost']['combined']))
+				$d1 = array_sum($channel[$kc1]['computed_cost']['combined']);
+			echo to_html($d1); ?> 
+		</dd>
 		<dt>TS Cut (10% of Channel Total)</dt>
 		<dd>$<?= .1 * $d1; ?></dd>
 		<dt>Remaining to be distributed</dt>
@@ -113,6 +126,7 @@ foreach ($channel as $kc1 => $vc1) { ?>
 		} ?> 
 	</dl>
 	<p>For breakdown please see public rating list of members</p><?
+	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
