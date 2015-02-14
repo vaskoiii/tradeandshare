@@ -26,48 +26,27 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="content">
 
 <div class="content_box ">
-	<p> This page is not intended to be in production it is just an attempt at a proof of concept.</p>
-	<p> Calculate credit for each user (members only) by multiplying:</p>
+	<p>Proof of Concept: Calculate credit for each user (members only) by multiplying:</p>
 	<ul>
 		<li>source user average</li>
 		<li>1 / source user rating on unique users</li>
 		<li>source user membership cost as a percent of max membership cost</li>
 		<li>source user timeframe percentage for current membership period</li>
 	</ul>
-	<p> From there add up all the calculated weighted credit for each member and distribute accordingly </p>
-	<p> You can not get negative credit from ratings so no money will be owed beyond membership</p>
-	<p> To start only 1 "channel" is looked at and member user_ids are arbitrarily specified</p>
-	<style>
-		td {
-			padding-left: 20px;
-			}
-		table {
-			margin-bottom: 20px;
-			}
-	</style>
-	<table>
-		<tr>
-			<td>merit_none</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>merit_quarter</td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>merit_half</td>
-			<td>2</td>
-		</tr>
-		<tr>
-			<td>merit_triquarter</td>
-			<td>3</td>
-		</tr>
-		<tr>
-			<td>merit_full</td>
-			<td>4</td>
-		</tr>
-	</table>
-	<hr />
+	<p>From there add up all the calculated weighted credit for each member and distribute accordingly.</p>
+	<h3>Merit</h3>
+	<p>
+		none: 0
+		-
+		quarter: 1
+		-
+		half: 2
+		-
+		triquarter: 3
+		-
+		full: 4
+	</p>
+	<hr style="margin: 20px 0px;" />
 	<!--
 		<p>
 			TODO: Previous Pot: $0 (only non-zero if no member to member ratings)
@@ -78,15 +57,27 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 foreach ($channel as $kc1 => $vc1) { ?> 
-	<h3>Cycle</h3>
-	<p><?
-		if ($vc1['cycle_restart']['yyyy-mm-dd-1x']) {
+	<h3>Channel</h3>
+	<dl>
+		<dt>Name</dt>
+		<dd><?= to_html($vc1['info']['name']); ?></dd>
+		<dt>Length</dt>
+		<dd><?= to_html($vc1['info']['time']); ?>  Days</li></dd><?
+		# before and after cost is relative to the members ( since renewal can happen mid cycle )
+		# the values are needed for computation ?> 
+		<dt>Renewal Max Cost Before Cycle Start</dt>
+			<dd>$<?= to_html($vc1['info']['before_cost']); ?></dd>
+		<dt>Renewal Max Cost After Cycle Start</dt>
+			<dd>$<?= to_html($vc1['info']['after_cost']); ?></dd><?
+		if ($vc1['cycle_restart']['yyyy-mm-dd-1x']) { ?> 
+			<dt>Cycle Start</dt>
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?></dd><?
+		}
 		if ($vc1['cycle_restart']['yyyy-mm-dd-2x']) { ?> 
-			<?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?>
-			to
-			<?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?><?
-		} } ?> 
-	</p>
+			<dt>Cycle End<dt>
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
+		} ?> 
+	</dl>
 	<h3>Member List</h3>
 	<p><?
 		if (!empty($channel[$kc1]['member_list']))
@@ -97,13 +88,9 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	<p>
 		Total: <?= count($channel[$kc1]['member_list']); ?> 
 	</p>
-	<h3>Cost Before</h3>
+	<h3>Computation</h3>
 	<dl>
-		<dt>Max Cost per Channel before</dt>
-		<dd>$<?= $channel[$kc1]['info']['before_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
-		<dt>Max Cost per Channel after</dt>
-		<dd>$<?= $channel[$kc1]['info']['after_cost']; ?> per <?= $channel[$kc1]['info']['name']; ?></dd>
-		<dt>Computed Channel Total</dt>
+		<dt>Channel Total</dt>
 		<dd>$<?
 			$d1 = 0;
 			if (!empty($channel[$kc1]['computed_cost']['combined']))

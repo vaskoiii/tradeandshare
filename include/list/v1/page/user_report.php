@@ -132,7 +132,7 @@ foreach($channel as $k1 => $v1) {
 					cnl.id = cce.channel_id and
 					cnl.id = ' . (int)$k1 . ' and
 					-- disabled for testing
-					-- cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
 					1
 				order by
 					cce.start desc
@@ -152,6 +152,7 @@ foreach($channel as $k1 => $v1) {
 				where
 					cnl.id = cce.channel_id and
 					cce.channel_id = ' . (int)$k1 . ' and
+					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
 					1
 				order by
 					cce.start desc
