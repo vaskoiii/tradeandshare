@@ -212,6 +212,7 @@ function get_cycle_last_start($channel_parent_id, $datetime) {
 function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id, $point_id, $datetime) {
 	global $config;
 	global $prefix;
+	echo '<pre>'; print_r($cycle); echo '</pre>'; $exit;
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
@@ -417,7 +418,7 @@ function get_channel_data(& $cycle, $channel_parent_id, $period, $datetime) {
 			' . $prefix . 'channel
 		where
 			modified <= ' . to_sql($s1) . ' and 
-			id = ' . (int)$channel_parent_id . '
+			parent_id = ' . (int)$channel_parent_id . '
 		order by
 			modified desc
 		limit
@@ -447,8 +448,8 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 			' . $prefix . 'cycle cce
 		where
 			cnl.id = cce.channel_id and
-			start > ' . to_sql($datetime) . ' and
-			channel_id = ' . (int)$channel_parent_id
+			cce.start > ' . to_sql($datetime) . ' and
+			cnl.parent_id = ' . (int)$channel_parent_id
 	,0);
 
 	# ensure next cycle exists in db
@@ -496,7 +497,7 @@ function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 			' . $prefix . 'channel cnl
 		where
 			cnl.id = cce.channel_id and
-			cnl.id = ' . (int)$channel_parent_id . ' and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			cce.start > ' . to_sql($datetime) . ' and
 			cce.active = 1 and
 			cnl.active = 1
