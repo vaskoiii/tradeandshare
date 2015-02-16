@@ -595,7 +595,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				</div>
 			</span><?
 		break;
-
 		# back to 1st switch functions 2012-02-10 vaskoiii
 		case 'enabled':
 			unset($container['enabled']);
@@ -627,8 +626,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><input type="checkbox" name="<?= $k1; ?>" <?= ($v1 != 1) ? '' : 'checked="checked"'; ?> /></div><?
 		break;
-
-
 		// case to not appear straight away - feed_edit only fields
 		/*
 		case 'page_name':
@@ -636,7 +633,6 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<input type="hidden" name="<?= $k1; ?>" value="<?= to_html($v1); ?>" /><?
 		break;	
 		*/
-
 		case 'kind_name':
 		case 'minder_kind_name':
 		case 'translation_kind_name':
@@ -652,42 +648,31 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		if (str_match('_theme_name', $k1)) #todo this is a crappy check also theme_name will have had to have gone 1st to work right 2012-04-05 vaskoiii
 			$option[$k1] = $option['theme_name'];
 		#nobreak
-		case 'theme_name':
-
-		case 'feed_query':
-		case 'page_name':
-
-		case 'parent_tag_path':
-		case 'parent_tag_name':
-
-
-
-		case 'team_required_name':// NOT translated
-
-		case 'group_name': // NOT translated
-		case 'lock_group_name': // NOT translated
-		case 'lock_team_name': // NOT translated
-		case 'team_name': // NOT translated
-		case 'dialect_name': // NOT translated
-		case 'group_name': // Not translated
-
-
-		case 'point_name':
 		case 'channel_name':
-		case 'display_name':
-		case 'lock_location_name':
-		case 'lock_range_name':
-
 		case 'decision_name':
 		case 'default_boolean_name':
+		case 'dialect_name':
 		case 'direction_name':
-		case 'location_name':
+		case 'display_name':
+		case 'feed_query':
 		case 'grade_name':
-		case 'range_name':
+		case 'group_name':
+		case 'location_name':
+		case 'lock_group_name':
+		case 'lock_location_name':
+		case 'lock_range_name':
+		case 'lock_team_name':
+		case 'meritype_name':
+		case 'page_name':
+		case 'parent_tag_name':
+		case 'parent_tag_path':
+		case 'phase_name':
+		case 'point_name':
 		case 'range_name':
 		case 'status_name':
-		case 'phase_name':
-		case 'meritype_name': ?> 
+		case 'team_name':
+		case 'team_required_name':
+		case 'theme_name': ?> 
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><?
 
@@ -736,10 +721,13 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 					value="<?= $k2; ?>"><?
 					#echo 'b1=' . $b1 . '&v1=' . $v1 . '&k2=' . $k2;
 					switch($k1) {
+						# NOT translated
 						case 'parent_tag_path':
 						case 'parent_tag_name':
 							echo to_html($v2);
 						break;
+						# NOT translated
+						case 'channel_name':
 						case 'location_name':
 						case 'lock_location_name':
 						case 'team_name':

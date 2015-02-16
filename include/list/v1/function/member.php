@@ -146,6 +146,7 @@ function get_channel_source_user_id_array(& $channel, $channel_parent_id, $sourc
 
 # cycle/renewal
 function get_single_channel_parent_id($type, $id) {
+	global $config;
 	global $prefix;
 	$sql = '
 			cnl.parent_id
@@ -280,6 +281,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 	}
 }
 function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
+	global $config;
+	global $prefix;
 	# channel_parent_id probably is already part of the other array
 	# get most recent renewal data
 
@@ -287,7 +290,6 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 		echo '<hr>' . $period;
 	# echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
 
-	global $prefix;
 	switch($period) {
 		case 'next':
 		case 'current':
@@ -375,6 +377,7 @@ function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {
 
 # cycle
 function get_channel_data(& $cycle, $channel_parent_id, $period, $datetime) {
+	global $config;
 	global $prefix;
 	switch($period) {
 		case 'next':
@@ -428,6 +431,7 @@ function get_channel_data(& $cycle, $channel_parent_id, $period, $datetime) {
 	}
 }
 function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
+	global $config;
 	global $prefix;
 
 	# alias
@@ -470,6 +474,7 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 	}
 }
 function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
+	global $config;
 	global $prefix;
 
 	# alias
@@ -503,6 +508,7 @@ function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 	get_channel_data($cycle, $channel_parent_id, 'next', $datetime);
 }
 function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
+	global $config;
 	global $prefix;
 	# does a cycle have to exist for this function?
 	$sql = '
@@ -517,7 +523,7 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 			' . $prefix . 'channel cnl
 		where
 			cnl.id = cce.channel_id and
-			cnl.id = ' . (int)$channel_parent_id . ' and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			cce.start <= ' . to_sql($datetime) . ' and
 			cce.active = 1 and
 			cnl.active = 1
@@ -566,6 +572,7 @@ function get_cycle_array(& $cycle, $channel_parent_id, $datetime) {
 # first ever cycle
 function is_cycle_start($channel_parent_id) {
 	# todo have to factor in previous cycles that ended
+	global $config;
 	global $prefix;
 	$i1 = get_db_single_value('
 			cce.point_id
@@ -588,6 +595,7 @@ function is_cycle_start($channel_parent_id) {
 	return 1;
 }
 function insert_cycle_start($channel_parent_id) {
+	global $config;
 	global $prefix;
 
 
@@ -648,6 +656,7 @@ function insert_cycle_start($channel_parent_id) {
 
 # first ever renewal
 function is_renewal_start(& $cycle, $user_id) {
+	global $config;
 	global $prefix;
 	# alias
 	$ccycle = & $cycle['current'];
@@ -667,6 +676,7 @@ function is_renewal_start(& $cycle, $user_id) {
 	',0));
 }
 function insert_renewal_start(& $cycle, $user_id) {
+	global $config;
 	global $prefix;
 	# alias
 	$ccycle = & $cycle['current'];

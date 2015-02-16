@@ -2874,3 +2874,5 @@ INSERT INTO `ts`.`ts_kind` (`id`, `name`, `translation`, `minder`) VALUES (NULL,
 
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'find_transaction'), (NULL, 'find_cycle'), (NULL, 'find_channel'), (NULL, 'find_renewage'), (NULL, 'find_renewal');
 
+alter table ts_renewal drop value;
+alter table ts_renewal drop rating_value;
