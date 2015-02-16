@@ -212,7 +212,8 @@ function get_cycle_last_start($channel_parent_id, $datetime) {
 function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id, $point_id, $datetime) {
 	global $config;
 	global $prefix;
-	echo '<pre>'; print_r($cycle); echo '</pre>'; $exit;
+	if ($config['debug'] == 1)
+		echo '<pre>'; print_r($cycle); echo '</pre>';
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
