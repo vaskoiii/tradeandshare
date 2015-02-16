@@ -52,7 +52,7 @@ print_break_open('user_report', 'page');
 	full=4
 </p><?
 print_break_close();
-print_break_open('premature'); 
+print_break_open('Premature'); 
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<ul><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
@@ -172,6 +172,6 @@ foreach ($channel as $kc1 => $vc1) {
 			</p><?
 		}
 	}
+	print_break_close();
 }
 
-print_break_close();

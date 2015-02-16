@@ -61,6 +61,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			case 'dialect':
 			case 'invited':
 			case 'login':
+			case 'cycle':
+			case 'transaction': # temporary until using actual transactions
 			break;
 			default:
 			switch($x['name']) {

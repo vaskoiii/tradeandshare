@@ -2876,3 +2876,6 @@ INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'find_transaction'), 
 
 alter table ts_renewal drop value;
 alter table ts_renewal drop rating_value;
+
+INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'channel_name'), (NULL, 'timeframe_name'), (NULL, 'point_name');
+INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'channel_offset'), (NULL, 'channel_value'), (NULL, 'channel_description');

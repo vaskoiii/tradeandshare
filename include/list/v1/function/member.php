@@ -47,10 +47,12 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 			rnal.user_id
 		from
 			' . $config['mysql']['prefix'] . 'renewal rnal,
-			' . $config['mysql']['prefix'] . 'cycle cce
+			' . $config['mysql']['prefix'] . 'cycle cce,
+			' . $config['mysql']['prefix'] . 'channel cnl
 		where
 			rnal.cycle_id = cce.id and
-			cce.channel_id = ' . (int)$channel_parent_id . ' and
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			rnal.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
 			rnal.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x'])
 	;
