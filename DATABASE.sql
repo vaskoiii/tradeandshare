@@ -2867,3 +2867,10 @@ update ts_page set monitor=2, launch=2 where id=434;
 -- bringing user_report into more of a reality
 update ts_page set launch = 1 where id=29;
 
+INSERT INTO `ts`.`ts_element` ( `id` , `name`) VALUES ( NULL , 'channel_uid'), ( NULL , 'cycle_uid'), ( NULL , 'renewal_uid'), ( NULL , 'renewage_uid'), ( NULL , 'transaction_uid');
+
+
+INSERT INTO `ts`.`ts_kind` (`id`, `name`, `translation`, `minder`) VALUES (NULL, 'timeframe', '1', '2'), (NULL, 'point', '1', '2');
+
+INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'find_transaction'), (NULL, 'find_cycle'), (NULL, 'find_channel'), (NULL, 'find_renewage'), (NULL, 'find_renewal');
+
