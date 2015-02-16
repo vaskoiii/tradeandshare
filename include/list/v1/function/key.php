@@ -286,6 +286,8 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 			break;
 		} }
 		break;
+		case 'point_name':
+		case 'timeframe_name':
 		case 'boolean_name':
 		case 'direction_name':
 		case 'display_name':

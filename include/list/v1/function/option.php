@@ -73,6 +73,7 @@ function add_option($option_name, & $option = null) {
 	switch($option_name) { 
 		case 'channel_name':
 		case 'point_name':
+		case 'timeframe_name':
 
 		case 'parent_tag_path':
 		case 'parent_tag_name':
@@ -187,6 +188,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 			
 			case 'channel_name':
 			case 'point_name':
+			case 'timeframe_name':
 
 			case 'decision_name':
 			case 'direction_name':
@@ -285,6 +287,8 @@ function do_option(& $option, & $key = null, & $translation = null) {
 					case 'display_name':
 					# translating channel name may cause confusion
 					# case 'channel_name':
+					case 'point_name':
+					case 'timeframe_name':
 					case 'grade_name':
 					case 'kind_name':
 					case 'lock_location_name':
