@@ -20,6 +20,32 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+# reverses the order of tt() parameters
+# typed for documentation style pages (originally user_report)
+function print_break_open($title_name, $title_kind = null) { ?> 
+	<div class="title">
+		<h2><?
+			switch ($title_kind) {
+				case null:
+					# do not translate
+					echo to_html($title_name);
+				break;
+				default:
+					echo tt($title_kind, $title_name);
+				break;
+			} ?> 
+		</h2>
+	</div>
+	<div class="content">
+		<div class="content_box"><?
+}
+function print_break_close() { ?> 
+		</div>
+		<div class="menu_1"></div>
+		<div class="menu_2"></div>
+	</div><? 
+}
+
 function ts_die($s) {
 	global $config;
 	if ($config['debug'] == 1)

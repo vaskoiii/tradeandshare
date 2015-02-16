@@ -34,6 +34,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo cycle_lenth is variable!
 # todo remove cycle_length form presets
 # todo get channel cost based on value 1 month ago ie) price change is invalid if it wasnt up for a month
+# todo limit changes in channel lenght by a max of 10%
 
 # Key
 # s = start
@@ -334,19 +335,12 @@ foreach ($channel as $kc1 => $vc1) {
 				$kisb = & $kis['before']; # alias
 				$kisb['previous_average'] = $row['rating_value'];
 				$kisb['member_cost'] = $row['renewal_value']; # $
-
-				$kisb['cost_weight'] = $kisb['member_cost'];
-				
-				$kisb['cost_weight_math'] = $kisb['member_cost'] . ' / ' . $channel[$kc1]['info']['before_cost'] . ' * ' . $kisb['time_weight'];
-
 				if (!empty($kis['before']['member_cost']))
 					$channel[$kc1]['member_cost']['before'][$ks1] = $kis['before']['member_cost'];
 			}
 		}
 		$channel[$kc1]['member_cost']['after'][$ks1] = 0;
-		# $kis['after']['cost_weight'] = 0;
 		if (!empty($kis['after'])) { # after
-			# $kis['after']['cost_weight'] = 0;
 			$sql = '
 				select
 					ge_rnal.rating_value,
@@ -371,7 +365,6 @@ foreach ($channel as $kc1 => $vc1) {
 				$kisa = & $kis['after']; # alias
 				$kisa['previous_average'] = $row['rating_value'];
 				$kisa['member_cost'] = $row['renewal_value']; # $
-				$kisa['cost_weight'] = $kisa['member_cost'];
 				if (!empty($kisa['member_cost']))
 					$channel[$kc1]['member_cost']['after'][$ks1] = $kisa['member_cost'];
 			}
@@ -420,13 +413,11 @@ foreach ($channel as $kc1 => $vc1) {
 				(
 					$v1 *
 					$kis['count_weight'] *
-					$kisb['cost_weight'] *
 					$kisb['time_weight']
 				) +
 				(
 					$v1 *
 					$kis['count_weight'] *
-					$kisa['cost_weight'] *
 					$kisa['time_weight']
 				)
 			;
@@ -434,7 +425,6 @@ foreach ($channel as $kc1 => $vc1) {
 				' ( ' . 
 					$v1 . ' average * ' . 
 					$kis['count_weight'] . ' count * ' . 
-					$kisb['cost_weight'] . ' cost * ' . 
 					$kisb['time_weight'] . ' time ' .
 				' )'
 			;
@@ -442,7 +432,6 @@ foreach ($channel as $kc1 => $vc1) {
 				' ( ' . 
 					$v1 . ' average * ' . 
 					$kis['count_weight'] . ' count * ' . 
-					$kisa['cost_weight'] . ' cost * ' . 
 					$kisa['time_weight'] . ' time ' . 
 				' ) '
 			;

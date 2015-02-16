@@ -19,69 +19,53 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: display member ratings (doesn't compute all ratings)
+
+print_break_open('user_report', 'page');
 ?> 
-<div class="title">
-	<h2><?= tt('page', 'user_report'); ?></h2>
-</div>
-<div class="content">
-
-<div class="content_box ">
-	<p>Calculate credit for each member in a given cycle by multiplying:</p>
-	<ul>
-		<li><strong>average</strong> of average unique-source-user ratings on the destination user</li>
-		<li><strong>count</strong> of unique source users giving ratings to the destination user</li>
-		<li><strong>cost</strong> of membership for the destination user</li>
-		<li><strong>time</strong> with membership for the destination user</li>
-	</ul>
-	<p>Because of midcycle renewals separate into the following parts factoring in differences accordingly:</p>
-	<ul>
-		<li>time after the cycle starts but before a midcycle renewal</li>
-		<li>time after a midcycle renewal but before the cycle ends</li>
-	</ul>
-	<p>After calculating member credit above for each user, a multiplier is needed to calculate payout:</p>
-	<ul>
-		<li>take the total cost of the cycle (minus a % for TS)</li>
-		<li>divide by the sum of all user member credit</li>
-	</ul>
-	<p>The payout for indivuals is then just the multiplier times their credit.</p>
-	<h3>Merit</h3>
-	<p>
-		none: 0
-		-
-		quarter: 1
-		-
-		half: 2
-		-
-		triquarter: 3
-		-
-		full: 4
-	</p><?
-	if (!empty($data['user_report']['premature_channel_list'])) { ?> 
-		<h3>Premature Channels</h3>
-		<ul><?
-		foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-			<li style="display: inline;"><?= $k1; ?></li><?
-		} ?> 
-		</ul><?
+<p>Calculate credit for each member in a given cycle by multiplying:</p>
+<ul>
+	<li><strong>average</strong> of average unique-source-user ratings on the destination user</li>
+	<li><strong>count</strong> of unique source users giving ratings to the destination user</li>
+	<li><strong>time</strong> with membership for the destination user</li>
+</ul>
+<p>Because of midcycle renewals separate into the following parts factoring in differences accordingly:</p>
+<ul>
+	<li>time after the cycle starts but before a midcycle renewal</li>
+	<li>time after a midcycle renewal but before the cycle ends</li>
+</ul>
+<p>After calculating member credit above for each user, a multiplier is needed to calculate payout:</p>
+<ul>
+	<li>take the total cost of the cycle (minus a % for TS)</li>
+	<li>divide by the sum of all user member credit</li>
+</ul>
+<p>The payout for indivuals is then just the multiplier times their credit.</p>
+<p>
+	<strong>Merit Key:</strong>
+	none=0
+	|
+	quarter=1
+	|
+	half=2
+	|
+	triquarter=3
+	|
+	full=4
+</p><?
+print_break_close();
+print_break_open('premature'); 
+if (!empty($data['user_report']['premature_channel_list'])) { ?> 
+	<ul><?
+	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
+		<li style="display: inline;"><?= $k1; ?></li><?
 	} ?> 
-</div>
-<div class="menu_1">
-</div>
-<div class="menu_2">
-</div>
-</div>
-
-
-
-<?
-
-foreach ($channel as $kc1 => $vc1) { ?> 
-	<div class="title">
-		<h2><?= to_html($vc1['info']['name']); ?></h2>
-	</div>
-	<div class="content">
-
-	<div class="content_box ">
+	</ul><?
+}
+else { ?>
+	<p>No premature channels</p><?
+}
+print_break_close();
+foreach ($channel as $kc1 => $vc1) {
+	print_break_open($vc1['info']['name']); ?> 
 	<dl>
 		<dt>Length</dt>
 		<dd><?= to_html($vc1['info']['time']); ?>  Days</li></dd><?
@@ -190,14 +174,4 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	}
 }
 
-
-?> 
-</div>
-
-<div class="menu_1">
-</div>
-
-<div class="menu_2">
-</div>
-
-</div>
+print_break_close();
