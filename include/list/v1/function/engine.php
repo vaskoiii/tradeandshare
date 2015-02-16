@@ -756,6 +756,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 't1.cycle_id';
 			$select[] = 'rnae.point_id';
+			$select[] = 'pt.name as point_name';
 			$select[] = 'cnl.name as channel_name';
 			$select[] = 'ge_rnal.rating_value';
 			$select[] = 'ge_rnal.renewal_value';
@@ -772,8 +773,10 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'channel cnl';
 			$from[] = $prefix . 'cycle cce';
 			$from[] = $prefix . 'timeframe tfe';
+			$from[] = $prefix . 'point pt';
 			$where[] = 'ge_rnal.renewal_id = t1.id';
 			$where[] = 'tfe.id = rnae.timeframe_id';
+			$where[] = 'pt.id = rnae.point_id';
 			$where[] = 't1.id = rnae.renewal_id';
 			$where[] = 't1.user_id = u.id';
 			$where[] = 't1.cycle_id = cce.id';

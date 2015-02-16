@@ -186,33 +186,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 
 	# Do it!
 	foreach ($structure as $k1 => $v1) {
+	# echo $v1 . '<br />';
 	if (preg_match('/^todo/', $v1)) {
 		if (!preg_match('/_\*$/', $v1))
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
-		case 'point_name':
-			# todo eventually should be the translated values received from the translation array
-			switch($listing['point_id']) {
-				case '1':
-					$grab .= 'start';
-				break;
-				case '2':
-					$grab .= 'continue';
-				break;
-				case '3':
-					$grab .= 'end';
-				break;
-				case '4':
-					$grab .= 'nextend';
-				break;
-				default:
-					$grab .= 'unknown';
-				break;
-			}
-		break;
 		case 'cycle_id':
-			$grab .= 'TODO cycle_id: ' . $listing[$k1];
+			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$k1];
 		break;
 		case 'transaction_value':
 		case 'cost_value':
@@ -533,6 +514,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
+		case 'point_name':
+		case 'timeframe_name':
 		case 'decision_name':
 		case 'grade_name':
 		case 'meritype_name':
@@ -632,7 +615,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'cycle_start':
 		case 'renewal_start':
-		case 'timeframe_name':
 		case 'channel_name':
 		case 'dialect_name':
 		case 'meritopic_name':

@@ -26,6 +26,7 @@ add_translation('element', 'remember');
 add_translation('element', 'forget');
 add_translation('element', 'memorize');
 add_translation('element', 'tag_uid');
+add_translation('element', 'cycle_uid');
 add_translation('element', 'is_empty');
 add_translation('element', 'no_result');
 add_translation('element', 'browse_all');

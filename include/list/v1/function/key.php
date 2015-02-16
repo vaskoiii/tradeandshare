@@ -677,6 +677,8 @@ function listing_key_translation(& $key, & $translation, & $base, $type, $login_
 			foreach($base['result']['listing'] as $k1 => $v1) 
 			foreach($v1 as $k2 => $v2) {
 				switch($k2) {
+					case 'timeframe_name':
+					case 'point_name':
 					case 'status_name':
 					case 'tag_name':
 					case 'dialect_name':
