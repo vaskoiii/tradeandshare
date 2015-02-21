@@ -47,10 +47,11 @@ print_break_open('user_report', 'page');
 	<li>by the <strong>time</strong> with membership for the destination user (before and after a midcycle renewal)</li>
 </ul>
 <p>To calculate full credit for each member sum all partial credit.</p>
-<p>After calculating full credit for each member above, a multiplier is needed to calculate payout:</p>
+<p>To calculate weighted credit multiply the % of member time by the full credit.</p>
+<p>After calculating weighted credit for each member above, a multiplier is needed to calculate payout:</p>
 <ul>
 	<li>take the total cost of the cycle (minus a % for TS)</li>
-	<li>divide by the sum of all credit</li>
+	<li>divide by the sum of all weighted credit</li>
 </ul>
 <p>The payout for indivuals is then just the multiplier times their credit.</p>
 <p>
@@ -127,11 +128,10 @@ foreach ($channel as $kc1 => $vc1) {
 		<dd>$<?= (.9 * $d1); ?></dd>
 		<dt>Average Weight Sum</dt>
 		<dd><?= array_sum($channel[$kc1]['average_weight_sum']); ?></dd><?
-		if (array_sum($channel[$kc1]['average_weight_sum']) != 0) { ?> 
+		if (array_sum($channel[$kc1]['weighted_credit']) != 0) { ?> 
 			<dt>Multiplier</dt>
-			<dd><?
-				$d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ;
-				
+			<dd><?=
+				$d3 = (.9 * $d1 ) / array_sum($channel[$kc1]['weighted_credit']) ;
 			?></dd><?
 		}
 		else { ?>
@@ -177,17 +177,20 @@ foreach ($channel as $kc1 => $vc1) {
 		</dl><?
 		if (!empty($kid['source_user_id_rating_average'])) { ?> 
 			<p>
-				Total:
-				<?= count($kid['source_user_id_rating_average']); ?>
-			</p>
-			<p>
-				Credit:
+				Full Credit:
 				<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
 			</p>
 			<p>
+				Time in Cycle:
+				<?= $channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] + $channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']; ?>
+			</p>
+			<p>
+				Weighted Credit:
+				<?= ($channel[$kc1]['weighted_credit'][$kd1]); ?>
+			</p>
+			<p>
 				Payout:
-				<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
-				$<?= round($d2 * $channel[$kc1]['average_weight_sum'][$kd1], 2); ?>
+				$<?= round($d3 * $channel[$kc1]['weighted_credit'][$kd1], 2); ?> 
 			</p><?
 		}
 	}

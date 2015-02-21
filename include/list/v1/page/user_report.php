@@ -178,6 +178,7 @@ foreach($channel as $k1 => $v1) {
 		$channel[$k1]['member_cost']['after'] = array();
 		$channel[$k1]['member_time']['after'] = array();
 		$channel[$k1]['average_weight_sum'] = array();
+		$channel[$k1]['weighted_credit'] = array();
 	}
 }
 foreach ($channel as $kc1 => $vc1) {
@@ -466,12 +467,19 @@ foreach ($channel as $kc1 => $vc1) {
 
 		}
 	}
-	# average_weight_sum
+	# average_weight_sum && weighted_credit
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
 		$channel[$kc1]['average_weight_sum'][$kd1] = 0;
-		if (!empty($kid['source_user_id_rating_weight']))
+		if (!empty($kid['source_user_id_rating_weight'])) {
 			$channel[$kc1]['average_weight_sum'][$kd1] = array_sum($kid['source_user_id_rating_weight']);
+			$channel[$kc1]['weighted_credit'][$kd1] =
+				array_sum($kid['source_user_id_rating_weight'])
+				* (
+					$channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] +
+					$channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']
+				);
+		}
 	}
 }
