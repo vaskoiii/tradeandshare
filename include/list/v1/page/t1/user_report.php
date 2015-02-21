@@ -25,7 +25,7 @@ function print_key_user_id($k1) {
 	global $config;
 	global $key;
 
-	if ($config['debug']) {
+	if ($config['debug'] == 1) {
 		echo $k1 . ': ';
 	}
 	echo to_html($key['user_id']['result'][$k1]['contact_name']);
@@ -70,7 +70,7 @@ print_break_open('Premature');
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<ul><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<li style="display: inline; margin-right: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?>, </li><?
+		<li style="display: inline; margin-right: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?></li><?
 	} ?> 
 	</ul><?
 }
