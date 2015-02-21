@@ -38,6 +38,7 @@ function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
 	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
 	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($channel_parent_id, $dt1);
 	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($channel_parent_id, $dt2);
+	$channel['cycle_restart']['yyyy-mm-dd-4x'] = get_cycle_last_start($channel_parent_id, $dt3);
 	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
 }
 function get_channel_member_list_array(& $channel, $channel_parent_id) {

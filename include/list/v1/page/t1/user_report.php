@@ -89,13 +89,13 @@ foreach ($channel as $kc1 => $vc1) {
 			<dd>$<?= to_html($vc1['info']['before_cost']); ?></dd>
 		<dt>Renewal Max Cost After Cycle Start</dt>
 			<dd>$<?= to_html($vc1['info']['after_cost']); ?></dd><?
-		if ($vc1['cycle_restart']['yyyy-mm-dd-1x']) { ?> 
-			<dt>Cycle Start</dt>
-				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
-		}
 		if ($vc1['cycle_restart']['yyyy-mm-dd-2x']) { ?> 
 			<dt>Cycle End<dt>
-				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-1x']; ?></dd><?
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
+		}
+		if ($vc1['cycle_restart']['yyyy-mm-dd-3x']) { ?> 
+			<dt>Cycle Start</dt>
+				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-3x']; ?></dd><?
 		} ?> 
 	</dl>
 	<h3>Member List</h3>

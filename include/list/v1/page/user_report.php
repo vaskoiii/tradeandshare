@@ -140,7 +140,7 @@ foreach($channel as $k1 => $v1) {
 					cnl.id = cce.channel_id and
 					cnl.id = ' . (int)$k1 . ' and
 					-- disabled for testing
-					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
 					1
 				order by
 					cce.start desc
@@ -160,7 +160,7 @@ foreach($channel as $k1 => $v1) {
 				where
 					cnl.id = cce.channel_id and
 					cce.channel_id = ' . (int)$k1 . ' and
-					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
+					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
 					1
 				order by
 					cce.start desc
@@ -198,13 +198,17 @@ foreach ($channel as $kc1 => $vc1) {
 		## like paying taxes but not voting
 		# $kc1 = $channel_parent_id;
 		# $kd1 = $destination_user_id;
-		$channel[$kc1]['average_sum'][$kd1] = 0;
-		if (!empty($kid['source_user_id_rating_average']))
-			$channel[$kc1]['average_sum'][$kd1] = array_sum($kid['source_user_id_rating_average']);
-		$channel[$kc1]['average_weight'][$kd1] = count($kid['source_user_id_rating_average']);
-		$channel[$kc1]['average_average'][$kd1] = 0;
-		if (!empty($kid['source_user_id_rating_average']))
-			$channel[$kc1]['average_average'][$kd1] = array_sum($kid['source_user_id_rating_average']) / count($kid['source_user_id_rating_average']);
+	
+		# needed at all? when enabled just sets a bunch of arrays to 0
+		if (0) {
+			$channel[$kc1]['average_sum'][$kd1] = 0;
+			if (!empty($kid['source_user_id_rating_average']))
+				$channel[$kc1]['average_sum'][$kd1] = array_sum($kid['source_user_id_rating_average']);
+			$channel[$kc1]['average_weight'][$kd1] = count($kid['source_user_id_rating_average']);
+			$channel[$kc1]['average_average'][$kd1] = 0;
+			if (!empty($kid['source_user_id_rating_average']))
+				$channel[$kc1]['average_average'][$kd1] = array_sum($kid['source_user_id_rating_average']) / count($kid['source_user_id_rating_average']);
+		}
 	}
 
 	# source user
@@ -237,8 +241,8 @@ foreach ($channel as $kc1 => $vc1) {
 					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					-- pt.name != "end" and
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
 				order by
 					rnal.start asc
 			';
@@ -253,12 +257,19 @@ foreach ($channel as $kc1 => $vc1) {
 				if (!empty($timeline['start'])) {
 				if ( empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
+					# should be no before
+					# there is no after time for the 3 required conditions
+					$kis['before']['member_time'] = 0;
+					$kis['before']['time_weight'] = 0;
+					$kis['before']['previous_average'] = 0;
+					$kis['before']['member_cost'] = 0;
+					$channel[$kc1]['member_time']['after'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-1x'])
+						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 						-
 						strtotime($timeline['start'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# continue
@@ -268,13 +279,13 @@ foreach ($channel as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['continue'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_restart['yyyy-mm-dd-3x'])
 					) / 86400 ;
 					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-1x'])
+						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 						-
 						strtotime($timeline['continue'])
 					) / 86400 ;
@@ -288,12 +299,12 @@ foreach ($channel as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_restart['yyyy-mm-dd-3x'])
 					) / 86400 ;
 					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-1x'])
+						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 						-
 						strtotime($timeline['start'])
 					) / 86400 ;
@@ -307,7 +318,7 @@ foreach ($channel as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_restart['yyyy-mm-dd-3x'])
 					)/86400 ;
 					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
 					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
@@ -342,9 +353,10 @@ foreach ($channel as $kc1 => $vc1) {
 					ge_rnal.renewal_id = rnal.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
+					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-4x'])
 			;
+			# member cost is needed to get the total for payout
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
 				$kisb = & $kis['before']; # alias
@@ -372,8 +384,8 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.user_id = ' . (int)$ks1 . ' and
 					pt.name != "end" and
 					-- todo make sure cycle id is correct
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
+					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
+					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
 			;
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
