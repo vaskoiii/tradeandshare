@@ -236,7 +236,7 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.id = rnae.renewal_id and
 					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
-					pt.name != "end" and
+					-- pt.name != "end" and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
 					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
 				order by
@@ -307,10 +307,16 @@ foreach ($channel as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-1x'])
+						strtotime($cycle_restart['yyyy-mm-dd-2x'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
-					$channel[$kc1]['member_time']['after'][$ks1] = $kis['after']['member_time'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$channel[$kc1]['member_time']['before'][$ks1] = $kis['before']['member_time'];
+					# there is no after time for the 3 required conditions
+					$kis['after']['member_time'] = 0;
+					$kis['after']['time_weight'] = 0;
+					$kis['after']['previous_average'] = 0;
+					$kis['after']['member_cost'] = 0;
+					$channel[$kc1]['member_time']['after'][$ks1] = $kis['before']['member_time'];
 				} } }
 			}
 		}

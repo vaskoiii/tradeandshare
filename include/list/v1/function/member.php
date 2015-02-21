@@ -53,8 +53,8 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 			rnal.cycle_id = cce.id and
 			cnl.id = cce.channel_id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
-			rnal.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
-			rnal.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x'])
+			rnal.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
+			rnal.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x'])
 	;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result))
