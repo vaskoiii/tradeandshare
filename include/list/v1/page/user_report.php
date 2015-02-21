@@ -109,6 +109,10 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 foreach($channel as $k1 => $v1) {
+
+	# convenience for display:
+	add_key('channel', $k1, 'channel_name', $key);
+
 	get_channel_cycle_restart_array($channel[$k1], $k1);
 
 	# alias
@@ -116,6 +120,8 @@ foreach($channel as $k1 => $v1) {
 
 	if (empty($channel[$k1]['cycle_restart']['yyyy-mm-dd-3x'])) {
 		$data['user_report']['premature_channel_list'][$k1] = $channel[$k1];
+		$data['user_report']['premature_channel_list'][$k1] = $channel[$k1];
+		
 		unset($channel[$k1]); # too early to evaluate
 	}
 	else {
@@ -178,6 +184,9 @@ foreach ($channel as $kc1 => $vc1) {
 	# prepare additional computation arrays
 	if (!empty($vc1['member_list']))
 	foreach ($vc1['member_list'] as $k1 => $v1) {
+		# convenience for display
+		add_key('user', $k1, 'user_name', $key);
+
 		$channel[$kc1]['destination_user_id'][$k1] = array();
 		$channel[$kc1]['source_user_id'][$k1] = array();
 	}
@@ -424,15 +433,16 @@ foreach ($channel as $kc1 => $vc1) {
 			$kid['source_user_id_rating_weight_math_before'][$k1] = 
 				' ( ' . 
 					$v1 . ' average * ' . 
-					$kis['count_weight'] . ' count * ' . 
-					$kisb['time_weight'] . ' time ' .
+					'1/' . $kis['user_rating_count'] . ' weight * ' . 
+					$kisb['time_weight'] . ' time ' . 
 				' )'
 			;
 			$kid['source_user_id_rating_weight_math_after'][$k1] = 
 				' ( ' . 
 					$v1 . ' average * ' . 
-					$kis['count_weight'] . ' count * ' . 
+					'1/' . $kis['user_rating_count'] . ' weight * ' . 
 					$kisa['time_weight'] . ' time ' . 
+					# round($kisa['time_weight'], 2) * 100 . '% time ' . 
 				' ) '
 			;
 

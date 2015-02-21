@@ -20,23 +20,37 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: display member ratings (doesn't compute all ratings)
 
+# todo if this is so useful should be moved to function.php
+function print_key_user_id($k1) {
+	global $config;
+	global $key;
+
+	if ($config['debug']) {
+		echo $k1 . ': ';
+	}
+	echo to_html($key['user_id']['result'][$k1]['contact_name']);
+	if (!empty($key['user_id']['result'][$k1]['user_name'])) {
+		echo ' &lt;';
+		echo to_html($key['user_id']['result'][$k1]['user_name']);
+		echo '&gt;';
+	}
+}
+
+
+
 print_break_open('user_report', 'page');
-?> 
-<p>Calculate credit for each member in a given cycle by multiplying:</p>
+?>
+<p>For a given cycle calculate partial credit from each member:</p>
 <ul>
-	<li><strong>average</strong> of average unique-source-user ratings on the destination user</li>
-	<li><strong>count</strong> of unique source users giving ratings to the destination user</li>
-	<li><strong>time</strong> with membership for the destination user</li>
+	<li>multiply the <strong>average</strong> of average unique-source-user ratings on the destination user</li>
+	<li>by the <strong>weight</strong> of that average (1/number of unique members rated by the source user)</li>
+	<li>by the <strong>time</strong> with membership for the destination user (before and after a midcycle renewal)</li>
 </ul>
-<p>Because of midcycle renewals separate into the following parts factoring in differences accordingly:</p>
-<ul>
-	<li>time after the cycle starts but before a midcycle renewal</li>
-	<li>time after a midcycle renewal but before the cycle ends</li>
-</ul>
-<p>After calculating member credit above for each user, a multiplier is needed to calculate payout:</p>
+<p>To calculate full credit for each member sum all partial credit.</p>
+<p>After calculating full credit for each member above, a multiplier is needed to calculate payout:</p>
 <ul>
 	<li>take the total cost of the cycle (minus a % for TS)</li>
-	<li>divide by the sum of all user member credit</li>
+	<li>divide by the sum of all credit</li>
 </ul>
 <p>The payout for indivuals is then just the multiplier times their credit.</p>
 <p>
@@ -56,7 +70,7 @@ print_break_open('Premature');
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<ul><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<li style="display: inline;"><?= $k1; ?></li><?
+		<li style="display: inline; margin-right: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?>, </li><?
 	} ?> 
 	</ul><?
 }
@@ -86,8 +100,12 @@ foreach ($channel as $kc1 => $vc1) {
 	</dl>
 	<h3>Member List</h3>
 	<p><?
-		if (!empty($channel[$kc1]['member_list']))
-			echo implode(', ', $channel[$kc1]['member_list']);
+		if (!empty($channel[$kc1]['member_list'])) {
+			foreach ($channel[$kc1]['member_list'] as $k2 => $v2) {
+				print_key_user_id($k2);
+				echo '<br />';
+			}
+		}
 		else
 			echo 'No Members'; ?> 
 	</p>
@@ -111,7 +129,10 @@ foreach ($channel as $kc1 => $vc1) {
 		<dd><?= array_sum($channel[$kc1]['average_weight_sum']); ?></dd><?
 		if (array_sum($channel[$kc1]['average_weight_sum']) != 0) { ?> 
 			<dt>Multiplier</dt>
-			<dd><?= $d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ; ?></dd><?
+			<dd><?
+				$d2 = (.9 * $d1 ) / array_sum($channel[$kc1]['average_weight_sum']) ;
+				
+			?></dd><?
 		}
 		else { ?>
 			<dt>Multiplier</dt>
@@ -123,7 +144,7 @@ foreach ($channel as $kc1 => $vc1) {
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
-		<h3><?= $kd1; ?> - Average Rating per Member</h3>
+		<h3><?= print_key_user_id($kd1); ?></h3>
 		<dl><?
 			if (!empty($kid['source_user_id_rating_average']))
 			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) {
@@ -131,10 +152,8 @@ foreach ($channel as $kc1 => $vc1) {
 				$kisb = & $kis['before'];
 				$kisa = & $kis['after'];
 				?>  
-				<dt>
-					<?= $k1; ?>
-					=&gt;
-					<?= $v1; ?>
+				<dt><?
+					print_key_user_id($k1); ?> 
 				</dt>
 				<dd>
 					<table>
@@ -168,7 +187,7 @@ foreach ($channel as $kc1 => $vc1) {
 			<p>
 				Payout:
 				<? /*$channel[$kc1]['average_average'][$kd1] * $d2 * count($kid['source_user_id_rating_average']); */ ?> 
-				$<?= $d2 * $channel[$kc1]['average_weight_sum'][$kd1]; ?>
+				$<?= round($d2 * $channel[$kc1]['average_weight_sum'][$kd1], 2); ?>
 			</p><?
 		}
 	}
