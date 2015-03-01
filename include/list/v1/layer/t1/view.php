@@ -24,6 +24,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div id="result"><!--result-->
 
 <div id="view_title_box" class="title" style="display: <?= get_motion_style_display(); ?>;">
+	<span class="go_back"><?= print_go_back('&lt;&lt;'); ?></span>
 	<h2><?
 		switch ($x['load']['view']['type']) {
 			/* uncomment if hybridizing user/contact pages

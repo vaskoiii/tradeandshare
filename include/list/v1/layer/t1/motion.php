@@ -35,6 +35,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			#$s1 = get_translation('page', 'contact_list') . ' (' . get_translation('page', 'user_list') . ')';
 		break;
 	} */ ?> 
+	<span class="go_back"><?= print_go_back('&lt;&lt;'); ?></span>
 	<h2><?= print_ts_focus($s1, 'motion'); ?></h2>
 	<p class="result_add">
 	<? if ($x['load']['motion']['name'] != 'set') {

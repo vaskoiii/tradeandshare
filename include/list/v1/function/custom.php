@@ -20,6 +20,44 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+function print_go_back($name, $kind = null) {
+	global $x;
+	if ($_SESSION['login']['login_user_name']) {
+		if ($_SESSION['feature']['feature_lock'] == 1 && $x['page']['name'] == 'lock_set') { ?> 
+			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm(get_lock_query('preview%5B0%5D=&focus=&expand%5B0%5D='), -1); ?>"><?= 
+				!empty($kind)
+					? tt($kind, $name) 
+					: $name
+				;
+			?></a><?
+		} else { ?> 
+			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm('preview%5B0%5D=&focus=&expand%5B0%5D=', -1); ?>"><?=
+				!empty($kind)
+					? tt($kind, $name) 
+					: $name
+				;
+			?></a><?
+		}
+	} else { 
+		if ($x['page']['name'] == 'login_set') {
+			# if not logged in and you click back on login_set it will keep headering you back to login set! ?> 
+			<a href="/<?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
+				!empty($kind)
+					? tt($kind, $name) 
+					: $name
+				;
+			?></a><?
+		} else { ?> 
+			<a href="<?= $x['..']; ?><?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
+				!empty($kind)
+					? tt($kind, $name) 
+					: $name
+				;
+			?></a><?
+		} 
+	}
+}
+
 # reverses the order of tt() parameters
 # typed for documentation style pages (originally user_report)
 function print_break_open($title_name, $title_kind = null) { ?> 

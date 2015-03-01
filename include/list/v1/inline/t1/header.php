@@ -30,15 +30,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		<p id="topper"><?
 			if ($_SESSION['login']['login_user_name']) {
 				echo $_SESSION['login']['login_user_name'] . $config['spacer'];
-				if ($_SESSION['feature']['feature_lock'] == 1 && $x['page']['name'] == 'lock_set') { ?> 
-					<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm(get_lock_query('preview%5B0%5D=&focus=&expand%5B0%5D='), -1); ?>"><?= 
-						tt('element', 'go_back'); 
-					?></a><?
-				} else { ?> 
-					<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm('preview%5B0%5D=&focus=&expand%5B0%5D=', -1); ?>"><?=
-						tt('element', 'go_back'); 
-					?></a><?
-				}
+				print_go_back('go_back', 'element');
 			} else { 
 				if ($x['page']['name'] == 'login_set') {
 					# if not logged in and you click back on login_set it will keep headering you back to login set! ?> 

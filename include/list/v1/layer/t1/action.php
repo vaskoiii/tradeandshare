@@ -36,6 +36,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		else
 			$s1 .= get_translation('page', $x['load']['action']['type'] . '_' . $x['load']['action']['name']);
 	} ?> 
+	<span class="go_back"><?= print_go_back('&lt;&lt;'); ?></span>
 	<h2><?
 		switch($_SESSION['process']['form_info']['load']) {
 			case 'fast':

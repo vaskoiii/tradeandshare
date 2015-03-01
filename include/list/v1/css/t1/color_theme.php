@@ -101,6 +101,11 @@ div {
 	padding: 0px;
 	margin: 0px;
 	}
+.go_back {
+	margin-left: 15px;
+	/* color not working */
+	color: #777;
+	}
 .more_solo {
 	margin-left: 20px;
 	}
