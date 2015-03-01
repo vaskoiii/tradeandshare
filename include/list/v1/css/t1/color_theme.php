@@ -254,19 +254,35 @@ div {
 	border-left: 1px solid #ffffff;
 	border-right: 1px solid #ffffff;
 	}
+.menu_1_directory,
 .menu_1 {
-	margin: 0px;
+	margin: 10px;
 	margin-top: 20px;
+	margin-bottom: 5px;
 	padding: 0px;
 	background: transparent;
 	}
+	#view_menu2 {
+		margin: 10px 15px 0px 15px;
+		}
+	#head_menu dl {
+		display: table;
+		margin: 10px auto;
+		text-align: left;
+	}
+.menu_1_directory ul {
+	margin: 5px;
+	padding: 0px;
+	display: inline;
+}
 .menu_1 ul {
-	margin: 5px 15px 5px 15px;
+	margin: 5px 15px;
 	padding: 0px;
 	}
 .menu_1 input {
 	margin: 2px;
 	}
+.menu_1_directory li,
 .menu_1 li {
 	background: <?= $data['css']['bg2']; ?>;
 	display: inline;
