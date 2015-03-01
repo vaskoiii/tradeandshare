@@ -43,9 +43,9 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 				<div id="<?= $s1; ?>_f_box" style="display: <?= ($b1 == 1 ? 'block' : 'none'); ?>;">
 					<div class="title">
 						<span class="go_back"><?= print_go_back('&lt;&lt;'); ?></span>
-						<h2><a id="<?= $s1; ?>_f_focus" href="/<?= $s1; ?>_list/"><?= tt('page', $s1 . '_list'); ?></a></h2>
+						<h2><a href="/<?= $s1; ?>_list/"><?= tt('page', $s1 . '_list'); ?></a></h2>
 						<div class="result_add">
-							<a href="#" onclick="javascript: more_toggle_swap('<?= to_html($s1 . '_f'); ?>'); return false;">Menu</a>
+							<a id="<?= $s1; ?>_f_focus"  href="#" onclick="javascript: more_toggle_swap('<?= to_html($s1 . '_f'); ?>'); return false;">Menu</a>
 						</div>
 					</div><?
 					if (

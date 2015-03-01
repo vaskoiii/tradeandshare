@@ -24,20 +24,19 @@ $s1 = tt('element', 'more');
 $s2 = tt('element', 'less');
 $s3 =  get_q_query_modified($x['level'], array('t1_box_on' => '1'));
 
-
 echo <<<JAVASCRIPT
-
+function did(s1) {
+	return document.getElementById(s1);
+}
 function more_toggle_swap(t1, refocus) {
-   	refocus = typeof refocus !== 'undefined' ? true : false; // browser compatible default parameter
-	if (refocus == false)
-		var t1_focus = document.getElementById(t1 + '_focus');
+	// have to supply a focus on the dom!
+	if (refocus)
+		var t1_focus = did(refocus);
 	else
-		var t1_focus = document.getElementById(refocus);
-
-	var t1_box = document.getElementById(t1 + '_box');
-	var t1_swap1 = document.getElementById(t1 + '_swap1');
-	var t1_swap2 = document.getElementById(t1 + '_swap2');
-
+		var t1_focus = did(t1 + '_focus');
+	var t1_box = did(t1 + '_box');
+	var t1_swap1 = did(t1 + '_swap1');
+	var t1_swap2 = did(t1 + '_swap2');
 	if (t1_swap1.style.display == 'none') {
 		t1_swap1.style.display='inline';
 		t1_swap2.style.display='none';
@@ -56,8 +55,8 @@ function more_toggle_swap(t1, refocus) {
 	}
 }
 function more_toggle(t1) {
-	var t1_box = document.getElementById(t1); // not + '_box'
-	var t1_toggle = document.getElementById(t1 + '_toggle');
+	var t1_box = did(t1); // not + '_box'
+	var t1_toggle = did(t1 + '_toggle');
 	if (t1_box.style.display == 'none') {
 		t1_box.style.display='block';
 		if (!t1_box.innerHTML) // failsafe for crappy browsers ie) PSP
@@ -71,18 +70,13 @@ function more_toggle(t1) {
 		t1_toggle.innerHTML = '$s1';
 	}
 }
-
 function even_more_toggle(id1, id2) {
 	more_toggle(id1);
 	more_toggle(id2);
 }
-
 function simple_show_hide(s1, s2) {
-	var o1 = document.getElementById(s1);
-	var o2 = document.getElementById(s2);
-	o1.style.display = 'block';
-	o2.style.display = 'none';
-	document.getElementById(s1 + '_focus').focus();
+	did(s1).style.display = 'block';
+	did(s2).style.display = 'none';
+	did(s1 + '_focus').focus();
 }
-
 JAVASCRIPT;

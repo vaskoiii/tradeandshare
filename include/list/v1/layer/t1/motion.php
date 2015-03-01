@@ -48,8 +48,31 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				<a href="./<?= ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action', 0); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
 			}
 		break;
-		default: ?> 
-				<a href="javascript: even_more_toggle('motion_box', 'view_title_box');">Edit<span id="motion_box_toggle" style="display: none;"> <?= $x['part'][1] == 'edit' ? tt('element', 'less') : tt('element', 'more'); ?></span></a>*<?
+		default:
+			# todo hide message associated with the form on hiding that box. same as fast and quick
+			$b1 = 1;
+			if (isset($_GET['expand']))
+			if (is_array($_GET['expand']))
+			foreach ($_GET['expand'] as $k1 => $v1)
+			if ($v1 == 'motion')
+				$b1 = 2;
+			?> 
+			<a
+				id="motion_el_swap1"
+				style="display: <?= $b1 == 1 ? 'inline-block' : 'none'; ?>;"
+				href="#"
+				onclick="javascript: more_toggle_swap('motion_el', 'motion_el_swap2'); did('result').style.display = 'none'; return false;"
+			><?= tt('element', 'edit'); ?>*</a>
+			<a
+				id="motion_el_swap2"
+				style="display: <?= $b1 == 2 ? 'inline-block' : 'none'; ?>;"
+				href="#" onclick="javascript: more_toggle_swap('motion_el', 'motion_el_swap1'); did('result').style.display = 'block'; return false;"
+			><?= tt('element', 'list'); ?>*</a><?
+			/*
+			# previous unchanging text ?> 
+			<a href="javascript: more_toggle('motion_el_box');"><?= tt('element', 'edit'); ?><span id="motion_el_box_toggle" style="display: none;"> <?= $x['part'][1] == 'edit' ? tt('element', 'less') : tt('element', 'more'); ?></span></a>*
+			<?
+			*/
 		break;
 	} } ?> 
 	</p>
@@ -59,7 +82,7 @@ if ($x['preload']['focus'] == 'motion')
 	print_message_bar();
 
 # motion box start ?> 
-<span id="motion_box"  style="display: <?= get_motion_style_display(); ?>;">
+<span id="motion_el_box"  style="display: <?= get_motion_style_display(); ?>;">
 <div class="content">
 <form name="motion_process" action="/index.php" method="POST">
 <input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $x['load']['motion']['name']; ?>_process/" />
