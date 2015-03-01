@@ -426,3 +426,11 @@ div {
 .keyword_box input {
 	margin-bottom: 5px;
 	}
+
+/* CSS3 */
+@media only screen and (max-width: 480px) {
+	body {
+		width: 100%;
+		margin: 0px -1px;
+		}
+}
