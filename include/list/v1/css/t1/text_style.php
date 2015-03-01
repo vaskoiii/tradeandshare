@@ -22,9 +22,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # possibly broke colorful emails when eliminating $data['css']['text_style']['all'] 2012-02-16 vaskoiii
 
-echo $data['css']['text_style']['message_box']; ?>
+# for vim css highlighting use:
+# :set filetype=css
+# the previous style hack messes up firebug
+?>
 
-/* hack so vim will show style <style>*/
+<?= $data['css']['text_style']['message_box']; ?>
+
 a:link {
 	color: <?= $data['css']['text_style']['color']['link']; ?>;
 	text-decoration: underline;

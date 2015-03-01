@@ -17,6 +17,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+# for vim css highlighting use:
+# :set filetype=css
+# the previous style hack messes up firebug
 ?> 
 body {
 	color: #000001;
@@ -27,7 +31,6 @@ body {
 	<?= $data['css']['body_width_percentage']; ?>
 	<?= $data['css']['max_width']; ?>
 	}
-/*show style in vim hack <style>*/
 .keyword_part {
 	}
 #ts_focus {
@@ -103,8 +106,6 @@ div {
 	}
 .go_back {
 	margin-left: 15px;
-	/* color not working */
-	color: #777;
 	}
 .more_solo {
 	margin-left: 20px;
