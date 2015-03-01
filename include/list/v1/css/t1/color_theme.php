@@ -265,11 +265,14 @@ div {
 	#view_menu2 {
 		margin: 10px 15px 0px 15px;
 		}
+	#head_menu {
+		margin: 0px 20px;
+		}
 	#head_menu dl {
 		display: table;
 		margin: 10px auto;
 		text-align: left;
-	}
+		}
 .menu_1_directory ul {
 	margin: 5px;
 	padding: 0px;
