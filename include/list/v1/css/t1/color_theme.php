@@ -436,4 +436,10 @@ div {
 		width: 100%;
 		margin: 0px -1px;
 		}
+	#view_menu2 {
+		margin: 0px;
+		}
+	#head_menu {
+		margin: 0px;
+		}
 }
