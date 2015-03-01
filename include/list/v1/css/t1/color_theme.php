@@ -263,10 +263,10 @@ div {
 	background: transparent;
 	}
 	#view_menu2 {
-		margin: 10px 15px 0px 15px;
+		margin: 10px 7px 0px 7px;
 		}
 	#head_menu {
-		margin: 0px 20px;
+		margin: 0px 7px;
 		}
 	#head_menu dl {
 		display: table;
@@ -437,9 +437,9 @@ div {
 		margin: 0px -1px;
 		}
 	#view_menu2 {
-		margin: 0px;
+		margin: 0px 7px;
 		}
 	#head_menu {
-		margin: 0px;
+		margin: 0px 7px;
 		}
 }
