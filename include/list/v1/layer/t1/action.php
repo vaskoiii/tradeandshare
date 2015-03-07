@@ -122,20 +122,22 @@ if ($x['preload']['focus'] == 'action')
 # action box start ?> 
 <span id="action_el_box"  style="display: <?= get_action_style_display(); ?>;">
 <div class="content"><?
-# todo separate page for this?
-$b1 = 2;
-if ($x['page']['name'] == 'user_edit') {
-	$b1 = 1;
-}
-if ($b1 == 1) { ?> 
-	<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
-	<input type="hidden" name ="x" value="<?= to_html($x['.']); ?>user_process/" /><?
-}
-else { ?> 
-	<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST">
-	<input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $x['load']['action']['name']; ?>_process/" /><?
-}
-unset($b1);
+$s1 = 'edit';
+$s2 = '';
+# special cases:
+switch ($x['load']['action']['type']) {
+	case 'user':
+		$s1 = 'user';
+	break;
+	case 'profile':
+		# photo submission (first ever uploadable picture on TS!)
+		# why not use the enctype? heavier?
+		$s2 = ' enctype="multipart/form-data"';
+	break;
+} ?> 
+<form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST"<?= $s2; ?>>
+<input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $s1; ?>_process/" /><?
+unset($s1);
 ?> 
 <input type="hidden" name="q" value="<?= ff('', 1); ?>" />
 <input type="hidden" name="load" value="action" />

@@ -54,8 +54,8 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 		#pager_box img{ 
 			margin: 0px auto;
 			padding: 0px;
-			width: 128px;
-			height: 128px;
+			max-width: 128px;
+			max-height: 128px;
 			}
 		#scanner_meat_box,
 		#peopler_meat_box,

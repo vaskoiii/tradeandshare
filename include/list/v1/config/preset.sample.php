@@ -56,6 +56,9 @@ $config['autocreation_user_id'] = '111'; # |root|
 
 $config['max_tag_depth'] = 5; # safe recursive limit on how deep tags can go 2012-02-23 vaskoiii
 
+# command line utilities
+$config['utility_convert'] = '/usr/local/bin/convert'; # part of imagemagick
+
 # Important Dividers 
 # /faq_doc/#General_Notation
 # http://en.wikipedia.org/wiki/Email_address#Syntax

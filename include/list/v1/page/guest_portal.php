@@ -46,4 +46,10 @@ while ($row = mysql_fetch_assoc($result)) {
 
 }
 
-
+$data['guest_portal']['face_filer_id'] = get_db_single_value('
+	id from
+		' . $config['mysql']['prefix'] . 'filer
+	where
+		user_id = ' . $_SESSION['login']['login_user_id'] . ' and
+		path = "list/v1/face/"
+');

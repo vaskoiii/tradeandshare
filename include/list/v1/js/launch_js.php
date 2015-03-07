@@ -131,11 +131,23 @@ $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch'][
 # people launcher
 if ($_SESSION['login']['login_user_id']) {
 $s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
+$i1 = get_db_single_value('
+		id
+	from
+		' . $config['mysql']['prefix'] . 'filer
+	where
+		user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+		path = "list/v1/face/"
+', false);
 $s2 = '/list/v1/theme/select_none/ts_icon_256x256.png';
+if (!empty($i1))
+	$s2 = '/file/?id=' . (int)$i1; # jpg
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 $data['launch']['peopler']['empty'] = <<<HTML
 	<div>
-		<a href="{$s1}"><img src="{$s2}" /></a>
+		<table style="width: 128px; height: 128px; text-align: center;" cellpadding="0" cellspacing="0"></tr><td>
+			<a href="{$s1}"><img src="{$s2}" /></a>
+		</td></tr></table>
 	</div>
 HTML;
 }
@@ -148,6 +160,8 @@ $data['launch']['peopler']['empty'] = <<<HTML
 HTML;
 }
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
+
+# scan launcher
 if ($public_key) {
 $s1 = '/host_portal/?public_key=' . to_url($public_key);
 $i1 = get_db_single_value('
@@ -157,7 +171,7 @@ $i1 = get_db_single_value('
 	where
 		user_id = ' . (int)$_SESSION['login']['login_user_id'] . '
 ', false);
-$s2 = '/file/?id=' . (int)$i1 . '.png';
+$s2 = '/file/?id=' . (int)$i1; # png
 $data['launch']['scanner']['empty'] = <<<HTML
 	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>

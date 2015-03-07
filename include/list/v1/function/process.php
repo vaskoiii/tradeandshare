@@ -717,6 +717,7 @@ function process_field_missing($container = 'edit_content_1') {
 		}
 	else switch($k1) {
 		
+		case 'face_file':
 		# placeholder: case 'point_id': 
 		case 'invite_id': # handled in user_process.php (sometimes needed sometimes not)
 		case 'accept_default':

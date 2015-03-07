@@ -357,6 +357,16 @@ switch($type) {
 			$message = tt('element', 'error') . ' : ' . tt('element', 'login_user_name') . ' : ' . tt('element', 'error_uneditable') . ' : ' . tt('element', 'resetting');
 			$action_content_1['login_user_name'] = $_SESSION['login']['login_user_name']; # Emergen C 2012-02-02 vaskoiii
 		}
+		elseif (!empty($_FILES['face_file']['type'])) {
+			switch($_FILES['face_file']['type']) {
+				case 'image/jpeg':
+					# ok
+				break;
+				default:
+					$message = tt('element', 'error') . ' : ' . tt('element', 'file_type') . ' : ' . tt('element', 'require') . ' image/jpeg';
+				break;
+			}
+		}
 	break;
 }
 
@@ -691,9 +701,63 @@ switch($type) {
 	break;
 	case 'profile':
 		# todo delete file and db entry and reinsert (will autofix bad data)
+		if (!(get_db_single_value('
+				id
+			from
+				' . $config['mysql']['prefix'] . 'filer
+			where
+				user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+				path = ' . to_sql('list/v1/face/') . '
+		'))) {
+			if (!empty($_FILES)) {
+				/*
+				face_file
+					name = fIlE.jpg
+					type = image/jpeg
+					tmp_name = /tmp/phpBIzMTA
+					error = 0
+					size = 4940
+				*/
 
-		# todo get file data for uploaded file remember ( enctype="multipart/form-data" )
-		# echo '<pre>'; print_r($_FILES); echo '</pre>'; exit;
+				# autoresize the uploaded file
+				$s1 = $_FILES['face_file']['tmp_name'];
+				$s2 = $s1 . '.jpg';
+				`{$config['utility_convert']} {$s1} -resize 128x128 {$s2}`; # filer_move() freaks out if no extension
+
+				switch(filer_move($s2, 'list/v1/face/')) {
+					case 'exists':
+						# die('exists');
+					break;
+					case 'error':
+						# die('error');
+					break;
+					case 'written':
+						# die('written');
+					break;
+					default:
+						# die('default');
+					break;
+				}
+				# remove the file (php should do this anyway at the script end)
+				switch(unlink($s1)) {
+					case true:
+						# die('unlink true');
+					break;
+					case false:
+						# die('unlink false');
+					break;
+				}
+				# remove the converted file! to prevent memory from getting wasted!
+				switch(unlink($s2)) {
+					case true:
+						# die('unlink true');
+					break;
+					case false:
+						# die('unlink false');
+					break;
+				}
+			}
+		}
 
 		# assuming the opposite of filer_write() - if db entry exist file already exists
 		if (!(get_db_single_value('

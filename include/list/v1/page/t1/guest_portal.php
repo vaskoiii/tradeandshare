@@ -33,41 +33,101 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 include('list/v1/inline/t1/header_after.php');
 
-
 ?>
 
-<div class="content_box" style="text-align: center;"> <?
-if ($data['guest_portal']['user_id']['id']) { ?> 
+<div class="content_box"><?
+if ($data['guest_portal']['user_id']['id']) {
+# supposed to be printed out
+# todo use contact link instead if possible ?> 
+	<style>
+		#tsid {
+			background: #fff;
+			border: 1px dashed #000;
+			width: 308px;
+			margin: 0px -18px;
+			text-align: left;
+			
+			}
+			#tsid_top {
+				margin: 5px;
+				}
+				#tsid_icon {
+					}
+					#tsid_icon img {
+						vertical-align: middle;
+						width: 24px;
+						height: 24px;
+					}
+				#tsid_url {
+					padding-bottom: 2px;
+					text-align: left;
+					}
+			#tsid_body {
+				margin: 5px;
+				padding-bottom: 5px;
+				}
+				#tsid_face {
+					width: 128px;
+					height: 128px;
+					text-align: center;
+					}
+					#tsid_face img {
+						vertical-align: middle;
+						max-width: 128px;
+						max-height: 128px;
+						}
+				#tsid_question {
+					width: 20px;
+					text-align: center;
+					font-size: 28px;
+					line-height: 28px;
+					font-weight: bold;
+					}
+				#tsid_qrcode {
+					width: 128px;
+					height: 128px;
+					text-align: center;
+					}
+					#tsid_qrcode img {
+						vertical-align: middle;
+						max-width: 128px;
+						max-height: 128px;
+						}
+	</style>
 	<center>
-	<div style="background: #fff; width: 278px; margin: 0px -16px; padding: 0px; margin-top: 10px; border: 1px dashed #000;"><?
-		# supposed to be printed out
-		# todo use contact link instead if possible ?> 
-		<table style="margin: 4px 12px 0px 12px; width: 278px;"><tr>
-			<td style="width: 24px; height: 24px;">
-				<img src="/list/v1/theme/select_none/ts_icon.png" style="width: 24px; height: 24px;" />
-			</td>
-			<td style="vertical-align: top; padding: 0px 8px; padding-top: 2px;">
-				<a href="/">https://<?= to_html($_SERVER['HTTP_HOST']); ?></a>
-			</td>
-		</tr></table>
-		<table style="margin-bottom: 8px;">
+	<div id="tsid">
+		<table id="tsid_top">
 			<tr>
-				<td>
-					<a href="/"><img src="/list/v1/theme/select_none/ts_icon_256x256.png" style="width: 108px; height: 108px; " /></a>
+				<td id="tsid_icon">
+					<img src="/list/v1/theme/select_none/ts_icon.png" />
 				</td>
-				<td style="vertical-align: center; font-size: 36px; font-weight: bold; line-height: 30px; padding-left: 4px;">
+				<td id="tsid_url">
+					<a href="/">https://<?= to_html($_SERVER['HTTP_HOST']); ?></a>
+				</td>
+			</tr>
+		</table>
+		<table id="tsid_body">
+			<tr>
+				<td id="tsid_face"><?
+					$s1 = '/list/v1/theme/select_none/ts_icon_256x256.png';
+					if (!empty($data['guest_portal']['face_filer_id']))
+						$s1 = '/file/?id=' . (int)$data['guest_portal']['face_filer_id']; ?> 
+					<a href="/"><img src="<?= $s1; ?>" /></a>
+				</td>
+				<td id="tsid_question">
 					?
 					<br />
 					=
 				</td>
-				<td>
+				<td id="tsid_qrcode">
 					<a href="/host_portal/?public_key=<?= get_db_single_value('
 								value
 							from
 								' . $config['mysql']['prefix'] . 'pubkey
 							where
 								user_id = ' . (int)$_SESSION['login']['login_user_id']
-						, 0); ?>" ><img src="/file/?id=<?= (int)$data['guest_portal']['user_id']['id']; ?>" style="width: 108px; height: 108px;" /></a>
+						, 0); ?>"
+					><img src="/file/?id=<?= (int)$data['guest_portal']['user_id']['id']; ?>" /></a>
 				</td>
 			</tr>
 		</table>

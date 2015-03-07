@@ -551,17 +551,29 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<span>
 			<br /><?
 		break;
-		case 'face_md5': ?> 
+		case 'face_file':
+			# combined into the case below
+		break;
+		case 'face_filer_id': ?> 
 			<span valign="top">
-				<div class="k"><span class="user_name"><?= tt('element', $k1); ?></span>:</div>
+				<div class="k"><span class="user_name"><?= tt('element', 'face_file'); ?></span>:</div>
 				<div class="v">
-					<input type="file" style="margin: 5px; border: 2px inset #eee;" />
+					<input type="file" name="face_file" style="margin-top: 5px; border: 2px inset #eee;" />
 					<br />
-					<img src="/list/v1/theme/select_none/ts_icon_256x256.png" style="margin: 10px; width: 128px; height: 128px;" /><? # ts_icon.png ?> 
+					<table style="width: 128px; height: 128px; text-align: center; margin-bottom: 10px; margin-top: 5px;" cellpadding="0" cellspacing="0"></tr><td><?
+						if (!empty($v1)) { ?> 
+							<img src="/file/?id=<?= (int)$v1; ?>" /><?
+						}
+						else {
+							# ts_icon ?> 
+							<img src="/list/v1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" /><?
+						} ?> 
+					</td></tr></table>
 				</div>
 			<span><?
-		break;
+		case 'face_md5':
 		case 'face_extension':
+			# using yet?
 		break;
 		# case 'kind_name_translation_name':
 		# todo create less ambiguity by creating a separate case
