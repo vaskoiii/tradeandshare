@@ -379,6 +379,9 @@ switch($x['load']['list']['name']) {
 		<div class="menu_2"></div><?
 	break;
 	case 'report':
+		# tired hack (wrong name and duplicate ts_focus) 
+		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/search.php');
+		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php');
 		include($x['site']['i'] . '/page/' . $x['site']['t'] . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php');
 	break;
 }
