@@ -95,7 +95,7 @@ else {
 					id from
 						' . $config['mysql']['prefix'] . 'filer
 					where
-						user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+						user_id = ' . (int)get_gp('public_key') . ' and
 						path = "list/v1/face/"
 				');
 				if (!empty($i1))
