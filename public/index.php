@@ -1,1 +1,1 @@
-<? require('list/version.php');
+<? require('list/loader.php');
