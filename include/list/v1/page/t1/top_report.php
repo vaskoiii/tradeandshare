@@ -39,7 +39,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	}
 </style>
 
-<div id="search">
+<? # <div id="search"> ?> 
 	<div id="list_title_box" class="title" style="display: <?= get_action_style_display(); ?>;"><?
 		$s1 = get_translation('page', 'top_report');
 		if ($x['name'] != ''
