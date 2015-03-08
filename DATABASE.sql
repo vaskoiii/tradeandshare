@@ -2879,3 +2879,6 @@ alter table ts_renewal drop rating_value;
 
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'channel_name'), (NULL, 'timeframe_name'), (NULL, 'point_name');
 INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'channel_offset'), (NULL, 'channel_value'), (NULL, 'channel_description');
+
+
+ALTER TABLE `ts_channel` ADD `percent` INT NOT NULL AFTER `value`;

@@ -89,8 +89,18 @@ else {
 		<div class="doc_box1">
 			<h3 style="margin: 20px 0px 5px 0px;">Accountability</h3>
 			<div style="margin-left: 15px;">
-			<div>
-				<img src="/list/v1/theme/select_none/ts_icon_256x256.png" style="width: 128px; height: 128px;" />
+			<div><?
+				$s1 = '/list/v1/theme/select_none/ts_icon_256x256.png';
+				$i1 = get_db_single_value('
+					id from
+						' . $config['mysql']['prefix'] . 'filer
+					where
+						user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+						path = "list/v1/face/"
+				');
+				if (!empty($i1))
+					$s1 = '/file/?id=' . (int)$i1; ?> 
+				<img src="<?= $s1; ?>" style="width: 128px; height: 128px;" />
 			</div>
 			<p><?
 				$s2 = $key['user_id']['result'][ $data['view']['result']['listing'][0]['user_id'] ]['user_name'];
