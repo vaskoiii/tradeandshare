@@ -20,7 +20,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Description: Facilitate the most basic and fast 2 way identification with portrait and public key
 
-include('list/v1/inline/t1/header_after.php'); ?> 
+?> 
 
 <div class="content_box ">
 	<h3>Before Scan</h3>

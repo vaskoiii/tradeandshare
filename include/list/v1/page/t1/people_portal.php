@@ -19,9 +19,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Fastest way to get to the contact (user) center
-# This page can be customize since the launcher is differnt from the rest of the site
-
-include('list/v1/inline/t1/header_after.php'); ?> 
+?> 
 
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">

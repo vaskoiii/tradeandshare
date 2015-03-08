@@ -20,24 +20,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Print out the top categories! ?> 
 
-<div id="result">
-	<div class="title">
-		<h2><? $x['preload']['focus'] = 'report'; print_ts_focus(get_translation('page', $x['page']['name']), 'report'); ?></h2>
-		<div class="result_add">
-		</div>
-	</div><?
-	print_message_bar();
-	?> 
-	<div class="content">
-
 <div class="content_box">
 
-
-<form name="form_search" action="/index.php" method="POST">
-<input type="hidden" name="x" value="<?= to_html($x['.']); ?>search_process/" />
-<input type="hidden" name="type" value="lock" />
-<? print_keyword_box('search_report', 1); ?> 
-</form>
+	<form name="form_search" action="/index.php" method="POST">
+	<input type="hidden" name="x" value="<?= to_html($x['.']); ?>search_process/" />
+	<input type="hidden" name="type" value="lock" />
+	<? print_keyword_box('search_report', 1); ?> 
+	</form>
 
 	<div class="doc_box">
 		<h3><?= tt('page', 'main'); ?></h3>

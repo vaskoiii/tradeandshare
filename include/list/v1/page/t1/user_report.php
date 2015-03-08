@@ -36,10 +36,12 @@ function print_key_user_id($k1) {
 	}
 }
 
-
-
-print_break_open('user_report', 'page');
+# todo fix print_break_open to fix/accomodate the below div and !!! ts_focus
+# global seach for [<div] to find the hacked divs
+# print_break_open('user_report', 'page');
 ?>
+<div class="content_box">
+
 <p>For a given cycle calculate partial credit from each member:</p>
 <ul>
 	<li>multiply the <strong>average</strong> of average unique-source-user ratings on the destination user</li>
@@ -78,7 +80,9 @@ if (!empty($data['user_report']['premature_channel_list'])) { ?>
 else { ?>
 	<p>No premature channels</p><?
 }
+
 print_break_close();
+
 foreach ($channel as $kc1 => $vc1) {
 	print_break_open($vc1['info']['name']); ?> 
 	<dl>
@@ -196,4 +200,6 @@ foreach ($channel as $kc1 => $vc1) {
 	}
 	print_break_close();
 }
+# hacked div to go with .content_box so that all divs have matching open/close ?> 
+<div>
 

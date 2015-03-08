@@ -21,13 +21,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Non-Javascript intermediate page before the corresponding action.
 # Known Issues: Most data has to be submitted 2x ?> 
 
-<div class="title">
-<? $x['preload']['focus'] = 'action'; ?> 
-<h2><? print_ts_focus(tt('page', $x['name']), 'action', $x); ?></h2>
-</div>
-
-<div class="content">
-
 <p class="notice" style="margin: 0px 0px; margin-top: -10px;"><?= tt('page', get_gp('list_name') . '_list'); ?> : <?= tt('element', get_gp('action')); ?> : <?= count(get_gp('row')); ?></p>
 
 <form name="f" action="/index.php" method="POST">

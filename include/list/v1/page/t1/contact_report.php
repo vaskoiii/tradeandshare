@@ -20,10 +20,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Placeholder for user_report
 ?> 
-<div class="title">
-	<h2><?= tt('page', 'contact_report'); ?></h2>
-</div>
-<div class="content">
 
 <div class="content_box ">
 	<p> This page is a placeholder for generating a "call log" for the links clicked from Contacts/Metails </p>

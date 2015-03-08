@@ -17,8 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-include('list/v1/inline/t1/header_after.php'); ?> 
+?> 
 
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">

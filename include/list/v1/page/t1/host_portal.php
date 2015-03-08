@@ -32,7 +32,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 $s1 = get_gp('public_key');
 #todo insert a newline after every 64 characters
 
-include('list/v1/inline/t1/header_after.php');
 
 $s2 = get_db_single_value('user_id from ' . $config['mysql']['prefix'] . 'pubkey where value = ' . to_sql($s1), false);
 

@@ -19,6 +19,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Contents/Description: Placeholder for user_report
+
 ?> 
 <div class="title">
 	<h2><?= tt('page', 'adder_report'); ?></h2>
