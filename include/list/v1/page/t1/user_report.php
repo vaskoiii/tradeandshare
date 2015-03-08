@@ -52,7 +52,7 @@ function print_key_user_id($k1) {
 <p>To calculate weighted credit multiply the % of member time by the full credit.</p>
 <p>After calculating weighted credit for each member above, a multiplier is needed to calculate payout:</p>
 <ul>
-	<li>take the total cost of the cycle (minus a % for TS)</li>
+	<li>take the total cost of the cycle (minus a % for TS and minus a % for the channel mission)</li>
 	<li>divide by the sum of all weighted credit</li>
 </ul>
 <p>The payout for indivuals is then just the multiplier times their credit.</p>
@@ -128,6 +128,9 @@ foreach ($channel as $kc1 => $vc1) {
 		</dd>
 		<dt>TS Cut (10% of Channel Total)</dt>
 		<dd>$<?= .1 * $d1; ?></dd>
+		<dt>Mission Cut (0% of Channel Total)</dt>
+		<dd>$0</dd>
+		<dd>TODO: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= (.9 * $d1); ?></dd>
 		<dt>Average Weight Sum</dt>
