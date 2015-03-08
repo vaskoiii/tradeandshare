@@ -250,7 +250,13 @@ function print_ts_focus($string, $load, & $x = null) {
 	if (!$x)
 		global $x;
 
-	if ($x['preload']['focus'] == $load) { ?> 
+	# doc pages and such (there should always be a focus!)
+	if (empty($x['preload']['focus']))
+		$b1 = 1;
+	if ($x['preload']['focus'] == $load)
+		$b1 = 1;
+
+	if ($b1 == 1) { ?> 
 		<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
 	}
 	else
