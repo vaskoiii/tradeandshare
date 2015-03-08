@@ -90,7 +90,7 @@ else {
 			<h3 style="margin: 20px 0px 5px 0px;">Accountability</h3>
 			<div style="margin-left: 15px;">
 			<div><?
-				$s1 = '/list/v1/theme/select_none/ts_icon_256x256.png';
+				$s4 = '/list/v1/theme/select_none/ts_icon_256x256.png';
 				$i1 = get_db_single_value('
 					id from
 						' . $config['mysql']['prefix'] . 'filer
@@ -99,8 +99,8 @@ else {
 						path = "list/v1/face/"
 				');
 				if (!empty($i1))
-					$s1 = '/file/?id=' . (int)$i1; ?> 
-				<img src="<?= $s1; ?>" style="width: 128px; height: 128px;" />
+					$s4 = '/file/?id=' . (int)$i1; ?> 
+				<img src="<?= $s4; ?>" style="width: 128px; height: 128px;" />
 			</div>
 			<p><?
 				$s2 = $key['user_id']['result'][ $data['view']['result']['listing'][0]['user_id'] ]['user_name'];
