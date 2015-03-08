@@ -39,21 +39,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	}
 </style>
 
-<? # <div id="search"> ?> 
-	<div id="list_title_box" class="title" style="display: <?= get_action_style_display(); ?>;"><?
-		$s1 = get_translation('page', 'top_report');
-		if ($x['name'] != ''
-		 && $x['name'] != 'main') { ?> 
-			<h2><? print_ts_focus($s1, 'report'); ?></h2><?
-		} else { ?> 
-			<h2><?= to_html($s1); ?></h2><?
-		} ?> 
-		<p class="result_add">
-		</p>
-	</div><?
-	if ($x['preload']['focus'] == 'list')
-	print_message_bar(); ?> 
-	<div class="content">
 
 <div class="content_box">
 
