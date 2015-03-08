@@ -34,10 +34,11 @@ include($x['site']['i'] . '/inline/footer.php');
 
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
 include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header.php');
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header_after.php');
 
 include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
 include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+
+include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header_after.php');
 
 include($x['site']['i'] . '/page/' . $x['site']['t'] . '/' . $x['page']['name'] . '.php');
 include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
