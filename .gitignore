@@ -3,9 +3,10 @@
 git-remote-https.core
 include/list/v1/config/preset.php
 public/phpqrcode/1.1.4/temp
-file/list/v1/qrcode
-file/list/v1/home
-file/list/v1/face
+file/list/v1/qrcode/*
+!file/list/v1/qrcode/.keep
+file/list/v1/face/*
+!file/list/v1/face/.keep
 history
 mail
 Maildir
