@@ -25,16 +25,20 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <div id="action">
-	<div class="title"><?
+	<div class="title">
+		<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2><?
 		switch($x['page']['name']) {
 			case 'guest_portal': ?> 
 				<center>
-					<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2>
 					<div class="result_add"></div>
 				</center><?
 			break;
+			case 'new_report': ?> 
+				<div class="result_add">
+					<a id="all_on_area_more_toggle" href="javascript: more_on_all();"><?= tt('element', 'expand_all'); ?></a>
+				</div><?
+			break;
 			default: ?> 
-				<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2>
 				<div class="result_add"></div><?
 			break;
 		} ?> 

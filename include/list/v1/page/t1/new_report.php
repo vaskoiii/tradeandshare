@@ -51,17 +51,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	}
 </script>
 
-<div id="result">
-	<div class="title">
-		<h2><? $x['preload']['focus'] = 'report'; print_ts_focus(get_translation('page', $x['page']['name']), 'report'); ?></h2>
-		<div class="result_add">
-			<a id="all_on_area_more_toggle" href="javascript: more_on_all();"><?= tt('element', 'expand_all'); ?></a>
-		</div>
-	</div><?
-	print_message_bar();
-	?> 
-
-<div class="content">
 <div class="content_box">
 
 <form name="form_search" action="/index.php" method="POST">

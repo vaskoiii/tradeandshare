@@ -84,8 +84,9 @@ function new_report_new_count($listing_type, $when) {
 		case 'channel':
 		case 'cycle':
 		case 'renewal':
+		case 'renewage':
 		case 'transaction':
-			# not ready for integration
+			# todo make ready for integration
 			return 0;
 		break;
 		// These links have no correllation with new activity though they are still monitored and possibly wanted for quick links.
