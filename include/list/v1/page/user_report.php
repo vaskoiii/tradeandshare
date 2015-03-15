@@ -84,6 +84,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo figure out what to do with no member to member ratings at all
 # maybe just hold the pot until next time and do a check. note that rating yourself anything above 0 value would mean you get the whole pot!-10% for TS
 
+# todo why dont 134 and 150 show any time in the cycle
 
 # variable
 $data['user_report']['channel_list'] = array();
@@ -134,16 +135,13 @@ foreach($channel as $k1 => $v1) {
 					' . (int)$cycle_restart['length_2x_to_3x'] . ' as time,
 					cnl.value as before_cost
 				from
-					' . $config['mysql']['prefix'] . 'channel cnl,
-					' . $config['mysql']['prefix'] . 'cycle cce
+					' . $config['mysql']['prefix'] . 'channel cnl
 				where
-					cnl.id = cce.channel_id and
-					cnl.id = ' . (int)$k1 . ' and
-					-- disabled for testing
-					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
+					cnl.parent_id = ' . (int)$k1 . ' and
+					cnl.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
 					1
 				order by
-					cce.start desc
+					cnl.modified desc
 				limit
 					1 
 			';
@@ -155,33 +153,28 @@ foreach($channel as $k1 => $v1) {
 			$channel[$k1]['info']['after_cost'] = get_db_single_value('
 					cnl.value as after_cost
 				from
-					' . $config['mysql']['prefix'] . 'cycle cce,
 					' . $config['mysql']['prefix'] . 'channel cnl
 				where
-					cnl.id = cce.channel_id and
-					cce.channel_id = ' . (int)$k1 . ' and
-					cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-					1
+					cnl.parent_id = ' . (int)$k1 . ' and
+					cnl.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
 				order by
-					cce.start desc
+					cnl.modified desc
 			');
-			# todo where
-			# cnl.value ?? max cost?
-			# disabled for testing
-			# cce.start <= ' . to_sql($cycle_restart['yyyy-mm-dd-1x']) . ' and
-
 			get_channel_member_list_array($channel[$k1], $k1);
 		}
 
-		$channel[$k1]['member_cost']['before'] = array();
 		$channel[$k1]['member_time']['before'] = array();
-		$channel[$k1]['member_cost']['after'] = array();
 		$channel[$k1]['member_time']['after'] = array();
 		$channel[$k1]['average_weight_sum'] = array();
 		$channel[$k1]['weighted_credit'] = array();
 	}
 }
 foreach ($channel as $kc1 => $vc1) {
+
+
+	# update alias
+	$cycle_restart = & $channel[$kc1]['cycle_restart'];
+
 	# prepare additional computation arrays
 	if (!empty($vc1['member_list']))
 	foreach ($vc1['member_list'] as $k1 => $v1) {
@@ -199,17 +192,6 @@ foreach ($channel as $kc1 => $vc1) {
 		## like paying taxes but not voting
 		# $kc1 = $channel_parent_id;
 		# $kd1 = $destination_user_id;
-	
-		# needed at all? when enabled just sets a bunch of arrays to 0
-		if (0) {
-			$channel[$kc1]['average_sum'][$kd1] = 0;
-			if (!empty($kid['source_user_id_rating_average']))
-				$channel[$kc1]['average_sum'][$kd1] = array_sum($kid['source_user_id_rating_average']);
-			$channel[$kc1]['average_weight'][$kd1] = count($kid['source_user_id_rating_average']);
-			$channel[$kc1]['average_average'][$kd1] = 0;
-			if (!empty($kid['source_user_id_rating_average']))
-				$channel[$kc1]['average_average'][$kd1] = array_sum($kid['source_user_id_rating_average']) / count($kid['source_user_id_rating_average']);
-		}
 	}
 
 	# source user
@@ -241,13 +223,11 @@ foreach ($channel as $kc1 => $vc1) {
 					rnal.id = rnae.renewal_id and
 					rnae.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
-					-- pt.name != "end" and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
 					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
 				order by
 					rnal.start asc
 			';
-			# echo '<hr>' . $sql;
 			$result = mysql_query($sql) or die(mysql_error());
 			while($row = mysql_fetch_assoc($result)) {
 				$kis['timeline'][$row['point_name']] = $row['start'];
@@ -262,8 +242,6 @@ foreach ($channel as $kc1 => $vc1) {
 					# there is no after time for the 3 required conditions
 					$kis['before']['member_time'] = 0;
 					$kis['before']['time_weight'] = 0;
-					$kis['before']['previous_average'] = 0;
-					$kis['before']['member_cost'] = 0;
 					$channel[$kc1]['member_time']['after'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
 						strtotime($cycle_restart['yyyy-mm-dd-2x'])
@@ -326,78 +304,15 @@ foreach ($channel as $kc1 => $vc1) {
 					# there is no after time for the 3 required conditions
 					$kis['after']['member_time'] = 0;
 					$kis['after']['time_weight'] = 0;
-					$kis['after']['previous_average'] = 0;
-					$kis['after']['member_cost'] = 0;
 					$channel[$kc1]['member_time']['after'][$ks1] = $kis['before']['member_time'];
 				} } }
 			}
 		}
 	}
-	# how much paid for the timeframe ie) discounted membership from good rating
-	if (!empty($channel[$kc1]['source_user_id']))
-	foreach ($channel[$kc1]['source_user_id'] as $ks1 => $vs1) {
-		$kis = & $channel[$kc1]['source_user_id'][$ks1]; # alias
-		$channel[$kc1]['member_cost']['before'][$ks1] = 0;
-		if (!empty($kis['before'])) { # before
-			$sql = '
-				select
-					ge_rnal.rating_value,
-					ge_rnal.renewal_value
-				from
-					' . $config['mysql']['prefix'] . 'renewal rnal,
-					' . $config['mysql']['prefix'] . 'renewage rnae,
-					' . $config['mysql']['prefix'] . 'gauge_renewal ge_rnal,
-					' . $config['mysql']['prefix'] . 'point pt
-				where
-					rnal.id = rnae.renewal_id and
-					rnae.point_id = pt.id and
-					ge_rnal.renewal_id = rnal.id and
-					rnal.user_id = ' . (int)$ks1 . ' and
-					pt.name != "end" and
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
-					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-4x'])
-			;
-			# member cost is needed to get the total for payout
-			$result = mysql_query($sql) or die(mysql_error());
-			while($row = mysql_fetch_assoc($result)) {
-				$kisb = & $kis['before']; # alias
-				$kisb['previous_average'] = $row['rating_value'];
-				$kisb['member_cost'] = $row['renewal_value']; # $
-				if (!empty($kis['before']['member_cost']))
-					$channel[$kc1]['member_cost']['before'][$ks1] = $kis['before']['member_cost'];
-			}
-		}
-		$channel[$kc1]['member_cost']['after'][$ks1] = 0;
-		if (!empty($kis['after'])) { # after
-			$sql = '
-				select
-					ge_rnal.rating_value,
-					ge_rnal.renewal_value
-				from
-					' . $config['mysql']['prefix'] . 'renewal rnal,
-					' . $config['mysql']['prefix'] . 'renewage rnae,
-					' . $config['mysql']['prefix'] . 'gauge_renewal ge_rnal,
-					' . $config['mysql']['prefix'] . 'point pt
-				where
-					rnal.id = rnae.renewal_id and
-					rnae.point_id = pt.id and
-					ge_rnal.renewal_id = rnal.id and
-					rnal.user_id = ' . (int)$ks1 . ' and
-					pt.name != "end" and
-					-- todo make sure cycle id is correct
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-					rnal.start >= ' . to_sql($cycle_restart['yyyy-mm-dd-3x'])
-			;
-			$result = mysql_query($sql) or die(mysql_error());
-			while($row = mysql_fetch_assoc($result)) {
-				$kisa = & $kis['after']; # alias
-				$kisa['previous_average'] = $row['rating_value'];
-				$kisa['member_cost'] = $row['renewal_value']; # $
-				if (!empty($kisa['member_cost']))
-					$channel[$kc1]['member_cost']['after'][$ks1] = $kisa['member_cost'];
-			}
-		}
-	}
+	# membership will always be the same price for everyone 
+	# incentive for good behavior comes indirectly in the payout
+	# incentive to be a member may come indirectly from a sponsorship though membership will still be full price
+	# dramatically simplifies calculations
 	if (1) {
 	## weighted cost
 	if (!empty($channel[$kc1]['source_user_id']))
@@ -406,15 +321,15 @@ foreach ($channel as $kc1 => $vc1) {
 		$channel[$kc1]['computed_cost']['before'][$ks1] = 0;
 		if (!empty($kis['before'])) { # before
 			$kisb = & $kis['before']; # alias
-			$kisb['computed_cost'] = $kisb['member_cost']  * $kisb['time_weight']; 
-			$kisb['computed_cost_math'] = $kisb['member_cost'] . ' * ' . $kisb['time_weight']; 
+			$kisb['computed_cost'] = $channel[$kc1]['info']['before_cost']  * $kisb['time_weight']; 
+			$kisb['computed_cost_math'] = $channel[$kc1]['info']['after_cost'] . ' * ' . $kisb['time_weight']; 
 			$channel[$kc1]['computed_cost']['before'][$ks1] = $kisb['computed_cost'];
 		}
 		$channel[$kc1]['computed_cost']['after'][$ks1] = 0;
 		if (!empty($kis['after'])) { # after
 			$kisa = & $kis['after']; # alias
-			$kisa['computed_cost'] = $kisa['member_cost'] * $kisa['time_weight']; 
-			$kisa['computed_cost_math'] = $kisa['member_cost'] . ' * ' . $kisa['time_weight']; 
+			$kisa['computed_cost'] = $channel[$kc1]['info']['after_cost'] * $kisa['time_weight']; 
+			$kisa['computed_cost_math'] = $channel[$kc1]['info']['after_cost'] . ' * ' . $kisa['time_weight']; 
 			$channel[$kc1]['computed_cost']['after'][$ks1] = $kisa['computed_cost'];
 		}
 		if (1) { # combined
