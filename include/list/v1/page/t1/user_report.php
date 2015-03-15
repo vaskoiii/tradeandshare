@@ -30,9 +30,9 @@ function print_key_user_id($k1) {
 	}
 	echo to_html($key['user_id']['result'][$k1]['contact_name']);
 	if (!empty($key['user_id']['result'][$k1]['user_name'])) {
-		echo ' &lt;';
+		echo ' (';
 		echo to_html($key['user_id']['result'][$k1]['user_name']);
-		echo '&gt;';
+		echo ')';
 	}
 }
 
@@ -182,7 +182,7 @@ foreach ($channel as $kc1 => $vc1) {
 			else
 				echo 'No ratings'; ?> 
 		</dl><?
-		if (!empty($kid['source_user_id_rating_average'])) { ?> 
+		if (1 || !empty($kid['source_user_id_rating_average'])) { ?> 
 			<p>
 				Full Credit:
 				<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
@@ -193,10 +193,10 @@ foreach ($channel as $kc1 => $vc1) {
 			</p>
 			<p>
 				Weighted Credit:
-				<?= ($channel[$kc1]['weighted_credit'][$kd1]); ?>
+				<?= !empty($channel[$kc1]['weighted_credit'][$kd1]) ? $channel[$kc1]['weighted_credit'][$kd1] : '0'; ?>
 			</p>
 			<p>
-				Payout:
+				<strong>Payout</strong>:
 				$<?= round($d3 * $channel[$kc1]['weighted_credit'][$kd1], 2); ?> 
 			</p><?
 		}

@@ -31,9 +31,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - fees are not charged until autorenew script runs
 # - fees are automatic from your available balance
 
-# todo cycle_lenth is variable!
-# todo remove cycle_length form presets
-# todo get channel cost based on value 1 month ago ie) price change is invalid if it wasnt up for a month
 # todo limit changes in channel lenght by a max of 10%
 
 # Key
@@ -79,12 +76,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 #                                                                 #
 ###################################################################
 
-# todo test multiple channels
-
 # todo figure out what to do with no member to member ratings at all
 # maybe just hold the pot until next time and do a check. note that rating yourself anything above 0 value would mean you get the whole pot!-10% for TS
-
-# todo why dont 134 and 150 show any time in the cycle
 
 # variable
 $data['user_report']['channel_list'] = array();
