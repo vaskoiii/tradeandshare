@@ -505,6 +505,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.modified';
 			$from[] = $prefix . 'channel t1';
 			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'u.id = t1.user_id';
 			$where[] = 'tfe.id = t1.timeframe_id';
 			$where[] = '1'; # implode(' , ', $where) stops complaining
 			if (isset_gp('keyword')) {
