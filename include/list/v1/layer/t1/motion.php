@@ -62,12 +62,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 				style="display: <?= $b1 == 1 ? 'inline-block' : 'none'; ?>;"
 				href="#"
 				onclick="javascript: more_toggle_swap('motion_el', 'motion_el_swap2'); did('result').style.display = 'none'; return false;"
-			><?= tt('element', 'edit'); ?>*</a>
+			><?= tt('element', 'edit'); ?></a>
 			<a
 				id="motion_el_swap2"
 				style="display: <?= $b1 == 2 ? 'inline-block' : 'none'; ?>;"
 				href="#" onclick="javascript: more_toggle_swap('motion_el', 'motion_el_swap1'); did('result').style.display = 'block'; return false;"
-			><?= tt('element', 'list'); ?>*</a><?
+			><?= tt('element', 'list'); ?></a><?
+			if (!empty($x['load']['view']['type'])) { ?> 
+				<span style="margin-left: -5px;">*</span><?
+			}
 			/*
 			# previous unchanging text ?> 
 			<a href="javascript: more_toggle('motion_el_box');"><?= tt('element', 'edit'); ?><span id="motion_el_box_toggle" style="display: none;"> <?= $x['part'][1] == 'edit' ? tt('element', 'less') : tt('element', 'more'); ?></span></a>*

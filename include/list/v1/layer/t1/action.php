@@ -106,6 +106,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 					<a id="action_el_swap1" style="display: <?= $b1 == 1 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap2'); document.getElementById('list_title_box').style.display = 'block'; return false;"><?= tt('element', 'edit'); ?></a>
 					<a id="action_el_swap2"  style="display: <?= $b1 == 2 ? 'inline-block' : 'none'; ?>;" href="#" onclick="javascript: more_toggle_swap('action_el', 'action_el_swap1'); document.getElementById('list_title_box').style.display = 'none'; return false;"><?= tt('element', 'list'); ?></a><?
+					if (!empty($x['load']['view']['type'])) { ?> 
+						<span style="margin-left: -5px;">*</span><?
+					}
 				}
 				break;
 			}
