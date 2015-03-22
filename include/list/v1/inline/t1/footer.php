@@ -19,8 +19,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?> 
 <!-- /content -->
-</div>
-</div>
 
 <div id="footer">
 	<div class="title">

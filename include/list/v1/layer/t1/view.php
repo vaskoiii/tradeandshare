@@ -62,33 +62,29 @@ if ($x['preload']['focus'] == 'view')
 				case 'user':
 					if (isset_gp('lock_user_id')) { ?> 
 						<li>
-							<span id="item_q_swap1">
 							<a
+								id="item_q_swap1"
 								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
 								onclick="javascript: if (document.getElementById('offer_q_box').style.display == 'block') more_toggle_swap('offer_q'); more_toggle_swap('item_q'); return false;"
-							><?= tt('page', 'item_list'); ?></a>*
-							</span>
-							<span id="item_q_swap2" style="display: none;">
+							><?= tt('page', 'item_list'); ?></a>
+							
 							<a
-								style="font-weight: bold;"
+								id="item_q_swap2" style="display: none; font-weight: bold;"
 								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
-							><?= tt('page', 'item_list'); ?></a>*
-							</span>
+							><?= tt('page', 'item_list'); ?></a>
+							<span style="margin-left: -5px;">*</span>
 						</li>
 						<li>
-							<span id="offer_q_swap1">
 							<a
 								id="offer_q_swap1"
 								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
 								onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
-							><?= tt('page', 'offer_list'); ?></a>*
-							</span>
-							<span id="offer_q_swap2" style="display: none;">
+							><?= tt('page', 'offer_list'); ?></a>
 							<a
-								style="font-weight: bold;"
+								id="offer_q_swap2" style="display: none; font-weight: bold;"
 								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
-							><?= tt('page', 'offer_list'); ?></a>*
-							</span>
+							><?= tt('page', 'offer_list'); ?></a>
+							<span style="margin-left: -5px;">*</span>
 						</li><?
 					}
 				break;
@@ -123,15 +119,22 @@ if ($x['preload']['focus'] == 'view')
 				<dd><?
 			break;
 		}
-					if (!empty($v1['page_id'])) {
-					foreach ($v1['page_id'] as $k2 => $v2) {
-						$e1 = explode('_', $v2['page_name']); ?> 
-						<nobr>
-							<span class="spacer"><?= $config['spacer'] ?></span>
-							<a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
-						</nobr><?
-					} } ?> 
+		if (!empty($v1['page_id'])) {
+		foreach ($v1['page_id'] as $k2 => $v2) {
+			$e1 = explode('_', $v2['page_name']); ?> 
+			<nobr>
+				<span class="spacer"><?= $config['spacer'] ?></span>
+				<a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+			</nobr><?
+		} }
+		switch ($v1['page_name']) {
+			case 'ts_area':
+			case 'new_area':
+			break;
+			default: ?> 
 				</dd><?
+			break;
+		}
 	} ?> 
 </dl>
 </div><?
@@ -140,7 +143,6 @@ if ($x['preload']['focus'] == 'view')
 
 			break;
 		} ?> 
-	</ul>
 	</div>
 	<div class="menu_2">
 	</div>

@@ -259,7 +259,7 @@ function print_ts_focus($string, $load, & $x = null) {
 	# preserve lock_array on view pages
 	if (!empty($x['load']['view']['type'])) {
 		if ($b1 == 1) { ?> 
-			<a href="<?= ffm('page=&list_name=list&list_type=' . $x['load'][$load]['type'] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $x['load'][$load]['type'] . '_list'); ?></a>*<?
+			<a id="ts_focus" href="<?= ffm('page=&list_name=list&list_type=' . $x['load'][$load]['type'] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $x['load'][$load]['type'] . '_list'); ?></a>*<?
 		}
 		else {
 			# could also just take you back to the initial page when clicking on the contact/user name

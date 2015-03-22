@@ -32,8 +32,10 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 		switch ($v2['page_name']) {
 			case 'item_list':
 			case 'offer_list':
-
 				$s1 = str_replace('_list', '', $v2['page_name']);
+				$s2 = '/' . $s1 . '_list/';
+				if (!empty($x['load']['view']['name']))
+					$s2 = ffm('page=&list_name=list&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0);
 
 				# todo dont let the action steal focus from quick
 				$b1 = 2;
@@ -46,9 +48,9 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 				<div id="<?= $s1; ?>_q_box" style="display: <?= ($b1 == 1 ? 'block' : 'none'); ?>;">
 					<div class="title">
 						<span class="go_back"><?= print_go_back('&lt;&lt;'); ?></span>
-						<h2><a href="/<?= $s1; ?>_list/"><?= tt('page', $s1 . '_list'); ?></a></h2>
+						<h2><a href="<?= $s2; ?>"><?= tt('page', $s1 . '_list'); ?></a>*</h2>
 						<div class="result_add">
-							<a id="<?= $s1; ?>_q_focus" href="#" onclick="javascript: more_toggle_swap('<?= to_html($s1 . '_q'); ?>'); return false;">Menu</a>
+							<a id="<?= $s1; ?>_q_focus" href="#" onclick="javascript: more_toggle_swap('<?= to_html($s1 . '_q'); ?>'); return false;">Menu</a>*
 						</div>
 					</div><?
 					if (
