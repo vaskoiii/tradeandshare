@@ -62,30 +62,33 @@ if ($x['preload']['focus'] == 'view')
 				case 'user':
 					if (isset_gp('lock_user_id')) { ?> 
 						<li>
+							<span id="item_q_swap1">
 							<a
-								id="item_q_swap1"
 								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
 								onclick="javascript: if (document.getElementById('offer_q_box').style.display == 'block') more_toggle_swap('offer_q'); more_toggle_swap('item_q'); return false;"
-							><?= tt('page', 'item_list'); ?></a>
+							><?= tt('page', 'item_list'); ?></a>*
+							</span>
+							<span id="item_q_swap2" style="display: none;">
 							<a
-								id="item_q_swap2"
-								style="display: none; font-weight: bold;"
+								style="font-weight: bold;"
 								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
-							><?= tt('page', 'item_list'); ?></a>
-							*
+							><?= tt('page', 'item_list'); ?></a>*
+							</span>
 						</li>
 						<li>
+							<span id="offer_q_swap1">
 							<a
 								id="offer_q_swap1"
 								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
 								onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
-							><?= tt('page', 'offer_list'); ?></a>
+							><?= tt('page', 'offer_list'); ?></a>*
+							</span>
+							<span id="offer_q_swap2" style="display: none;">
 							<a
-								id="offer_q_swap2"
-								style="display: none; font-weight: bold;"
+								style="font-weight: bold;"
 								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
-							><?= tt('page', 'offer_list'); ?></a>
-							*
+							><?= tt('page', 'offer_list'); ?></a>*
+							</span>
 						</li><?
 					}
 				break;
@@ -99,7 +102,6 @@ if ($x['preload']['focus'] == 'view')
 			default: ?> 
 				<? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?> 
 				<span class="spacer">&gt;&gt;</span> <a id="view_menu2_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu2'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
-
 
 
 <? # this is view_menu1 ?>

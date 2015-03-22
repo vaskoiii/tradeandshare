@@ -256,11 +256,24 @@ function print_ts_focus($string, $load, & $x = null) {
 	if ($x['preload']['focus'] == $load)
 		$b1 = 1;
 
-	if ($b1 == 1) { ?> 
-		<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
+	# preserve lock_array on view pages
+	if (!empty($x['load']['view']['type'])) {
+		if ($b1 == 1) { ?> 
+			<a href="<?= ffm('page=&list_name=list&list_type=' . $x['load'][$load]['type'] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $x['load'][$load]['type'] . '_list'); ?></a>*<?
+		}
+		else {
+			# could also just take you back to the initial page when clicking on the contact/user name
+			echo to_html($string) . '*';
+		}
 	}
-	else
-		echo to_html($string);
+	else {
+		if ($b1 == 1) { ?> 
+			<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
+		}
+		else {
+			echo to_html($string);
+		}
+	}
 }
 
 # potential functions to clean up view display 2012-04-12 vaskoiii
