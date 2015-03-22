@@ -135,6 +135,13 @@ switch ($x['load']['action']['type']) {
 		# why not use the enctype? heavier?
 		$s2 = ' enctype="multipart/form-data"';
 	break;
+	case 'dialect':
+	case 'display':
+	case 'lock':
+	case 'theme':
+	case 'load':
+		$s1 = 'set';
+	break;
 } ?> 
 <form name="<?= $x['part'][1]; ?>_process" action="/index.php" method="POST"<?= $s2; ?>>
 <input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $s1; ?>_process/" /><?
