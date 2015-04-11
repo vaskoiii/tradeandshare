@@ -131,17 +131,17 @@ $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch'][
 # people launcher
 if ($_SESSION['login']['login_user_id']) {
 $s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
-$i1 = get_db_single_value('
-		id
-	from
-		' . $config['mysql']['prefix'] . 'filer
-	where
-		user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
-		path = "list/v1/face/"
-', false);
+# $i1 = get_db_single_value('
+# 		id
+# 	from
+# 		' . $config['mysql']['prefix'] . 'filer
+# 	where
+# 		user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+# 		path = "list/v1/face/"
+# ', false);
 $s2 = '/list/v1/theme/select_none/ts_icon_256x256.png';
-if (!empty($i1))
-	$s2 = '/file/?id=' . (int)$i1; # jpg
+# if (!empty($i1))
+# 	$s2 = '/file/?id=' . (int)$i1; # jpg
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 $data['launch']['peopler']['empty'] = <<<HTML
 	<div>
