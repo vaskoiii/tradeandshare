@@ -129,36 +129,17 @@ HTML;
 $data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
 
 # people launcher
-if ($_SESSION['login']['login_user_id']) {
-$s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
-# $i1 = get_db_single_value('
-# 		id
-# 	from
-# 		' . $config['mysql']['prefix'] . 'filer
-# 	where
-# 		user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
-# 		path = "list/v1/face/"
-# ', false);
+if ($_SESSION['login']['login_user_id'])
+	$s1 = '/user_view/?lock_user_id=' . (int)$_SESSION['login']['login_user_id'];
+else
+	$s1 = '/login_set/';
+# both
 $s2 = '/list/v1/theme/select_none/ts_icon_256x256.png';
-# if (!empty($i1))
-# 	$s2 = '/file/?id=' . (int)$i1; # jpg
-$data['launch']['pager']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['pager']['empty']);
-$data['launch']['peopler']['empty'] = <<<HTML
-	<div>
-		<table style="width: 128px; height: 128px; text-align: center;" cellpadding="0" cellspacing="0"></tr><td>
-			<a href="{$s1}"><img src="{$s2}" /></a>
-		</td></tr></table>
-	</div>
-HTML;
-}
-else {
-$s1 = '/login_set/';
 $data['launch']['peopler']['empty'] = <<<HTML
 	<div>
 		<a href="{$s1}"><img src="{$s2}" /></a>
 	</div>
 HTML;
-}
 $data['launch']['peopler']['empty'] = preg_replace('/\s\s+/', '', $data['launch']['peopler']['empty']);
 
 # scan launcher
