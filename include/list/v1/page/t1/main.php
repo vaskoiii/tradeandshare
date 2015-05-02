@@ -26,7 +26,7 @@ if ($_SESSION['login']['login_user_id']) {
 else
 	$b1 = 2;
 ?> 
-<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'keyword\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);"><?
+<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'main_ts_focus\').focus();"' : ''; ?> onkeydown="checkIt(event, navigator.appName);"><?
 include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will fail if omitted 2014-09-01 vaskoiii ?> 
 <div id="header">
 <div style="background: url('/list/v1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
@@ -50,7 +50,7 @@ include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will
 </div><?
 include('list/v1/inline/t1/header_helper.php');
 include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php'); ?> 
-<div class="title"><center><h2><?= tt('page', 'main'); ?></h2></center></div>
+<div class="title"><center><h2><a href="." id="main_ts_focus" onclick="return false;"><?= tt('page', 'main'); ?></a></h2></center></div>
 <? print_message_bar(); ?><?
 if ($_SESSION['login']['login_user_id']) { ?> 
 	<div class="content">
