@@ -450,6 +450,13 @@ function get_action_content_1($type = false, $name = false) {
 						'kind_name_id' => '',
 					);
 				break;
+				case 'comment':
+				case 'carry':
+				case 'score':
+					$array = array(
+						# score must be given by clicking like | dislike
+					);
+				break;
 				case 'jargon':
 					$array = array(
 						'tag_path' => '',
@@ -612,6 +619,14 @@ function get_search_content_1($type) {
 		case 'minder':
 			$array = array(
 				'minder_kind_name' => '',
+			);
+		break;
+		case 'comment':
+		case 'carry':
+		case 'score':
+			$array = array(
+				'kind_name' => '', # todo make sure search is working
+				# 'kind_id' => '', # not sure if anyone would ever search with kind_id
 			);
 		break;
 		case 'jargon':

@@ -2882,3 +2882,85 @@ INSERT INTO `ts`.`ts_element` (`id`, `name`) VALUES (NULL, 'channel_offset'), (N
 
 
 ALTER TABLE `ts_channel` ADD `percent` INT NOT NULL AFTER `value`;
+
+
+
+-- liking --
+
+CREATE TABLE IF NOT EXISTS `ts_score` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `kind_id` int(11) NOT NULL,
+  `kind_name_id` int(11) NOT NULL,
+  `source_user_id` int(11) NOT NULL,
+  `destination_user_id` int(11) NOT NULL,
+  `mark_id` int(11) NOT NULL,
+  `modified` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  KEY `kind_id` (`kind_id`),
+  KEY `kind_name_id` (`kind_name_id`),
+  KEY `source_user_id` (`source_user_id`),
+  KEY `destination_user_id` (`destination_user_id`),
+  KEY `mark_id` (`mark_id`),
+  KEY `modified` (`modified`),
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `ts_mark` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+INSERT INTO `ts_mark` (`id`, `name`, `value`) VALUES
+(1, 'mark_like', 0),
+(2, 'mark_dislike', 1);
+
+CREATE TABLE IF NOT EXISTS `ts_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `kind_id` int(11) NOT NULL,
+  `kind_name_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `modified` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `kind_id` (`kind_id`,`kind_name_id`),
+  KEY `user_id` (`user_id`),
+  KEY `modified` (`modified`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `ts_carry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cycle_id` int(11) NOT NULL,
+  `source_user_id` int(11) NOT NULL,
+  `destination_user_id` int(11) NOT NULL,
+  `score_value` double NOT NULL,
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `modified` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `source_user_id` (`source_user_id`),
+  KEY `destination_user_id` (`destination_user_id`),
+  KEY `modified` (`modified`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+
+
+INSERT INTO `ts_page` (
+`parent_id`,
+`file_id`,
+`name`,
+`order`,
+`launch`,
+`monitor`,
+`login`,
+`advanced`
+)
+VALUES
+( 351, 2, 'score_list', 60, 1, 1, 1, 1),
+( 351, 2, 'comment_list', 60, 1, 1, 1, 1),
+( 351, 2, 'carry_list', 60, 1, 1, 1, 1)
+;
+
+insert into ts_kind set name = 'score', translation=1, minder=2;

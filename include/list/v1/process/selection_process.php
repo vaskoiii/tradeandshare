@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 add_translation('element', 'error_field_missing');
 add_translation('element', 'transaction_complete');
 add_translation('element', 'email_sent');
@@ -45,6 +44,8 @@ switch(get_gp('action')) {
 			break;
 		}
 	break;
+	case 'like':
+	case 'dislike':
 	case 'remember':
 	case 'forget':
 	break;
@@ -418,6 +419,11 @@ switch($process['miscellaneous']['action']) {
 				}
 			break;
 		}
+	break;
+	case 'like':
+	case 'dislike':
+		# todo fix cheating
+		$interpret['row'][] = $process['miscellaneous']['row'][0];
 	break;
 }
 
@@ -889,6 +895,78 @@ switch($process['miscellaneous']['action']) {
 			}
 		break;
 	}
+	break;
+	case 'like':
+	case 'dislike':
+		# todo integrate with the way selection action is intended instead of forcing everything in this case ie) sql queries
+		# todo better deal with the die() errors
+		$i1 = 1;
+		if ($process['miscellaneous']['action'] == 'dislike')
+			$i1 = 2;
+		$i2 = get_db_single_value('
+			id from
+				' . $prefix . 'kind
+			where
+				name = ' . to_sql($process['miscellaneous']['list_name'])
+		);
+		if (empty($i2))
+			die('kind not found');
+
+		$i3 = 0;
+		# have to know whether we are getting:
+		# user_id
+		# source_user_id
+		$result = 0;
+		$sql = '
+			select 
+				user_id
+			from
+				' . $prefix . $process['miscellaneous']['list_name'] . '
+			where
+				id = ' . (int)$process['miscellaneous']['row'][0] . '
+			limit
+				1
+		';
+		$result = @mysql_query($sql); # dont print error message
+		if (!empty($result)) {
+			while ($row = mysql_fetch_assoc($result))
+				$i3 = $row['user_id'];
+		}
+		if (empty($i3)) {
+			$sql = '
+				select 
+					source_user_id
+				from
+					' . $prefix . $process['miscellaneous']['list_name'] . '
+				where
+					id = ' . (int)$process['miscellaneous']['row'][0] . '
+				limit
+					1
+			';
+			$result = @mysql_query($sql); # dont print error message
+			if (!empty($result)) {
+				while ($row = mysql_fetch_assoc($result))
+					$i3 = $row['source_user_id'];
+			}
+		}
+		if (empty($i3))
+			die('unable to get score user id');
+
+		if (sizeof(get_gp('row')) != 1)
+			die('only 1 like/dislike at a time');
+		$sql = '
+			insert into
+				' . $prefix . 'score
+			set
+				source_user_id = ' . (int)$login_user_id . ',
+				destination_user_id = ' . (int)$i3 . ',
+				mark_id = ' . (int)$i1 . ',
+				kind_id = ' . (int)$i2 . ',
+				kind_name_id = ' . (int)$process['miscellaneous']['row'][0] . ',
+				modified = now(),
+				active = 1
+		';
+		$result = mysql_query($sql) or die(mysql_error());
 	break;
 }
 

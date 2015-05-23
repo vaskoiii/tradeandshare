@@ -872,6 +872,77 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			if (isset_gp('minder_kind_id'))
 				$where_x[] = 't1.kind_id = ' . (int)get_gp('minder_kind_id');
 		break;
+		# todo inject this into one of the other lists? ie) score?
+		case 'carry':
+			$select[] = 't1.id';
+			$select[] = 't1.cycle_id';
+			$select[] = 't1.source_user_id';
+			$select[] = 't1.destination_user_id';
+			$select[] = 't1.score_value';
+			$select[] = 't1.modified';
+			$select[] = 't1.active';
+			$from[] = $prefix . 'carry t1';
+			$where[] = '(
+				t1.source_user_id = ' . (int)$login_user_id . ' OR
+				t1.destination_user_id = ' . (int)$login_user_id . '
+			)';
+			$where[] = 't1.active = 1';
+			if (get_gp('keyword')) {
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+			}
+		break;
+		case 'comment':
+			$select[] = 't1.kind_id AS kind_id';
+			$select[] = 't1.id AS translation_id';
+			$select[] = 't1.kind_name_id AS kind_name_id';
+			$select[] = 't1.description as comment_description';
+			$select[] = 't1.modified';
+			$select[] = 't1.active';
+			$select[] = 'k.name as kind_name';
+			$from[] = $prefix . 'comment t1';
+			$from[] = $prefix . 'kind k';
+			# $where[] = 't1.user_id = u.id';
+			$where[] = 't1.active = 1';
+			$where[] = 't1.kind_id = k.id';
+			if (isset_gp('comment_kind_id'))
+				$where_x[] = 'k.id = ' . (int)get_gp('comment_kind_id');
+			if (isset_gp('kind_name_id'))
+				$where_x[] = 't1.kind_name_id = ' . (int)get_gp('kind_name_id');
+			if (get_gp('keyword')) {
+				$where_x[] = '(
+					t1.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+			}
+			# no name in comment (assumed to be attached to whatever it was commented from as the subject)
+		break;
+		case 'score':
+			$select[] = 't1.kind_id AS kind_id';
+			$select[] = 't1.id AS score_id';
+			$select[] = 't1.mark_id';
+			$select[] = 't1.kind_name_id AS kind_name_id';
+			$select[] = 't1.modified';
+			$select[] = 't1.active';
+			$select[] = 'k.name as kind_name';
+			$from[] = $prefix . 'score t1';
+			$from[] = $prefix . 'kind k';
+			$where[] = '(
+				t1.source_user_id = ' . (int)$login_user_id . ' OR
+				t1.destination_user_id = ' . (int)$login_user_id . '
+			)';
+			$where[] = 't1.active = 1';
+			$where[] = 't1.kind_id = k.id';
+			if (isset_gp('score_kind_id'))
+				$where_x[] = 'k.id = ' . (int)get_gp('score_kind_id');
+			if (isset_gp('kind_name_id'))
+				$where_x[] = 't1.kind_name_id = ' . (int)get_gp('kind_name_id');
+			if (get_gp('keyword')) {
+				$where_x[] = '(
+					t1.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+			}
+		break;
 		case 'jargon':
 			// we do NOT keyword by:
 			// cat.name

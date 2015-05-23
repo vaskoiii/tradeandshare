@@ -192,6 +192,12 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
+		case 'id':
+		case 'mark_id':
+		case 'kind_name_id':
+			# used for testing
+			$grab .= $listing[$v1];
+		break;
 		case 'cycle_id':
 			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$k1];
 		break;
@@ -251,6 +257,15 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'export':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $spacer . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
+		break;
+		case 'like':
+		case 'dislike':
+			# confirm
+			# $grab .= ' - <a href="./result_process/?' . to_html($k1) . '=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
+			# todo alternative really needed? ( seems to do the same as result_process )
+			# $grab .= ' - <a href="./selection_action/?action=' . to_html($k1) . '&list_name=' . to_html($type) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ). '&q=' . to_url(ltrim(ff('', 1), '?'))  . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
+			# no confirm
+			$grab .= ' - <a href="./selection_process/?action=' . to_html($k1) . '&list_name=' . to_html($type) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ). '&q=' . to_url(ltrim(ff('', 1), '?'))  . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
 		break;
 		case 'delete':
 		if ($load == 'list') {
@@ -514,6 +529,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
+		case 'mark_name':
 		case 'point_name':
 		case 'timeframe_name':
 		case 'decision_name':

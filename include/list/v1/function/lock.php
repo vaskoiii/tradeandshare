@@ -305,6 +305,8 @@ function search_lock(& $base, $type, $login_user_id) {
 	$base['adhere'] =  false;
 	switch($type) {
 		# 4 cases needing helper tables
+		case 'score':
+		case 'carry':
 		case 'invited':
 		case 'transfer':
 		case 'offer':
@@ -346,6 +348,7 @@ function search_lock(& $base, $type, $login_user_id) {
 				$where[] = 'u2.id = t1.destination_user_id';
 			}
 		break;
+		case 'comment':
 		case 'category':
 		case 'cost':
 		case 'cycle':

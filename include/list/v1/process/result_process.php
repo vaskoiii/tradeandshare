@@ -29,6 +29,8 @@ $interpret['action_array'] = array(
 	'memorize' => '1', # copy to contacts
 	'merge' => '1', # tag combine
 	'delete' => '1', # set inactive
+	'like' => '1', # copy to score table
+	'dislike' => '1', # copy to score table
 	'export' => '1', # copy to transfer table
 	'forget' => '1', # remove minder
 	'import' => '1', # copy to item table
@@ -36,9 +38,12 @@ $interpret['action_array'] = array(
 	'remember' => '1', # add minder
 );
 
-foreach ($interpret['action_array'] as $k1 => $v1)
+foreach ($interpret['action_array'] as $k1 => $v1) {
 	if (isset_gp($k1))
 		$process['action'] = $k1;
+}
+
+
 $process['list_name'] = get_gp('list_name');
 $process['row'] = get_gp('row');  // we could remove duplicates here with array_unique() but we do it later...
 $process['q'] = get_gp('q');
@@ -48,6 +53,8 @@ switch ($process['action']) {
 	case 'delete':
 	case 'remember':
 	case 'forget':
+	case 'like':
+	case 'dislike':
 		# ok to continue
 	break;
 	default:

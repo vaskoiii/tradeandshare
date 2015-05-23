@@ -58,6 +58,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		break;
 		default:
 		switch($x['load']['action']['type']) {
+			case 'score':
 			case 'minder':
 			case 'dialect':
 			case 'invited':

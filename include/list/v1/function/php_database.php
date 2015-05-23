@@ -132,6 +132,9 @@ switch($type) {
 
 function get_main_table_alias($type) {
 switch ($type) {
+	case 'score':		return 'se';
+	case 'comment':		return 'cmt';
+	case 'carry':		return 'cry';
 	case 'contact':		return 'c';
 	case 'group':		return 'g';
 	case 'groupmate':	return 'lcg';
@@ -278,18 +281,21 @@ function get_mask_author($type, $display) {
 			else
 				$array = array();
 		break;
+		case 'score':
+		case 'comment':
 		case 'invited':
 		case 'rating':
 		case 'transfer': 
 			$array = array(
-				'source' => 'source_user_name'
+				'source' => 'source_user_name',
 			);
 		break;
 		case 'offer':
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'source_user_name',
-					'source_spacer' => '_');
+					'source_spacer' => '_',
+				);
 			else
 				$array = array();
 		break;
@@ -299,14 +305,16 @@ function get_mask_author($type, $display) {
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'user_name',
-					'source_spacer' => '_'); # Repeat info but makes the most sense. (Author of the user is that user) 2012-02-27 vaskoiii
+					'source_spacer' => '_',
+				); # Repeat info but makes the most sense. (Author of the user is that user) 2012-02-27 vaskoiii
 			else
 				$array = array();
 		break;
 		case 'teammate':
 			$array = array(
 				'source' => 'team_owner',
-				'direction_right_name' => 'direction_right_name');
+				'direction_right_name' => 'direction_right_name',
+			);
 		break;
 	}
 	return $array;
@@ -394,6 +402,16 @@ function get_mask_subject($type, $display) {
 				$type . '_name' => $type . '_name',
 				$type . '_name_spacer' => '_',
 				$type . '_children' => $type . '_children',
+			);
+		break;
+		case 'comment':
+		case 'carry':
+		case 'score': 
+			$array = array(
+				'direction_right_name' => 'direction_right_name',
+				'destination_user_name' => 'destination_user_name',
+				'destination_user_name_spacer' => '_',
+				'mark_id' => 'mark_id',
 			);
 		break;
 		case 'jargon':
@@ -547,6 +565,13 @@ function lt_subextra($type) {
 				$type . '_known' => 'known',
 			);
 		break;
+		case 'comment':
+		case 'carry':
+		case 'score': 
+			$array = array(
+				# todo
+			);
+		break;
 		case 'jargon':
 		case 'translation':
 			$array = array(
@@ -576,7 +601,11 @@ function lt_subextra($type) {
 function get_mask_endline($type, $display, $child) {
 	$array = array();
 	switch($type) {
-		# todo les wordy probably to show which guys dont have the endline
+		# todo less wordy probably to show which guys dont have the endline
+		case 'comment':
+		case 'carry':
+		case 'score':
+
 		case 'category':
 		case 'channel':
 		case 'dialect':
@@ -691,6 +720,11 @@ function lt_body($type) {
 			$array = array('tag_path', '=', 'tag_translation_description');
 		break;
 		# todo update integrate 2012-02-27 vaskoiii
+		case 'comment':
+		case 'carry':
+		case 'score':
+			$array = array('kind_name', '_', 'kind_name_id');
+		break;
 		case 'jargon':
 			$array = array('kind_name', '+', 'tag_path', '+', 'dialect_name', '=', 'translation_description');
 		break;
@@ -766,7 +800,9 @@ function lt_action($type) {
 		'delete' => 'delete',
 		'import' => 'import',
 		'export' => 'export',
-		'judge' => 'judge',
+		'judge' => 'judge', # deprecate in favor of like/dislike?
+		'like' => 'like',
+		'dislike' => 'dislike',
 	);
 	if (get_child_listing_type($type))
 		$array[$type . '_view'] = $type . '_view';
