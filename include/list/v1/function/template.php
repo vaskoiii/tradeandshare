@@ -292,6 +292,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				# anyone can delete/add a category - It is a superficial link table
 				$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing['tag_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
 			break;
+			case 'score':
+			case 'carry':
 			case 'rating':
 				if ($listing['source_user_id'] == $login_user_id)
 					$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
@@ -547,6 +549,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				)
 			. '</span>';
 		break;
+		case 'comment_description':
 		case 'channel_description':
 		case 'group_description':
 		case 'translation_description':

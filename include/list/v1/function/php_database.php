@@ -282,7 +282,6 @@ function get_mask_author($type, $display) {
 				$array = array();
 		break;
 		case 'score':
-		case 'comment':
 		case 'invited':
 		case 'rating':
 		case 'transfer': 
@@ -405,6 +404,12 @@ function get_mask_subject($type, $display) {
 			);
 		break;
 		case 'comment':
+			$array = array(
+				'kind_name' => 'kind_name',
+				'kind_name_spacer' => '_',
+				'kind_name_id' => 'kind_name_id',
+			);
+		break;
 		case 'carry':
 		case 'score': 
 			$array = array(
@@ -684,6 +689,7 @@ function lt_add_more($type) {
 function lt_body($type) {
 	$array = array();
 	switch($type) {
+		case 'comment':
 		case 'dialect':
 		case 'feedback':
 		case 'group':
@@ -720,7 +726,6 @@ function lt_body($type) {
 			$array = array('tag_path', '=', 'tag_translation_description');
 		break;
 		# todo update integrate 2012-02-27 vaskoiii
-		case 'comment':
 		case 'carry':
 		case 'score':
 			$array = array('kind_name', '_', 'kind_name_id');
@@ -795,14 +800,14 @@ function lt_detail($type) {
 
 function lt_action($type) {
 	$array = array(
+		'like' => 'like',
+		'dislike' => 'dislike',
 		'edit' => 'edit',
 		'translate' => 'translate',
 		'delete' => 'delete',
 		'import' => 'import',
 		'export' => 'export',
 		'judge' => 'judge', # deprecate in favor of like/dislike?
-		'like' => 'like',
-		'dislike' => 'dislike',
 	);
 	if (get_child_listing_type($type))
 		$array[$type . '_view'] = $type . '_view';

@@ -135,6 +135,12 @@ input, select, textarea {
 .direction_name, .delete {
 	color: <?= $data['css']['text_style']['color']['direction_name']; ?>;
 	}
+.like {
+	color: #00ff00;
+	}
+.dislike {
+	color: #ff0000;
+	}
 .keyword, .description, .incident_description, .feedback_description, .offer_description, .transfer_description, .note_description, .group_description, .team_description {
 	color: #383838;
 	}

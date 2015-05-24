@@ -58,6 +58,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		break;
 		default:
 		switch($x['load']['action']['type']) {
+			case 'comment':
 			case 'score':
 			case 'minder':
 			case 'dialect':
@@ -65,6 +66,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			case 'login':
 			case 'cycle':
 			case 'transaction': # temporary until using actual transactions
+				# not edited directly
 			break;
 			default:
 			switch($x['name']) {

@@ -450,11 +450,11 @@ function get_action_content_1($type = false, $name = false) {
 						'kind_name_id' => '',
 					);
 				break;
+				case 'carry': # work in progress
 				case 'comment':
-				case 'carry':
 				case 'score':
 					$array = array(
-						# score must be given by clicking like | dislike
+						# done by responding directly to the corresponding item
 					);
 				break;
 				case 'jargon':
