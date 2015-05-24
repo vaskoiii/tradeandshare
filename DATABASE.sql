@@ -2967,3 +2967,16 @@ insert into ts_kind set name = 'score', translation=1, minder=2;
 
 alter table ts_carry drop description;
 alter table ts_carry add value double after destination_user_id;
+
+-- missed translations --
+
+insert into ts_element set name = 'carry_uid';
+insert into ts_element set name = 'comment_uid';
+insert into ts_element set name = 'score_uid';
+
+insert into ts_element set name = 'find_carry';
+insert into ts_element set name = 'find_comment';
+insert into ts_element set name = 'find_score';
+
+insert into ts_element set name = 'like';
+insert into ts_element set name = 'dislike';
