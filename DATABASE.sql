@@ -2980,3 +2980,50 @@ insert into ts_element set name = 'find_score';
 
 insert into ts_element set name = 'like';
 insert into ts_element set name = 'dislike';
+
+
+alter table ts_kind add `score` tinyint(1);
+update ts_kind set score = 2;
+
+update ts_kind set score = 1 where name = 'tag';
+update ts_kind set score = 1 where name = 'location';
+update ts_kind set score = 1 where name = 'team';
+update ts_kind set score = 1 where name = 'channel';
+update ts_kind set score = 1 where name = 'score';
+
+insert into ts_kind set name = 'news';
+insert into ts_kind set name = 'offer';
+insert into ts_kind set name = 'category';
+insert into ts_kind set name = 'contact';
+insert into ts_kind set name = 'user';
+insert into ts_kind set name = 'teammate';
+insert into ts_kind set name = 'incident';
+insert into ts_kind set name = 'group';
+insert into ts_kind set name = 'feedback';
+insert into ts_kind set name = 'groupmate';
+insert into ts_kind set name = 'minder';
+insert into ts_kind set name = 'login';
+insert into ts_kind set name = 'note';
+insert into ts_kind set name = 'item';
+insert into ts_kind set name = 'rating';
+insert into ts_kind set name = 'dialect';
+insert into ts_kind set name = 'transfer';
+insert into ts_kind set name = 'translation';
+insert into ts_kind set name = 'vote';
+insert into ts_kind set name = 'jargon';
+insert into ts_kind set name = 'meripost';
+insert into ts_kind set name = 'meritopic';
+insert into ts_kind set name = 'invited';
+insert into ts_kind set name = 'feed';
+insert into ts_kind set name = 'metail';
+insert into ts_kind set name = 'membership';
+insert into ts_kind set name = 'renewal';
+insert into ts_kind set name = 'cost';
+insert into ts_kind set name = 'transaction';
+insert into ts_kind set name = 'cycle';
+insert into ts_kind set name = 'renewage';
+insert into ts_kind set name = 'comment';
+insert into ts_kind set name = 'carry';
+
+update ts_kind set translation = 2, minder = 2, `score` = 1 where `score` is null;
+
