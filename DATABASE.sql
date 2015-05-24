@@ -2964,3 +2964,6 @@ VALUES
 ;
 
 insert into ts_kind set name = 'score', translation=1, minder=2;
+
+alter table ts_carry drop description;
+alter table ts_carry add value double after destination_user_id;

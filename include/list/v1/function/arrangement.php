@@ -450,7 +450,13 @@ function get_action_content_1($type = false, $name = false) {
 						'kind_name_id' => '',
 					);
 				break;
-				case 'carry': # work in progress
+				case 'carry': # placeholder
+					$array = array(
+						# todo design so that end user doesn't have to do anything
+						# todo diminishing weight
+						# carry_value = 1/2 of number of likes/dislikes from previous cycle
+					);
+				break;
 				case 'comment':
 				case 'score':
 					$array = array(
@@ -621,8 +627,10 @@ function get_search_content_1($type) {
 				'minder_kind_name' => '',
 			);
 		break;
-		case 'comment':
 		case 'carry':
+			$array = array();
+		break;
+		case 'comment':
 		case 'score':
 			$array = array(
 				'kind_name' => '', # todo make sure search is working

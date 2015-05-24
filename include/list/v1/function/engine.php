@@ -874,11 +874,12 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 		break;
 		# todo inject this into one of the other lists? ie) score?
 		case 'carry':
-			$select[] = 't1.id';
+			$select[] = 't1.id as carry_id';
 			$select[] = 't1.cycle_id';
 			$select[] = 't1.source_user_id';
 			$select[] = 't1.destination_user_id';
 			$select[] = 't1.score_value';
+			$select[] = 't1.value as carry_value';
 			$select[] = 't1.modified';
 			$select[] = 't1.active';
 			$from[] = $prefix . 'carry t1';

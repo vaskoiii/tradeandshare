@@ -281,6 +281,7 @@ function get_mask_author($type, $display) {
 			else
 				$array = array();
 		break;
+		case 'carry':
 		case 'score':
 		case 'invited':
 		case 'rating':
@@ -411,6 +412,18 @@ function get_mask_subject($type, $display) {
 			);
 		break;
 		case 'carry':
+			$array = array(
+				'direction_right_name' => 'direction_right_name',
+				'destination_user_name' => 'destination_user_name',
+				'destination_user_name_spacer' => '_',
+				'score_value' => 'score_value',
+				'score_value_divide' => '/',
+				'carry_value' => 'carry_value',
+				# not useful for payout computation:
+				# 'carry_value_equal' => '=',
+				# 'carry_value_result' => 'carry_value_result',
+			);
+		break;
 		case 'score': 
 			$array = array(
 				'direction_right_name' => 'direction_right_name',
@@ -727,6 +740,9 @@ function lt_body($type) {
 		break;
 		# todo update integrate 2012-02-27 vaskoiii
 		case 'carry':
+			# todo add channel_name
+			$array = array('cycle_id',);
+		break;
 		case 'score':
 			$array = array('kind_name', '_', 'kind_name_id');
 		break;

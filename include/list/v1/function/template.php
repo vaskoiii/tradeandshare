@@ -192,6 +192,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ' ' . $v1 . ' ';
 	}
 	else switch($v1) {
+		case 'carry_value':
+		case 'score_value': # may need to format to 2 decimal places
 		case 'id':
 		case 'mark_id':
 		case 'kind_name_id':
@@ -199,7 +201,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= $listing[$v1];
 		break;
 		case 'cycle_id':
-			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$k1];
+			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$v1];
 		break;
 		case 'transaction_value':
 		case 'cost_value':
@@ -293,7 +295,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing['tag_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
 			break;
 			case 'score':
-			case 'carry':
+			# case 'carry': # compute automatically
 			case 'rating':
 				if ($listing['source_user_id'] == $login_user_id)
 					$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
@@ -341,6 +343,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case '!':
 		case '+':
+		case '/':
 		case '=':
 			$grab .= ' ' . $v1 . ' ';
 		break;
