@@ -83,6 +83,8 @@ function new_report_new_count($listing_type, $when) {
 	switch($listing_type) {
 
 		case 'score':
+		case 'comment':
+		case 'carry':
 		case 'channel':
 		case 'cycle':
 		case 'renewal':
