@@ -24,6 +24,8 @@ add_translation('element', 'like');
 add_translation('element', 'dislike');
 add_translation('element', 'comment');
 
+add_translation('page', 'score_report');
+
 add_translation('element', 'list');
 add_translation('element', 'go_back');
 add_translation('element', 'more');
