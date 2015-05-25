@@ -960,7 +960,7 @@ switch($process['miscellaneous']['action']) {
 
 		if (sizeof(get_gp('row')) != 1)
 			die('only 1 like/dislike/comment at a time');
-		switch($type) {
+		switch($action) {
 			case 'like':
 			case 'dilike':
 				$sql = '
