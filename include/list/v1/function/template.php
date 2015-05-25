@@ -267,7 +267,27 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# todo alternative really needed? ( seems to do the same as result_process )
 			# $grab .= ' - <a href="./selection_action/?action=' . to_html($k1) . '&list_name=' . to_html($type) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ). '&q=' . to_url(ltrim(ff('', 1), '?'))  . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
 			# no confirm
-			$grab .= ' - <a href="./selection_process/?action=' . to_html($k1) . '&list_name=' . to_html($type) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ). '&q=' . to_url(ltrim(ff('', 1), '?'))  . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
+			switch ($type) {
+				case 'cycle':
+					# no user input
+				break;
+				default:
+					$grab .= ' - <a href="./selection_process/?action=' . to_html($k1) . '&list_name=' . to_html($type) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ). '&q=' . to_url(ltrim(ff('', 1), '?'))  . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
+				break;
+			}
+		break;
+		case 'comment':
+			switch ($type) {
+				case 'cycle':
+					# no user input
+				break;
+				default:
+					$grab .= ' - <a href="./result_process/?' . to_html($k1) . '=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="' . to_html($k1) . '">' . tt('element', $k1) . '</span></a> ';
+				break;
+			}
+		break;
+		case 'report':
+			# todo allow reporting similar to comment
 		break;
 		case 'delete':
 		if ($load == 'list') {

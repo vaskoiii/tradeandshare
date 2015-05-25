@@ -20,6 +20,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: header page for every displayed page except for /main/
 
+add_translation('element', 'like');
+add_translation('element', 'dislike');
+add_translation('element', 'comment');
+
 add_translation('element', 'list');
 add_translation('element', 'go_back');
 add_translation('element', 'more');

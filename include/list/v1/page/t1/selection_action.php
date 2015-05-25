@@ -66,6 +66,17 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			print_search_box('element'); ?> 
 		</div><?
 		break;
+		case 'comment': ?> 
+			<dl>
+				<dt><span class="comment_description"><?= tt('element', 'comment_description'); ?></span></dt>
+				<dd>
+                                        <div class="textarea">
+                                                <textarea onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="comment_description" maxlength="255" /></textarea>
+                                        </div>
+                                        &nbsp;
+				</dd>
+			</dl><?
+		break;
 	} ?> 
 	</div>
 	<div class="menu_1">

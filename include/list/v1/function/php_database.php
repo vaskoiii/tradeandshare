@@ -132,9 +132,9 @@ switch($type) {
 
 function get_main_table_alias($type) {
 switch ($type) {
-	case 'score':		return 'se';
-	case 'comment':		return 'cmt';
-	case 'carry':		return 'cry';
+	# case 'score': return 'se';
+	# case 'comment': return 'cmt';
+	# case 'carry': return 'cry';
 	case 'contact':		return 'c';
 	case 'group':		return 'g';
 	case 'groupmate':	return 'lcg';
@@ -818,6 +818,7 @@ function lt_action($type) {
 	$array = array(
 		'like' => 'like',
 		'dislike' => 'dislike',
+		'comment' => 'comment',
 		'edit' => 'edit',
 		'translate' => 'translate',
 		'delete' => 'delete',

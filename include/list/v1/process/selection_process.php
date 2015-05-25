@@ -46,6 +46,7 @@ switch(get_gp('action')) {
 	break;
 	case 'like':
 	case 'dislike':
+	case 'comment':
 	case 'remember':
 	case 'forget':
 	break;
@@ -132,6 +133,9 @@ switch($process['miscellaneous']['action']) {
 	case 'judge':
 	case 'import':
 		$process['team_required_name'] = get_gp('team_required_name');
+	break;
+	case 'comment':
+		$process['comment_description'] = get_gp('comment_description');
 	break;
 }
 
@@ -422,6 +426,7 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'like':
 	case 'dislike':
+	case 'comment':
 		# todo fix cheating
 		$interpret['row'][] = $process['miscellaneous']['row'][0];
 	break;
@@ -898,6 +903,7 @@ switch($process['miscellaneous']['action']) {
 	break;
 	case 'like':
 	case 'dislike':
+	case 'comment':
 		# todo integrate with the way selection action is intended instead of forcing everything in this case ie) sql queries
 		# todo better deal with the die() errors
 		$i1 = 1;
@@ -953,19 +959,38 @@ switch($process['miscellaneous']['action']) {
 			die('unable to get score user id');
 
 		if (sizeof(get_gp('row')) != 1)
-			die('only 1 like/dislike at a time');
-		$sql = '
-			insert into
-				' . $prefix . 'score
-			set
-				source_user_id = ' . (int)$login_user_id . ',
-				destination_user_id = ' . (int)$i3 . ',
-				mark_id = ' . (int)$i1 . ',
-				kind_id = ' . (int)$i2 . ',
-				kind_name_id = ' . (int)$process['miscellaneous']['row'][0] . ',
-				modified = now(),
-				active = 1
-		';
+			die('only 1 like/dislike/comment at a time');
+		switch($type) {
+			case 'like':
+			case 'dilike':
+				$sql = '
+					insert into
+						' . $prefix . 'score
+					set
+						source_user_id = ' . (int)$login_user_id . ',
+						destination_user_id = ' . (int)$i3 . ',
+						mark_id = ' . (int)$i1 . ',
+						kind_id = ' . (int)$i2 . ',
+						kind_name_id = ' . (int)$process['miscellaneous']['row'][0] . ',
+						modified = now(),
+						active = 1
+				';
+			break;
+			case 'comment':
+				#todo there is no error checking on comments here?
+				$sql = '
+					insert into
+						' . $prefix . 'comment
+					set
+						user_id = ' . (int)$login_user_id . ',
+						kind_id = ' . (int)$i2 . ',
+						kind_name_id = ' . (int)$process['miscellaneous']['row'][0] . ',
+						description = ' . to_sql($process['comment_description']) . ',
+						modified = now(),
+						active = 1
+				';
+			break;
+		}
 		$result = mysql_query($sql) or die(mysql_error());
 	break;
 }

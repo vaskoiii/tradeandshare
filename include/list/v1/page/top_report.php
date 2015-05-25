@@ -176,6 +176,10 @@ $a1 = array(
 #	'feedback' => '',
 #	'translation' => '',
 #	'jargon' => '',
+	# todo let user choose which items they want to see ie) like a subscription
+	# 'score' => '',
+	# 'comment' => '',
+	# 'report' => '',
 );
 
 foreach($a1 as $k1 => $v1) {

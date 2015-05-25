@@ -31,6 +31,7 @@ $interpret['action_array'] = array(
 	'delete' => '1', # set inactive
 	'like' => '1', # copy to score table
 	'dislike' => '1', # copy to score table
+	'comment' => '1', # copy with description to comment table
 	'export' => '1', # copy to transfer table
 	'forget' => '1', # remove minder
 	'import' => '1', # copy to item table
@@ -55,6 +56,7 @@ switch ($process['action']) {
 	case 'forget':
 	case 'like':
 	case 'dislike':
+	case 'comment':
 		# ok to continue
 	break;
 	default:
