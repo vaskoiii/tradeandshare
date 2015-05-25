@@ -81,6 +81,8 @@ function new_report_new_count($listing_type, $when) {
 		break;
 	}
 	switch($listing_type) {
+
+		case 'score':
 		case 'channel':
 		case 'cycle':
 		case 'renewal':

@@ -28,6 +28,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		more_on('people_area_more');
 		more_on('control_area_more');
 		more_on('other_area_more');
+		more_on('member_area_more');
 		document.getElementById('all_on_area_more_toggle').innerHTML = '<?= tt('element', 'collapse_all'); ?>';
 		document.getElementById('all_on_area_more_toggle').href = 'javascript: more_off_all();';
 	}
@@ -38,6 +39,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		more_off('people_area_more');
 		more_off('control_area_more');
 		more_off('other_area_more');
+		more_off('member_area_more');
 		document.getElementById('all_on_area_more_toggle').innerHTML = '<?= tt('element', 'expand_all'); ?>';
 		document.getElementById('all_on_area_more_toggle').href = 'javascript: more_on_all();';
 	}
