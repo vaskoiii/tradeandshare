@@ -96,6 +96,47 @@ function get_channel_destination_user_id_array(& $channel, $channel_parent_id, $
 	}
 }
 
+function get_score_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
+	global $config;
+
+	# alias
+	$kid = & $channel['destination_user_id'][$destination_user_id];
+
+	foreach ($channel['member_list'] as $k1 => $v1) { # get sum
+		# todo give the option to factor in channel for likes
+		# todo allow team specific ratings
+		# todo factor in the cycle
+		$sql = '
+			select
+				source_user_id,
+				sum(g.value) as summer,
+				count(g.value) as counter
+			FROM
+				' . $config['mysql']['prefix'] . 'score r,
+				' . $config['mysql']['prefix'] . 'mark g
+			WHERE
+				r.source_user_id != r.destination_user_id and
+				r.mark_id = g.id AND
+				-- r.channel_id = ' . (int)$channel_parent_id . ' and
+				-- r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
+				r.source_user_id = ' . (int)$v1 . ' and 
+				r.destination_user_id = ' . (int)($destination_user_id) . ' and
+				-- start < ' . $channel['cycle_restart']['yyyy-mm-dd-1x'] . ' and 
+				-- start >= ' . $channel['cycle_restart']['yyyy-mm-dd-2x'] . ' and 
+				r.active = 1
+		';
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['counter']) {
+				$kid['source_user_id_rating_sum'][$row['source_user_id']] = $row['summer'];
+				$kid['source_user_id_rating_count'][$row['source_user_id']] = $row['counter'];
+				$kid['source_user_id_rating_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
+			}
+		}
+	}
+}
+
+
 function get_cycle_rating_average(& $channel, $channel_parent_id, $destination_user_id) {
 	# preparation for computation
 	get_channel_cycle_restart_array($channel, $channel_parent_id);
@@ -144,6 +185,54 @@ function get_channel_source_user_id_array(& $channel, $channel_parent_id, $sourc
 	else
 		$kis['count_weight'] = 1 / $kis['user_rating_count'];
 		# self-rating is not counted
+}
+
+function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, $source_user_id) {
+	global $config;
+
+	# alias
+	$kis = & $channel['source_user_id'][$source_user_id];
+
+	$kis['user_rating_count'] = 0;
+
+	# todo where to add per user number of ratings
+	$kis['this_user_rating_count'] = 0;
+
+	# todo uncomment parts in the sql to account for:
+	# - timframe ratings only
+	# - specified channel only
+	$sql = '
+		select
+			-- count( distinct destination_user_id) as user_rating_count
+			count(*) as user_rating_count
+		FROM
+			' . $config['mysql']['prefix'] . 'score
+		WHERE
+			source_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			source_user_id != destination_user_id and
+			-- channel_id = ' . (int)$channel_parent_id . ' and
+			-- team_id = ' . (int)$config['everyone_team_id'] . ' and 
+			source_user_id = ' . (int)$source_user_id . ' and 
+			-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
+			-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
+			active = 1
+	';
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		if ($row['user_rating_count']) {
+			$kis['user_rating_count'] = $row['user_rating_count'];
+		}
+	}
+	# todo still need to find the amount per user
+	
+	if (empty($kis['user_rating_count']))
+		$kis['count_weight'] = 0;
+	else {
+		# this 1 needs to be variable
+		$kis['count_weight'] = 1 / $kis['user_rating_count'];
+		# self-rating is not counted
+	} 
 }
 
 

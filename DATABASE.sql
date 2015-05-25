@@ -3027,3 +3027,11 @@ insert into ts_kind set name = 'carry';
 
 update ts_kind set translation = 2, minder = 2, `score` = 1 where `score` is null;
 
+insert into ts_element set name = 'comment';
+
+-- score report --
+insert into ts_page set parent_id=321, file_id=14, name='score_report', `order`=1, launch=1, monitor=2, login=1, advanced=2;
+
+-- like/dislike were swapped --
+update ts_mark set value = 1;
+update ts_mark set value = 0 where id = 2;
