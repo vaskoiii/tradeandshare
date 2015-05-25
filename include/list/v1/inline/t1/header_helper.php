@@ -25,7 +25,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Helper heading for beginners ?>
 <div class="content">
 	<div>
-		<center><p id="ts_helper_text">Stuff you Want or Want to Share</p></center>
+		<center><p id="ts_helper_text">Stuff You Want or Want to Share</p></center>
 	</div>
 
 
