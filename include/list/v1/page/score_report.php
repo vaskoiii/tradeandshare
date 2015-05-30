@@ -389,11 +389,14 @@ foreach ($channel as $kc1 => $vc1) {
 					$kisa['time_weight']
 				)
 			;
+			$i111 = 0;
+			if (!empty($kid['source_user_id_rating_like_count'][$k1]))
+				$i111 = $kid['source_user_id_rating_like_count'][$k1];
 			$kid['source_user_id_rating_weight_math_before'][$k1] = 
-				'This-User Like: ' . $kid['source_user_id_rating_like_count'][$k1] . ' | ' .
+				'This-User Like: ' . $i111 . ' | ' .
 				'This-User Dislike: ' . ($kid['source_user_id_rating_count'][$k1] - $kid['source_user_id_rating_like_count'][$k1]) . ' | ' .
 				'All-User Like: ' . $kis['user_rating_like_count'] . ' | ' .
-				'Average: ' . $kid['source_user_id_rating_like_count'][$k1] . '/' . $kis['user_rating_like_count'] . ' | ' . 
+				'Average: ' . $i111 . '/' . $kis['user_rating_like_count'] . ' | ' . 
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
