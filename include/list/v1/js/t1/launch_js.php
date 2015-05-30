@@ -154,8 +154,7 @@ function launch(tsType) {
 	else {
 		o1.style.display = 'block';
 		radicalize(tsType);
-		document.getElementById(tsType + '_input').focus(); // firefox linux bug?
-		// focus() makes launcher dissappear but only on initial initial keypress on the homepage
+		document.getElementById(tsType + '_input').focus();
 	}
 	o2.style.display = 'none';
 	o3.style.display = 'none';

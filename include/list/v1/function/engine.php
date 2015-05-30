@@ -925,10 +925,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 'k.name as kind_name';
 			$from[] = $prefix . 'score t1';
 			$from[] = $prefix . 'kind k';
-			$where[] = '(
-				t1.source_user_id = ' . (int)$login_user_id . ' OR
-				t1.destination_user_id = ' . (int)$login_user_id . '
-			)';
 			$where[] = 't1.active = 1';
 			$where[] = 't1.kind_id = k.id';
 			if (isset_gp('score_kind_id'))
