@@ -920,21 +920,29 @@ switch($process['miscellaneous']['action']) {
 
 		$i3 = 0;
 		# have to know whether we are getting:
+		# id
 		# user_id
 		# source_user_id
 		$result = 0;
-		$sql = '
-			select 
-				user_id
-			from
-				' . $prefix . $process['miscellaneous']['list_name'] . '
-			where
-				id = ' . (int)$process['miscellaneous']['row'][0] . '
-			limit
-				1
-		';
-		$result = @mysql_query($sql); # dont print error message
-		if (!empty($result)) {
+		if ($process['miscellaneous']['list_name'] == 'user')
+			$i3 = get_db_single_value('
+				id from
+					' . $prefix . 'user
+				where
+					id = ' . (int)$process['miscellaneous']['row'][0]
+			);
+		if (empty($i3)) {
+			$sql = '
+				select 
+					user_id
+				from
+					' . $prefix . $process['miscellaneous']['list_name'] . '
+				where
+					id = ' . (int)$process['miscellaneous']['row'][0] . '
+				limit
+					1
+			';
+			$result = @mysql_query($sql); # dont print error message
 			while ($row = mysql_fetch_assoc($result))
 				$i3 = $row['user_id'];
 		}
@@ -950,10 +958,8 @@ switch($process['miscellaneous']['action']) {
 					1
 			';
 			$result = @mysql_query($sql); # dont print error message
-			if (!empty($result)) {
-				while ($row = mysql_fetch_assoc($result))
-					$i3 = $row['source_user_id'];
-			}
+			while ($row = mysql_fetch_assoc($result))
+				$i3 = $row['source_user_id'];
 		}
 		if (empty($i3))
 			die('unable to get score user id');
