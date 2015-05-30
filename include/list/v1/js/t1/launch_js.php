@@ -131,7 +131,7 @@ function radicalize(tsType) {
 	lb.style.top = topPx + 'px';
 	lb.style.left = leftPx + 'px';
 }
-function launch(tsType, event) {
+function launch(tsType) {
 	var tsOtherType;
 	var tsanotherType;
 	if (tsType == 'pager') {
@@ -154,7 +154,8 @@ function launch(tsType, event) {
 	else {
 		o1.style.display = 'block';
 		radicalize(tsType);
-		document.getElementById(tsType + '_input').focus(); // firefox bug? launcher dissappears on initial keypress only on homepage?
+		document.getElementById(tsType + '_input').focus(); // firefox linux bug?
+		// focus() makes launcher dissappear but only on initial initial keypress on the homepage
 	}
 	o2.style.display = 'none';
 	o3.style.display = 'none';
@@ -166,21 +167,21 @@ function checkIt(event) {
 	// space 32 deprecated
 	if (event.keyCode == 32 | event.keyCode == 188) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch('pager', event);
+			launch('pager');
 			return false;
 		}
 	}
 	// period 190 .
 	else if (event.keyCode == 190) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch('peopler', event);
+			launch('peopler');
 			return false;
 		}
 	}
 	// slash 191
 	else if (event.keyCode == 191) {
 		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
-			launch('scanner', event);
+			launch('scanner');
 			return false;
 		}
 	}
