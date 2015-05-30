@@ -962,7 +962,7 @@ switch($process['miscellaneous']['action']) {
 			die('only 1 like/dislike/comment at a time');
 		switch($action) {
 			case 'like':
-			case 'dilike':
+			case 'dislike':
 				$sql = '
 					insert into
 						' . $prefix . 'score

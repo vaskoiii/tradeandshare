@@ -109,6 +109,25 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 		$sql = '
 			select
 				source_user_id,
+				count(r.mark_id) as like_count
+			FROM
+				' . $config['mysql']['prefix'] . 'score r
+			WHERE
+				r.source_user_id != r.destination_user_id and
+				r.mark_id = 1 and
+				r.source_user_id = ' . (int)$v1 . ' and 
+				r.destination_user_id = ' . (int)($destination_user_id) . ' and
+				r.active = 1
+		';
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['like_count']) {
+				$kid['source_user_id_rating_like_count'][$row['source_user_id']] = $row['like_count'];
+			}
+		}
+		$sql = '
+			select
+				source_user_id,
 				sum(g.value) as summer,
 				count(g.value) as counter
 			FROM
@@ -193,11 +212,35 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 	# alias
 	$kis = & $channel['source_user_id'][$source_user_id];
 
+	$kis['user_rating_like_count'] = 0;
+	$sql = '
+		select
+			count(*) as user_rating_like_count
+		FROM
+			' . $config['mysql']['prefix'] . 'score
+		WHERE
+			source_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
+			source_user_id != destination_user_id and
+			source_user_id = ' . (int)$source_user_id . ' and 
+			mark_id = 1 and
+			active = 1
+	';
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		if ($row['user_rating_like_count']) {
+			$kis['user_rating_like_count'] = $row['user_rating_like_count'];
+		}
+	}
+	if (empty($kis['user_rating_like_count']))
+		$kis['count_weight'] = 0;
+	else {
+		# this 1 needs to be variable
+		$kis['count_weight'] = 1 / $kis['user_rating_like_count'];
+		# self-rating is not counted
+	} 
+
 	$kis['user_rating_count'] = 0;
-
-	# todo where to add per user number of ratings
-	$kis['this_user_rating_count'] = 0;
-
 	# todo uncomment parts in the sql to account for:
 	# - timframe ratings only
 	# - specified channel only

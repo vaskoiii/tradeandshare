@@ -41,37 +41,38 @@ function print_key_user_id($k1) {
 # print_break_open('user_report', 'page');
 ?>
 <div class="content_box">
-<p>TODO: Use a diminishing score to help normalize ratings</p>
+
+<div>
+<form action="." method="GET">
+	<select name="channel_id">
+		<option></option><?
+		foreach ($data['score_report']['channel'] as $k1 => $v1) { ?> 
+			<option value="<?= (int)$v1['channel_id']; ?>" <?= get_gp('channel_id') == $k1 ? 'selected="selected"' : ''; ?>><?= to_html($v1['channel_name']); ?></option><?
+		}
+		?>
+	</select>
+
+	<input type="submit" value="!" />
+	&gt;&gt;
+	<a href="#" id="score_readme_toggle" onclick="more_toggle('score_readme'); return false;"><?= tt('element', 'more'); ?></a>
+</form>
+</div>
+<div id="score_readme" style="display: none;">
+<dd>todo: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</dd>
+<p>todo: Use a diminishing score to help normalize ratings</p>
 <ul>
 	<li>todo: factor in the carried over score</li>
 	<li>todo: rewrite payout based on score and carry</li>
 </ul>
-<p>For a given cycle calculate partial credit from each member:</p>
-<ul>
-	<li>multiply the <strong>average</strong> of average unique-source-user ratings on the destination user</li>
-	<li>by the <strong>weight</strong> of that average (1/number of unique members rated by the source user)</li>
-	<li>by the <strong>time</strong> with membership for the destination user (before and after a midcycle renewal)</li>
-</ul>
-<p>To calculate full credit for each member sum all partial credit.</p>
-<p>To calculate weighted credit multiply the % of member time by the full credit.</p>
-<p>After calculating weighted credit for each member above, a multiplier is needed to calculate payout:</p>
-<ul>
-	<li>take the total cost of the cycle (minus a % for TS and minus a % for the channel mission)</li>
-	<li>divide by the sum of all weighted credit</li>
-</ul>
-<p>The payout for indivuals is then just the multiplier times their credit.</p>
+<p>todo: explain with words the new algorithym</p>
 <p>
 	<strong>Merit Key:</strong>
 	none=0
 	|
 	quarter=1
-	|
-	half=2
-	|
-	triquarter=3
-	|
-	full=4
-</p><?
+</p>
+</div>
+<?
 print_break_close();
 print_break_open('Premature'); 
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
@@ -134,11 +135,8 @@ foreach ($channel as $kc1 => $vc1) {
 		<dd>$<?= .1 * $d1; ?></dd>
 		<dt>Mission Cut (0% of Channel Total)</dt>
 		<dd>$0</dd>
-		<dd>TODO: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</dd>
 		<dt>Remaining to be distributed</dt>
-		<dd>$<?= (.9 * $d1); ?></dd>
-		<dt>Average Weight Sum</dt>
-		<dd><?= array_sum($channel[$kc1]['average_weight_sum']); ?></dd><?
+		<dd>$<?= (.9 * $d1); ?></dd><?
 		if (array_sum($channel[$kc1]['weighted_credit']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?=
@@ -155,7 +153,18 @@ foreach ($channel as $kc1 => $vc1) {
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
-		<h3><?= print_key_user_id($kd1); ?></h3>
+		<h3><?= print_key_user_id($kd1); ?></h3><? 
+		if (1 || !empty($kid['source_user_id_rating_average'])) { ?> 
+				Time in Cycle:
+				<?= $channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] + $channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']; ?>
+			<br />
+				Weighted Credit:
+				<?= !empty($channel[$kc1]['weighted_credit'][$kd1]) ? $channel[$kc1]['weighted_credit'][$kd1] : '0'; ?>
+			<br />
+				<strong>Payout</strong>:
+				$<?= round($d3 * $channel[$kc1]['weighted_credit'][$kd1], 2); ?> 
+			<?
+		} ?> 
 		<dl><?
 			if (!empty($kid['source_user_id_rating_average']))
 			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) {
@@ -167,43 +176,12 @@ foreach ($channel as $kc1 => $vc1) {
 					print_key_user_id($k1); ?> 
 				</dt>
 				<dd>
-					<table>
-						<tr>
-							<td> </td>
-							<td> <?= $kid['source_user_id_rating_weight_math_before'][$k1]; ?> </td>
-						</tr>
-						<tr>
-							<td style="padding-right: 10px;">+</td>
-							<td style="border-bottom: 1px solid #000; padding-bottom: 10px;"> <?= $kid['source_user_id_rating_weight_math_after'][$k1]; ?> </td>
-						</tr>
-						<tr>
-							<td> </td>
-							<td style="padding-top: 10px;"><?= $kid['source_user_id_rating_weight'][$k1]; ?></td>
-						</tr>
-					</table>
+					<?= $kid['source_user_id_rating_weight_math_before'][$k1]; ?>
 				</dd><?
 			}
 			else
 				echo 'No ratings'; ?> 
 		</dl><?
-		if (1 || !empty($kid['source_user_id_rating_average'])) { ?> 
-			<p>
-				Full Credit:
-				<?= $channel[$kc1]['average_weight_sum'][$kd1]; ?>
-			</p>
-			<p>
-				Time in Cycle:
-				<?= $channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] + $channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']; ?>
-			</p>
-			<p>
-				Weighted Credit:
-				<?= !empty($channel[$kc1]['weighted_credit'][$kd1]) ? $channel[$kc1]['weighted_credit'][$kd1] : '0'; ?>
-			</p>
-			<p>
-				<strong>Payout</strong>:
-				$<?= round($d3 * $channel[$kc1]['weighted_credit'][$kd1], 2); ?> 
-			</p><?
-		}
 	}
 	print_break_close();
 }

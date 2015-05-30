@@ -86,10 +86,13 @@ $data['user_report']['channel_list'] = array();
 $channel = & $data['user_report']['channel_list'];
 
 # todo optimize
+
 # get every single channel
+$data['score_report']['channel'] = array();
 $sql = '
 	select
-		cnl.id
+		cnl.id as channel_id,
+		cnl.name as channel_name
 	from
 		' . $config['mysql']['prefix'] . 'channel cnl
 	where
@@ -97,6 +100,27 @@ $sql = '
 	order by
 		cnl.id asc
 ';
+# please choose a channel
+$result = mysql_query($sql) or die(mysql_error());
+while ($row = mysql_fetch_assoc($result)) {
+	$data['score_report']['channel'][$row['channel_id']] = $row;
+}
+
+# get only the channel that was specified if applicable
+$sql = '
+	select
+		cnl.id
+	from
+		' . $config['mysql']['prefix'] . 'channel cnl
+	where
+		cnl.id = cnl.parent_id
+		' . (get_gp('channel_id') ? ' and cnl.id = ' . (int)get_gp('channel_id') : '') . '
+	order by
+		cnl.id asc
+	limit 10
+';
+# limit should really be 1
+
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
 	$channel[$row['id']] = array();
@@ -158,7 +182,7 @@ foreach($channel as $k1 => $v1) {
 
 		$channel[$k1]['member_time']['before'] = array();
 		$channel[$k1]['member_time']['after'] = array();
-		$channel[$k1]['average_weight_sum'] = array();
+		# $channel[$k1]['average_weight_sum'] = array();
 		$channel[$k1]['weighted_credit'] = array();
 	}
 }
@@ -335,6 +359,7 @@ foreach ($channel as $kc1 => $vc1) {
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
+
 		if (!empty($kid['source_user_id_rating_average']))
 		foreach ($kid['source_user_id_rating_average'] as $k1 => $v1) {
 			$kis = & $channel[$kc1]['source_user_id'][$k1]; # alias
@@ -345,10 +370,10 @@ foreach ($channel as $kc1 => $vc1) {
 			# - average
 			# instead use ratings from the full cycle
 			# ie) if my valid time during the payout period is 1 day my ratings for that entire cycycle would be factored into that one day ( not just the ratings I made on that 1 day)
-			$s111 = ($kid['source_user_id_rating_count'][$k1] / $kis['user_rating_count']);
+			# $s111 = ($kid['source_user_id_rating_count'][$k1] / $kis['user_rating_count']);
+			$s111 = ($kid['source_user_id_rating_like_count'][$k1] / $kis['user_rating_like_count']);
 			$kid['source_user_id_rating_weight'][$k1] =
 				(
-					$v1 *
 					(
 						# $kis['count_weight']
 						$s111
@@ -357,7 +382,6 @@ foreach ($channel as $kc1 => $vc1) {
 					$kisb['time_weight']
 				) +
 				(
-					$v1 *
 					(
 						# $kis['count_weight']
 						$s111
@@ -365,49 +389,61 @@ foreach ($channel as $kc1 => $vc1) {
 					$kisa['time_weight']
 				)
 			;
-			# todo 
-			# todo 
-			# todo 
-			# todo 
-			# todo 
-			# user number of ratings for that user / total number of ratings
-			# not
-			# 1 user / number of users rated
 			$kid['source_user_id_rating_weight_math_before'][$k1] = 
-				' ( ' . 
-					$v1 . ' average * ' . 
-					$kid['source_user_id_rating_count'][$k1] . 
-					'/' .
-					$kis['user_rating_count'] . ' weight * ' . 
-					$kisb['time_weight'] . ' time ' . 
-				' )'
+				'This-User Like: ' . $kid['source_user_id_rating_like_count'][$k1] . ' | ' .
+				'This-User Dislike: ' . ($kid['source_user_id_rating_count'][$k1] - $kid['source_user_id_rating_like_count'][$k1]) . ' | ' .
+				'All-User Like: ' . $kis['user_rating_like_count'] . ' | ' .
+				'Average: ' . $kid['source_user_id_rating_like_count'][$k1] . '/' . $kis['user_rating_like_count'] . ' | ' . 
+				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
-			$kid['source_user_id_rating_weight_math_after'][$k1] = 
-				' ( ' . 
-					$v1 . ' average * ' . 
-					$kid['source_user_id_rating_count'][$k1] .
-					'/' .
-					$kis['user_rating_count'] . ' weight * ' . 
-					$kisa['time_weight'] . ' time ' . 
-					# round($kisa['time_weight'], 2) * 100 . '% time ' . 
-				' ) '
-			;
-
 		}
 	}
 	# average_weight_sum && weighted_credit
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
-		$channel[$kc1]['average_weight_sum'][$kd1] = 0;
 		if (!empty($kid['source_user_id_rating_weight'])) {
-			$channel[$kc1]['average_weight_sum'][$kd1] = array_sum($kid['source_user_id_rating_weight']);
-			$channel[$kc1]['weighted_credit'][$kd1] =
-				array_sum($kid['source_user_id_rating_weight'])
-				* (
-					$channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] +
-					$channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = 0;
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 0;
+			foreach ($kid['source_user_id_rating_average'] as $k11 => $v11) {
+				$channel[$kc1]['average_weight_sum_numerator'][$kd1] += (
+					$kid['source_user_id_rating_average'][$k11]
+					*
+					$kid['source_user_id_rating_weight'][$k11]
 				);
+				$channel[$kc1]['average_weight_sum_denominator'][$kd1] += (
+					$kid['source_user_id_rating_weight'][$k11]
+				);
+			}
+		}
+		$channel[$kc1]['weighted_credit_math'][$kd1] = '(' .
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1]
+			. ' / ' . 
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1]
+		. ')'
+		. '* ( ' .
+			$channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] . ' + ' . 
+			$channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']
+		. ')';
+
+		$b11 = 1;
+		if (empty($channel[$kc1]['average_weight_sum_numerator'][$kd1]))
+			$b11 = 2;
+		if (empty($channel[$kc1]['average_weight_sum_denominator'][$kd1]))
+			$b11 = 2;
+		if ($b11 == 2) {
+			$channel[$kc1]['weighted_credit'][$kd1] = 0;
+		}
+		else {
+			$channel[$kc1]['weighted_credit'][$kd1] = (
+				$channel[$kc1]['average_weight_sum_numerator'][$kd1]
+				/
+				$channel[$kc1]['average_weight_sum_denominator'][$kd1]
+			)
+			* (
+				$channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] +
+				$channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']
+			);
 		}
 	}
 }
