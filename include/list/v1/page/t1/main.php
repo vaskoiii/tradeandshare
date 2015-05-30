@@ -26,7 +26,7 @@ if ($_SESSION['login']['login_user_id']) {
 else
 	$b1 = 2;
 ?> 
-<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'main_ts_focus\').focus();"' : ''; ?> onkeydown="checkIt(event);"><?
+<body<?= $b1 == 1 ? ' onLoad="document.getElementById(\'main_ts_focus\').focus();"' : ''; ?> onkeydown="return checkIt(event);"><?
 include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will fail if omitted 2014-09-01 vaskoiii ?> 
 <div id="header">
 <div style="background: url('/list/v1/theme/<?= to_html(preg_replace('/theme\_/', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
