@@ -370,8 +370,8 @@ foreach ($channel as $kc1 => $vc1) {
 			# - average
 			# instead use ratings from the full cycle
 			# ie) if my valid time during the payout period is 1 day my ratings for that entire cycycle would be factored into that one day ( not just the ratings I made on that 1 day)
-			# $s111 = ($kid['source_user_id_rating_count'][$k1] / $kis['user_rating_count']);
-			$s111 = ($kid['source_user_id_rating_like_count'][$k1] / $kis['user_rating_like_count']);
+			$s111 = ($kid['source_user_id_rating_count'][$k1] / $kis['user_rating_count']);
+			# $s111 = ($kid['source_user_id_rating_like_count'][$k1] / $kis['user_rating_like_count']);
 			$kid['source_user_id_rating_weight'][$k1] =
 				(
 					(
@@ -389,14 +389,17 @@ foreach ($channel as $kc1 => $vc1) {
 					$kisa['time_weight']
 				)
 			;
-			$i111 = 0;
+			$il1 = 0;
+			$il2 = 0;
 			if (!empty($kid['source_user_id_rating_like_count'][$k1]))
-				$i111 = $kid['source_user_id_rating_like_count'][$k1];
+				$il1 = $kid['source_user_id_rating_like_count'][$k1];
+			if (!empty($kid['source_user_id_rating_count'][$k1]))
+				$il2 = $kid['source_user_id_rating_count'][$k1] - $kid['source_user_id_rating_like_count'][$k1];
 			$kid['source_user_id_rating_weight_math_before'][$k1] = 
-				'This-User Like: ' . $i111 . ' | ' .
-				'This-User Dislike: ' . ($kid['source_user_id_rating_count'][$k1] - $kid['source_user_id_rating_like_count'][$k1]) . ' | ' .
-				'All-User Like: ' . $kis['user_rating_like_count'] . ' | ' .
-				'Average: ' . $i111 . '/' . $kis['user_rating_like_count'] . ' | ' . 
+				'This-User Like: ' . $il1 . ' | ' .
+				'This-User Dislike: ' . $il2 . ' | ' .
+				'All-User Score: ' . $kis['user_rating_count'] . ' | ' .
+				'Average: ' . $kid['source_user_id_rating_average'][$k1] . ' | ' .
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
@@ -407,17 +410,29 @@ foreach ($channel as $kc1 => $vc1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
 		if (!empty($kid['source_user_id_rating_weight'])) {
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = 0;
-			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 0;
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 0; # oh no!
 			foreach ($kid['source_user_id_rating_average'] as $k11 => $v11) {
 				$channel[$kc1]['average_weight_sum_numerator'][$kd1] += (
-					$kid['source_user_id_rating_average'][$k11]
-					*
-					$kid['source_user_id_rating_weight'][$k11]
+					(
+						(
+							$kid['source_user_id_rating_average'][$k11]
+							*
+							$kid['source_user_id_rating_weight'][$k11]
+						)
+						+
+						1
+					)
+					/
+					2
 				);
 				$channel[$kc1]['average_weight_sum_denominator'][$kd1] += (
 					$kid['source_user_id_rating_weight'][$k11]
 				);
 			}
+		}
+		else {
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = .5; // everyone starts with half credit
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		}
 		$channel[$kc1]['weighted_credit_math'][$kd1] = '(' .
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1]

@@ -103,7 +103,6 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 	$kid = & $channel['destination_user_id'][$destination_user_id];
 
 	foreach ($channel['member_list'] as $k1 => $v1) { # get sum
-		# todo give the option to factor in channel for likes
 		# todo allow team specific ratings
 		# todo factor in the cycle
 		$sql = '

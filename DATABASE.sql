@@ -3035,3 +3035,6 @@ insert into ts_page set parent_id=321, file_id=14, name='score_report', `order`=
 -- like/dislike were swapped --
 update ts_mark set value = 1;
 update ts_mark set value = 0 where id = 2;
+
+-- allowing dislikes to have weight --
+update ts_mark set value = -1 where id = 2;

@@ -67,9 +67,9 @@ function print_key_user_id($k1) {
 <p>todo: explain with words the new algorithym</p>
 <p>
 	<strong>Merit Key:</strong>
-	none=0
+	dislike=-1
 	|
-	quarter=1
+	like=1
 </p>
 </div>
 <?
