@@ -429,11 +429,16 @@ foreach ($channel as $kc1 => $vc1) {
 					$kid['source_user_id_rating_weight'][$k11]
 				);
 			}
-		}
-		else {
-			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = .5; // everyone starts with half credit
+			# system rating (reinforce user ratings)
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1] += $channel[$kc1]['average_weight_sum_numerator'][$kd1];
 			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		}
+		else {
+			# system rating (assume half credit)
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = .5;
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
+		}
+			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		$channel[$kc1]['weighted_credit_math'][$kd1] = '(' .
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1]
 			. ' / ' . 
