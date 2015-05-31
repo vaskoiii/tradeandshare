@@ -416,14 +416,14 @@ foreach ($channel as $kc1 => $vc1) {
 					(
 						(
 							$kid['source_user_id_rating_average'][$k11]
-							*
-							$kid['source_user_id_rating_weight'][$k11]
+							+
+							1
 						)
-						+
-						1
+						/
+						2
 					)
-					/
-					2
+					*
+					$kid['source_user_id_rating_weight'][$k11]
 				);
 				$channel[$kc1]['average_weight_sum_denominator'][$kd1] += (
 					$kid['source_user_id_rating_weight'][$k11]
