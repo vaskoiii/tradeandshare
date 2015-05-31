@@ -65,6 +65,7 @@ add_translation('page', 'search_report');
 add_translation('page', 'top_report');
 add_translation('page', 'trailer_doc');
 add_translation('page', 'transfer_list');
+add_translation('page', 'score_report');
 
 if ($_SESSION['login']['login_user_id']) {
 	$data['search']['response']['search_miscellaneous'] = array(
