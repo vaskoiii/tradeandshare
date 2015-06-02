@@ -430,7 +430,12 @@ foreach ($channel as $kc1 => $vc1) {
 				);
 			}
 			# system rating (reinforce user ratings)
-			$channel[$kc1]['average_weight_sum_numerator'][$kd1] += $channel[$kc1]['average_weight_sum_numerator'][$kd1];
+			$channel[$kc1]['average_weight_sum_numerator'][$kd1] += (
+				$channel[$kc1]['average_weight_sum_numerator'][$kd1]
+				/
+				# count($kid['source_user_id_rating_average'])
+				$channel[$kc1]['average_weight_sum_denominator'][$kd1]
+			);
 			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		}
 		else {
