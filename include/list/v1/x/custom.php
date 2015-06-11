@@ -52,7 +52,7 @@ switch ($x['name']) {
 		# search_report
 		# singularity_report
 		# top_report
-		# user_report
+		# score_report
 
 	case 'main':
 	default: # in case the url is messed up it will still bring you home!

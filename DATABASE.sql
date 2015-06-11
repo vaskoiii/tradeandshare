@@ -350,14 +350,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (1, 'generic_list_result_process'),
 (2, 'generic_list_search_process'),
 (3, 'generic_warp_process'),
-(4, 'groupmate_add_edit'),
-(5, 'groupmate_add_edit_process'),
-(6, 'groupmate_list'),
-(7, 'group_add_edit'),
-(8, 'group_add_edit_process'),
-(9, 'group_list'),
-(10, 'group_select'),
-(11, 'group_select_process'),
 (12, 'home_area'),
 (13, 'incident_add_edit'),
 (14, 'incident_add_edit_process'),
@@ -392,11 +384,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (44, 'offer_add_edit_process'),
 (45, 'offer_list'),
 (46, 'people_area'),
-(47, 'rating_add_edit'),
-(48, 'rating_add_edit_process'),
-(49, 'rating_list'),
-(50, 'rating_select'),
-(51, 'rating_select_process'),
 (52, 'selection_delete'),
 (53, 'selection_delete_process'),
 (54, 'selection_export'),
@@ -488,8 +475,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (142, 'dialect_type'),
 (143, 'dialect_type_id'),
 (144, 'dialect_value'),
-(145, 'group_description'),
-(146, 'group_name'),
 (147, 'incident_description'),
 (148, 'incident_id'),
 (257, 'phase_name'),
@@ -501,7 +486,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (155, 'news_description'),
 (156, 'news_name'),
 (157, 'offer_description'),
-(158, 'rating_description'),
 (159, 'right_name'),
 (160, 'success_description'),
 (161, 'tag_description'),
@@ -527,8 +511,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (181, 'add_mailbox'),
 (182, 'add_webspot'),
 (183, 'add_note'),
-(184, 'select_group'),
-(185, 'add_groupmate'),
 (289, 'contact_view'),
 (187, 'select_incident'),
 (188, 'add_feedback'),
@@ -565,13 +547,11 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (219, 'add_category'),
 (220, 'add_contact'),
 (221, 'add_dialect'),
-(222, 'add_group'),
 (223, 'add_thing'),
 (224, 'add_team'),
 (225, 'add_tag'),
 (226, 'add_success'),
 (227, 'add_singularity'),
-(228, 'add_rating'),
 (229, 'add_offer'),
 (230, 'add_news'),
 (231, 'set_login'),
@@ -615,12 +595,10 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (270, 'selection_action_process'),
 (271, 'locationmind_list'),
 (272, 'categorymind_list'),
-(273, 'select_rating'),
 (274, 'location_select_process'),
 (275, 'category_select_process'),
 (276, 'lock_user_name'),
 (277, 'lock_contact_name'),
-(278, 'lock_group_name'),
 (279, 'lock_team_name'),
 (280, 'lock_location_name'),
 (281, 'lock_range_name'),
@@ -632,7 +610,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (290, 'singularity_view'),
 (291, 'location_view'),
 (292, 'category_view'),
-(293, 'group_view'),
 (294, 'team_view'),
 (296, 'item_list_rss'),
 (297, 'set_lock'),
@@ -698,7 +675,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (364, 'theme_unset_process'),
 (365, 'dialect_unset_process'),
 (366, 'notify_offer_received'),
-(367, 'notify_rating_received'),
 (368, 'notify_transfer_received'),
 (372, 'transfer_add_edit'),
 (373, 'add_transfer'),
@@ -757,7 +733,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (518, 'feed_list'),
 (520, 'feed_add_edit_process'),
 (521, 'item_id'),
-(522, 'rating_id'),
 (523, 'login_id'),
 (524, 'news_id'),
 (525, 'feedback_id'),
@@ -765,8 +740,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (527, 'transfer_id'),
 (528, 'contact_id'),
 (529, 'note_id'),
-(530, 'group_id'),
-(531, 'groupmate_id'),
 (532, 'team_id'),
 (533, 'teammate_id'),
 (534, 'location_id'),
@@ -867,7 +840,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (634, 'element_uid'),
 (635, 'item_uid'),
 (636, 'news_uid'),
-(637, 'rating_uid'),
 (638, 'metail_uid'),
 (639, 'login_uid'),
 (640, 'incident_uid'),
@@ -876,8 +848,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (643, 'transfer_uid'),
 (644, 'contact_uid'),
 (645, 'note_uid'),
-(646, 'group_uid'),
-(647, 'groupmate_uid'),
 (648, 'feed_uid'),
 (649, 'team_uid'),
 (650, 'teammate_uid'),
@@ -908,10 +878,8 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (688, 'set_again'),
 (689, 'send'),
 (690, 'send_more'),
-(691, 'find_group'),
 (692, 'find_item'),
 (693, 'find_news'),
-(694, 'find_rating'),
 (695, 'find_metail'),
 (696, 'find_visit'),
 (697, 'find_incident'),
@@ -920,7 +888,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (700, 'find_transfer'),
 (701, 'find_contact'),
 (702, 'find_note'),
-(703, 'find_groupmate'),
 (704, 'find_feed'),
 (705, 'find_team'),
 (706, 'find_teammate'),
@@ -949,11 +916,6 @@ INSERT INTO `ts_element` (`id`, `name`) VALUES
 (743, 'redirect'),
 (744, 'new_form'),
 (745, 'add_login'),
-(746, 'find_vote'),
-(747, 'decision_name'),
-(748, 'vote_description'),
-(749, 'judge'),
-(750, 'vote_uid'),
 (751, 'page_parent'),
 (752, 'page_next'),
 (753, 'page_previous'),
@@ -1116,18 +1078,18 @@ INSERT INTO `ts_grade` (`id`, `name`, `value`) VALUES
 -- Table structure for table `ts_group`
 --
 
-CREATE TABLE IF NOT EXISTS `ts_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(255) NOT NULL DEFAULT '',
-  `modified` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `link` (`user_id`,`name`),
-  KEY `user_id` (`user_id`),
-  KEY `modified` (`modified`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+-- CREATE TABLE IF NOT EXISTS `ts_group` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `user_id` int(11) NOT NULL,
+--   `name` varchar(255) NOT NULL DEFAULT '',
+--   `description` varchar(255) NOT NULL DEFAULT '',
+--   `modified` datetime NOT NULL,
+--   `active` tinyint(1) NOT NULL,
+--   PRIMARY KEY (`id`),
+--   UNIQUE KEY `link` (`user_id`,`name`),
+--   KEY `user_id` (`user_id`),
+--   KEY `modified` (`modified`)
+-- ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `ts_group`
@@ -1376,18 +1338,18 @@ INSERT INTO `ts_kind` (`id`, `name`, `translation`, `minder`) VALUES
 -- Table structure for table `ts_link_contact_group`
 --
 
-CREATE TABLE IF NOT EXISTS `ts_link_contact_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `contact_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `link` (`contact_id`,`group_id`),
-  KEY `contact_id` (`contact_id`),
-  KEY `group_id` (`group_id`),
-  KEY `modified` (`modified`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
+-- CREATE TABLE IF NOT EXISTS `ts_link_contact_group` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `contact_id` int(11) NOT NULL,
+--   `group_id` int(11) NOT NULL,
+--   `modified` datetime NOT NULL,
+--   `active` tinyint(1) NOT NULL,
+--   PRIMARY KEY (`id`),
+--   UNIQUE KEY `link` (`contact_id`,`group_id`),
+--   KEY `contact_id` (`contact_id`),
+--   KEY `group_id` (`group_id`),
+--   KEY `modified` (`modified`)
+-- ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `ts_link_contact_group`
@@ -1798,7 +1760,6 @@ INSERT INTO `ts_page` (`id`, `parent_id`, `file_id`, `name`, `order`, `launch`, 
 (74, 321, 2, 'teammate_edit', 1, 1, 2, 1, 1),
 (75, 321, 2, 'contact_edit', 1, 1, 2, 1, 1),
 (76, 321, 2, 'team_edit', 1, 1, 2, 1, 1),
-(78, 321, 2, 'rating_edit', 1, 1, 2, 1, 1),
 (79, 321, 2, 'user_login', 1, 1, 2, 1, 2),
 (89, 321, 2, 'user_logout', 1, 1, 2, 1, 2),
 (93, 321, 2, 'item_edit', 1, 1, 2, 1, 2),
@@ -1827,7 +1788,6 @@ INSERT INTO `ts_page` (`id`, `parent_id`, `file_id`, `name`, `order`, `launch`, 
 (236, 68, 3, 'contact_area', 30, 2, 2, 1, 2),
 (239, 321, 14, 'singularity_report', 1, 2, 2, 1, 2),
 (240, 60, 2, 'item_list', 1, 1, 1, 1, 2),
-(246, 64, 2, 'rating_list', 120, 1, 1, 1, 1),
 (248, 321, 2, 'dialect_edit', 1, 1, 2, 1, 2),
 (250, 62, 2, 'dialect_list', 50, 1, 2, 1, 1),
 (254, 321, 14, 'contact_report', 1, 2, 2, 1, 2),
@@ -1846,7 +1806,6 @@ INSERT INTO `ts_page` (`id`, `parent_id`, `file_id`, `name`, `order`, `launch`, 
 (421, 174, 14, 'people_portal', 10, 1, 2, 1, 2),
 (422, 174, 14, 'page_portal', 20, 1, 2, 2, 2),
 (417, 68, 3, 'ts_area', 2, 2, 2, 1, 2),
-(419, 60, 2, 'vote_list', 33, 1, 1, 1, 2),
 (420, 321, 5, 'portal_process', 1, 2, 2, 1, 1),
 (289, 321, 14, 'selection_action', 1, 2, 2, 1, 2),
 (406, 321, 5, 'recover_process', 1, 2, 2, 2, 1),
@@ -1907,7 +1866,6 @@ INSERT INTO `ts_page` (`id`, `parent_id`, `file_id`, `name`, `order`, `launch`, 
 (390, 174, 14, 'search_report', 5, 1, 2, 1, 2),
 (377, 321, 27, 'autocontact_autouser_ajax', 1, 2, 2, 1, 2),
 (414, 321, 11, 'login_unset_process', 1, 1, 2, 2, 2),
-(418, 321, 2, 'vote_edit', 1, 1, 2, 1, 2),
 (400, 321, 29, 'offer_editor', 1, 2, 2, 1, 1),
 (401, 321, 29, 'transfer_editor', 1, 2, 2, 1, 1),
 (429, 321, 2, 'channel_edit', 1, 1, 2, 1, 1),
@@ -2023,26 +1981,26 @@ INSERT INTO `ts_range` (`id`, `name`, `value`) VALUES
 -- Table structure for table `ts_rating`
 --
 
-CREATE TABLE IF NOT EXISTS `ts_rating` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cycle_id` int(11) NOT NULL,
-  `source_user_id` int(11) NOT NULL,
-  `destination_user_id` int(11) NOT NULL,
-  `channel_id` int(11) NOT NULL,
-  `grade_id` int(11) NOT NULL,
-  `team_id` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL DEFAULT '',
-  `modified` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `modified` (`modified`),
-  KEY `source_user_id` (`source_user_id`),
-  KEY `destination_user_id` (`destination_user_id`),
-  KEY `grade_id` (`grade_id`),
-  KEY `team_id` (`team_id`),
-  KEY `channel_id` (`channel_id`),
-  KEY `cycle_id` (`cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=218 ;
+-- CREATE TABLE IF NOT EXISTS `ts_rating` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `cycle_id` int(11) NOT NULL,
+--   `source_user_id` int(11) NOT NULL,
+--   `destination_user_id` int(11) NOT NULL,
+--   `channel_id` int(11) NOT NULL,
+--   `grade_id` int(11) NOT NULL,
+--   `team_id` int(11) NOT NULL,
+--   `description` varchar(255) NOT NULL DEFAULT '',
+--   `modified` datetime NOT NULL,
+--   `active` tinyint(1) NOT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `modified` (`modified`),
+--   KEY `source_user_id` (`source_user_id`),
+--   KEY `destination_user_id` (`destination_user_id`),
+--   KEY `grade_id` (`grade_id`),
+--   KEY `team_id` (`team_id`),
+--   KEY `channel_id` (`channel_id`),
+--   KEY `cycle_id` (`cycle_id`)
+-- ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=218 ;
 
 --
 -- Dumping data for table `ts_rating`
@@ -2838,21 +2796,21 @@ CREATE TABLE IF NOT EXISTS `ts_visit` (
 -- Table structure for table `ts_vote`
 --
 
-CREATE TABLE IF NOT EXISTS `ts_vote` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL,
-  `decision_id` int(11) NOT NULL,
-  `team_id` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL DEFAULT '',
-  `modified` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `tag_id` (`tag_id`),
-  KEY `user_id` (`user_id`),
-  KEY `modified` (`modified`),
-  KEY `team_id` (`team_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+-- CREATE TABLE IF NOT EXISTS `ts_vote` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `user_id` int(11) NOT NULL,
+--   `tag_id` int(11) NOT NULL,
+--   `decision_id` int(11) NOT NULL,
+--   `team_id` int(11) NOT NULL,
+--   `description` varchar(255) NOT NULL DEFAULT '',
+--   `modified` datetime NOT NULL,
+--   `active` tinyint(1) NOT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `tag_id` (`tag_id`),
+--   KEY `user_id` (`user_id`),
+--   KEY `modified` (`modified`),
+--   KEY `team_id` (`team_id`)
+-- ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `ts_vote`
@@ -3038,3 +2996,73 @@ update ts_mark set value = 0 where id = 2;
 
 -- allowing dislikes to have weight --
 update ts_mark set value = -1 where id = 2;
+
+-- moving toward score instead of ratings --
+delete from ts_page where name like 'user_report';
+delete from ts_page where name like 'rating_list';
+delete from ts_page where name like 'rating_edit';
+-- commented out the ts_rating table from here as drop table may make people lose data
+
+update ts_page set parent_id = 64 where name like 'score_list';
+update ts_page set parent_id = 64, `order` = 65 where name like 'comment_list';
+update ts_page set `order` = 50 where name like 'invited_list';
+
+delete from ts_page where name like 'vote_list';
+delete from ts_page where name like 'vote_edit';
+
+delete from ts_element where name like 'decision_name';
+delete from ts_element where name like 'find_vote';
+delete from ts_element where name like 'vote_description';
+delete from ts_element where name like 'judge';
+delete from ts_element where name like 'vote_uid';
+
+delete from ts_element where name like 'rating_add_edit';
+delete from ts_element where name like 'rating_add_edit_process';
+delete from ts_element where name like 'rating_list';
+delete from ts_element where name like 'rating_select';
+delete from ts_element where name like 'rating_select_process';
+delete from ts_element where name like 'rating_description';
+delete from ts_element where name like 'add_rating';
+delete from ts_element where name like 'select_rating';
+delete from ts_element where name like 'notify_rating_received';
+delete from ts_element where name like 'rating_id';
+delete from ts_element where name like 'rating_uid';
+delete from ts_element where name like 'find_rating';
+
+update ts_translation set name = 'Payout' where id = 3434;   
+
+update ts_translation set name = 'Connect' where id = 905;
+
+-- removing groups --
+delete from ts_page where name like 'group_list';
+delete from ts_page where name like 'group_edit';
+delete from ts_page where name like 'selection_group';
+delete from ts_page where name like 'groupmate_list';
+delete from ts_page where name like 'groupmate_edit';
+delete from ts_page where name like 'group_view';
+
+delete from ts_element where name like 'groupmate_add_edit';
+delete from ts_element where name like 'groupmate_add_edit_process';
+delete from ts_element where name like 'groupmate_list';
+delete from ts_element where name like 'group_add_edit';
+delete from ts_element where name like 'group_add_edit_process';
+delete from ts_element where name like 'group_list';
+delete from ts_element where name like 'group_select';
+delete from ts_element where name like 'group_select_process';
+delete from ts_element where name like 'group_description';
+delete from ts_element where name like 'group_name';
+delete from ts_element where name like 'select_group';
+delete from ts_element where name like 'add_groupmate';
+delete from ts_element where name like 'add_group';
+delete from ts_element where name like 'lock_group_name';
+delete from ts_element where name like 'group_view';
+delete from ts_element where name like 'group_id';
+delete from ts_element where name like 'groupmate_id';
+delete from ts_element where name like 'group_uid';
+delete from ts_element where name like 'groupmate_uid';
+delete from ts_element where name like 'find_group';
+delete from ts_element where name like 'find_groupmate';
+
+
+mysql> update ts_page set `order` = 40 where name = 'doc_area';
+mysql> update ts_page set `order` = 35 where name = 'people_area';

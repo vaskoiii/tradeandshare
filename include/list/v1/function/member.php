@@ -31,8 +31,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo filter out partial array completion ie) when one value only is set in a particular array (so functions can become more independant)
 # todo make sure get_...() does not insert or update anything
 
-# user_report (functionizing)
-# some functions may only be used in user_report
+# score_report (functionizing)
+# some functions may only be used in score_report
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
 	# calculate from 2 cycles back to 3 cycles back
 	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
@@ -414,7 +414,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 		# todo grant payout based on:
-		# see ascii picture at ~/include/list/v1/page/user_report.php
+		# see ascii picture at ~/include/list/v1/page/score_report.php
 	}
 }
 function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
@@ -503,7 +503,7 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	$nrenewal['gauge_rating_value'] = ($nrenewal['r2c_rating'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_rating'] * $nrenewal['c2r_ratio']);
 	$nrenewal['gauge_renewal_value'] = ($nrenewal['r2c_renewal'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_renewal'] * $nrenewal['c2r_ratio']);
 	# todo grant payout based on:
-	# see ascii picture at ~/include/list/v1/page/user_report.php
+	# see ascii picture at ~/include/list/v1/page/score_report.php
 	# todo ts_transaction will be another computation of computed_rating_value and computed_renewal_value
 }
 function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {

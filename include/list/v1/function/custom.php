@@ -59,7 +59,7 @@ function print_go_back($name, $kind = null) {
 }
 
 # reverses the order of tt() parameters
-# typed for documentation style pages (originally user_report)
+# typed for documentation style pages
 function print_break_open($title_name, $title_kind = null) { ?> 
 	<div class="title">
 		<h2><?

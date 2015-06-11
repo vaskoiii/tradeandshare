@@ -20,10 +20,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Placeholder file. Not currently used on 2012-06-05 vaskoiii
 
+# todo rewrite if needed for score as ratings are being deprecated
 
-# test hack
-$_GET['user_id'] = 132;
-
+/*
 # RATING
 $data['user_report']['user_name'] = get_db_single_value('
 		name
@@ -74,6 +73,7 @@ if ($data['user_report']['relative_rating_amount']) {
 	);
 
 }
+ */
 
 # FULL
 /*
