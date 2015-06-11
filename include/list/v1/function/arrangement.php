@@ -734,7 +734,6 @@ function get_search_content_2($type = false, $name = false) {
 				'lock_contact_user_mixed' => '',
 				'lock_user_name' => '',
 				'lock_contact_name' => '',
-				'lock_group_name' => '',
 				'lock_team_name' => '',
 				'lock_location_name' => '',
 				'lock_range_name' => '',

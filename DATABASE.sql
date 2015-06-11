@@ -3064,5 +3064,5 @@ delete from ts_element where name like 'find_group';
 delete from ts_element where name like 'find_groupmate';
 
 
-mysql> update ts_page set `order` = 40 where name = 'doc_area';
-mysql> update ts_page set `order` = 35 where name = 'people_area';
+update ts_page set `order` = 40 where name = 'doc_area';
+update ts_page set `order` = 35 where name = 'people_area';
