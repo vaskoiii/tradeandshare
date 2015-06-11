@@ -824,7 +824,6 @@ function lt_action($type) {
 		'delete' => 'delete',
 		'import' => 'import',
 		'export' => 'export',
-		'judge' => 'judge', # deprecate in favor of like/dislike?
 	);
 	if (get_child_listing_type($type))
 		$array[$type . '_view'] = $type . '_view';
@@ -841,8 +840,10 @@ function lt_action($type) {
 		case 'minder':
 			$array[$type . '_minder'] = $type . '_minder';
 		break;
+		case 'feed':
+			$array[$type . '_link'] = $type . '_link';
+		break;
 	}
-
 	return  $array;
 }
 

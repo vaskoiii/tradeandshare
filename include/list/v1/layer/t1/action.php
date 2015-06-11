@@ -219,6 +219,44 @@ if (!empty($data['action']['response']['action_footer_1']))
 foreach($data['action']['response']['action_footer_1'] as $k1 => $v1) {
 switch($k1) {
 	case 'recover':
+		# special case
+		if ($x['name'] == 'feed_recover') {
+			if (get_db_single_value('
+					id
+				FROM
+					' . $config['mysql']['prefix'] . 'feed f
+				WHERE
+					id = ' . (int)get_gp('id') . ' AND
+					user_id = ' . (int)$_SESSION['login']['login_user_id'] . ' and
+					`active` = 1
+			')) {
+				$sql = 'SELECT
+						f.id,
+						f.`key`,
+						f.user_id AS login_user_id,
+						p.name as page_name
+					FROM
+						' . $config['mysql']['prefix'] . 'feed f,
+						' . $config['mysql']['prefix'] . 'page p
+					WHERE
+						f.page_id = p.id AND
+						f.id = ' . (int)get_gp('id') . ' AND
+						f.user_id = ' . (int)$_SESSION['login']['login_user_id'] . '
+					LIMIT
+						1
+				';
+				$result = mysql_query($sql) or die(mysql_error());
+				while ($row = mysql_fetch_assoc($result)) {
+					$s1 = 'https://' . $_SERVER['HTTP_HOST'] . '/feed_atom/?'
+						. 'set_feed_id=' . (int)$row['id']
+						. '&set_feed_key=' . to_url($row['key'])
+					; ?> 
+					<p style="margin-top: -10px;"><a href="<?= $s1; ?>"><?= $s1; ?></a></p><?
+				}
+			}
+			break;
+		}
+	# nobreak;
 	case 'set':
 	case 'submit': # used on confirmation pages 2012-02-10 vaskoiii
 		if (!get_gp('preview') == 1) { ?> 
@@ -267,8 +305,15 @@ switch($k1) {
 		$b1 = 1;
 	elseif ($x['load']['action']['id'])
 		$b1 = 1;
-	if ($b1 == 1) { ?> 
-		<li><a href="./<?= ffm('id=&action_id=&action_tag_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
+	if ($b1 == 1) {
+		switch ($x['name']) {
+			case 'feed_recover':
+				# no showing of a new form
+			break;
+			default: ?> 
+				<li><a href="./<?= ffm('id=&action_id=&action_tag_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
+			break;
+		}
 	}
 
 	if (!empty($data['action']['response']['action_footer_2'])) {

@@ -267,8 +267,15 @@ function print_ts_focus($string, $load, & $x = null) {
 		}
 	}
 	else {
-		if ($b1 == 1) { ?> 
-			<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
+		if ($b1 == 1) {
+			switch ($x['name']) {
+				case 'feed_recover': ?> 
+					<a id="ts_focus" href="<?= $_SERVER['REDIRECT_URI']; ?>"><?= to_html($string); ?></a><?
+				break;
+				default: ?> 
+					<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
+				break;
+			}
 		}
 		else {
 			echo to_html($string);

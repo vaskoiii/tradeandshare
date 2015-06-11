@@ -860,6 +860,10 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			else
 				$grab .= '<span class="' . $v1 . '">' .  tt('element', $v1, 'translation_name', $translation) . '</span>: <span class="' . $v1 . '">' . (int)$listing['meritopic_id'] . '</span>';
 		break;
+		case 'feed_link':
+			if ($listing['user_id'] == $login_user_id)
+				$grab .= $spacer . '<a href="' . $href_prepend . 'feed_recover/' . ff('id=' . (int)$listing['feed_id'] . $glue . $href_append, $ff_level) . '"><span class="feed_recover">' . tt('element', 'recover') . '</span></a>';
+		break;
 		# remember/forget
 		case 'minder_minder':
 			$s1 = $listing['kind_name'];
