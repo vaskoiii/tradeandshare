@@ -65,7 +65,7 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 	switch($v1['page_name']) {
 		case 'people_area':
 		case 'recover_area':
-			echo '<br clear="all" />';
+			# echo '<br clear="all" />';
 		break;
 	}
 	if (!empty($v1['page_id'])) { ?> 
