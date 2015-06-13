@@ -128,24 +128,8 @@ else {
 
 		<div class="doc_box1">
 			<h3 style="margin: 20px 0px -5px 0px;">Transparency</h3>
-			<div style="margin-left: 15px;"><?
-				if (!count($data['result']['result']['listing'])) { ?> 
-					<p>This user has no ratings</p><?
-				}
-
-				foreach ($data['result']['result']['listing'] as $k1 => $v1) {
-					# todo eliminate this
-					if ($k1 < 3) { ?> 
-						<p>
-							<span class="user_name">(<?= to_html($v1['source_user_name']); ?>)</span>
-							-
-							<span class="grade_name"><?= to_html($translation['grade_name']['result'][ $v1['grade_name'] ]['translation_name']); ?></span>
-							<br />
-							<span><?= to_html($v1['rating_description']); ?></span>
-						</p><?
-					}
-
-				}; ?> 
+			<div style="margin-left: 15px;">
+				<p>Todo Likes/Dislikes</p>
 			</div>
 		</div>
 	</div><?

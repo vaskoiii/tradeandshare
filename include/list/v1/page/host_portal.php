@@ -42,7 +42,7 @@ $a1 = $_GET;
 unset($_GET);
 $_GET['direction_id'] = 1;
 $_GET['lock_user_id'] = (int)$a1['public_key']; # cheating again by using publick key as the user id
-start_engine($data['result'], 'rating', $_SESSION['login']['login_user_id'], array());
+# start_engine($data['result'], 'score', $_SESSION['login']['login_user_id'], array());
 unset($_GET);
 $_GET = $a1;
 

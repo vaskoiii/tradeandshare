@@ -45,6 +45,7 @@ add_translation('meritype', 'meritype_bad');
 add_translation('meritype', 'meritype_good');
 add_translation('meritype', 'meritype_identity');
 add_translation('meritype', 'meritype_monetary');
+add_translation('page', 'host_portal');
 add_translation('page', 'category_list');
 add_translation('page', 'config_report');
 add_translation('page', 'load_set');
@@ -217,7 +218,9 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 	<ul>
 		<li>Load up TS</a>.</li>
 		<li>Click on the body of the page.</li>
-		<li>Press [ctrl + shift + spacebar] simultaneously.</li>
+		<li>Press [ctrl + shift + ,] simultaneously for Pager.</li>
+		<li>Press [ctrl + shift + .] simultaneously for Peopler.</li>
+		<li>Press [ctrl + shift + /] simultaneously for Scanner.</li>
 		<li>Simply type where you want to go and press enter.</li>
 	</ul>
 	<p>Also, using the launcher requires you load javascript from <a href="./load_set/"><?= tt('page', 'load_set'); ?></a>.
@@ -294,8 +297,8 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 
 <div class="doc_box">
 	<h3>How do I verify someone's identity?</h3>
-	<p>See the <a href="/metail_list/"><?= tt('page', 'metail_list'); ?></a> page for the corresponding user.</p>
-	<p>Eventually TS may incorporate photos of faces as this is very important for identifying people, but for now a link to useful identification information somewhere online is acceptable.  ie) a link to your Facebook profile...</p> 
+	<p>Use the <a href="/host_portal/"><?= tt('page', 'host_portal'); ?></a> page to match someone's identity by to their user name using a photo of their face</p> 
+	<p>Alternatively see the <a href="/metail_list/"><?= tt('page', 'metail_list'); ?></a> page for potential information that can be used to identify the corresponding user. ie) a link to a Facebook profile...</p>
 </div>
 
 <div class="doc_box">
