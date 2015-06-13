@@ -46,7 +46,7 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 		border: 1px solid #fff; 
 		position: absolute;
 		width: 298px;
-		height: 221px;
+		min-height: 221px;
 		background: <?= $data['css']['c0']; ?>; 
 		}
 		#scanner_box img,
@@ -60,7 +60,7 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 		#scanner_meat_box,
 		#peopler_meat_box,
 		#pager_meat_box { 
-			height: 210px;
+			min-height: 210px;
 			}
 		#scanner_form,
 		#peopler_form,
@@ -71,10 +71,14 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 		#scanner_x,
 		#peopler_x,
 		#pager_x {
-			margin-right: 10px;
-			color: black;
-			font-weight: bold;
+			position: absolute;
+			width: 25px;
+			height: 30px;
+			right: 5px;
+			top: 5px;
+			color: #333;
 			font-size: 1.5em;
+			text-align: center;
 			}
 		#scanner_suggest_one,
 		#peopler_suggest_one,
@@ -82,6 +86,8 @@ $data['css'] = array_merge($data['css'], get_background($s1));
 			color: black;
 			font-weight: bold;
 			font-size: 1.5em;
+			display: inline-block;
+			max-width: 255px;
 			}
 		#scanner_input,
 		#peopler_input,
@@ -160,11 +166,14 @@ function tsSubmit(tsType) {
 	<div id="pager_meat_box">
 		<div id="pager_main_box">
 			<form name="peopler_form" onsubmit="tsSubmit('pager'); return false;" id="pager_form">
-				<a href="javascript:simple_hide('pager_box')" id="pager_x">TS</a>
-				<a href="javascript:remember('pager','<?= $_COOKIE['launch']['pager']['value']; ?>','<?= $_COOKIE["launch"]["pager"]["display"]; ?>');" id="pager_suggest_one"><?= $_COOKIE["launch"]["pager"]["display"]; ?></a>
-				<br />
-				<input onkeyup="showHint('pager', this.value);" autocomplete="off" id="pager_input" type="text">
-				<input value="!" id="pager_launch" type="submit">
+				<div>
+					<a href="javascript:remember('pager','<?= $_COOKIE['launch']['pager']['value']; ?>','<?= $_COOKIE["launch"]["pager"]["display"]; ?>');" id="pager_suggest_one"><?= $_COOKIE["launch"]["pager"]["display"]; ?></a>
+					<a href="javascript:simple_hide('pager_box')" id="pager_x">X</a>
+				</div>
+				<div>
+					<input onkeyup="showHint('pager', this.value);" autocomplete="off" id="pager_input" type="text">
+					<input value="!" id="pager_launch" type="submit">
+				</div>
 				<hr id="pager_hr">
 			</form>
 		</div>
@@ -180,11 +189,14 @@ function tsSubmit(tsType) {
 	<div id="peopler_meat_box">
 		<div id="peopler_main_box">
 			<form name="peopler_form" onsubmit="tsSubmit('peopler'); return false;" id="peopler_form">
-				<a href="javascript:simple_hide('peopler_box')" id="peopler_x">TS</a>
-				<a href="javascript:top.remember('peopler','<?= $_COOKIE['launch']['peopler']['value']; ?>','<?= $_COOKIE["launch"]["peopler"]["display"]; ?>');" id="peopler_suggest_one"><?= $_COOKIE["launch"]["peopler"]["display"]; ?></a>
-				<br />
-				<input onkeyup="showHint('peopler', this.value);" autocomplete="off" id="peopler_input" type="text">
-				<input value="!" id="peopler_launch" type="submit">
+				<div>
+					<a href="javascript:top.remember('peopler','<?= $_COOKIE['launch']['peopler']['value']; ?>','<?= $_COOKIE["launch"]["peopler"]["display"]; ?>');" id="peopler_suggest_one"><?= $_COOKIE["launch"]["peopler"]["display"]; ?></a>
+					<a href="javascript:simple_hide('peopler_box')" id="peopler_x">X</a>
+				</div>
+				<div>
+					<input onkeyup="showHint('peopler', this.value);" autocomplete="off" id="peopler_input" type="text">
+					<input value="!" id="peopler_launch" type="submit">
+				</div>
 				<hr id="peopler_hr">
 			</form>
 		</div>
@@ -200,13 +212,16 @@ function tsSubmit(tsType) {
 	<div id="scanner_meat_box">
 		<div id="scanner_main_box">
 			<form name="scanner_form" onsubmit="tsSubmit('scanner'); return false;" id="scanner_form">
-				<a href="javascript:simple_hide('scanner_box')" id="scanner_x">TS</a>
-				<span style="font-weight: bold; font-size: 1.5em;">
-					<a href="javascript: tsSubmit('scanner');"><?= tt('page', 'host_portal'); ?> </a>
-				</span>
-				<br />
-				<input id="scanner_input" type="text">
-				<input value="!" id="scanner_launch" type="submit">
+				<div>
+					<span style="font-weight: bold; font-size: 1.5em;">
+						<a href="javascript: tsSubmit('scanner');"><?= tt('page', 'host_portal'); ?> </a>
+					</span>
+					<a href="javascript:simple_hide('scanner_box')" id="scanner_x">X</a>
+				</div>
+				<div>
+					<input id="scanner_input" type="text">
+					<input value="!" id="scanner_launch" type="submit">
+				</div>
 				<hr id="scanner_hr">
 			</form>
 		</div>
