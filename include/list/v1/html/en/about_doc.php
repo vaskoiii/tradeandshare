@@ -73,9 +73,9 @@ up_date('2014-11-11');
 	<h3>Identity</h3>
 	<p>Basically your identity is who you are. It is a mix of public and private knowledge about you. Private knowledge will come from personal relationships and information NOT listed on TS. Public knowledge is intended to be suggestive and not as an absolute. It will come from information on TS such as:</p>
 	<ul>
-		<li>One's Ratings</li>
+		<li>One's Ratings (Likes/Dislikes)</li>
 		<ul>
-		<li>Warning: Ratings and membership are still evolving at <a href="./score_report"><?= tt('page', 'score report'); ?></a>.</li>
+		<li>Warning: Ratings and membership are still evolving at <a href="./score_report"><?= tt('page', 'score_report'); ?></a>.</li>
 			<li>Each user is allowed to rate other users as many times as they like.</li>
 			<li>You can specify who sees the ratings you make.</li>
  			<li>Users can change their ratings of other users at any time unless they are committed to the log used in calculating membership payouts</li>
@@ -109,17 +109,8 @@ up_date('2014-11-11');
 </div>
 <div class="doc_box">
 	<h3>Voting</h3>
-	<p>Voting has also been integrated into TS so that it can be used as a democratic medium to approve/disapprove of various things. Voting is intended to be transparent and accountable (2 key factors in avoiding corruption). Note that it is possible to hide votes by limiting them to be viewed by only certain teams. However, in the even that a vote is not visible it is intended to not count as it can not be seen or verified. Voting is not an absolute but is intended to serve as a guide for what is best for the whole or a specific community. TS Voting is also intended to raise awareness that there are other more democratic systems that people may not be familiar with. See also: <a href="https://en.wikipedia.org/wiki/Voting">https://en.wikipedia.org/wiki/Voting</a></p>
-	<ul>
-		<li>Voting Computation (Similar to that of Ratings)</li>
-		<ul>
-			<li>Each user is allowed to vote on an item as many times as they like.</li>
-			<li>You can specify who sees the votes you make.</li>
- 			<li>Users can change their votes at any time.</li>
-			<li>An item's vote report is then the average of the average viewable votes per user.</li>
-			<li>Applicable votes may only come from a specific community.</li>
-		</ul>
-	</ul>
+	<p>Voting has also been integrated into TS so that it can be used as a democratic medium to like/dislike things amounting to approval/disapproval accordingly. Ultimately votes are intended to be tied to the users reciving the votes rather than the individual things that are being voted on. Voting is intended to be transparent and accountable (2 key factors in avoiding corruption). Note that it is possible to hide votes by limiting them to be viewed by only certain teams. However, in the event that a vote is not visible it is intended to not count as it can not be seen or verified. Voting is not an absolute but is intended to serve as a guide for what is best for the whole or a specific community. Voting is also intended to raise awareness that there are other more democratic systems that people may not be familiar with. See also: <a href="https://en.wikipedia.org/wiki/Voting">https://en.wikipedia.org/wiki/Voting</a></p>
+	<p>The computation for calculating voting is still evolving but it is intended that each person has an equal and specific "weight" that they can distribute to the things and ultimately to the users relative to them. ie) with membership</p>
 </div>
 <div class="doc_box">
 	<h3>Personal Communities</h3>

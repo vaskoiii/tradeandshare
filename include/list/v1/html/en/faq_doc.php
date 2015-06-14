@@ -22,6 +22,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 up_date('2012-03-31');
 
+add_translation('element', 'remember');
+add_translation('element', 'submit');
 add_translation('element', 'access_public_web');
 add_translation('element', 'access_team_intra');
 add_translation('element', 'access_user_all');
@@ -33,7 +35,6 @@ add_translation('element', 'contact_name');
 add_translation('element', 'edit');
 add_translation('element', 'feature_lock');
 add_translation('element', 'feature_minnotify');
-add_translation('element', 'group_name');
 add_translation('element', 'location_name');
 add_translation('element', 'more');
 add_translation('element', 'offer_description');
@@ -55,7 +56,6 @@ add_translation('page', 'meritopic_list');
 add_translation('page', 'metail_list');
 add_translation('page', 'offer_list');
 add_translation('page', 'profile_edit');
-add_translation('page', 'rating_list');
 add_translation('page', 'team_list');
 add_translation('page', 'user_edit');
 add_translation('page', 'user_list');
@@ -101,11 +101,6 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 <div class="doc_box">
 	<h3>Why would I want to add goods/services here instead of on another website?</h3>
 	<p>TS is a unique social experiment and evolving entity to see if an Identity-Based Non-Monetary Merit System (IBNMMS) is feasible on the internet. A more familiar IBNMMS to some extent is the social structure called a family.</p>
-</div>
-
-<div class="doc_box">
-        <h3>How can I navigate quickly through TS?</h3>
-        <p>Use the TS Launcher by clicking on the title of Trade and Share at the top or use the key combo [Ctrl + Shift + Space]</p>
 </div>
 
 <div class="doc_box">
@@ -198,7 +193,6 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 <div class="doc_box">
 	<h3>How can I share things anonymously?</h3>
 	<p>TS is NOT an anonymous site although if people do not know your username they might not know who you are. However, there are websites that are better equiped for anonymous sharing such as: <a href="http://www.craigslist.com">http://www.craigslist.com</a> or <a href="http://www.wikileaks.info">http://www.wikileaks.info</a></p>
-	<p>However, you can share things with a selective group for certain listings on the site including: <?= tt('page', 'item_list'); ?>, <?= tt('page', 'news_list'); ?>, and <?= tt('page', 'rating_list'); ?>.
 </div>
 
 <div class="doc_box">
@@ -212,24 +206,35 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 </div>
 
 <div class="doc_box">
-	<h3>A launcher program for TS?</h3>
-	<p>In order to make TS easier to navigate a launcher program has been designed.  This program allows you to press a key combination and they type.  By doing this appropriate links are suggested that you may want to visit.  However, ONLY pages that people have provided translations for will show up in the result set.</p>
-	<p>To use the launcher program:</p>
+        <h3>How can I navigate quickly through TS?</h3>
+	<p>If you are finding that using the menus are not fast enough you can use the launcher program with key combinations:</p>
 	<ul>
 		<li>Load up TS</a>.</li>
 		<li>Click on the body of the page.</li>
-		<li>Press [ctrl + shift + ,] simultaneously for Pager.</li>
-		<li>Press [ctrl + shift + .] simultaneously for Peopler.</li>
-		<li>Press [ctrl + shift + /] simultaneously for Scanner.</li>
-		<li>Simply type where you want to go and press enter.</li>
+		<li>Pager</li>
+		<ul>
+			<li>Press [ctrl + shift + ,]</li>
+			<li>Type the page you want to visit and press enter.</li>
+		</ul>
+		<li>Peopler</li>
+		<ul>
+			<li>Press [ctrl + shift + .]</li>
+			<li>Type the name of the contact you want (that you previously added) and press enter.</li>
+		</ul>
+		<li>Scanner</li>
+		<ul>
+			<li>Press [ctrl + shift + /]</li>
+			<li>Type the ID number of the person you want and press enter.</li>
+			<li>This method can be used if a person doesn't have their ID.</li>
+		</ul>
 	</ul>
 	<p>Also, using the launcher requires you load javascript from <a href="./load_set/"><?= tt('page', 'load_set'); ?></a>.
 </div>
 
 <div class="doc_box">
 	<h3>Can I send a link of my <?= tt('page', 'item_list'); ?> search results to a friend?</h3>
-	<p>Yes, simply copy the address in your browser and send it in an email or whatever means you use. However, <?= tt('element', 'group_name'); ?> and <?= tt('element', 'contact_name'); ?> are user dependent, so if you use these fields when sending your friend a link, your friend will see a different result set if any results at all.  This holds true for all searches.</p>
-	<p>Also, your friend will have to have a valid TS login.</p>
+	<p>Yes, simply copy the address in your browser and send it in an email or whatever means you use. However, if you use a private <?= tt('element', 'contact_name'); ?> that is not tied to a user name your friend will not be able to see the corresponding listings.</p>
+	<p>Also, your friend will need to login.</p>
 </div>
 
 <div class="doc_box">
@@ -337,7 +342,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 
 <div class="doc_box">
 	<h3>Hiding certain things from users?</h3>
-	<p>While TS does strive to be as open as possible, showing ALL your information with the world may NOT be practical.  Therefore, you can limit who can see certain posts on TS including items and news to just your friends if you like. This is currently possible with: <?= tt('page', 'item_list'); ?>, <?= tt('page', 'news_list'); ?>, and <?= tt('page', 'rating_list'); ?> by specifying <?= tt('element', 'team_name'); ?></p>
+	<p>While TS does strive to be as open as possible, showing ALL your information with the world may NOT be practical.  Therefore, you can limit who can see certain posts on TS including items and news to just your friends if you like. This is currently possible with: <?= tt('page', 'item_list'); ?> and <?= tt('page', 'news_list'); ?> by specifying <?= tt('element', 'team_name'); ?></p>
 </div>
 
 <div class="doc_box">
