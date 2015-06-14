@@ -41,50 +41,47 @@ function print_key_user_id($k1) {
 # print_break_open('user_report', 'page');
 ?>
 <div class="content_box">
-
-<div>
-<form action="." method="GET">
-	<select name="channel_id">
-		<option></option><?
-		foreach ($data['score_report']['channel'] as $k1 => $v1) { ?> 
-			<option value="<?= (int)$v1['channel_id']; ?>" <?= get_gp('channel_id') == $k1 ? 'selected="selected"' : ''; ?>><?= to_html($v1['channel_name']); ?></option><?
+<div> <?
+	if (get_gp('channel_id')) { ?>
+		<a href=".">Show All Channels</a><?
+	} else {
+		foreach ($data['score_report']['channel'] as $k1 => $v1) {
+			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
+				<a style="margin-right: 10px;" href="./?channel_id=<?= (int)$v1['channel_id']; ?>"><?= to_html($v1['channel_name']); ?></a><?
+			}
 		}
-		?>
-	</select>
-
-	<input type="submit" value="!" />
+	} ?> 
 	&gt;&gt;
 	<a href="#" id="score_readme_toggle" onclick="more_toggle('score_readme'); return false;"><?= tt('element', 'more'); ?></a>
 </form>
+<?
+if (!get_gp('channel_id')) { ?> 
+<p>
+	<strong>Premature</strong><?
+	if (!empty($data['user_report']['premature_channel_list'])) {
+		foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
+			<span style="display: inline; margin-left: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?></span><?
+		}
+	}
+	else { ?>
+		No premature channels<?
+	} ?>
+</p><?
+} ?>
 </div>
 <div id="score_readme" style="display: none;">
-<dd>todo: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</dd>
-<p>todo: Use a diminishing score to help normalize ratings</p>
-<ul>
-	<li>todo: factor in the carried over score</li>
-	<li>todo: rewrite payout based on score and carry</li>
-</ul>
-<p>todo: explain with words the new algorithym</p>
-<p>
-	<strong>Merit Key:</strong>
-	dislike=-1
-	|
-	like=1
-</p>
+<hr />
+<p>todo: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</p>
+<p>todo: Use a diminishing score to help normalize ratings.</p>
+<p>todo: Factor in the carried over score.</p>
+<hr />
+<dl>
+	<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
+	<dd>score(number_of_users + 1)</dd>
+</dl>
+<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
 </div>
 <?
-print_break_close();
-print_break_open('Premature'); 
-if (!empty($data['user_report']['premature_channel_list'])) { ?> 
-	<ul><?
-	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<li style="display: inline; margin-right: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?></li><?
-	} ?> 
-	</ul><?
-}
-else { ?>
-	<p>No premature channels</p><?
-}
 
 print_break_close();
 
