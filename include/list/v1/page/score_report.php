@@ -149,6 +149,7 @@ foreach($channel as $k1 => $v1) {
 			$sql = '
 				select
 					cnl.name,
+					cnl.percent,
 					' . (int)$cycle_restart['length_2x_to_3x'] . ' as time,
 					cnl.value as before_cost
 				from

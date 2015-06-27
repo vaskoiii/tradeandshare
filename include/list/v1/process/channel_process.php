@@ -64,6 +64,7 @@ $sql = '
 		user_id = ' . (int)$login_user_id . ',
 		value = ' . to_sql($action_content_1['channel_value']) . ',
 		offset = ' . to_sql($action_content_1['channel_offset']) . ',
+		percent = ' . to_sql($action_content_1['channel_percent']) . ',
 		name = ' . to_sql($action_content_1['channel_name']) . ',
 		description = ' . to_sql($action_content_1['channel_description']) . ',
 		' . $s1 . '

@@ -256,6 +256,7 @@ function get_action_content_1($type = false, $name = false) {
 						'channel_name' => '',
 						'channel_offset' => '',
 						'channel_value' => '',
+						'channel_percent' => '',
 						'channel_description' => '',
 					);
 				break;

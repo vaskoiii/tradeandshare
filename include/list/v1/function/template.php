@@ -216,7 +216,9 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'class_name_id':
 			$grab .= to_html($k1) . ': ' . $listing[$k1]; 
 		break;
-
+		case 'channel_percent':
+			$grab .= (int)$listing[$k1] . '%';
+		break;
 		case 'channel_offset':
 		// case 'cycle_start':
 			$grab .= $listing[$k1] . ' day';

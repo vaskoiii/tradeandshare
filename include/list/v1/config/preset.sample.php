@@ -24,6 +24,7 @@ $config = array();
 # Change Every Upload
 date_default_timezone_set('UTC');
 
+$config['hostfee_percent'] = 0; # percent of membership fees that go to you!
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
 $config['email_from'] = 'List <noreply@localhost>';

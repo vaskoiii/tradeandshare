@@ -3066,3 +3066,6 @@ delete from ts_element where name like 'find_groupmate';
 
 update ts_page set `order` = 40 where name = 'doc_area';
 update ts_page set `order` = 35 where name = 'people_area';
+
+-- element 
+insert into ts_element set name="channel_percent";

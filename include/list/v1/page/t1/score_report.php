@@ -40,6 +40,20 @@ function print_key_user_id($k1) {
 # global seach for [<div] to find the hacked divs
 # print_break_open('user_report', 'page');
 ?>
+
+<script>
+	function score_report_focus(s1) { <?
+		# hide everything
+		foreach ($data['score_report']['channel'] as $k1 => $v1) {
+			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
+				did('channel_<?= (int)$k1; ?>').style.display = 'none';<?
+			}
+		}
+		# unhide 1 ?> 
+		did(s1).style.display = 'block';
+	}
+</script>
+
 <div class="content_box">
 <div> <?
 	if (get_gp('channel_id')) { ?>
@@ -47,13 +61,13 @@ function print_key_user_id($k1) {
 	} else {
 		foreach ($data['score_report']['channel'] as $k1 => $v1) {
 			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
-				<a style="margin-right: 10px;" href="./?channel_id=<?= (int)$v1['channel_id']; ?>"><?= to_html($v1['channel_name']); ?></a><?
+				<a style="margin-right: 10px;" href="javascript: score_report_focus('channel_<?= (int)$k1; ?>');"><?= to_html($v1['channel_name']); ?></a><?
+				# href="./?channel_id=<?= (int)$v1['channel_id'];
 			}
 		}
 	} ?> 
 	&gt;&gt;
 	<a href="#" id="score_readme_toggle" onclick="more_toggle('score_readme'); return false;"><?= tt('element', 'more'); ?></a>
-</form>
 <?
 if (!get_gp('channel_id')) { ?> 
 <p>
@@ -85,11 +99,18 @@ if (!get_gp('channel_id')) { ?>
 
 print_break_close();
 
-foreach ($channel as $kc1 => $vc1) {
+foreach ($channel as $kc1 => $vc1) { ?>
+	<div id="channel_<?= (int)$kc1; ?>" style="display: none;"><?
 	print_break_open($vc1['info']['name']); ?> 
+	
+
+	<a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
+	<br />
+	<br />
+	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
 	<dl>
 		<dt>Length</dt>
-		<dd><?= to_html($vc1['info']['time']); ?>  Days</li></dd><?
+		<dd><?= to_html($vc1['info']['time']); ?>  Days</dd><?
 		# before and after cost is relative to the members ( since renewal can happen mid cycle )
 		# the values are needed for computation ?> 
 		<dt>Renewal Max Cost Before Cycle Start</dt>
@@ -128,16 +149,16 @@ foreach ($channel as $kc1 => $vc1) {
 				$d1 = array_sum($channel[$kc1]['computed_cost']['combined']);
 			echo to_html($d1); ?> 
 		</dd>
-		<dt>TS Cut (10% of Channel Total)</dt>
-		<dd>$<?= .1 * $d1; ?></dd>
-		<dt>Mission Cut (0% of Channel Total)</dt>
-		<dd>$0</dd>
+		<dt>Host Fee (<?= to_html($config['hostfee_percent']); ?>% of Channel Total)</dt>
+		<dd>$<?= $d2 = .1 * $d1; ?></dd>
+		<dt>Mission Cut (<?= (int)$channel[$kc1]['info']['percent']; ?>% of Remaining Total)</dt>
+		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel[$kc1]['info']['percent'] * .01; ?></dd>
 		<dt>Remaining to be distributed</dt>
-		<dd>$<?= (.9 * $d1); ?></dd><?
+		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
 		if (array_sum($channel[$kc1]['weighted_credit']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?=
-				$d3 = (.9 * $d1 ) / array_sum($channel[$kc1]['weighted_credit']) ;
+				$d3 = ( $d5 ) / array_sum($channel[$kc1]['weighted_credit']) ;
 			?></dd><?
 		}
 		else { ?>
@@ -145,7 +166,8 @@ foreach ($channel as $kc1 => $vc1) {
 			<dd>can not compute - No ratings</dd><?
 		} ?> 
 	</dl>
-	<p>For breakdown please see public rating list of members</p><?
+	<p>For breakdown please see public rating list of members</p>
+	</div><?
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
@@ -180,7 +202,8 @@ foreach ($channel as $kc1 => $vc1) {
 				echo 'No ratings'; ?> 
 		</dl><?
 	}
-	print_break_close();
+	print_break_close(); ?>
+	</div><?
 }
 # hacked div to go with .content_box so that all divs have matching open/close ?> 
 <div>

@@ -385,6 +385,8 @@ function get_mask_subject($type, $display) {
 				'channel_offset_spacer' => '_',
 				'channel_value' => 'channel_value',
 				'channel_value_spacer' => '_',
+				'channel_percent' => 'channel_percent',
+				'channel_percent_spacer' => '_',
 				'timeframe_name' => 'timeframe_name',
 			);
 		break;
