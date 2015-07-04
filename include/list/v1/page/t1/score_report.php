@@ -44,7 +44,7 @@ function print_key_user_id($k1) {
 <script>
 	function score_report_focus(s1) { <?
 		# hide everything
-		foreach ($data['score_report']['channel'] as $k1 => $v1) {
+		foreach ($data['user_report']['channel'] as $k1 => $v1) {
 			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
 				did('channel_<?= (int)$k1; ?>').style.display = 'none';<?
 			}
@@ -55,19 +55,6 @@ function print_key_user_id($k1) {
 </script>
 
 <div class="content_box">
-<div> <?
-	if (get_gp('channel_id')) { ?>
-		<a href=".">Show All Channels</a><?
-	} else { ?> 
-		<strong style="margin-right: 10px;">Membership</strong><?
-		foreach ($data['score_report']['channel'] as $k1 => $v1) {
-			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
-				<a style="margin-right: 10px;" href="javascript: score_report_focus('channel_<?= (int)$k1; ?>');"><?= to_html($v1['channel_name']); ?></a><?
-				# href="./?channel_id=<?= (int)$v1['channel_id'];
-			}
-		}
-	} ?> 
-</div>
 <div style="margin: 10px 0px;">
 	<a href="channel_list/">View All Channels</a>
 	&gt;&gt;
@@ -85,12 +72,17 @@ function print_key_user_id($k1) {
 <p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
 <hr />
 </div>
+<div> <?
+	if (!get_gp('channel_parent_id')) { ?>
+		<p>No channel was selected</p><?
+	} ?> 
+</div>
 <?
 
 print_break_close();
 
 foreach ($channel as $kc1 => $vc1) { ?>
-	<div id="channel_<?= (int)$kc1; ?>" style="<?= empty($_GET['channel_id']) ? 'display: none;' : ''; ?>"><?
+	<div id="channel_<?= (int)$kc1; ?>"><?
 	$s1  = $vc1['info']['name'];
 	$s1 .= ' : ' .(int)$vc1['info']['cycle_id'] . ($vc1['info']['cycle_id'] == $vc1['info']['latest_payout_cycle_id'] ? ' : latest' : '');
 	print_break_open($s1); ?> 

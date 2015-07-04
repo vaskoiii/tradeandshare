@@ -82,27 +82,6 @@ $data['user_report']['channel_list'] = array();
 # alias
 $channel = & $data['user_report']['channel_list'];
 
-# todo optimize
-
-# get every single channel
-$data['score_report']['channel'] = array();
-$sql = '
-	select
-		cnl.id as channel_id,
-		cnl.name as channel_name
-	from
-		' . $config['mysql']['prefix'] . 'channel cnl
-	where
-		cnl.id = cnl.parent_id
-	order by
-		cnl.id asc
-';
-# please choose a channel
-$result = mysql_query($sql) or die(mysql_error());
-while ($row = mysql_fetch_assoc($result)) {
-	$data['score_report']['channel'][$row['channel_id']] = $row;
-}
-
 # get only the channel that was specified if applicable
 $sql = '
 	select
@@ -111,23 +90,19 @@ $sql = '
 		' . $config['mysql']['prefix'] . 'channel cnl
 	where
 		cnl.id = cnl.parent_id
-		' . (get_gp('channel_id') ? ' and cnl.id = ' . (int)get_gp('channel_id') : '') . '
+		' . (get_gp('channel_parent_id') ? ' and cnl.id = ' . (int)get_gp('channel_parent_id') : '') . '
 	order by
 		cnl.id asc
-	limit 10
+	limit 1
 ';
-# limit should really be 1
-
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
 	$channel[$row['id']] = array();
 }
 
 foreach($channel as $k1 => $v1) {
-
 	# convenience for display:
 	add_key('channel', $k1, 'channel_name', $key);
-
 	get_channel_cycle_restart_array($channel[$k1], $k1);
 
 	# alias

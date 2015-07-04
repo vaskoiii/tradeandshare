@@ -24,6 +24,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # 68 = Parent of _area pages
 
 # file also used in new_report.php
+add_translation('page', 'member_report');
+add_translation('page', 'member_report', 'translation_description');
 add_translation('page', 'score_report');
 add_translation('page', 'score_report', 'translation_description');
 add_translation('page', 'new_area');
