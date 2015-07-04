@@ -58,7 +58,8 @@ function print_key_user_id($k1) {
 <div> <?
 	if (get_gp('channel_id')) { ?>
 		<a href=".">Show All Channels</a><?
-	} else {
+	} else { ?> 
+		<strong style="margin-right: 10px;">Membership</strong><?
 		foreach ($data['score_report']['channel'] as $k1 => $v1) {
 			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
 				<a style="margin-right: 10px;" href="javascript: score_report_focus('channel_<?= (int)$k1; ?>');"><?= to_html($v1['channel_name']); ?></a><?
@@ -66,9 +67,38 @@ function print_key_user_id($k1) {
 			}
 		}
 	} ?> 
+</div>
+<div style="margin: 10px 0px;">
+	<a href="channel_list/">View All Channels</a>
 	&gt;&gt;
 	<a href="#" id="score_readme_toggle" onclick="more_toggle('score_readme'); return false;"><?= tt('element', 'more'); ?></a>
+</div>
+<div id="score_readme" style="display: none; margin-bottom: 10px;">
+<hr />
+<p>todo: Use a diminishing score to help normalize ratings.</p>
+<p>todo: Factor in the carried over score.</p>
+<hr />
+<dl>
+	<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
+	<dd>score(number_of_users + 1)</dd>
+</dl>
+<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
+<hr />
+</div>
 <?
+
+print_break_close();
+
+foreach ($channel as $kc1 => $vc1) { ?>
+	<div id="channel_<?= (int)$kc1; ?>" style="<?= empty($_GET['channel_id']) ? 'display: none;' : ''; ?>"><?
+	$s1  = $vc1['info']['name'];
+	$s1 .= ' : ' .(int)$vc1['info']['cycle_id'] . ($vc1['info']['cycle_id'] == $vc1['info']['latest_payout_cycle_id'] ? ' : latest' : '');
+	print_break_open($s1); ?> 
+
+	<?  # timeline wanted? ie) get_next_cycle_id() and get_previous_cycle_id() ?>
+	<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
+<?
+if (0)
 if (!get_gp('channel_id')) { ?> 
 <p>
 	<strong>Premature</strong><?
@@ -82,29 +112,9 @@ if (!get_gp('channel_id')) { ?>
 	} ?>
 </p><?
 } ?>
-</div>
-<div id="score_readme" style="display: none;">
-<hr />
-<p>todo: Allow channel owners to have a separate transparent and accountable fund to spend on facilities. Will change the dynamic of the channel significantly to have a shared fund controlled by the channel owner.</p>
-<p>todo: Use a diminishing score to help normalize ratings.</p>
-<p>todo: Factor in the carried over score.</p>
-<hr />
-<dl>
-	<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
-	<dd>score(number_of_users + 1)</dd>
-</dl>
-<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
-</div>
-<?
 
-print_break_close();
 
-foreach ($channel as $kc1 => $vc1) { ?>
-	<div id="channel_<?= (int)$kc1; ?>" style="display: none;"><?
-	print_break_open($vc1['info']['name']); ?> 
-	
-
-	<a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
+	&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	<br />
 	<br />
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">

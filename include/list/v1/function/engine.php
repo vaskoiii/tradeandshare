@@ -513,8 +513,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 					t1.name LIKE ' . to_sql('%' . from_url(get_gp('keyword')) . '%') . 
 				')';
 			}
-			if (isset_gp('channel_id'))
-				$where_x[] = 't1.id = ' . to_sql(get_gp('channel_id'));
+			if (isset_gp('channel_parent_id'))
+				$where_x[] = 't1.parent_id = ' . to_sql(get_gp('channel_parent_id'));
 		break;
 		case 'location':
 			$select[] = 'lo.id as location_id';
@@ -750,6 +750,9 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 				$where_x[] = '(
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
+			if (isset_gp('channel_parent_id'))
+				$where_x[] = 'cnl.parent_id = ' . (int)get_gp('channel_parent_id');
+				
 		break;
 		case 'renewage': # log
 			$select[] = 'rnae.id as renewage_id';

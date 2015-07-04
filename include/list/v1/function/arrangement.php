@@ -504,6 +504,11 @@ function get_action_content_1($type = false, $name = false) {
 function get_view_content_1($type) { } # placeholder
 function get_search_content_1($type) {
 	switch($type) {
+		case 'cycle':
+			$array = array(
+				'channel_parent_name' => '',
+			);
+		break;
 		case 'vote':
 			$array = array(
 				'decision_name' => '',
@@ -590,7 +595,7 @@ function get_search_content_1($type) {
 		break;
 		case 'channel':
 			$array = array(
-				'channel_name' => '',
+				'channel_parent_name' => '',
 			);
 		break;
 		case 'location':

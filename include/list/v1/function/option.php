@@ -71,7 +71,8 @@ function add_option($option_name, & $option = null) {
 	if (!$option)
 		global $option;
 	switch($option_name) { 
-		case 'channel_name':
+		case 'channel_name': # err
+		case 'channel_parent_name':
 		case 'point_name':
 		case 'timeframe_name':
 
@@ -125,6 +126,20 @@ function do_option(& $option, & $key = null, & $translation = null) {
 	foreach($option as $k1 => $v1) {
 		unset($sql);
 		switch($k1) { 
+			case 'channel_parent_name':
+				# assumes not allowed to change a channel name
+				$sql = '
+					select
+						id,
+						name
+					from
+						' . $config['mysql']['prefix'] . 'channel
+					where
+						id = parent_id
+					order by
+						name asc
+				';
+			break;
 			case 'parent_tag_name':
 			case 'parent_tag_path':
 				$sql = '
@@ -186,7 +201,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 				';
 			break;
 			
-			case 'channel_name':
+			case 'channel_name': # err
 			case 'point_name':
 			case 'timeframe_name':
 
@@ -286,7 +301,7 @@ function do_option(& $option, & $key = null, & $translation = null) {
 					case 'direction_name':
 					case 'display_name':
 					# translating channel name may cause confusion
-					# case 'channel_name':
+					# case 'channel_name': # err
 					case 'point_name':
 					case 'timeframe_name':
 					case 'grade_name':

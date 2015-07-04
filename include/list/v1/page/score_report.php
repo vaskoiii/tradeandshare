@@ -180,6 +180,30 @@ foreach($channel as $k1 => $v1) {
 			');
 			get_channel_member_list_array($channel[$k1], $k1);
 		}
+		# what cycle
+		if (1) {
+			if ($_GET['cycle_id']) {
+				$data['user_report']['info']['cycle_id'] = $_GET['cycle_id'];
+			}
+			else if ($k1) {
+				# should actually be parent_channel_id
+				# assume latest if cycle is not specified
+				$data['user_report']['channel_list'][$k1]['info']['cycle_id'] = get_db_single_value('
+						cce.id
+					from
+						' . $config['mysql']['prefix'] . 'cycle cce,
+						' . $config['mysql']['prefix'] . 'channel cnl
+					where
+						cce.channel_id = cnl.id and
+						cce.start = ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
+						cnl.parent_id = ' . (int)$k1 . '
+				', 1);
+			}
+		}
+		# latest cycle?
+		if (1) {
+			$data['user_report']['channel_list'][$k1]['info']['latest_payout_cycle_id'] = get_latest_payout_cycle_id($k1);
+		}
 
 		$channel[$k1]['member_time']['before'] = array();
 		$channel[$k1]['member_time']['after'] = array();

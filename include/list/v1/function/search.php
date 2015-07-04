@@ -258,6 +258,16 @@ function url_response(& $container, $login_user_id, $load) {
 	if (!empty($container)) {
 	foreach ($container as $k1 => $v1) {
 	switch ($k1) {
+		case 'channel_parent_name':
+			$container[$k1] = get_db_single_value('
+					name
+				FROM
+					' . $prefix . 'channel
+				WHERE
+					id = ' . (int)get_gp('channel_parent_id')
+			, 0);
+		break;
+		break;
 		case 'keyword':
 		case 'invite_password':
 		case 'feed_query':
@@ -660,7 +670,8 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 		if (str_match('_theme_name', $k1)) #todo this is a crappy check also theme_name will have had to have gone 1st to work right 2012-04-05 vaskoiii
 			$option[$k1] = $option['theme_name'];
 		#nobreak
-		case 'channel_name':
+		case 'channel_parent_name':
+		case 'channel_name': # errr
 		case 'decision_name':
 		case 'default_boolean_name':
 		case 'dialect_name':
@@ -739,7 +750,8 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 							echo to_html($v2);
 						break;
 						# NOT translated
-						case 'channel_name':
+						case 'channel_parent_name':
+						case 'channel_name': # err
 						case 'location_name':
 						case 'lock_location_name':
 						case 'team_name':

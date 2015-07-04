@@ -33,12 +33,71 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # score_report (functionizing)
 # some functions may only be used in score_report
-function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
+
+
+# channel_origin_id is actually a more appropriate name than channel_parent_id
+function get_latest_payout_cycle_id($channel_parent_id) {
+	global $config;
+	$a1 = array();
+	get_channel_cycle_restart_array($a1, $channel_parent_id);
+	return get_db_single_value('
+		cce.id from
+			' . $config['mysql']['prefix'] . 'cycle cce,
+			' . $config['mysql']['prefix'] . 'channel cnl
+		where
+			cce.channel_id = cnl.id and
+			cce.start = ' . to_sql($a1['cycle_restart']['yyyy-mm-dd-3x']) . ' and
+			cnl.parent_id = ' . (int)$channel_parent_id
+	);
+}
+
+function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id) {
+	global $config;
+	
+	# remember payout lags
+
+	# get cycle_id array
+	$sql = '
+		select
+			cce.id as cycle_id,
+			cce.start as cycle_start
+		from
+			' . $config . 'cycle.cce,
+			' . $config . 'channel.cnl
+		where
+			cce.channel_id = cnl.id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.id <= ' . (int)$cycle_id . '
+		order by
+			id desc
+		limit
+			4
+	';
+	$result = mysql_query($sql) or die(mysql_error());
+	$i1 = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		$i1++;
+		$channel['cycle_restart']['yyyy-mm-dd-' . $i1 . 'x'] = $row['cycle_start'];
+	}
+
+	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'];
+	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'];
+
 	# calculate from 2 cycles back to 3 cycles back
+	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
+
+	# can not choose a current or future cycle
+	$dtlast = $channel['cycle_restart']['yyyy-mm-dd-last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
+	if ($dt2 >= $dtlast)
+		die('cycle not ready!');
+}
+
+function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
 	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
 	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($channel_parent_id, $dt1);
 	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($channel_parent_id, $dt2);
 	$channel['cycle_restart']['yyyy-mm-dd-4x'] = get_cycle_last_start($channel_parent_id, $dt3);
+	# calculate from 2 cycles back to 3 cycles back
 	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
 }
 function get_channel_member_list_array(& $channel, $channel_parent_id) {

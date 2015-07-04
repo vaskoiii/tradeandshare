@@ -217,8 +217,16 @@ function process_data_translation($container) {
 	#echo '<hr>' . $k1 . ' - ' . $v1 . '<br>';
 	if ($v1) {
 	switch($k1) {
-
 		# data translation
+		case 'channel_parent_name':
+			$output['channel_parent_id'] = get_db_single_value('
+				id from
+					' . $prefix . 'channel
+				where
+					id = parent_id and
+					name = ' . to_sql($input[$k1])
+			);
+		break;
 		case 'tag_path':
 			# complicated lookup
 			# if tag_path is given parent_tag_path should NOT be given.
@@ -229,7 +237,6 @@ function process_data_translation($container) {
 				where
 					tag_path = ' . to_sql($input[$k1])
 			, 0);
-# how many times am I going to rewrite the exact same query... I am fucking going crazy. I need a goddamned break before I go apeshit!
 
 			#$e1 = explode($config['category_exploder'], $input[$k1]);
 			#$output['tag_level'] = count($e1);
@@ -510,7 +517,7 @@ function process_data_translation($container) {
 		case 'decision_name':
 		case 'direction_name':
 		case 'display_name':
-		case 'channel_name':
+		case 'channel_name': # err channel_parent_name?
 		case 'grade_name':
 		case 'lock_range_name':
 		case 'meritype_name':
