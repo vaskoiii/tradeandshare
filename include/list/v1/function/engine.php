@@ -36,7 +36,6 @@ function prepare_engine(& $base, $type, $login_user_id) {
 		break;
 		case 'offer':
 		case 'transfer':
-		case 'rating':
 		case 'invited':
 			$where[] = $s1 . '.source_user_id != ' . (int)$login_user_id;
 		break;
@@ -223,7 +222,6 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 		case 'item':
 		case 'metail':
 		case 'news':
-		case 'rating':
 		case 'transfer':
 		case 'vote':
 			$select[] = 't1.team_id AS team_required_id';
@@ -655,28 +653,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 */
 
 
-		case 'rating':
-			// TODO add grade id to key so we can get grade name
-			$select[] = 't1.id AS rating_id';
-			$select[] = 'cnl.id as channel_id';
-			$select[] = 'cnl.name as channel_name';
-			$select[] = 'gr.id as grade_id';
-			$select[] = 'gr.name as grade_name';
-			$select[] = 't1.description as rating_description';
-			$select[] = 't1.modified';
-			$from[] = $prefix . 'rating t1';
-				$where[] = 't1.active = 1';
-			$from[] = $prefix . 'grade gr';
-			$from[] = $prefix . 'channel cnl';
-			$where[] = 't1.grade_id = gr.id';
-			$where[] = 't1.channel_id = cnl.id';
-			if (isset_gp('grade_id'))
-				$where_x[] = 'gr.id = ' . (int)get_gp('grade_id');
-			if (isset_gp('keyword'))
-				$where_x[] = '(
-					t1.description LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
-				)';
-		break;
 		case 'team':
 			$select[] = 't.id AS team_id';
 			$select[] = 't.name AS team_name';
@@ -762,8 +738,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 'rnae.point_id';
 			$select[] = 'pt.name as point_name';
 			$select[] = 'cnl.name as channel_name';
-			$select[] = 'ge_rnal.rating_value';
-			$select[] = 'ge_rnal.renewal_value';
 			$select[] = 't1.start as renewal_start';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';
@@ -798,8 +772,6 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 't1.cycle_id';
 			$select[] = 'rnae.point_id';
 			$select[] = 'cnl.name as channel_name';
-			$select[] = 'ge_rnal.rating_value';
-			$select[] = 'ge_rnal.renewal_value';
 			$select[] = 't1.start as renewal_start';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';

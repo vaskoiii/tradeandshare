@@ -28,7 +28,6 @@ delete from ts_group;
 delete from ts_incident;
 delete from ts_index_invited_user where user_id != 111;
 delete from ts_index_offer_user;
-delete from ts_index_rating_user;
 delete from ts_index_tag where tag_id != 1;
 delete from ts_index_transfer_user;
 delete from ts_invite where user_id != 111;
@@ -48,7 +47,6 @@ delete from ts_minder where user_id != 111;
 delete from ts_news;
 delete from ts_note;
 delete from ts_offer;
-delete from ts_rating;
 delete from ts_server where id != 1;
 delete from ts_tag where id != 1;
 delete from ts_team where user_id != 111;
@@ -64,5 +62,5 @@ UPDATE `tso`.`ts_user` SET `email` = 'user@domain.com' WHERE `ts_user`.`id` =111
 UPDATE `tso`.`ts_user` SET `password` = '98547af88af3d3aff2e1c10e430fd428' WHERE `ts_user`.`id` =111 LIMIT 1;
 
 -- remove other potentially sensitive info
-UPDATE `tso`.`ts_invite` SET `email` = 'user@domain.com' WHERE `ts_invite`.`id` =291 LIMIT 1 ;
-UPDATE `tso`.`ts_server` SET `name` = 'domain.com' WHERE `ts_server`.`id` =1 LIMIT 1 ;
+UPDATE `tso`.`ts_invite` SET `email` = 'user@example.com' WHERE `ts_invite`.`id` =291 LIMIT 1 ;
+UPDATE `tso`.`ts_server` SET `name` = 'example.com' WHERE `ts_server`.`id` =1 LIMIT 1 ;

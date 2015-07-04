@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# description: compute the payout for users based on members to members only. (Do not compute all ratings)
+# description: compute the payout for users based on members to members only. (Do not compute all scores)
 
-# not doing a full rating list (ie. hidden ratings) because only visible votes can be transparent and accountable
+# not doing a full score list (ie. hidden scores) because only visible votes can be transparent and accountable
 # also decentralization is important and hidden will not be practical if hidden and decentralized
 
 # Notes
@@ -75,9 +75,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 #   end                         ______|   (before)                #
 #                                                                 #
 ###################################################################
-
-# todo figure out what to do with no member to member ratings at all
-# maybe just hold the pot until next time and do a check. note that rating yourself anything above 0 value would mean you get the whole pot!-10% for TS
 
 # variable
 $data['user_report']['channel_list'] = array();
@@ -230,8 +227,6 @@ foreach ($channel as $kc1 => $vc1) {
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		get_score_channel_destination_user_id_array($channel[$kc1], $kc1, $kd1);
-		# if a user pays membership but doesn't rate anyone that money goes into the pot but doesn't affect the ratings
-		## like paying taxes but not voting
 		# $kc1 = $channel_parent_id;
 		# $kd1 = $destination_user_id;
 	}
@@ -385,19 +380,19 @@ foreach ($channel as $kc1 => $vc1) {
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
 
-		if (!empty($kid['source_user_id_rating_average']))
-		foreach ($kid['source_user_id_rating_average'] as $k1 => $v1) {
+		if (!empty($kid['source_user_id_score_average']))
+		foreach ($kid['source_user_id_score_average'] as $k1 => $v1) {
 			$kis = & $channel[$kc1]['source_user_id'][$k1]; # alias
 			$kisb = & $kis['before']; # alias
 			$kisa = & $kis['after']; # alias
-			# it isnt necessary to separate ratings into before and after for:
+			# it isnt necessary to separate scores into before and after for:
 			# - count
 			# - average
-			# instead use ratings from the full cycle
-			# ie) if my valid time during the payout period is 1 day my ratings for that entire cycycle would be factored into that one day ( not just the ratings I made on that 1 day)
-			$s111 = ($kid['source_user_id_rating_count'][$k1] / $kis['user_rating_count']);
-			# $s111 = ($kid['source_user_id_rating_like_count'][$k1] / $kis['user_rating_like_count']);
-			$kid['source_user_id_rating_weight'][$k1] =
+			# instead use scores from the full cycle
+			# ie) if my valid time during the payout period is 1 day my scores for that entire cycycle would be factored into that one day ( not just the scores I made on that 1 day)
+			$s111 = ($kid['source_user_id_score_count'][$k1] / $kis['user_score_count']);
+			# $s111 = ($kid['source_user_id_score_like_count'][$k1] / $kis['user_score_like_count']);
+			$kid['source_user_id_score_weight'][$k1] =
 				(
 					(
 						# $kis['count_weight']
@@ -416,15 +411,15 @@ foreach ($channel as $kc1 => $vc1) {
 			;
 			$il1 = 0;
 			$il2 = 0;
-			if (!empty($kid['source_user_id_rating_like_count'][$k1]))
-				$il1 = $kid['source_user_id_rating_like_count'][$k1];
-			if (!empty($kid['source_user_id_rating_count'][$k1]))
-				$il2 = $kid['source_user_id_rating_count'][$k1] - $kid['source_user_id_rating_like_count'][$k1];
-			$kid['source_user_id_rating_weight_math_before'][$k1] = 
+			if (!empty($kid['source_user_id_score_like_count'][$k1]))
+				$il1 = $kid['source_user_id_score_like_count'][$k1];
+			if (!empty($kid['source_user_id_score_count'][$k1]))
+				$il2 = $kid['source_user_id_score_count'][$k1] - $kid['source_user_id_score_like_count'][$k1];
+			$kid['source_user_id_score_weight_math_before'][$k1] = 
 				'This-User Like: ' . $il1 . ' | ' .
 				'This-User Dislike: ' . $il2 . ' | ' .
-				'All-User Score: ' . $kis['user_rating_count'] . ' | ' .
-				'Average: ' . $kid['source_user_id_rating_average'][$k1] . ' | ' .
+				'All-User Score: ' . $kis['user_score_count'] . ' | ' .
+				'Average: ' . $kid['source_user_id_score_average'][$k1] . ' | ' .
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
@@ -433,14 +428,14 @@ foreach ($channel as $kc1 => $vc1) {
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias
-		if (!empty($kid['source_user_id_rating_weight'])) {
+		if (!empty($kid['source_user_id_score_weight'])) {
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = 0;
 			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 0; # oh no!
-			foreach ($kid['source_user_id_rating_average'] as $k11 => $v11) {
+			foreach ($kid['source_user_id_score_average'] as $k11 => $v11) {
 				$channel[$kc1]['average_weight_sum_numerator'][$kd1] += (
 					(
 						(
-							$kid['source_user_id_rating_average'][$k11]
+							$kid['source_user_id_score_average'][$k11]
 							+
 							1
 						)
@@ -448,23 +443,23 @@ foreach ($channel as $kc1 => $vc1) {
 						2
 					)
 					*
-					$kid['source_user_id_rating_weight'][$k11]
+					$kid['source_user_id_score_weight'][$k11]
 				);
 				$channel[$kc1]['average_weight_sum_denominator'][$kd1] += (
-					$kid['source_user_id_rating_weight'][$k11]
+					$kid['source_user_id_score_weight'][$k11]
 				);
 			}
-			# system rating (reinforce user ratings)
+			# system score (reinforce user scores)
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1] += (
 				$channel[$kc1]['average_weight_sum_numerator'][$kd1]
 				/
-				# count($kid['source_user_id_rating_average'])
+				# count($kid['source_user_id_score_average'])
 				$channel[$kc1]['average_weight_sum_denominator'][$kd1]
 			);
 			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		}
 		else {
-			# system rating (assume half credit)
+			# system score (assume half credit)
 			$channel[$kc1]['average_weight_sum_numerator'][$kd1] = .5;
 			$channel[$kc1]['average_weight_sum_denominator'][$kd1] = 1;
 		}

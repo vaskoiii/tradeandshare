@@ -24,7 +24,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 $entry_array = array(
 	'offer',
-	'rating',
 	'transfer',
 	'invited',
 );

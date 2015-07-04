@@ -26,12 +26,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 	<h3><?= $data['user_report']['user_name']; ?></h3><?
 	
-	if ($data['user_report']['relative_rating_amount']) { ?> 
+	if ($data['user_report']['relative_score_amount']) { ?> 
 		<p><?= tt('element', $data['user_report']['relative_grade_element_name']); ?></p>
 
 		<p>	
 			&sum;
-			/ <?= (int)$data['user_report']['relative_rating_amount']; ?> 
+			/ <?= (int)$data['user_report']['relative_score_amount']; ?> 
 			= <?= to_html($data['user_report']['relative_grade_value_average']); ?> 
 		</p><?
 	} else { ?> 
@@ -39,7 +39,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 		<p>	
 			&sum;
-			/ <?= $data['user_report']['relative_rating_amount']; ?> 
+			/ <?= $data['user_report']['relative_score_amount']; ?> 
 			= ?
 		</p><?
 	} ?> 

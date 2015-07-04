@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: populate the 4 helper tables: index_invited_user, index_offer_user, index_rating_user, index_transfer_user
+# Contents/Description: populate the 4 helper tables: index_invited_user, index_offer_user, index_transfer_user
 # populate the helper table: index_tag
 
 # $tag_id
@@ -86,7 +86,6 @@ function ts_recursive_tag($tag_id) {
 $entry_array = array(
 	'invited',
 	'offer',
-	'rating',
 	'transfer',
 );
 $lock_array = array(
@@ -110,7 +109,6 @@ function index_entry($entry, $entry_id, $source_user_id, $destination_user_id, $
 	switch($t0) {
 		case 'invited_user':
 		case 'offer_user':
-		case 'rating_user':
 		case 'transfer_user':
 			$lock_plus[$source_user_id] = $source_user_id;
 			$lock_plus[$destination_user_id] = $destination_user_id;

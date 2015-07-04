@@ -308,22 +308,6 @@ switch($type) {
 			' . ($id ? 'WHERE id = ' . (int)$id : '') . '
 		';
 	break;
-	case 'rating':
-		$sql = '
-			' . ($id ? 'UPDATE' : 'INSERT INTO') . '
-				' . $prefix . 'rating
-			SET
-				source_user_id = ' . (int)$login_user_id . ',
-				destination_user_id = ' . (int)$lookup['xor_user_id'] . ',
-				team_id = ' . (int)$lookup['team_required_id'] . ',
-				modified = CURRENT_TIMESTAMP,
-				channel_id = ' . to_sql($lookup['channel_id']) . ',
-				grade_id = ' . to_sql($lookup['grade_id']) . ',
-				description = ' . to_sql($action_content_1['rating_description']) . ',
-				active = 1
-			' . ($id ? 'WHERE id = ' . (int)$id : '') . '
-		';
-	break;
 	case 'team':
 		$sql = '
 			' . ($id ? 'UPDATE' : 'INSERT INTO') . '

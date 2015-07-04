@@ -46,7 +46,6 @@ switch (get_gp('type')) {
 	case 'profile':
 	# main
 	case 'item':
-	case 'rating':
 	case 'transfer':
 	case 'vote':
 	# contact
@@ -319,7 +318,6 @@ switch($type) {
 		'))
 			$message = tt('element', 'error') . ' : ' . tt('element', 'feed_name') . ' : ' . tt('element', 'error_does_exist'); 
 	break;
-	case 'rating':
 	case 'offer':
 	case 'transfer':
 	case 'teammate':
@@ -462,7 +460,6 @@ if (!$message) {
 				$message = tt('element', 'error_access_denied');
 		break;
 		case 'offer':
-		case 'rating':
 		case 'transfer':
 			if ($id && !get_db_single_value('
 					id
@@ -912,7 +909,6 @@ switch($type) {
 			}
 		}
 	break;
-	case 'rating':
 	case 'transfer':
 		# disable notification email (recipient can not always see it)
 		index_entry(

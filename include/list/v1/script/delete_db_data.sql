@@ -27,7 +27,6 @@ delete from ts_group;
 delete from ts_incident;
 delete from ts_index_invited_user where user_id != 111;
 delete from ts_index_offer_user;
-delete from ts_index_rating_user;
 delete from ts_index_tag where tag_id != 1;
 delete from ts_index_transfer_user;
 delete from ts_invite where user_id != 111;
@@ -55,7 +54,6 @@ delete from ts_offer;
 -- ts_point
 delete from ts_pubkey;
 -- ts_range
-delete from ts_rating;
 delete from ts_renewage;
 delete from ts_renewal;
 delete from ts_server where id != 1;

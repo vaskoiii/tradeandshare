@@ -121,40 +121,6 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 		$channel['member_list'][$row['user_id']] = $row['user_id'];
 }
 
-function get_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
-	global $config;
-
-	# alias
-	$kid = & $channel['destination_user_id'][$destination_user_id];
-
-	foreach ($channel['member_list'] as $k1 => $v1) { # get sum
-		$sql = '
-			select
-				source_user_id,
-				sum(g.value) as summer,
-				count(g.value) as counter
-			FROM
-				' . $config['mysql']['prefix'] . 'rating r,
-				' . $config['mysql']['prefix'] . 'grade g
-			WHERE
-				r.source_user_id != r.destination_user_id and
-				r.grade_id = g.id AND
-				r.channel_id = ' . (int)$channel_parent_id . ' and
-				r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
-				r.source_user_id = ' . (int)$v1 . ' and 
-				r.destination_user_id = ' . (int)($destination_user_id) . ' and
-				-- start < ' . $channel['cycle_restart']['yyyy-mm-dd-1x'] . ' and 
-				-- start >= ' . $channel['cycle_restart']['yyyy-mm-dd-2x'] . ' and 
-				r.active = 1
-		';
-		$result = mysql_query($sql) or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['counter'])
-				$kid['source_user_id_rating_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
-		}
-	}
-}
-
 function get_score_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
 	global $config;
 
@@ -162,7 +128,7 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 	$kid = & $channel['destination_user_id'][$destination_user_id];
 
 	foreach ($channel['member_list'] as $k1 => $v1) { # get sum
-		# todo allow team specific ratings
+		# todo allow team specific scores
 		# todo factor in the cycle
 		$sql = '
 			select
@@ -180,7 +146,7 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['like_count']) {
-				$kid['source_user_id_rating_like_count'][$row['source_user_id']] = $row['like_count'];
+				$kid['source_user_id_score_like_count'][$row['source_user_id']] = $row['like_count'];
 			}
 		}
 		$sql = '
@@ -205,75 +171,25 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['counter']) {
-				$kid['source_user_id_rating_sum'][$row['source_user_id']] = $row['summer'];
-				$kid['source_user_id_rating_count'][$row['source_user_id']] = $row['counter'];
-				$kid['source_user_id_rating_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
+				$kid['source_user_id_score_sum'][$row['source_user_id']] = $row['summer'];
+				$kid['source_user_id_score_count'][$row['source_user_id']] = $row['counter'];
+				$kid['source_user_id_score_average'][$row['source_user_id']] = $row['summer'] / $row['counter'];
 			}
 		}
 	}
 }
 
-
-function get_cycle_rating_average(& $channel, $channel_parent_id, $destination_user_id) {
-	# preparation for computation
-	get_channel_cycle_restart_array($channel, $channel_parent_id);
-	get_channel_member_list_array($channel, $channel_parent_id);
-	foreach ($channel['member_list'] as $k1 => $v1)
-		get_channel_destination_user_id_array($channel, $channel_parent_id, $destination_user_id);
-	# arrays are all setup
-	
-}
-
 # not yet a shared function
-function get_channel_source_user_id_array(& $channel, $channel_parent_id, $source_user_id) {
-	global $config;
-
-	# alias
-	$kis = & $channel['source_user_id'][$source_user_id];
-
-	$kis['user_rating_count'] = 0;
-	# todo uncomment parts in the sql to account for:
-	# - timframe ratings only
-	# - specified channel only
-	$sql = '
-		select
-			count(distinct destination_user_id) as user_rating_count
-		FROM
-			' . $config['mysql']['prefix'] . 'rating
-		WHERE
-			source_user_id in (' . implode(', ', $channel['member_list']) . ') and
-			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
-			source_user_id != destination_user_id and
-			-- channel_id = ' . (int)$channel_parent_id . ' and
-			team_id = ' . (int)$config['everyone_team_id'] . ' and 
-			source_user_id = ' . (int)$source_user_id . ' and 
-			-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-			-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
-			active = 1
-	';
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['user_rating_count']) {
-			$kis['user_rating_count'] = $row['user_rating_count'];
-		}
-	}
-	if (empty($kis['user_rating_count']))
-		$kis['count_weight'] = 0;
-	else
-		$kis['count_weight'] = 1 / $kis['user_rating_count'];
-		# self-rating is not counted
-}
-
 function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, $source_user_id) {
 	global $config;
 
 	# alias
 	$kis = & $channel['source_user_id'][$source_user_id];
 
-	$kis['user_rating_like_count'] = 0;
+	$kis['user_score_like_count'] = 0;
 	$sql = '
 		select
-			count(*) as user_rating_like_count
+			count(*) as user_score_like_count
 		FROM
 			' . $config['mysql']['prefix'] . 'score
 		WHERE
@@ -286,26 +202,26 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 	';
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['user_rating_like_count']) {
-			$kis['user_rating_like_count'] = $row['user_rating_like_count'];
+		if ($row['user_score_like_count']) {
+			$kis['user_score_like_count'] = $row['user_score_like_count'];
 		}
 	}
-	if (empty($kis['user_rating_like_count']))
+	if (empty($kis['user_score_like_count']))
 		$kis['count_weight'] = 0;
 	else {
 		# this 1 needs to be variable
-		$kis['count_weight'] = 1 / $kis['user_rating_like_count'];
-		# self-rating is not counted
+		$kis['count_weight'] = 1 / $kis['user_score_like_count'];
+		# self-score is not counted
 	} 
 
-	$kis['user_rating_count'] = 0;
+	$kis['user_score_count'] = 0;
 	# todo uncomment parts in the sql to account for:
-	# - timframe ratings only
+	# - timframe scores only
 	# - specified channel only
 	$sql = '
 		select
-			-- count( distinct destination_user_id) as user_rating_count
-			count(*) as user_rating_count
+			-- count( distinct destination_user_id) as user_score_count
+			count(*) as user_score_count
 		FROM
 			' . $config['mysql']['prefix'] . 'score
 		WHERE
@@ -321,18 +237,18 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 	';
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['user_rating_count']) {
-			$kis['user_rating_count'] = $row['user_rating_count'];
+		if ($row['user_score_count']) {
+			$kis['user_score_count'] = $row['user_score_count'];
 		}
 	}
 	# todo still need to find the amount per user
 	
-	if (empty($kis['user_rating_count']))
+	if (empty($kis['user_score_count']))
 		$kis['count_weight'] = 0;
 	else {
 		# this 1 needs to be variable
-		$kis['count_weight'] = 1 / $kis['user_rating_count'];
-		# self-rating is not counted
+		$kis['count_weight'] = 1 / $kis['user_score_count'];
+		# self-score is not counted
 	} 
 }
 
@@ -377,11 +293,6 @@ function get_day_difference($dt1, $dt2) {
 }
 function get_datetime_add_day($dt1, $offset) {
 	return date('Y-m-d H:i:s', strtotime($dt1) + (86400 * $offset));
-}
-function get_rating_calculation($dt1, $dt2, $user_id) {
-	# todo: base on previous renewal
-	$d1 = 0;
-	return (double)$d1;
 }
 function get_cycle_last_start($channel_parent_id, $datetime) {
 	global $config;
@@ -466,7 +377,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				' . $prefix . 'gauge_renewal
 			set
 				renewal_id = ' . (int)$i1 . ',
-				rating_value = 0,
+				score_value = 0,
 				renewal_value = ' . (double)$ncycle['channel_value']
 		;
 		if ($config['debug'] == 1)
@@ -495,7 +406,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 					select
 						rnal.id as renewal_id,
 						rnal.start as renewal_start,
-						"0" as rating_value,
+						"0" as score_value,
 						"0" as renewal_value,
 						rnae.point_id
 					from
@@ -544,26 +455,26 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	$crenewal = & $renewal['current'];
 	$prenewal = & $renewal['previous'];
 	# r2c
-	# todo calclulate rating
-	# todo factor in rating with value
+	# todo calclulate score
+	# todo factor in score with value
 	$nrenewal['r2c_day'] = get_day_difference($crenewal['renewal_start'], $ncycle['cycle_start']);
 	$nrenewal['r2c_ratio'] = 1 - ($nrenewal['r2c_day'] / $ccycle['channel_offset']);
-	$nrenewal['r2c_rating'] = 0;
+	$nrenewal['r2c_score'] = 0;
 	$nrenewal['r2c_renewal'] = $nrenewal['r2c_ratio'] * $ccycle['channel_value'];
 	# c2r
-	# todo calclulate rating
-	# todo factor in rating with value
+	# todo calclulate score
+	# todo factor in score with value
 	$nrenewal['c2r_day'] = abs($nrenewal['r2c_day'] - $ncycle['channel_offset']);
 	$nrenewal['c2r_ratio'] = 1 - $nrenewal['r2c_ratio'];
-	$nrenewal['c2r_rating'] = 0;
+	$nrenewal['c2r_score'] = 0;
 	$nrenewal['c2r_renewal'] = $nrenewal['c2r_ratio'] * $ncycle['channel_value'];
 	# misc
 	$nrenewal['renewal_start'] = get_datetime_add_day($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
-	$nrenewal['gauge_rating_value'] = ($nrenewal['r2c_rating'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_rating'] * $nrenewal['c2r_ratio']);
+	$nrenewal['gauge_score_value'] = ($nrenewal['r2c_score'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_score'] * $nrenewal['c2r_ratio']);
 	$nrenewal['gauge_renewal_value'] = ($nrenewal['r2c_renewal'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_renewal'] * $nrenewal['c2r_ratio']);
 	# todo grant payout based on:
 	# see ascii picture at ~/include/list/v1/page/score_report.php
-	# todo ts_transaction will be another computation of computed_rating_value and computed_renewal_value
+	# todo ts_transaction will be another computation of computed_score_value and computed_renewal_value
 }
 function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {
 	get_renewal_period_array($cycle, $renewal, $user_id, 'current');
@@ -912,7 +823,7 @@ function insert_renewal_start(& $cycle, $user_id) {
 				' . $prefix . 'gauge_renewal
 			set
 				renewal_id = ' . (int)$i1 . ',
-				rating_value = 0,
+				score_value = 0,
 				renewal_value = ' . (double)$ccycle['channel_value']
 		;
 		if ($config['debug'] == 1)

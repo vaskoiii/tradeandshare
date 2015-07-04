@@ -41,7 +41,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		switch($type) {
 			case 'invited':
 			case 'offer':
-			case 'rating':
 			case 'transfer':
 				if (isset_gp('direction_id')) 
 					$default = true;
@@ -70,7 +69,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		switch($type) {
 			case 'invited':
 			case 'offer':
-			case 'rating':
 			case 'transfer':
 				if (isset_gp('direction_id'))
 					$default = true;
@@ -94,7 +92,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		switch($type) {
 			case 'invited':
 			case 'offer':
-			case 'rating':
 			case 'transfer':
 				if (isset_gp('direction_id'))
 					$default = true;
@@ -166,7 +163,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		switch($type) {
 			case 'invited':
 			case 'offer':
-			case 'rating':
 			case 'transfer':
 				if (isset_gp('direction_id'))
 					$default = true;
@@ -260,7 +256,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		switch($type) {
 			case 'invited':
 			case 'offer':
-			case 'rating':
 			case 'transfer':
 				if (isset_gp('direction_id'))
 					$default = true;
@@ -310,7 +305,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'invited':
 		case 'transfer':
 		case 'offer':
-		case 'rating':
 			if (get_gp('lock_contact_id') || get_gp('lock_group_id')) {
 				$from[] = $prefix . 'contact c';
 				$from[] = $prefix . 'link_contact_user lcu';

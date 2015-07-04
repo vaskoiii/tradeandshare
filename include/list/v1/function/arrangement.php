@@ -301,16 +301,6 @@ function get_action_content_1($type = false, $name = false) {
 						'news_description' => '',
 					);
 				break;
-				case 'rating':
-					$array = array(
-						'contact_user_mixed' => '',
-						'channel_name' => '',
-						'user_name' => '',
-						'contact_name' => '',
-						'grade_name' => '',
-						'rating_description' => '',
-					);
-				break;
 				case 'metail':
 					$array = array(
 						'metail_description' => '',
@@ -530,13 +520,6 @@ function get_search_content_1($type) {
 				'team_required_name' => '',
 			);
 		break;
-		case 'rating':
-			$array = array(
-				'channel_name' => '',
-				'grade_name' => '',
-				'direction_name' => '',
-				);
-		break;
 		case 'metail':
 			$array = array(
 				'team_required_name' => '',
@@ -706,11 +689,6 @@ function get_action_content_2($type, $name = false) {
 				);
 			break;
 			case 'news':
-				$array = array(
-					'team_required_name' => '',
-				);
-			break;
-			case 'rating':
 				$array = array(
 					'team_required_name' => '',
 				);

@@ -223,9 +223,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		// case 'cycle_start':
 			$grab .= $listing[$k1] . ' day';
 		break;
-		case 'rating_value':
-			$grab .= $listing[$k1];
-		break;
 		case 'remaining_time':
 			/*
 			$s1 = strtotime($listing['membership_start']) + 30*24*3600;
@@ -318,7 +315,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			break;
 			case 'score':
 			# case 'carry': # compute automatically
-			case 'rating':
 				if ($listing['source_user_id'] == $login_user_id)
 					$grab .= ' - <a href="./result_process/?delete=1&list_name=' . to_html($type) . '&q=' . to_url(ltrim(ff('', 1), '?')) . '&' . ('row[]=' . (int)$listing[$type . '_id'] ) . '"><span class="delete">' . tt('element', 'delete') . '</span></a> ';
 			break;
@@ -583,7 +579,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'metail_description':
 		case 'note_description':
 		case 'offer_description':
-		case 'rating_description':
 		case 'meripost_description':
 		case 'meritopic_description':
 		case 'incident_description':
@@ -786,7 +781,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					)
 						$b1 = 1;
 					break;
-					case 'rating':
 					case 'transfer':
 					if ($listing['source_user_id'] == $login_user_id)
 						$b1 = 1;

@@ -405,7 +405,6 @@ function process_data_translation($container) {
 		
 			if ($x['page']['name'] == 'edit_process') {
 			switch($process['form_info']['type']) {
-			case 'rating':
 			case 'offer':
 			case 'transfer':
 			case 'teammate':
@@ -656,7 +655,6 @@ function process_does_not_exist($container) {
 			case 'contact_name';
 				if ($x['page']['name'] == 'edit_process') {
 				switch($process['form_info']['type']) {
-					case 'rating':
 					case 'offer':
 					case 'transfer':
 					case 'teammate':
@@ -760,7 +758,6 @@ function process_field_missing($container = 'edit_content_1') {
 					if (!$arrangement['contact_name'])
 						$message = tt('element', 'contact_name') . ' : ' . tt('element', 'error_field_missing');
 				break;
-				case 'rating':
 				case 'offer':
 				case 'transfer':
 				case 'teammate':

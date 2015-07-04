@@ -73,14 +73,14 @@ up_date('2014-11-11');
 	<h3>Identity</h3>
 	<p>Basically your identity is who you are. It is a mix of public and private knowledge about you. Private knowledge will come from personal relationships and information NOT listed on TS. Public knowledge is intended to be suggestive and not as an absolute. It will come from information on TS such as:</p>
 	<ul>
-		<li>One's Ratings (Likes/Dislikes)</li>
+		<li>One's Score (Likes/Dislikes)</li>
 		<ul>
-		<li>Warning: Ratings and membership are still evolving at <a href="./score_report"><?= tt('page', 'score_report'); ?></a>.</li>
-			<li>Each user is allowed to rate other users as many times as they like.</li>
-			<li>You can specify who sees the ratings you make.</li>
- 			<li>Users can change their ratings of other users at any time unless they are committed to the log used in calculating membership payouts</li>
-			<li>A review period is provided for ratings that will be permanent.</li>
-			<li>Applicable ratings come from a specific channel (community).</li>
+		<li>Warning: Score and membership are still evolving at <a href="./score_report"><?= tt('page', 'score_report'); ?></a>.</li>
+			<li>Each user is allowed to score other users as many times as they like.</li>
+			<li>You can specify who sees the scores you make.</li>
+ 			<li>Users can change their scores of other users at any time unless they are committed to the log used in calculating membership payouts</li>
+			<li>A review period is provided for scores that will be permanent.</li>
+			<li>Applicable scores come from a specific channel (community).</li>
 			<li>Used to distribute wealth.</li>
 			<li>
 				Rating computations can be found by examining the source code at:
@@ -90,11 +90,11 @@ up_date('2014-11-11');
 				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/t1/score_report.php">github (template)</a>
 			</li>
 			<li>Physics involved that supply data for the computation are spreadout through: Rating, Channel, Cycle, and Renewal.</li>
-			<li>A user's report was originally intended to be the average of the average viewable source user ratings on the destination user.</li>
+			<li>A user's report was originally intended to be the average of the average viewable source user scores on the destination user.</li>
 		</ul>
 		<li>One's Assets</li>
 		<ul>
-			<li>Important to be tied to one's identity alongside one's ratings.</li>
+			<li>Important to be tied to one's identity alongside one's scores.</li>
 			<li>Extensions of who a person is.</li>
 			<li>What goods/services you have listed on TS.</li>
 		</ul>

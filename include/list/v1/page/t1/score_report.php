@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: display member ratings (doesn't compute all ratings)
+# Contents/Description: display member scores (doesn't compute all scores)
 
 # todo if this is so useful should be moved to function.php
 function print_key_user_id($k1) {
@@ -75,7 +75,7 @@ function print_key_user_id($k1) {
 </div>
 <div id="score_readme" style="display: none; margin-bottom: 10px;">
 <hr />
-<p>todo: Use a diminishing score to help normalize ratings.</p>
+<p>todo: Use a diminishing score to help normalize scores.</p>
 <p>todo: Factor in the carried over score.</p>
 <hr />
 <dl>
@@ -173,17 +173,17 @@ if (!get_gp('channel_id')) { ?>
 		}
 		else { ?>
 			<dt>Multiplier</dt>
-			<dd>can not compute - No ratings</dd><?
+			<dd>can not compute - No scores</dd><?
 		} ?> 
 	</dl>
-	<p>For breakdown please see public rating list of members</p>
+	<p>For breakdown please see public score list of members</p>
 	</div><?
 	if (!empty($channel[$kc1]['destination_user_id']))
 	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
-		if (1 || !empty($kid['source_user_id_rating_average'])) { ?> 
+		if (1 || !empty($kid['source_user_id_score_average'])) { ?> 
 				Time in Cycle:
 				<?= $channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] + $channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
@@ -195,8 +195,8 @@ if (!get_gp('channel_id')) { ?>
 			<?
 		} ?> 
 		<dl><?
-			if (!empty($kid['source_user_id_rating_average']))
-			foreach($kid['source_user_id_rating_average'] as $k1 => $v1) {
+			if (!empty($kid['source_user_id_score_average']))
+			foreach($kid['source_user_id_score_average'] as $k1 => $v1) {
 				$kis = & $channel[$kc1]['source_user_id'][$k1];
 				$kisb = & $kis['before'];
 				$kisa = & $kis['after'];
@@ -205,11 +205,11 @@ if (!get_gp('channel_id')) { ?>
 					print_key_user_id($k1); ?> 
 				</dt>
 				<dd>
-					<?= $kid['source_user_id_rating_weight_math_before'][$k1]; ?>
+					<?= $kid['source_user_id_score_weight_math_before'][$k1]; ?>
 				</dd><?
 			}
 			else
-				echo 'No ratings'; ?> 
+				echo 'No scores'; ?> 
 		</dl><?
 	}
 	print_break_close(); ?>

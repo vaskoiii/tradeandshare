@@ -7,7 +7,7 @@
 
 # issue
 # - doesn't account for credit
-# - doesn't account for rating value
+# - doesn't account for score value
 # - the frequency with which this script (and periodic renewal) run may be the limiting factor in how fine grained the renewals can happen. ie) if it runs daily cycles may only be able account for yyyy-mm-dd and not hh:mm:ss (Y-m-d H-i-s)
 # - script dependancies are different from normal dependancies because they do not have access to .htaccess
 # - member function calls are not optimized ie) get_cycle_array() make 3 function calls

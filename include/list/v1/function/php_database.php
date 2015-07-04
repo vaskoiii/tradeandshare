@@ -186,9 +186,6 @@ switch($view_type) {
 			unset($array['team_name_spacer']);
 			unset($array['user_name']);
 		break;
-		case 'rating':
-			# todo structure like offers
-		break;
 		case 'metail':
 			unset($array['user_name']);
 			unset($array['subject_endline']);
@@ -284,7 +281,6 @@ function get_mask_author($type, $display) {
 		case 'carry':
 		case 'score':
 		case 'invited':
-		case 'rating':
 		case 'transfer': 
 			$array = array(
 				'source' => 'source_user_name',
@@ -346,8 +342,6 @@ function get_mask_subject($type, $display) {
 				'cycle_id_spacer' => '_',
 				'point_name' => 'point_name',
 				'point_name_spacer' => '_',
-				'rating_value' => 'rating_value',
-				'rating_value_spacer' => '_',
 				'renewal_value' => 'renewal_value',
 				'renewal_value_spacer' => '_',
 				'renewal_start' => 'renewal_start',
@@ -514,16 +508,6 @@ function get_mask_subject($type, $display) {
 			break; 
 		}
 		break;
-		case 'rating':
-			$array = array(
-				'direction_right_name' => 'direction_right_name',
-				'destination_user_name' => 'destination_user_name',
-				'destination_user_name_spacer' => '_',
-				'channel_name' => 'channel_name',
-				'channel_name_spacer' => '_',
-				'grade_name' => 'grade_name',
-			);
-		break;
 		case 'team':
 			$array = array(
 				'team_name' => 'team_name',
@@ -640,7 +624,6 @@ function get_mask_endline($type, $display, $child) {
 		case 'news':
 		case 'note':
 		case 'offer':
-		case 'rating':
 		case 'tag':
 		case 'team':
 		case 'transfer': 
@@ -687,7 +670,6 @@ function lt_add_more($type) {
 			$array = array('!');
 		break;
 		case 'invited':
-		case 'rating':
 		case 'transfer':
 			$array = array(
 				'_',
@@ -716,7 +698,6 @@ function lt_body($type) {
 		case 'news':
 		case 'note': 
 		case 'offer':
-		case 'rating':
 		case 'team':
 		case 'transfer': 
 		case 'vote':
@@ -732,7 +713,8 @@ function lt_body($type) {
 		#break;
 		# todo update integrate 2012-02-27 vaskoiii
 		case 'channel':
-			# we do not want ratings to work across languages (causes divergence)
+			# having a channel work across multiple languages may cause divergence
+			# ie. 2 different languages can view the same channel with a different purpose
 			# $array = array('channel_translation_description');
 			$array = array('channel_description');
 		break;
@@ -798,9 +780,9 @@ function lt_detail($type) {
 		case 'meripost':
 			$array = array('meritopic_id', '_');
 		break;
+		# case 'score': placeholder
 		case 'news':
 		case 'metail':
-		case 'rating':
 			$array = array('team_required_name', '_');
 		break;
 		case 'category':

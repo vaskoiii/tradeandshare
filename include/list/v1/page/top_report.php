@@ -160,7 +160,6 @@ $a1 = array(
 	'location' => '',
 	'login' => '',
 	'note' => '',
-	'rating' => '',
 	'dialect' => '',
 	'transfer' => '',
 	'meripost' => '',

@@ -120,7 +120,6 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 			# function call to get correct variable? 2013-03-22 vaskoiii
 			$s1;
 			switch($x['feed_atom']['page_name']) {
-				case 'rating_list':
 				case 'invited_list':
 				case 'offer_list':
 				case 'transfer_list':

@@ -176,7 +176,6 @@ switch($process['miscellaneous']['action']) {
 			case 'metail':
 			case 'news':
 			case 'note':
-			case 'rating':
 			case 'transfer':
 			case 'vote':
 				$interpret['table'] = $s1;
@@ -259,17 +258,6 @@ switch($process['miscellaneous']['action']) {
 						destination_user_id = ' . (int)$login_user_id . '
 					)
 			';
-			break;
-			case 'rating':
-			$sql = '
-				SELECT
-					id
-				FROM
-					' . $prefix . $s1 . '
-				WHERE
-					id IN (' . implode(',', $process['miscellaneous']['row']) .') AND
-					source_user_id = ' . (int)$login_user_id
-			;
 			break;
 			case 'teammate':
 			$sql = '
@@ -612,6 +600,7 @@ switch($process['miscellaneous']['action']) {
 	case 'delete':
 		# BEFORE DELETE
 		# teammate has to update ALL intra-team listings as well the teammate
+		# todo delete team specific scores if applicable
 		switch($process['miscellaneous']['list_name']) {
 			case 'teammate':
 				# Actually we need to get TODO the author only teams for the user that is being removed!
@@ -632,7 +621,7 @@ switch($process['miscellaneous']['action']) {
 					$interpret['selection_action_process']['team_id'][$row['team_id']] = $row['team_id']; 
 					$interpret['selection_action_process']['user_id'][$row['user_id']] = $row['user_id'];
 				}
-				# MOVE all of the removed user's vote/item/news/metail/tranfer/rating from the corresponding team(s) and puts it in the <user_name> team for the corresponding (removed) user
+				# MOVE all of the removed user's vote/item/news/metail/tranfer/score from the corresponding team(s) and puts it in the <user_name> team for the corresponding (removed) user
 				foreach ($interpret['selection_action_process']['user_id'] as $k1 => $v1) {
 					$interpret['selection_action_process']['foreach']['user_name'] = get_db_single_value('
 							name
@@ -701,18 +690,6 @@ switch($process['miscellaneous']['action']) {
 							team_id = ' . (int)$interpret['selection_action_process']['foreach']['author_only_team_id'] . '
 						WHERE
 							user_id = ' . (int)$v1 . ' AND
-							team_id IN (' . implode(',', $interpret['selection_action_process']['team_id']) . ') AND
-							active = 1
-					';
-					$result = mysql_query($sql) or die(mysql_error());
-					# rating
-					$sql = '
-						UPDATE
-							' . $prefix . 'rating
-						SET
-							team_id = ' . (int)$interpret['selection_action_process']['foreach']['author_only_team_id'] . '
-						WHERE
-							source_user_id = ' . (int)$v1 . ' AND
 							team_id IN (' . implode(',', $interpret['selection_action_process']['team_id']) . ') AND
 							active = 1
 					';
