@@ -255,6 +255,13 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $spacer . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
 		break;
+		case 'digest':
+			switch($type) {
+				case 'cycle':
+					$grab .= $spacer . '<a href="score_report/' . ff('channel_parent_id=' . (int)$listing['channel_parent_id'] . '&cycle_id=' . $listing['cycle_id']) . '"><span class="digest">' . tt('element', $k1) . '</span></a>';
+				break;
+			}
+		break;
 		case 'export':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
 				$grab .= $spacer . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';

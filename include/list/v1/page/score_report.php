@@ -169,7 +169,7 @@ foreach($channel as $k1 => $v1) {
 						cce.channel_id = cnl.id and
 						cce.start = ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
 						cnl.parent_id = ' . (int)$k1 . '
-				', 1);
+				');
 			}
 		}
 		# latest cycle?

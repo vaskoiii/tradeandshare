@@ -54,62 +54,47 @@ function print_key_user_id($k1) {
 	}
 </script>
 
-<div class="content_box">
-<div style="margin: 10px 0px;">
-	<a href="channel_list/">View All Channels</a>
-	&gt;&gt;
-	<a href="#" id="score_readme_toggle" onclick="more_toggle('score_readme'); return false;"><?= tt('element', 'more'); ?></a>
-</div>
-<div id="score_readme" style="display: none; margin-bottom: 10px;">
-<hr />
-<p>todo: Use a diminishing score to help normalize scores.</p>
-<p>todo: Factor in the carried over score.</p>
-<hr />
-<dl>
-	<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
-	<dd>score(number_of_users + 1)</dd>
-</dl>
-<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
-<hr />
-</div>
-<div> <?
-	if (!get_gp('channel_parent_id')) { ?>
-		<p>No channel was selected</p><?
-	} ?> 
-</div>
 <?
-
-print_break_close();
-
+# only focus 1 channel to start
+if (!empty($data['user_report']['premature_channel_list'])) { ?> 
+	<div class="content_box"><?
+	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
+		<p><?= $key['channel_id']['result'][$k1]['channel_name']; ?> has no members</p><?
+	} ?> 
+	<? print_break_close(); ?>
+	</div><?
+}
+elseif (empty($channel)) { ?>
+	<div class="content_box">
+		<p>No channel was selected</p>
+	<? print_break_close(); ?>
+	</div><?
+}
+else
 foreach ($channel as $kc1 => $vc1) { ?>
-	<div id="channel_<?= (int)$kc1; ?>"><?
+	<div id="channel_<?= (int)$kc1; ?>" class="content_box"><?
+	# todo only show data pertaining to the corresponding cycle
 	$s1  = $vc1['info']['name'];
-	$s1 .= ' : ' .(int)$vc1['info']['cycle_id'] . ($vc1['info']['cycle_id'] == $vc1['info']['latest_payout_cycle_id'] ? ' : latest' : '');
-	print_break_open($s1); ?> 
+	$s1 .= ' : ';
+	$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
+	$s1 .= ($vc1['info']['cycle_id'] == $vc1['info']['latest_payout_cycle_id'] ? ' : latest' : '');
+	echo '<h3>' . $s1 . '</h3>'; ?>
 
 	<?  # timeline wanted? ie) get_next_cycle_id() and get_previous_cycle_id() ?>
-	<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
-<?
-if (0)
-if (!get_gp('channel_id')) { ?> 
-<p>
-	<strong>Premature</strong><?
-	if (!empty($data['user_report']['premature_channel_list'])) {
-		foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-			<span style="display: inline; margin-left: 10px;"><?= $key['channel_id']['result'][$k1]['channel_name']; ?></span><?
-		}
-	}
-	else { ?>
-		No premature channels<?
-	} ?>
-</p><?
-} ?>
-
-
-	&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
-	<br />
-	<br />
+	<p style="margin-top: 0px;">
+		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
+		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
+	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
+	<p>todo: Use a diminishing score to help normalize scores.</p>
+	<p>todo: Factor in the carried over score.</p>
+	<hr />
+	<dl>
+		<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
+		<dd>score(number_of_users + 1)</dd>
+	</dl>
+	<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
+	<hr />
 	<dl>
 		<dt>Length</dt>
 		<dd><?= to_html($vc1['info']['time']); ?>  Days</dd><?
