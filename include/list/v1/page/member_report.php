@@ -66,12 +66,15 @@ foreach($channel as $k1 => $v1) {
 				' . $config['mysql']['prefix'] . 'channel
 			where
 				parent_id = ' . (int)$k1 . ' and
-				modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
+				timeframe_id = 2
 			order by
 				modified desc
 			limit
 				1 
 		';
+		# removed in favor of counting members unqualified for payout
+		# -- modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
+		# todo adjust score report accordingly
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result))
 			$channel[$k1]['info'] = $row;
@@ -98,7 +101,7 @@ foreach($channel as $k1 => $v1) {
 			where
 				cce.channel_id = cnl.id and
 				cnl.parent_id = ' . (int)$k1 . ' and
-				cce.start = ' . to_sql($cycle_restart['yyyy-mm-dd-2x'])
+				cce.start = ' . to_sql($cycle_restart['yyyy-mm-dd-1x'])
 		);
 		# get the number of renewals in that cycle (excluding ending cycles)
 		# cycle_id should already exist because this logic is essentially repeated
