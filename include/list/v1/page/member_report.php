@@ -57,7 +57,7 @@ foreach($channel as $k1 => $v1) {
 	$cycle_restart = & $channel[$k1]['cycle_restart'];
 
 	# get name and description
-	if (!empty($cycle_restart['yyyy-mm-dd-2x'])) {
+	if (!empty($cycle_restart['yyyy-mm-dd-1x'])) {
 		$sql = '
 			select
 				name,
