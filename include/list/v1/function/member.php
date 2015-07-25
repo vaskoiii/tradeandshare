@@ -62,19 +62,19 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 			cce.id as cycle_id,
 			cce.start as cycle_start
 		from
-			' . $config . 'cycle.cce,
-			' . $config . 'channel.cnl
+			' . $config['mysql']['prefix'] . 'cycle cce,
+			' . $config['mysql']['prefix'] . 'channel cnl
 		where
 			cce.channel_id = cnl.id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			cce.id <= ' . (int)$cycle_id . '
 		order by
-			id desc
+			cce.id desc
 		limit
-			4
+			3
 	';
 	$result = mysql_query($sql) or die(mysql_error());
-	$i1 = 0;
+	$i1 = 1;
 	while ($row = mysql_fetch_assoc($result)) {
 		$i1++;
 		$channel['cycle_restart']['yyyy-mm-dd-' . $i1 . 'x'] = $row['cycle_start'];
@@ -93,6 +93,7 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 }
 
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
+	# todo merge with get_specific_channel_cycle_restart_array() - required getting cycle id for $dt2 though
 	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
 	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($channel_parent_id, $dt1);
 	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($channel_parent_id, $dt2);
@@ -149,24 +150,28 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 				$kid['source_user_id_score_like_count'][$row['source_user_id']] = $row['like_count'];
 			}
 		}
+		# todo uncomment parts in the sql to account for:
+		# - specified channel only
+		# - timeframe scores only
+		# also in get_score_channel_source_user_id_array()
 		$sql = '
 			select
-				source_user_id,
-				sum(g.value) as summer,
-				count(g.value) as counter
+				se.source_user_id,
+				sum(mk.value) as summer,
+				count(mk.value) as counter
 			FROM
-				' . $config['mysql']['prefix'] . 'score r,
-				' . $config['mysql']['prefix'] . 'mark g
+				' . $config['mysql']['prefix'] . 'score se,
+				' . $config['mysql']['prefix'] . 'mark mk
 			WHERE
-				r.source_user_id != r.destination_user_id and
-				r.mark_id = g.id AND
-				-- r.channel_id = ' . (int)$channel_parent_id . ' and
-				-- r.team_id = ' . (int)$config['everyone_team_id'] . ' and 
-				r.source_user_id = ' . (int)$v1 . ' and 
-				r.destination_user_id = ' . (int)($destination_user_id) . ' and
-				-- start < ' . $channel['cycle_restart']['yyyy-mm-dd-1x'] . ' and 
-				-- start >= ' . $channel['cycle_restart']['yyyy-mm-dd-2x'] . ' and 
-				r.active = 1
+				se.source_user_id != se.destination_user_id and
+				se.mark_id = mk.id AND
+				-- se.channel_id = ' . (int)$channel_parent_id . ' and
+				-- se.team_id = ' . (int)$config['everyone_team_id'] . ' and 
+				se.source_user_id = ' . (int)$v1 . ' and 
+				se.destination_user_id = ' . (int)($destination_user_id) . ' and
+				se.modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and 
+				se.modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and 
+				se.active = 1
 		';
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result)) {
@@ -216,8 +221,9 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 
 	$kis['user_score_count'] = 0;
 	# todo uncomment parts in the sql to account for:
-	# - timframe scores only
+	# - timeframe scores only
 	# - specified channel only
+	# also in get_score_channel_destination_user_id_array()
 	$sql = '
 		select
 			-- count( distinct destination_user_id) as user_score_count
@@ -231,8 +237,8 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 			-- channel_id = ' . (int)$channel_parent_id . ' and
 			-- team_id = ' . (int)$config['everyone_team_id'] . ' and 
 			source_user_id = ' . (int)$source_user_id . ' and 
-			-- start < ' . $cycle_restart['yyyy-mm-dd-1x'] . ' and 
-			-- start >= ' . $cycle_restart['yyyy-mm-dd-2x'] . ' and 
+			modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and 
+			modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and 
 			active = 1
 	';
 	$result = mysql_query($sql) or die(mysql_error());
@@ -251,7 +257,6 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 		# self-score is not counted
 	} 
 }
-
 
 # cycle/renewal
 function get_single_channel_parent_id($type, $id) {

@@ -103,7 +103,10 @@ while ($row = mysql_fetch_assoc($result)) {
 foreach($channel as $k1 => $v1) {
 	# convenience for display:
 	add_key('channel', $k1, 'channel_name', $key);
-	get_channel_cycle_restart_array($channel[$k1], $k1);
+	if ($_GET['cycle_id'])
+		get_specific_channel_cycle_restart_array($channel[$k1], $k1, $_GET['cycle_id']);
+	else
+		get_channel_cycle_restart_array($channel[$k1], $k1);
 
 	# alias
 	$cycle_restart = & $channel[$k1]['cycle_restart'];
