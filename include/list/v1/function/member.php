@@ -134,15 +134,17 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 		$sql = '
 			select
 				source_user_id,
-				count(r.mark_id) as like_count
+				count(se.mark_id) as like_count
 			FROM
-				' . $config['mysql']['prefix'] . 'score r
+				' . $config['mysql']['prefix'] . 'score se
 			WHERE
-				r.source_user_id != r.destination_user_id and
-				r.mark_id = 1 and
-				r.source_user_id = ' . (int)$v1 . ' and 
-				r.destination_user_id = ' . (int)($destination_user_id) . ' and
-				r.active = 1
+				se.source_user_id != se.destination_user_id and
+				se.mark_id = 1 and
+				se.source_user_id = ' . (int)$v1 . ' and 
+				se.destination_user_id = ' . (int)($destination_user_id) . ' and
+				se.modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
+				se.modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
+				se.active = 1
 		';
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result)) {
