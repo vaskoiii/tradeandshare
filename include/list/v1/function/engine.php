@@ -707,6 +707,8 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$select[] = 'cnl.parent_id as channel_parent_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 'cnl.name as channel_name';
+			$select[] = 't1.point_id';
+			$select[] = 'pt.name as point_name';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';
 			$select[] = 't1.start AS cycle_start';
@@ -719,6 +721,8 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			# $where[] = 'rnwl.cycle_id = t1.id';
 			# join to channel and you will only get owners
 			$from[] = $prefix . 'channel cnl';
+			$from[] = $prefix . 'point pt';
+			$where[] = 'pt.id = t1.point_id';
 			$where[] = 'cnl.user_id = u.id';
 			$where[] = 'cnl.id = t1.channel_id';
 			$where[] = 'tfe.id = t1.timeframe_id';

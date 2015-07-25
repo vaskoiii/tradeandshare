@@ -355,6 +355,8 @@ function get_mask_subject($type, $display) {
 				'channel_name_spacer' => '_',
 				'cycle_start' => 'cycle_start',
 				'cycle_start_spacer' => '_',
+				'point_name' => 'point_name',
+				'point_name_spacer' => '_',
 				'timeframe_name' => 'timeframe_name',
 			);
 		break;
