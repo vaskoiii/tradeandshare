@@ -748,12 +748,12 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'renewal t1';
 			$from[] = $prefix . 'renewage rnae';
 				$where[] = 't1.active = 1';
-			$from[] = $prefix . 'gauge_renewal ge_rnal';
+			# $from[] = $prefix . 'gauge_renewal ge_rnal';
 			$from[] = $prefix . 'channel cnl';
 			$from[] = $prefix . 'cycle cce';
 			$from[] = $prefix . 'timeframe tfe';
 			$from[] = $prefix . 'point pt';
-			$where[] = 'ge_rnal.renewal_id = t1.id';
+			# $where[] = 'ge_rnal.renewal_id = t1.id';
 			$where[] = 'tfe.id = rnae.timeframe_id';
 			$where[] = 'pt.id = rnae.point_id';
 			$where[] = 't1.id = rnae.renewal_id';
@@ -766,6 +766,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
+		# renewal_list as a page dne
 		case 'renewal': # log
 			# todo deprecate renewal_list as renewal is incomplete without renewage
 			$select[] = 't1.id AS renewal_id';
@@ -782,11 +783,11 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			$from[] = $prefix . 'renewal t1';
 			$from[] = $prefix . 'renewage rnae';
 				$where[] = 't1.active = 1';
-			$from[] = $prefix . 'gauge_renewal ge_rnal';
+			# $from[] = $prefix . 'gauge_renewal ge_rnal';
 			$from[] = $prefix . 'channel cnl';
 			$from[] = $prefix . 'cycle cce';
 			$from[] = $prefix . 'timeframe tfe';
-			$where[] = 'ge_rnal.renewal_id = t1.id';
+			# $where[] = 'ge_rnal.renewal_id = t1.id';
 			$where[] = 'tfe.id = rnae.timeframe_id';
 			$where[] = 't1.id = rnae.renewal_id';
 			$where[] = 't1.user_id = u.id';

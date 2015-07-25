@@ -90,6 +90,7 @@ if (!empty($bcycle['all'])) {
 		$bcycle['continue'][$row['cycle_id']] = $row['cycle_id'];
 	}
 	# if no renewals then it is an ending cycle
+	if (!empty($bcycle['continue']))
 	foreach ($bcycle['continue'] as $k1 => $v1)
 		if (!in_array($k1, $bcycle['all']))
 			$bcycle['end'][$k1] = $k1;

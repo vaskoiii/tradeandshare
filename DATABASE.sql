@@ -3075,3 +3075,6 @@ insert into ts_page set parent_id = 321, file_id = 14, name = 'member_report', `
 
 insert into ts_element set name = 'digest';
 update ts_page  set launch = 2 where `name` = 'score_report';
+
+ALTER TABLE `ts_gauge_renewal` CHANGE `rating_value` `score_value` DOUBLE NOT NULL; 
+

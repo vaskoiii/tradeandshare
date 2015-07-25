@@ -377,6 +377,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		if ($config['debug'] == 1)
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
+		# todo placeholder to insert carry over score
+		if (0) {
 		$sql = '
 			insert into
 				' . $prefix . 'gauge_renewal
@@ -388,6 +390,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		if ($config['debug'] == 1)
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
+		}
 		# todo grant payout based on:
 		# see ascii picture at ~/include/list/v1/page/score_report.php
 	}
@@ -475,8 +478,13 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	$nrenewal['c2r_renewal'] = $nrenewal['c2r_ratio'] * $ncycle['channel_value'];
 	# misc
 	$nrenewal['renewal_start'] = get_datetime_add_day($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
+	
+	# todo placeholder to insert carry over score
+	# not sure gauge_* is even used
+	if (1) {
 	$nrenewal['gauge_score_value'] = ($nrenewal['r2c_score'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_score'] * $nrenewal['c2r_ratio']);
 	$nrenewal['gauge_renewal_value'] = ($nrenewal['r2c_renewal'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_renewal'] * $nrenewal['c2r_ratio']);
+	}
 	# todo grant payout based on:
 	# see ascii picture at ~/include/list/v1/page/score_report.php
 	# todo ts_transaction will be another computation of computed_score_value and computed_renewal_value
@@ -823,6 +831,8 @@ function insert_renewal_start(& $cycle, $user_id) {
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
 
+		# todo placeholder to insert carry over score
+		if (0) {
 		$sql = '
 			insert into
 				' . $prefix . 'gauge_renewal
@@ -834,5 +844,6 @@ function insert_renewal_start(& $cycle, $user_id) {
 		if ($config['debug'] == 1)
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
+		}
 	}
 }

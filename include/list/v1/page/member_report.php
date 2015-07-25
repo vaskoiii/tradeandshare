@@ -31,25 +31,22 @@ $data['member_report']['channel'] = array();
 $channel = & $data['member_report']['channel'];
 $order = & $data['member_report']['order'];
 
-
-
-
-
-
-
-# get every single channel id
+# get every single channel parent id (with active members)
+# todo make it so to have a current timeframe for a channel there must be current members
+# todo if everybody left a channel then the channel will change to a future channel
+# todo channels where that are not upcomming or current should be past
 $sql = '
 	select
-		id
+		distinct(cnl.parent_id)
 	from
-		' . $config['mysql']['prefix'] . 'channel
+		' . $config['mysql']['prefix'] . 'channel cnl
 	where
-		id = parent_id
+		cnl.timeframe_id = 2
 ';
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
-	$channel[$row['id']] = array();
-	$order[$row['id']] = 0;
+	$channel[$row['parent_id']] = array();
+	$order[$row['parent_id']] = 0;
 }
 
 foreach($channel as $k1 => $v1) {
