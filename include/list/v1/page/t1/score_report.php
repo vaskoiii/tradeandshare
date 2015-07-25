@@ -59,7 +59,7 @@ function print_key_user_id($k1) {
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<div class="content_box"><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<p><?= $key['channel_id']['result'][$k1]['channel_name']; ?> has no members</p><?
+		<p><?= $key['channel_id']['result'][$k1]['channel_name']; ?> has no members eligible for payout</p><?
 	} ?> 
 	<? print_break_close(); ?>
 	</div><?
@@ -86,6 +86,7 @@ foreach ($channel as $kc1 => $vc1) { ?>
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
+	<p>todo: Show active members that are not currently eligible for payout</p>
 	<p>todo: Use a diminishing score to help normalize scores.</p>
 	<p>todo: Factor in the carried over score.</p>
 	<hr />
