@@ -207,13 +207,11 @@ if (1) {
 		select
 			rnal.cycle_id
 		from
-			' . $prefix . 'renewal rnal,
-			' . $prefix . 'renewage rnae
+			' . $prefix . 'renewal rnal
 		where
-			rnae.renewal_id = rnal.id and
 			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
 			rnal.start < ' . to_sql($rdatetime['next']) . ' and
-			rnae.point_id in (2, 3, 4)
+			rnal.point_id in (2, 3, 4)
 			-- no "1" because can not start a renewal here
 		group by
 			rnal.cycle_id
@@ -241,13 +239,11 @@ foreach ($acycle as $k1 => $v1) {
 		select
 			rnal.user_id
 		from
-			' . $prefix . 'renewal rnal,
-			' . $prefix . 'renewage rnae
+			' . $prefix . 'renewal rnal
 		where
-			rnae.renewal_id = rnal.id and
 			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
 			rnal.start < ' . to_sql($rdatetime['next']) . ' and
-			rnae.point_id in (2, 3, 4) and
+			rnal.point_id in (2, 3, 4) and
 			rnal.cycle_id = ' . (int)$k1 . '
 			-- no "1" because can not start a renewal here
 		group by

@@ -261,7 +261,6 @@ function get_action_content_1($type = false, $name = false) {
 					);
 				break;
 				case 'renewal':
-				case 'renewage':
 					$array = array(
 						'channel_name' => '',
 						'point_name' => '',

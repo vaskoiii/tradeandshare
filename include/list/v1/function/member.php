@@ -358,6 +358,9 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			set
 				user_id = ' . (int)$user_id . ',
 				start = '  . to_sql($nrenewal['renewal_start']) . ',
+				point_id = ' . (int)$point_id . ',
+				timeframe_id = 3,
+				modified = now(),
 				active = 1,
 				cycle_id = ' . (int)$ncycle['cycle_id']
 		;
@@ -367,18 +370,6 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		# todo rely on the "get" functions to grap all the data for the appropriate arrays instead of setting it directly
 		# $nrenewal['renewal_id'] = mysql_insert_id();
 		$i1 = mysql_insert_id();
-		$sql = '
-			insert into
-				' . $prefix . 'renewage
-			set
-				point_id = ' . (int)$point_id . ',
-				modified = now(),
-				timeframe_id = 3,
-				renewal_id = ' . (int)$i1
-		;
-		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
 		# todo placeholder to insert carry over score
 		if (0) {
 		$sql = '
@@ -418,14 +409,12 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 						rnal.start as renewal_start,
 						"0" as score_value,
 						"0" as renewal_value,
-						rnae.point_id
+						rnal.point_id
 					from
 						' . $prefix . 'renewal rnal,
-						' . $prefix . 'renewage rnae,
 						' . $prefix . 'cycle cce,
 						' . $prefix . 'channel cnl
 					where
-						rnal.id = rnae.renewal_id and
 						cce.id = rnal.cycle_id and
 						cnl.id = cce.channel_id and
 						cnl.parent_id = ' . (int)$cycle[$period]['channel_parent_id'] . ' and
@@ -787,15 +776,14 @@ function is_renewal_start(& $cycle, $user_id) {
 	return !(get_db_single_value('
 			1
 		from
-			' . $prefix . 'renewal rnal,
-			' . $prefix . 'renewage rnae
+			' . $prefix . 'renewal rnal
 		where
-			rnal.id = rnae.renewal_id and
-			rnae.point_id IN (1, 2) and 
+			rnal.point_id IN (1, 2) and 
 			rnal.cycle_id = ' . (int)$ccycle['cycle_id'] . ' and
 			rnal.user_id = ' . (int)$user_id . ' and
 			rnal.active = 1
 	',0));
+	# why is point_id = 2 considered a renewal start?
 }
 function insert_renewal_start(& $cycle, $user_id) {
 	global $config;
@@ -811,28 +799,16 @@ function insert_renewal_start(& $cycle, $user_id) {
 			set
 				user_id = ' . (int)$user_id . ',
 				start = '  . to_sql($s1) . ',
+				point_id = 1,
+				timeframe_id = 2,
+				modified = now(),
 				active = 1,
 				cycle_id = ' . (int)$ccycle['cycle_id']
 		;
 		if ($config['debug'] == 1)
 			echo '<hr>' . $sql;
 		mysql_query($sql) or die(mysql_error());
-		# todo safe to remove?
-		# $renewal['current']['renewal_id'] = mysql_insert_id();
 		$i1 = mysql_insert_id();
-		$sql = '
-			insert into
-				' . $prefix . 'renewage
-			set
-				point_id = 1,
-				modified = now(),
-				timeframe_id = 2,
-				renewal_id = ' . (int)$i1
-		;
-		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-
 		# todo placeholder to insert carry over score
 		if (0) {
 		$sql = '

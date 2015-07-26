@@ -88,7 +88,6 @@ function new_report_new_count($listing_type, $when) {
 		case 'channel':
 		case 'cycle':
 		case 'renewal':
-		case 'renewage':
 		case 'transaction':
 			# todo make ready for integration
 			return 0;

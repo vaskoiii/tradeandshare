@@ -3078,3 +3078,10 @@ update ts_page  set launch = 2 where `name` = 'score_report';
 
 ALTER TABLE `ts_gauge_renewal` CHANGE `rating_value` `score_value` DOUBLE NOT NULL; 
 
+ALTER TABLE `ts_renewal` ADD `point_id` TINYINT NOT NULL AFTER `user_id` , ADD INDEX ( `point_id` ) ;
+ALTER TABLE `ts_renewal` ADD `timeframe_id` TINYINT NOT NULL AFTER `point_id` , ADD INDEX ( `timeframe_id` ) ;
+ALTER TABLE `ts_renewal` ADD `modified` datetime NOT NULL AFTER `start` , ADD INDEX ( `modified` ) ;
+
+-- needed on master db after git pull
+delete from ts_page where name like 'renewage%';
+update ts_page set launch = 1 where name like 'renew%';

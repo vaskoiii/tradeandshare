@@ -227,16 +227,14 @@ foreach ($channel as $kc1 => $vc1) {
 			# $kis['after']['time_weight'] = 0;
 			$sql = '
 				select
-					rnae.point_id,
+					rnal.point_id,
 					pt.name as point_name,
 					rnal.start
 				from
 					' . $config['mysql']['prefix'] . 'renewal rnal,
-					' . $config['mysql']['prefix'] . 'renewage rnae,
 					' . $config['mysql']['prefix'] . 'point pt
 				where
-					rnal.id = rnae.renewal_id and
-					rnae.point_id = pt.id and
+					rnal.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
 					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
