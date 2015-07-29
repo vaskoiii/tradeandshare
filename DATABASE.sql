@@ -3082,6 +3082,7 @@ ALTER TABLE `ts_renewal` ADD `point_id` TINYINT NOT NULL AFTER `user_id` , ADD I
 ALTER TABLE `ts_renewal` ADD `timeframe_id` TINYINT NOT NULL AFTER `point_id` , ADD INDEX ( `timeframe_id` ) ;
 ALTER TABLE `ts_renewal` ADD `modified` datetime NOT NULL AFTER `start` , ADD INDEX ( `modified` ) ;
 
--- needed on master db after git pull
 delete from ts_page where name like 'renewage%';
 update ts_page set launch = 1 where name like 'renew%';
+
+update ts_page set monitor = 1 where name like 'renewal_list';
