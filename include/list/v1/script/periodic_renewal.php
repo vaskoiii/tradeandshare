@@ -5,6 +5,12 @@
 
 $cfg['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 $cfg['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+# comment out for live data:
+# $data['run']['datetime'] = array(
+# 	'previous' => '2015-05-30 00:00:00',
+# 	'current' => '2015-06-01 00:00:00',
+# 	'next' => '2015-06-02 00:00:00',
+# );
 
 # issue
 # - doesn't account for credit
@@ -33,16 +39,8 @@ include($script['include_path'] . 'function/main.php');
 include($script['include_path'] . 'function/member.php');
 
 # var
-$data['run']['datetime'] = get_run_datetime_array();
-# to debug uncomment and hardcode these dates with something that matches the db!
-# also make sure debug is set in the config
-if (1) {
-	$data['run']['datetime'] = array(
-		'previous' => '2015-05-30 00:00:00',
-		'current' => '2015-06-01 00:00:00',
-		'next' => '2015-06-02 00:00:00',
-	);
-}
+if (empty($data['run']['datetime']))
+	$data['run']['datetime'] = get_run_datetime_array();
 
 echo "rdatetime\n";
 echo "{\n";
