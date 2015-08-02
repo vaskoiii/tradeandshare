@@ -3,6 +3,13 @@
 # description: process the autorenewing cycles and renewals together ( first implementation will be daily cron )
 # warning: changing a timeframe_id does not count as a modification
 
+# todo allow script to enable debugging such that the database content will not be modified
+$cfg['debug'] = 1;
+
+# $bchannel/$cchannel/$achannel ???
+# vs
+# $pchannel/$cchannel/$nchannel ???
+
 # todo script will run in the background so debug messages may be fine
 
 # issue
@@ -33,6 +40,21 @@ include($script['include_path'] . 'function/member.php');
 
 # var
 $data['run']['datetime'] = get_run_datetime_array();
+# to debug uncomment and hardcode these dates with something that matches the db!
+# also make sure debug is set in the config
+if (1) {
+	$data['run']['datetime'] = array(
+		'previous' => '2015-05-30 00:00:00',
+		'current' => '2015-06-01 00:00:00',
+		'next' => '2015-06-02 00:00:00',
+	);
+}
+
+echo "rdatetime\n";
+echo "{\n";
+print_r($data['run']['datetime']);
+echo "}\n";
+
 $data['run']['after']['channel'] = array();
 $data['run']['after']['user'] = array();
 # bcycle data structure is totally different from acycle
@@ -42,16 +64,13 @@ $data['run']['after']['cycle'] = array();
 # alias
 $rdatetime = & $data['run']['datetime'];
 $prefix = & $config['mysql']['prefix'];
-# cycle1
 $bcycle = & $data['run']['before']['cycle'];
-# cycle2
 $achannel = & $data['run']['after']['channel'];
-# renewal1
 $acycle = & $data['run']['after']['cycle'];
-# renewal2
 $auser = & $data['run']['after']['user'];
 
-# cycle1
+echo "bcycle\n";
+echo "{\n";
 # run first so that a future cycle is not inserted
 if (1) {
 	$sql = '
@@ -84,7 +103,7 @@ if (!empty($bcycle['all'])) {
 		group by
 			rnal.cycle_id
 	';
-	echo "$sql\n";
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$bcycle['continue'][$row['cycle_id']] = $row['cycle_id'];
@@ -95,6 +114,7 @@ if (!empty($bcycle['all'])) {
 		if (!in_array($k1, $bcycle['all']))
 			$bcycle['end'][$k1] = $k1;
 	# todo ended cycle is timeframe_id = 2 (present) or 1 (past)? add to sql:
+	# todo what happens if there was a renewal today (before this script ran) but no renewals yesterday?
 	if (!empty($bcycle['end'])) {
 		$sql = '
 			update
@@ -104,8 +124,9 @@ if (!empty($bcycle['all'])) {
 			where
 				id in (' . implode(', ', $bcycle['end']) . ')
 		';
-		echo '<hr>' . $sql; 
-		mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		if ($cfg['debug'] != 1)
+			mysql_query($sql) or die(mysql_error());
 		# remove furture cycles if they were already inserted (safety)
 		foreach ($bcycle['end'] as $k1 => $v1) {
 			$i1 = get_single_channel_parent_id('cycle', $k1);
@@ -132,14 +153,16 @@ if (!empty($bcycle['all'])) {
 				where
 					id in (' . implode(', ', $a1['cycle_id']) . ')
 			';
-			echo '<hr>' . $sql;
+			print_debug($sql);
 			mysql_query($sql) or die(mysql_error());
 		}
 	}
 }
 unset($bcycle);
+echo "}\n";
 
-# cycle2
+echo "acycle\n";
+echo "{\n";
 # get all cycles for "next" (indirectly obtained from channel)
 if (1) {
 	$sql = '
@@ -155,7 +178,7 @@ if (1) {
 			start >= ' . to_sql($rdatetime['current']) . ' and
 			start < ' . to_sql($rdatetime['next']) . '
 	';
-	echo "$sql\n";
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$achannel[$row['channel_parent_id']] = array();
@@ -178,8 +201,9 @@ if (1) {
 				where
 					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
 			;		
-			echo "$sql\n";
-			mysql_query($sql) or die(mysql_error());
+			print_debug($sql);
+			if ($cfg['debug'] != 1)
+				mysql_query($sql) or die(mysql_error());
 		}
 		unset($achannel[$k1]);
 		# print_r($achannel[$k1]); echo "\n";
@@ -195,12 +219,13 @@ if (1) {
 			start < ' . to_sql($rdatetime['current']) . ' and
 			point_id != 3
 	';
-	echo "$sql\n";
-	mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	if ($cfg['debug'] != 1)
+		mysql_query($sql) or die(mysql_error());
 }
 unset($achannel);
+echo "}\n";
 
-# renewal1
 echo 'continuing with cycles that have renewals' . "\n";
 if (1) {
 	$sql = '
@@ -216,7 +241,7 @@ if (1) {
 		group by
 			rnal.cycle_id
 	';
-	echo "$sql\n";
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$acycle[$row['cycle_id']] = array();
@@ -230,6 +255,8 @@ if (empty($acycle))
 	echo "no cycles have renewals\n";
 if (!empty($acycle)) {
 foreach ($acycle as $k1 => $v1) {
+	echo "renewal1 - cycle: $k1\n";
+	echo "{\n";
 	$channel_parent_id = get_single_channel_parent_id('cycle', $k1);
 	get_cycle_array($acycle[$k1], $channel_parent_id, $rdatetime['next']);
 	insert_cycle_next($acycle[$k1], $channel_parent_id, $rdatetime['next']);
@@ -249,19 +276,20 @@ foreach ($acycle as $k1 => $v1) {
 		group by
 			rnal.user_id
 	';
-	echo "$sql\n";
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$auser[$row['user_id']] = array();
 	}
 	# hardcode for debug
 	# $auser[150] = array();
-	# print_r($auser); echo "\n";
-	# renewal2
+	echo 'foreach user: '; print_r($auser); echo "\n";
 	if (empty($auser))
 		echo "no after user renewal\n";
 	if (!empty($auser)) {
 	foreach ($auser as $k2 => $v2) {
+		echo "renewal2 - user: $k2\n";
+		echo "{{\n";
 		get_renewal_array($acycle[$k1], $auser[$k2], $channel_parent_id, $k2);
 		get_renewal_next_data($acycle[$k1], $auser[$k2]);
 		# print_r($auser[$k2]); echo "\n";
@@ -287,41 +315,45 @@ foreach ($acycle as $k1 => $v1) {
 			# not taking into account before timeframe (previous cycle may not have happened yet)
 			if (1) {
 				print_r($auser[$k2]); echo "\n";
-				# set previous renewage to current (runs 1 day ahead)
+				# set previous renewal to current (runs 1 day ahead)
 				$sql = '
 					update
-						' . $prefix . 'renewage
+						' . $prefix . 'renewal
 					set
 						timeframe_id = 1
 					where
-						renewal_id = ' . (int)$auser[$k2]['previous']['renewal_id']
+						id = ' . (int)$auser[$k2]['previous']['renewal_id']
 				;
-				echo "$sql\n";
-				mysql_query($sql) or die(mysql_error());
-				if (0) {
-					# set current renewage to present
+				print_debug($sql);
+				if ($cfg['debug'] != 1)
+					mysql_query($sql) or die(mysql_error());
+				if (1) {
+					# set current renewal to present
 					$sql = '
 						update 
-							' . $prefix . 'renewage
+							' . $prefix . 'renewal
 						set
 							timeframe_id = 2
 						where
-							renewal_id = ' . (int)$auser[$k2]['current']['renewal_id'] . '
+							id = ' . (int)$auser[$k2]['current']['renewal_id'] . '
 					';
-					echo "$sql\n";
-					mysql_query($sql) or die(mysql_error());
+					print_debug($sql);
+					if ($cfg['debug'] != 1)
+						mysql_query($sql) or die(mysql_error());
 				}
-				# next renewage was already set to future by marked by insert_renewal_next()
+				# next renewal was already set to future by marked by insert_renewal_next()
 			}
 		}
 		unset($auser[$k2]);
+		echo "}}\n";
 	} }
 	unset($acycle[$k1]);
+	echo "}\n";
 } }
 unset($acycle);
 unset($auser);
 
-# make all renewage that started since last run current
+# make all renewal that started since last run current
 
 # print_r($acycle[$k1]); echo "\n";
 exit;

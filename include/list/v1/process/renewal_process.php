@@ -99,9 +99,10 @@ insert_cycle_next($data['cycle'], $lookup['channel_parent_id'], $now);
 get_cycle_next_array($data['cycle'], $lookup['channel_parent_id'], $now);
 
 # renewal
-$first_renewal = is_renewal_start($data['cycle'], $login_user_id);
+
+$first_renewal = is_renewal_start($ccycle['cycle_id'], $login_user_id);
 if (!empty($first_renewal))
-	insert_renewal_start($data['cycle'], $login_user_id);
+	insert_renewal_start($ccycle['cycle_id'], $login_user_id);
 get_renewal_array($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id);
 get_renewal_next_data($data['cycle'], $data['renewal']);
 insert_renewal_next($data['cycle'], $data['renewal'], $lookup['channel_parent_id'], $login_user_id, $lookup['point_id'], $now);

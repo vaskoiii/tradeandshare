@@ -31,7 +31,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - fees are not charged until autorenew script runs
 # - fees are automatic from your available balance
 
-# todo limit changes in channel lenght by a max of 10%
+# todo limit changes in channel length by a max of 10%
 
 # Key
 # s = start
@@ -371,7 +371,6 @@ foreach ($channel as $kc1 => $vc1) {
 			$kid['source_user_id_score_weight'][$k1] =
 				(
 					(
-						# $kis['count_weight']
 						$s111
 					)
 					*
@@ -379,7 +378,6 @@ foreach ($channel as $kc1 => $vc1) {
 				) +
 				(
 					(
-						# $kis['count_weight']
 						$s111
 					) *
 					$kisa['time_weight']

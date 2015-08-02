@@ -18,22 +18,21 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# description: member functions that will be used in both:
-# - cycle cron
-# - cycle process (if ever implemented)
-# - renewal cron
-# - renewal process
+# description:
+# member functions that will be used in both:
+# periodic_renewal.php
+# process_renewal.php
+# (including cycle handling)
 
-# changing cycle length does not permit skiping or covering multiple renewals
-# the ratio into the current cycle when a renewal happens is factored in when renewing
+# also contains functions used in:
+# score_report.php
 
-# todo error checking on $datetime_now
-# todo filter out partial array completion ie) when one value only is set in a particular array (so functions can become more independant)
-# todo make sure get_...() does not insert or update anything
+# todo make sure changing cycle length does not permit skiping or covering multiple renewals
+# ie) the ratio into the current cycle when a renewal happens should be factored in when renewing
 
-# score_report (functionizing)
-# some functions may only be used in score_report
-
+function print_debug($s1) {
+	echo "\n<hr>\n<pre>\n$s1\n</pre>\n";
+}
 
 # channel_origin_id is actually a more appropriate name than channel_parent_id
 function get_latest_payout_cycle_id($channel_parent_id) {
@@ -53,8 +52,6 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 
 function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id) {
 	global $config;
-	
-	# remember payout lags
 
 	# get cycle_id array
 	$sql = '
@@ -152,10 +149,6 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 				$kid['source_user_id_score_like_count'][$row['source_user_id']] = $row['like_count'];
 			}
 		}
-		# todo uncomment parts in the sql to account for:
-		# - specified channel only
-		# - timeframe scores only
-		# also in get_score_channel_source_user_id_array()
 		$sql = '
 			select
 				se.source_user_id,
@@ -167,8 +160,6 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 			WHERE
 				se.source_user_id != se.destination_user_id and
 				se.mark_id = mk.id AND
-				-- se.channel_id = ' . (int)$channel_parent_id . ' and
-				-- se.team_id = ' . (int)$config['everyone_team_id'] . ' and 
 				se.source_user_id = ' . (int)$v1 . ' and 
 				se.destination_user_id = ' . (int)($destination_user_id) . ' and
 				se.modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and 
@@ -213,22 +204,10 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 			$kis['user_score_like_count'] = $row['user_score_like_count'];
 		}
 	}
-	if (empty($kis['user_score_like_count']))
-		$kis['count_weight'] = 0;
-	else {
-		# this 1 needs to be variable
-		$kis['count_weight'] = 1 / $kis['user_score_like_count'];
-		# self-score is not counted
-	} 
 
 	$kis['user_score_count'] = 0;
-	# todo uncomment parts in the sql to account for:
-	# - timeframe scores only
-	# - specified channel only
-	# also in get_score_channel_destination_user_id_array()
 	$sql = '
 		select
-			-- count( distinct destination_user_id) as user_score_count
 			count(*) as user_score_count
 		FROM
 			' . $config['mysql']['prefix'] . 'score
@@ -236,8 +215,6 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 			source_user_id in (' . implode(', ', $channel['member_list']) . ') and
 			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
 			source_user_id != destination_user_id and
-			-- channel_id = ' . (int)$channel_parent_id . ' and
-			-- team_id = ' . (int)$config['everyone_team_id'] . ' and 
 			source_user_id = ' . (int)$source_user_id . ' and 
 			modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and 
 			modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and 
@@ -249,15 +226,6 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 			$kis['user_score_count'] = $row['user_score_count'];
 		}
 	}
-	# todo still need to find the amount per user
-	
-	if (empty($kis['user_score_count']))
-		$kis['count_weight'] = 0;
-	else {
-		# this 1 needs to be variable
-		$kis['count_weight'] = 1 / $kis['user_score_count'];
-		# self-score is not counted
-	} 
 }
 
 # cycle/renewal
@@ -300,6 +268,25 @@ function get_day_difference($dt1, $dt2) {
 }
 function get_datetime_add_day($dt1, $offset) {
 	return date('Y-m-d H:i:s', strtotime($dt1) + (86400 * $offset));
+}
+# unused function but wondering if it may simplify logic
+function get_renewal_last_start($cycle_id, $user_id, $datetime) {
+	global $config;
+	return get_db_single_value('
+		rnal.start from
+			' . $config['mysql']['prefix'] . 'cycle cce,
+			' . $config['mysql']['prefix'] . 'renewal rnal
+		where
+			cce.id = rnal.cycle_id and
+			rnal.user_id = ' . (int)$user_id . ' and
+			cce.start < ' . to_sql($datetime) . ' and
+			active = 1
+		order by
+			rnal.start desc
+	');
+}
+function get_cycle_next_start($ccycle_start, $cchannel_offset) {
+	return date('Y-m-d H:i:s', strtotime($ccycle_start) + ($cchannel_offset * 86400));
 }
 function get_cycle_last_start($channel_parent_id, $datetime) {
 	global $config;
@@ -347,9 +334,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			rnal.start > ' . to_sql($datetime) . ' and
 			rnal.active = 1
 	',0);
-	if ($config['debug'] == 1) {
-		echo '<hr>'; var_dump($i2);
-	}
+	if ($config['debug'] == 1)
+		print_debug($i2);
 	if (empty($i2)) {
 		$nrenewal['renewal_start'] = get_datetime_add_day($crenewal['renewal_start'], $ccycle['channel_offset']);
 		$sql = '
@@ -365,25 +351,13 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				cycle_id = ' . (int)$ncycle['cycle_id']
 		;
 		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		# todo rely on the "get" functions to grap all the data for the appropriate arrays instead of setting it directly
-		# $nrenewal['renewal_id'] = mysql_insert_id();
+			print_debug($sql);
+		else
+			mysql_query($sql) or die(mysql_error());
+
 		$i1 = mysql_insert_id();
 		# todo placeholder to insert carry over score
-		if (0) {
-		$sql = '
-			insert into
-				' . $prefix . 'gauge_renewal
-			set
-				renewal_id = ' . (int)$i1 . ',
-				score_value = 0,
-				renewal_value = ' . (double)$ncycle['channel_value']
-		;
-		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		}
+
 		# todo grant payout based on:
 		# see ascii picture at ~/include/list/v1/page/score_report.php
 	}
@@ -395,7 +369,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	# get most recent renewal data
 
 	if ($config['debug'] == 1)
-		echo '<hr>' . $period;
+		print_debug($period);
 	# echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
 
 	switch($period) {
@@ -407,8 +381,6 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 					select
 						rnal.id as renewal_id,
 						rnal.start as renewal_start,
-						"0" as score_value,
-						"0" as renewal_value,
 						rnal.point_id
 					from
 						' . $prefix . 'renewal rnal,
@@ -430,7 +402,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 						1
 				';
 				if ($config['debug'] == 1) {
-					echo '<hr>'; echo $period; echo $sql;
+					print_debug($sql);
 				}
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result)) {
@@ -445,6 +417,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 # get_member_data
 # get_renewal_next_data
 function get_renewal_next_data(& $cycle, & $renewal) {
+
 	# todo incorporate $period
 	# alias
 	$ncycle = & $cycle['next'];
@@ -456,6 +429,11 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	# r2c
 	# todo calclulate score
 	# todo factor in score with value
+
+	# logic repeated from insert_cycle_next();
+	if (empty($ncycle['cycle_start']))
+		$ncycle['cycle_start'] = get_cycle_next_start($ccycle['cycle_start'], $ccycle['channel_offset']);
+
 	$nrenewal['r2c_day'] = get_day_difference($crenewal['renewal_start'], $ncycle['cycle_start']);
 	$nrenewal['r2c_ratio'] = 1 - ($nrenewal['r2c_day'] / $ccycle['channel_offset']);
 	$nrenewal['r2c_score'] = 0;
@@ -471,14 +449,9 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	$nrenewal['renewal_start'] = get_datetime_add_day($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
 	
 	# todo placeholder to insert carry over score
-	# not sure gauge_* is even used
-	if (1) {
-	$nrenewal['gauge_score_value'] = ($nrenewal['r2c_score'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_score'] * $nrenewal['c2r_ratio']);
-	$nrenewal['gauge_renewal_value'] = ($nrenewal['r2c_renewal'] * $nrenewal['r2c_ratio']) + ($nrenewal['c2r_renewal'] * $nrenewal['c2r_ratio']);
-	}
+
 	# todo grant payout based on:
 	# see ascii picture at ~/include/list/v1/page/score_report.php
-	# todo ts_transaction will be another computation of computed_score_value and computed_renewal_value
 }
 function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {
 	get_renewal_period_array($cycle, $renewal, $user_id, 'current');
@@ -567,7 +540,10 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 			get_cycle_current_array($cycle, $channel_parent_id, $datetime);
 
 		# ahead of time calculation
+		# repeated from get_renewal_next_data()
 		$ncycle_start = date('Y-m-d H:i:s', strtotime($ccycle['cycle_start']) + $ccycle['channel_offset'] * 86400);
+		$ncycle_start = get_cycle_next_start($ccycle['cycle_start'], $ccycle['channel_offset']);
+		
 		$sql = '
 			insert into
 				' . $prefix . 'cycle
@@ -580,8 +556,9 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 				active = 1
 		';
 		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		$result = mysql_query($sql) or die(mysql_error());
+			print_debug($sql);
+		else
+			mysql_query($sql) or die(mysql_error());
 	}
 }
 function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
@@ -645,7 +622,7 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 	';
 	# -- now could be the current cycle!
 	if ($config['debug'] == 1)
-		echo '<hr>' . $sql;
+		print_debug($sql);
 	$i1 = 1;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
@@ -664,7 +641,7 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 	get_channel_data($cycle, $channel_parent_id, 'current', $datetime);
 	get_channel_data($cycle, $channel_parent_id, 'previous', $datetime);
 }
-function get_cycle_previous_array(& $cycle, $channel_parent_id, $datetime_now) {
+function get_cycle_previous_array(& $cycle, $channel_parent_id, $datetime) {
 	# placeholder
 	# bundled with get_cycle_current_array()
 }
@@ -677,12 +654,12 @@ function get_cycle_array(& $cycle, $channel_parent_id, $datetime) {
 	get_cycle_next_array($cycle, $channel_parent_id, $datetime);
 }
 
-
-# renewal_process.php
+#######################
+# renewal_process.php #
+#######################
 
 # first ever cycle
 function is_cycle_start($channel_parent_id) {
-	# todo have to factor in previous cycles that ended
 	global $config;
 	global $prefix;
 	$i1 = get_db_single_value('
@@ -693,23 +670,24 @@ function is_cycle_start($channel_parent_id) {
 		where
 			cnl.id = cce.channel_id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
-			cce.point_id != 3
 		order by
-			cce.modified desc
+			cce.start desc
 	',0);
 	switch($i1) {
 		case '1': # should not happen
 		case '2':
+		case '4':
 			return 0;
 		break;
+		case '3': # cycle has ended previously ended and needs restart
+		default: # no result 
+			return 1;
+		break;
 	}
-	return 1;
 }
 function insert_cycle_start($channel_parent_id) {
 	global $config;
 	global $prefix;
-
-
 	# if the cycle already ended use the most recent channel data
 	$i1 = get_db_single_value('
 			id
@@ -722,7 +700,6 @@ function insert_cycle_start($channel_parent_id) {
 	');
 	if (empty($i1))
 		$i1 = $channel_parent_id;
-
 	# intention is to not be concerened with when a cycle first starts
 	$sql = '
 		insert into
@@ -736,8 +713,9 @@ function insert_cycle_start($channel_parent_id) {
 			active = 1
 	';
 	if ($config['debug'] == 1)
-		echo '<hr>' . $sql;
-	mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+	else
+		mysql_query($sql) or die(mysql_error());
 	# previous end cycle is no longer current
 	$i2 = get_db_single_value('
 			cce.id
@@ -760,68 +738,58 @@ function insert_cycle_start($channel_parent_id) {
 				id = ' . (int)$i2
 		;
 		if ($config['debug'] == 1)
-			echo "$sql\n";
-		mysql_query($sql) or die(mysql_error());
+			print_debug($sql);
+		else
+			mysql_query($sql) or die(mysql_error());
 	}
 }
-
 # first ever renewal
-function is_renewal_start(& $cycle, $user_id) {
+# setting a future cycle renewal start date is not yet permitted
+# to enable perhaps store future renewal dates in a separate table
+function is_renewal_start($cycle_id, $user_id) {
 	global $config;
 	global $prefix;
-	# alias
-	$ccycle = & $cycle['current'];
-	# considered first renewal if no renewals so far this cycle
-	# end/nextend are not considered renewals ( only start/continue )
-	return !(get_db_single_value('
-			1
+	$i1 = (get_db_single_value('
+			rnal.point_id
 		from
 			' . $prefix . 'renewal rnal
 		where
-			rnal.point_id IN (1, 2) and 
-			rnal.cycle_id = ' . (int)$ccycle['cycle_id'] . ' and
+			rnal.cycle_id = ' . (int)$cycle_id . ' and
 			rnal.user_id = ' . (int)$user_id . ' and
 			rnal.active = 1
 	',0));
-	# why is point_id = 2 considered a renewal start?
+	switch($i1) {
+		case '1':
+		case '2':
+		case '4':
+			return 0;
+		break;
+		case '3':
+		default:
+			return 1;
+		break;
+	}
 }
-function insert_renewal_start(& $cycle, $user_id) {
+function insert_renewal_start($cycle_id, $user_id) {
 	global $config;
 	global $prefix;
-	# alias
-	$ccycle = & $cycle['current'];
-	# current renewal
-	if (1) {
-		$s1 = date('Y-m-d H:i:s');
-		$sql = '
-			insert into
-				' . $prefix . 'renewal
-			set
-				user_id = ' . (int)$user_id . ',
-				start = '  . to_sql($s1) . ',
-				point_id = 1,
-				timeframe_id = 2,
-				modified = now(),
-				active = 1,
-				cycle_id = ' . (int)$ccycle['cycle_id']
-		;
-		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
+	$sql = '
+		insert into
+			' . $prefix . 'renewal
+		set
+			user_id = ' . (int)$user_id . ',
+			start = now(),
+			point_id = 1,
+			timeframe_id = 2,
+			modified = now(),
+			active = 1,
+			cycle_id = ' . (int)$cycle_id
+	;
+	if ($config['debug'] == 1)
+		print_debug($sql);
+	else
 		mysql_query($sql) or die(mysql_error());
-		$i1 = mysql_insert_id();
-		# todo placeholder to insert carry over score
-		if (0) {
-		$sql = '
-			insert into
-				' . $prefix . 'gauge_renewal
-			set
-				renewal_id = ' . (int)$i1 . ',
-				score_value = 0,
-				renewal_value = ' . (double)$ccycle['channel_value']
-		;
-		if ($config['debug'] == 1)
-			echo '<hr>' . $sql;
-		mysql_query($sql) or die(mysql_error());
-		}
-	}
+
+	$i1 = mysql_insert_id();
+	# todo placeholder to insert carry over score
 }
