@@ -352,7 +352,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		;
 		if ($config['debug'] == 1)
 			print_debug($sql);
-		else
+		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 
 		$i1 = mysql_insert_id();
@@ -557,7 +557,7 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 		';
 		if ($config['debug'] == 1)
 			print_debug($sql);
-		else
+		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 	}
 }
@@ -714,7 +714,7 @@ function insert_cycle_start($channel_parent_id) {
 	';
 	if ($config['debug'] == 1)
 		print_debug($sql);
-	else
+	if ($config['write_protect'] != 1)
 		mysql_query($sql) or die(mysql_error());
 	# previous end cycle is no longer current
 	$i2 = get_db_single_value('
@@ -739,7 +739,7 @@ function insert_cycle_start($channel_parent_id) {
 		;
 		if ($config['debug'] == 1)
 			print_debug($sql);
-		else
+		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 	}
 }
@@ -787,7 +787,7 @@ function insert_renewal_start($cycle_id, $user_id) {
 	;
 	if ($config['debug'] == 1)
 		print_debug($sql);
-	else
+	if ($config['write_protect'] != 1)
 		mysql_query($sql) or die(mysql_error());
 
 	$i1 = mysql_insert_id();

@@ -3,14 +3,8 @@
 # description: process the autorenewing cycles and renewals together ( first implementation will be daily cron )
 # warning: changing a timeframe_id does not count as a modification
 
-# todo allow script to enable debugging such that the database content will not be modified
-$cfg['debug'] = 1;
-
-# $bchannel/$cchannel/$achannel ???
-# vs
-# $pchannel/$cchannel/$nchannel ???
-
-# todo script will run in the background so debug messages may be fine
+$cfg['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
+$cfg['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 
 # issue
 # - doesn't account for credit
@@ -125,7 +119,7 @@ if (!empty($bcycle['all'])) {
 				id in (' . implode(', ', $bcycle['end']) . ')
 		';
 		print_debug($sql);
-		if ($cfg['debug'] != 1)
+		if ($cfg['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 		# remove furture cycles if they were already inserted (safety)
 		foreach ($bcycle['end'] as $k1 => $v1) {
@@ -154,7 +148,8 @@ if (!empty($bcycle['all'])) {
 					id in (' . implode(', ', $a1['cycle_id']) . ')
 			';
 			print_debug($sql);
-			mysql_query($sql) or die(mysql_error());
+			if ($config['write_protect'] != 1) 
+				mysql_query($sql) or die(mysql_error());
 		}
 	}
 }
@@ -202,7 +197,7 @@ if (1) {
 					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
 			;		
 			print_debug($sql);
-			if ($cfg['debug'] != 1)
+			if ($cfg['write_protect'] != 1)
 				mysql_query($sql) or die(mysql_error());
 		}
 		unset($achannel[$k1]);
@@ -220,7 +215,7 @@ if (1) {
 			point_id != 3
 	';
 	print_debug($sql);
-	if ($cfg['debug'] != 1)
+	if ($cfg['write_protect'] != 1)
 		mysql_query($sql) or die(mysql_error());
 }
 unset($achannel);
@@ -325,7 +320,7 @@ foreach ($acycle as $k1 => $v1) {
 						id = ' . (int)$auser[$k2]['previous']['renewal_id']
 				;
 				print_debug($sql);
-				if ($cfg['debug'] != 1)
+				if ($cfg['write_protect'] != 1)
 					mysql_query($sql) or die(mysql_error());
 				if (1) {
 					# set current renewal to present
@@ -338,7 +333,7 @@ foreach ($acycle as $k1 => $v1) {
 							id = ' . (int)$auser[$k2]['current']['renewal_id'] . '
 					';
 					print_debug($sql);
-					if ($cfg['debug'] != 1)
+					if ($cfg['write_protect'] != 1)
 						mysql_query($sql) or die(mysql_error());
 				}
 				# next renewal was already set to future by marked by insert_renewal_next()
