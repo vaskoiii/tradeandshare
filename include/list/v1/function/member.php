@@ -121,6 +121,34 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 		$channel['member_list'][$row['user_id']] = $row['user_id'];
 }
 
+# will run a lot!
+function get_score_count($source_user_id, $destination_user_id, $mark_id, $start, $end) {
+	global $config;
+	# todo allow team specific scores
+	# cycle factored in with se.modified
+	$sql = '
+		select
+			source_user_id,
+			count(se.mark_id) as count
+		FROM
+			' . $config['mysql']['prefix'] . 'score se
+		WHERE
+			se.source_user_id != se.destination_user_id and
+			se.source_user_id = ' . (int)$source_user_id . ' and 
+			se.destination_user_id = ' . (int)$destination_user_id . ' and
+			se.mark_id = ' . (int)$mark_id . ' and
+			se.modified >= ' . to_sql($start) . ' and
+			se.modified < ' . to_sql($end) . ' and
+			se.active = 1
+	';
+	# $kid['source_user_id_score_like_count'][$row['source_user_id']] = 0;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result))
+		return $row['count'];
+	return 0;
+}
+
+
 function get_score_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
 	# precall
 	# - get_channel_cycle_restart_array() || get_specifig_channel_cycle_restart_array ???
@@ -130,37 +158,56 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 	foreach ($channel['member_list'] as $k1 => $v1)
 		$kid['source_user_id_score_count'][$v1] = 0;
 	foreach ($channel['member_list'] as $k1 => $v1) {
-		# todo allow team specific scores
-		# cycle factored in with se.modified
-		$sql = '
-			select
-				source_user_id,
-				count(se.mark_id) as count
-			FROM
-				' . $config['mysql']['prefix'] . 'score se
-			WHERE
-				se.source_user_id != se.destination_user_id and
-				se.source_user_id = ' . (int)$v1 . ' and 
-				se.source_user_id in (' . implode(', ', $channel['member_list']) . ') and
-				se.destination_user_id = ' . (int)($destination_user_id) . ' and
-				se.modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
-				se.modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
-				se.active = 1
-		';
-		# $kid['source_user_id_score_like_count'][$row['source_user_id']] = 0;
-		$result = mysql_query($sql . ' and se.mark_id = 1 ') or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result))
-			if (!empty($row['count'])) {
-				$kid['source_user_id_score_like_count'][$row['source_user_id']] = $row['count'];
-				$kid['source_user_id_score_count'][$row['source_user_id']] += $row['count'];
+		$a1 = array(
+			1 => 1,
+			2 => 2
+		);
+		$a2 = array(
+			0 => array(
+				'start' => $channel['cycle_restart']['yyyy-mm-dd-3x'],
+				'end' => $channel['cycle_restart']['yyyy-mm-dd-2x'],
+			),
+			# get_cycle_last_start($channel_parent_id, $start);
+			# todo diminishing carry 1/2
+			# 1 => array(
+			# ),
+			# todo diminishing carry 1/4
+			# 2 => array(
+			# ),
+			# todo diminishing carry 1/8
+			# 3 => array(
+			# ),
+		);
+
+		# todo factor in diminishing carry
+
+		foreach ($a1 as $k11 => $v11) {
+		foreach ($a2 as $k12 => $v12) {
+			$i1 = 0;
+			if ($k1 != $destination_user_id) {
+				$i1 = get_score_count(
+					$k1,
+					$destination_user_id,
+					$k11,
+					$v12['start'],
+					$v12['end']
+				);
+				# echo '<hr>' . $k1 . ' - ' . $destination_user_id . ' - ' . $k11 . ' - ' . $v12['start'] . ' - ' . $v12['end'] . ' - ' . $i1;
 			}
-		# $kid['source_user_id_score_dislike_count'][$row['source_user_id']] = 0;
-		$result = mysql_query($sql . ' and se.mark_id = 2 ') or die(mysql_error());
-		while ($row = mysql_fetch_assoc($result))
-			if (!empty($row['count'])) {
-				$kid['source_user_id_score_dislike_count'][$row['source_user_id']] = $row['count'];
-				$kid['source_user_id_score_count'][$row['source_user_id']] += $row['count'];
+			if (!empty($i1)) {
+				switch ($k11) {
+					case 1:
+						# $kid['source_user_id_score_like_count'][$v1] = 0;
+						$kid['source_user_id_score_like_count'][$k1] = $i1;
+					break;
+					case 2:
+						# $kid['source_user_id_score_dislike_count'][$v1] = 0;
+						$kid['source_user_id_score_dislike_count'][$k1] = $i1;
+					break;
+				}
+				$kid['source_user_id_score_count'][$k1] += $i1;
 			}
+		} }
 	}
 	foreach ($kid['source_user_id_score_count'] as $k1 => $v1) {
 	if (!empty($v1)) {
@@ -185,6 +232,11 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 	$kis['user_score_count'] = 0;
 	$kis['user_score_like_count'] = 0;
 	$kis['user_score_dislike_count'] = 0;
+	# todo eliminate the extra sql call by using data already calculated in get_score_channel_destination_user_id_array()
+	# ie) foreach ($channel['destination_user_id'] as $k1 => $v1)
+	# add source user scores
+	# add likes
+	# add dislikes
 	$sql = '
 		select
 			count(*) count
@@ -194,6 +246,8 @@ function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, 
 			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
 			source_user_id != destination_user_id and
 			source_user_id = ' . (int)$source_user_id . ' and 
+			modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
+			modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
 			active = 1
 	';
 	$result = mysql_query($sql . ' and mark_id = 1 ') or die(mysql_error());
@@ -272,6 +326,7 @@ function get_renewal_last_start($cycle_id, $user_id, $datetime) {
 function get_cycle_next_start($ccycle_start, $cchannel_offset) {
 	return date('Y-m-d H:i:s', strtotime($ccycle_start) + ($cchannel_offset * 86400));
 }
+
 function get_cycle_last_start($channel_parent_id, $datetime) {
 	global $config;
 	return get_db_single_value('
