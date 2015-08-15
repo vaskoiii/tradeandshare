@@ -36,29 +36,25 @@ function print_debug($s1) {
 	echo "\n<hr>\n<pre>\n$s1\n</pre>\n";
 }
 
-# channel_origin_id is actually a more appropriate name than channel_parent_id
-function get_latest_payout_cycle_id($channel_parent_id) {
-	global $config;
-	$a1 = array();
-	get_channel_cycle_restart_array($a1, $channel_parent_id);
-	return get_db_single_value('
-		cce.id from
-			' . $config['mysql']['prefix'] . 'cycle cce,
-			' . $config['mysql']['prefix'] . 'channel cnl
-		where
-			cce.channel_id = cnl.id and
-			cce.start = ' . to_sql($a1['cycle_restart']['yyyy-mm-dd-3x']) . ' and
-			cnl.parent_id = ' . (int)$channel_parent_id
-	);
+function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
+	get_specific_channel_cycle_restart_array($channel, $channel_parent_id, $cycle_id);
 }
-
-function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id) {
+function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	global $config;
+
+	if (empty($cycle_id)) {
+		# assume most recent cycle from now()
+		$where = ' cce.start <= ' . to_sql(date('Y-m-d H:i:s'));
+	}
+	else {
+		$where = ' cce.id <= ' . (int)$cycle_id;
+	}
 
 	# get cycle_id array
 	$sql = '
 		select
 			cce.id as cycle_id,
+			cce.point_id as cycle_point_id,
 			cce.start as cycle_start
 		from
 			' . $config['mysql']['prefix'] . 'cycle cce,
@@ -66,40 +62,45 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 		where
 			cce.channel_id = cnl.id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
-			cce.id <= ' . (int)$cycle_id . '
+			' . $where . '
 		order by
-			cce.id desc
+			cce.start desc
 		limit
-			3
+			6
 	';
 	$result = mysql_query($sql) or die(mysql_error());
+	# todo fix $i1
+	# member_report needs 0 but payout needs 1?
 	$i1 = 1;
+	$b1 = 1; # dont count cycles that are not connected
 	while ($row = mysql_fetch_assoc($result)) {
 		$i1++;
 		$channel['cycle_restart']['yyyy-mm-dd-' . $i1 . 'x'] = $row['cycle_start'];
+		if ($b1 == 1) {
+			switch ($row['cycle_point_id']) {
+				case '1':
+				case '2':
+				case '4':
+					$channel['cycle_restart_offset'][$i1 - 2] = $row['cycle_start'];
+				break;
+				case '3':
+					$b1 = 2;
+				break;
+			}
+		}
 	}
+	if (!empty($channel['cycle_restart'])) {
+		$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'];
+		$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'];
 
-	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'];
-	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'];
+		# calculate from 2 cycles back to 3 cycles back
+		$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
 
-	# calculate from 2 cycles back to 3 cycles back
-	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
-
-	# can not choose a current or future cycle
-	$dtlast = $channel['cycle_restart']['yyyy-mm-dd-last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
-	if ($dt2 >= $dtlast)
-		die('cycle not ready!');
+		# can not choose a current or future cycle
+		$dtlast = $channel['cycle_restart']['yyyy-mm-dd-last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
+	}
 }
 
-function get_channel_cycle_restart_array(& $channel, $channel_parent_id) {
-	# todo merge with get_specific_channel_cycle_restart_array() - required getting cycle id for $dt2 though
-	$dt1 = $channel['cycle_restart']['yyyy-mm-dd-1x'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
-	$dt2 = $channel['cycle_restart']['yyyy-mm-dd-2x'] = get_cycle_last_start($channel_parent_id, $dt1);
-	$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'] = get_cycle_last_start($channel_parent_id, $dt2);
-	$channel['cycle_restart']['yyyy-mm-dd-4x'] = get_cycle_last_start($channel_parent_id, $dt3);
-	# calculate from 2 cycles back to 3 cycles back
-	$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
-}
 function get_channel_member_list_array(& $channel, $channel_parent_id) {
 	global $config;
 	$sql = '
@@ -148,20 +149,63 @@ function get_score_count($source_user_id, $destination_user_id, $mark_id, $start
 	return 0;
 }
 
-
-function get_score_channel_destination_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
+function initialize_score_channel_user_id_array(& $channel) {
 	# precall
-	# - get_channel_cycle_restart_array() || get_specifig_channel_cycle_restart_array ???
-	# - get_member_list_array() ???
+	# - $channel << get_channel_member_list()
+	# be careful when using the channel alias because sometimes it references channel_list and not a single channel
+
+	# todo enable for all 3 diminishing carry cycles (uncomment)
+	$a1 = array(
+		0 => 0,
+		1 => 1,
+		2 => 2,
+		3 => 3,
+	);
+
+	if (!empty($channel['member_list']))
+	foreach ($channel['member_list'] as $k1 => $v1) {
+		foreach ($channel['member_list'] as $k2 => $v2) {
+			$kid = & $channel['destination_user_id'][$k1];
+			$kid['source_user_id_score_count'][$k2] = 0;
+			# set later but only if non zero result
+			# $kid['source_user_id_score_like_count'][$k2] = 0;
+			# $kid['source_user_id_score_dislike_count'][$k2] = 0;
+			foreach ($a1 as $k3 => $v3) {
+				$kid['score_offset'][$k3]['mark_count'][$k2] = 0;
+			}
+		}
+		$kis = & $channel['source_user_id'][$k1];
+		$kis['user_score_count'] = 0;
+		$kis['user_score_like_count'] = 0;
+		$kis['user_score_dislike_count'] = 0;
+		foreach ($a1 as $k3 => $v3) {
+			$kis['score_offset'][$k3]['mark_count'] = 0;
+			$kis['score_offset'][$k3]['like_count'] = 0;
+			$kis['score_offset'][$k3]['dislike_count'] = 0;
+		}
+	}
+}
+
+function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
+	# precall
+	# - <channel_parent_id>
+	# - get_channel_cycle_restart_array() || get_specifig_channel_cycle_restart_array()
+	# - get_mem_list/score_report/cycle_list/score_report/?channel_parent_id=6&cycle_id=89&5~channel_parent_id=6&4~channel_parent_id=6&4~cycle_id=89&3~channel_parent_id=6&2~channel_parent_id=6&2~cycle_id=89ber_list_array()
+	# - initialize_score_channel_user_id_array()
 	global $config;
 	$kid = & $channel['destination_user_id'][$destination_user_id];
-	foreach ($channel['member_list'] as $k1 => $v1)
-		$kid['source_user_id_score_count'][$v1] = 0;
+
 	foreach ($channel['member_list'] as $k1 => $v1) {
+
+		# reset alias for this loop
+		$kis = & $channel['source_user_id'][$k1];
+
+		# hardcode for mark
 		$a1 = array(
 			1 => 1,
-			2 => 2
+			2 => 2,
 		);
+		# todo make sure get_cycle_last_start() isnt running here
 		$a2 = array(
 			0 => array(
 				'start' => $channel['cycle_restart']['yyyy-mm-dd-3x'],
@@ -169,18 +213,24 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 			),
 			# get_cycle_last_start($channel_parent_id, $start);
 			# todo diminishing carry 1/2
-			# 1 => array(
-			# ),
+			1 => array(
+				'start' => $channel['cycle_restart']['yyyy-mm-dd-4x'],
+				'end' => $channel['cycle_restart']['yyyy-mm-dd-3x'],
+			),
 			# todo diminishing carry 1/4
-			# 2 => array(
-			# ),
+			2 => array(
+				# todo reduce sql queries - get with get_channel_cycle_restart_array() - limit 6 order by date desc (and dont use cycles <= to an end cycle)
+				'start' => get_cycle_last_start($channel_parent_id, $a2[1]['start']), 
+				'end' => $channel['cycle_restart']['yyyy-mm-dd-4x'],
+			),
 			# todo diminishing carry 1/8
-			# 3 => array(
-			# ),
+			3 => array(
+				'start' => get_cycle_last_start($channel_parent_id, $a2[2]['start']),
+				'end' => $a2[2]['start'],
+			),
 		);
 
 		# todo factor in diminishing carry
-
 		foreach ($a1 as $k11 => $v11) {
 		foreach ($a2 as $k12 => $v12) {
 			$i1 = 0;
@@ -197,15 +247,33 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 			if (!empty($i1)) {
 				switch ($k11) {
 					case 1:
+						if ($k12 == 0) {
 						# $kid['source_user_id_score_like_count'][$v1] = 0;
 						$kid['source_user_id_score_like_count'][$k1] = $i1;
+						$kis['user_score_like_count'] += $i1;
+						}
+
+						$kid['score_offset'][$k12]['like_count'][$k1] = $i1;
+						$kis['score_offset'][$k12]['like_count'] += $i1;
 					break;
 					case 2:
+						if ($k12 == 0) {
 						# $kid['source_user_id_score_dislike_count'][$v1] = 0;
 						$kid['source_user_id_score_dislike_count'][$k1] = $i1;
+						$kis['user_score_dislike_count'] += $i1;
+						}
+
+						$kid['score_offset'][$k12]['dislike_count'][$k1] = $i1;
+						$kis['score_offset'][$k12]['dislike_count'] += $i1;
 					break;
 				}
+				if ($k12 == 0) {
 				$kid['source_user_id_score_count'][$k1] += $i1;
+				$kis['user_score_count'] += $i1;
+				}
+
+				$kid['score_offset'][$k12]['mark_count'][$k1] = $i1;
+				$kis['score_offset'][$k12]['mark_count'] += $i1;
 			}
 		} }
 	}
@@ -222,48 +290,6 @@ function get_score_channel_destination_user_id_array(& $channel, $channel_parent
 			$kid['source_user_id_score_count'][$k1]
 		);
 	} }
-}
-
-# not yet a shared function
-function get_score_channel_source_user_id_array(& $channel, $channel_parent_id, $source_user_id) {
-	# precall ???
-	global $config;
-	$kis = & $channel['source_user_id'][$source_user_id];
-	$kis['user_score_count'] = 0;
-	$kis['user_score_like_count'] = 0;
-	$kis['user_score_dislike_count'] = 0;
-	# todo eliminate the extra sql call by using data already calculated in get_score_channel_destination_user_id_array()
-	# ie) foreach ($channel['destination_user_id'] as $k1 => $v1)
-	# add source user scores
-	# add likes
-	# add dislikes
-	$sql = '
-		select
-			count(*) count
-		FROM
-			' . $config['mysql']['prefix'] . 'score
-		WHERE
-			destination_user_id in (' . implode(', ', $channel['member_list']) . ') and
-			source_user_id != destination_user_id and
-			source_user_id = ' . (int)$source_user_id . ' and 
-			modified < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
-			modified >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
-			active = 1
-	';
-	$result = mysql_query($sql . ' and mark_id = 1 ') or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['count']) {
-			$kis['user_score_like_count'] = $row['count'];
-			$kis['user_score_count'] += $row['count'];
-		}
-	}
-	$result = mysql_query($sql . ' and mark_id = 2 ') or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['count']) {
-			$kis['user_score_dislike_count'] = $row['count'];
-			$kis['user_score_count'] += $row['count'];
-		}
-	}
 }
 
 # cycle/renewal
@@ -683,6 +709,31 @@ function get_cycle_previous_array(& $cycle, $channel_parent_id, $datetime) {
 	# placeholder
 	# bundled with get_cycle_current_array()
 }
+
+# todo placeholder
+function get_cycle($inequality, $key, $value) {
+	# metaphor
+	# - current
+	# - previous
+	# - next
+	switch ($shift) {
+		case '<=':
+		case '<':
+		case '>':
+			# todo build query
+		break;
+	}
+	switch ($from) {
+		case 'datetime':
+		case 'cycle_id':
+		case 'renewal_id':
+		break;
+	}
+}
+function get_renewal($shift, $from, $value) {
+	# todo same as get_cycle()
+}
+
 function get_cycle_array(& $cycle, $channel_parent_id, $datetime) {
 	# prerequire
 	# - cycle when channel is created

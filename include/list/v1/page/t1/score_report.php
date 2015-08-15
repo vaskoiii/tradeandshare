@@ -20,6 +20,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: display member scores (doesn't compute all scores)
 
+#alias
+$channel_list = & $data['user_report']['channel_list'];
+
 # todo if this is so useful should be moved to function.php
 function print_key_user_id($k1) {
 	global $config;
@@ -64,14 +67,16 @@ if (!empty($data['user_report']['premature_channel_list'])) { ?>
 	<? print_break_close(); ?>
 	</div><?
 }
-elseif (empty($channel)) { ?>
+elseif (empty($channel_list)) { ?>
 	<div class="content_box">
 		<p>No channel was selected</p>
 	<? print_break_close(); ?>
 	</div><?
 }
 else
-foreach ($channel as $kc1 => $vc1) { ?>
+foreach ($channel_list as $kc1 => $vc1) {
+	# alias
+	$channel = & $channel_list[$kc1]; ?>
 	<div id="channel_<?= (int)$kc1; ?>" class="content_box"><?
 	# todo only show data pertaining to the corresponding cycle
 	$s1  = $vc1['info']['name'];
@@ -116,8 +121,8 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	</dl>
 	<h3>Member List</h3>
 	<p><?
-		if (!empty($channel[$kc1]['member_list'])) {
-			foreach ($channel[$kc1]['member_list'] as $k2 => $v2) {
+		if (!empty($channel['member_list'])) {
+			foreach ($channel['member_list'] as $k2 => $v2) {
 				print_key_user_id($k2);
 				echo '<br />';
 			}
@@ -126,27 +131,27 @@ foreach ($channel as $kc1 => $vc1) { ?>
 			echo 'No Members'; ?> 
 	</p>
 	<p>
-		Total: <?= count($channel[$kc1]['member_list']); ?> 
+		Total: <?= count($channel['member_list']); ?> 
 	</p>
 	<h3>Computation</h3>
 	<dl>
 		<dt>Channel Total</dt>
 		<dd>$<?
 			$d1 = 0;
-			if (!empty($channel[$kc1]['computed_cost']['combined']))
-				$d1 = array_sum($channel[$kc1]['computed_cost']['combined']);
+			if (!empty($channel['computed_cost']['combined']))
+				$d1 = array_sum($channel['computed_cost']['combined']);
 			echo to_html($d1); ?> 
 		</dd>
 		<dt>Host Fee (<?= to_html($config['hostfee_percent']); ?>% of Channel Total)</dt>
 		<dd>$<?= $d2 = .1 * $d1; ?></dd>
-		<dt>Mission Cut (<?= (int)$channel[$kc1]['info']['percent']; ?>% of Remaining Total)</dt>
-		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel[$kc1]['info']['percent'] * .01; ?></dd>
+		<dt>Mission Cut (<?= (int)$channel['info']['percent']; ?>% of Remaining Total)</dt>
+		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?></dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel[$kc1]['weighted_credit']) != 0) { ?> 
+		if (array_sum($channel['weighted_credit']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?=
-				$d3 = ( $d5 ) / array_sum($channel[$kc1]['weighted_credit']) ;
+				$d3 = ( $d5 ) / array_sum($channel['weighted_credit']) ;
 			?></dd><?
 		}
 		else { ?>
@@ -156,26 +161,26 @@ foreach ($channel as $kc1 => $vc1) { ?>
 	</dl>
 	<p>For breakdown please see public score list of members</p>
 	</div><?
-	if (!empty($channel[$kc1]['destination_user_id']))
-	foreach ($channel[$kc1]['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel[$kc1]['destination_user_id'][$kd1]; # alias ?> 
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
 		if (1 || !empty($kid['source_user_id_score_average'])) { ?> 
 				Time in Cycle:
-				<?= $channel[$kc1]['source_user_id'][$kd1]['before']['time_weight'] + $channel[$kc1]['source_user_id'][$kd1]['after']['time_weight']; ?>
+				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
 				Weighted Credit:
-				<?= !empty($channel[$kc1]['weighted_credit'][$kd1]) ? $channel[$kc1]['weighted_credit'][$kd1] : '0'; ?>
+				<?= !empty($channel['weighted_credit'][$kd1]) ? $channel['weighted_credit'][$kd1] : '0'; ?>
 			<br />
 				<strong>Payout</strong>:
-				$<?= round($d3 * $channel[$kc1]['weighted_credit'][$kd1], 2); ?> 
+				$<?= round($d3 * $channel['weighted_credit'][$kd1], 2); ?> 
 			<?
 		} ?> 
 		<dl><?
 			if (!empty($kid['source_user_id_score_average']))
 			foreach($kid['source_user_id_score_average'] as $k1 => $v1) {
-				$kis = & $channel[$kc1]['source_user_id'][$k1];
+				$kis = & $channel['source_user_id'][$k1];
 				$kisb = & $kis['before'];
 				$kisa = & $kis['after'];
 				?>  

@@ -54,10 +54,10 @@ foreach($channel as $k1 => $v1) {
 	get_channel_cycle_restart_array($channel[$k1], $k1);
 
 	# alias
-	$cycle_restart = & $channel[$k1]['cycle_restart'];
+	$cycle_restart_offset = & $channel[$k1]['cycle_restart_offset'];
 
 	# get name and description
-	if (!empty($cycle_restart['yyyy-mm-dd-1x'])) {
+	if (!empty($cycle_restart_offset[0])) {
 		$sql = '
 			select
 				name,
@@ -88,7 +88,7 @@ foreach($channel as $k1 => $v1) {
 #  	
 foreach($channel as $k1 => $v1) {
 	# alias
-	$cycle_restart = & $channel[$k1]['cycle_restart'];
+	$cycle_restart_offset = & $channel[$k1]['cycle_restart_offset'];
 	$info = & $channel[$k1]['info'];
 
 	# get count of current members
@@ -101,7 +101,7 @@ foreach($channel as $k1 => $v1) {
 			where
 				cce.channel_id = cnl.id and
 				cnl.parent_id = ' . (int)$k1 . ' and
-				cce.start = ' . to_sql($cycle_restart['yyyy-mm-dd-1x'])
+				cce.start = ' . to_sql($cycle_restart_offset[0])
 		);
 		# get the number of renewals in that cycle (excluding ending cycles)
 		# cycle_id should already exist because this logic is essentially repeated
