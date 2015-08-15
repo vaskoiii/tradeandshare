@@ -52,12 +52,13 @@ while ($row = mysql_fetch_assoc($result)) {
 foreach($channel as $k1 => $v1) {
 	# current channel name lags behind by 1 cycle
 	get_channel_cycle_restart_array($channel[$k1], $k1);
+	$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset']);
 
 	# alias
-	$cycle_restart_offset = & $channel[$k1]['cycle_restart_offset'];
+	$cycle_offset = & $channel[$k1]['cycle_offset'];
 
 	# get name and description
-	if (!empty($cycle_restart_offset[0])) {
+	if (!empty($cycle_offset[0]['start'])) {
 		$sql = '
 			select
 				name,
@@ -72,12 +73,9 @@ foreach($channel as $k1 => $v1) {
 			limit
 				1 
 		';
-		# removed in favor of counting members unqualified for payout
-		# -- modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
-		# todo adjust score report accordingly
 		$result = mysql_query($sql) or die(mysql_error());
 		while ($row = mysql_fetch_assoc($result))
-			$channel[$k1]['info'] = $row;
+			$channel[$k1]['info'] = array_merge($channel[$k1]['info'], $row);
  	}
 	else {
 		unset($channel[$k1]);
@@ -88,7 +86,7 @@ foreach($channel as $k1 => $v1) {
 #  	
 foreach($channel as $k1 => $v1) {
 	# alias
-	$cycle_restart_offset = & $channel[$k1]['cycle_restart_offset'];
+	$cycle_offset = & $channel[$k1]['cycle_offset'];
 	$info = & $channel[$k1]['info'];
 
 	# get count of current members
@@ -101,7 +99,7 @@ foreach($channel as $k1 => $v1) {
 			where
 				cce.channel_id = cnl.id and
 				cnl.parent_id = ' . (int)$k1 . ' and
-				cce.start = ' . to_sql($cycle_restart_offset[0])
+				cce.start = ' . to_sql($cycle_offset[0]['start'])
 		);
 		# get the number of renewals in that cycle (excluding ending cycles)
 		# cycle_id should already exist because this logic is essentially repeated

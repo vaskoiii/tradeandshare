@@ -61,8 +61,15 @@ function print_key_user_id($k1) {
 # only focus 1 channel to start
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<div class="content_box"><?
-	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) { ?> 
-		<p><?= $key['channel_id']['result'][$k1]['channel_name']; ?> has no members eligible for payout</p><?
+	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) {
+		echo '<pre>'; print_r($data['user_report']['premature_channel_list']['info']); echo '</pre>';
+		$s1 = $key['channel_id']['result'][$v1['info']['channel_parent_id']]['channel_name'];
+		$s1 .= ' : ';
+		$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
+		echo '<h3>' . $s1 . '</h3>'; ?>
+		<p>cycle not ready for payout</p>
+		<? # todo use ffm() ?>
+		<p>please see the <a href="<?= ffm('cycle_id=', 0); ?>">latest cycle for payout</a><?
 	} ?> 
 	<? print_break_close(); ?>
 	</div><?

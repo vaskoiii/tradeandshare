@@ -39,6 +39,15 @@ function print_debug($s1) {
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	get_specific_channel_cycle_restart_array($channel, $channel_parent_id, $cycle_id);
 }
+function get_deprecated_channel_cycle_restart_array($a1, $a3) {
+	# temp solution so that everything doesn't break immediately
+	$a2 = array();
+	foreach ($a1 as $k1 => $v1)
+		$a2['yyyy-mm-dd-' . ($k1 + 2) . 'x'] = $v1['start'];
+	$a2['length_2x_to_3x'] = $a3['length_2x_to_3x'];
+	$a2['yyyy-mm-dd-last'] = $a3['yyyy-mm-dd-last'];
+	return $a2;
+}
 function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	global $config;
 
@@ -81,7 +90,9 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 				case '1':
 				case '2':
 				case '4':
-					$channel['cycle_restart_offset'][$i1 - 2] = $row['cycle_start'];
+					$channel['cycle_offset'][$i1 - 2]['start'] = $row['cycle_start'];
+					$channel['cycle_offset'][$i1 - 2]['id'] = $row['cycle_id'];
+					$channel['cycle_offset'][$i1 - 2]['point_id'] = $row['cycle_point_id'];
 				break;
 				case '3':
 					$b1 = 2;
@@ -95,9 +106,11 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 
 		# calculate from 2 cycles back to 3 cycles back
 		$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
+		$channel['info']['payout_length'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
 
 		# can not choose a current or future cycle
 		$dtlast = $channel['cycle_restart']['yyyy-mm-dd-last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
+		$dtlast = $channel['info']['start_last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
 	}
 }
 
@@ -114,8 +127,8 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 			rnal.cycle_id = cce.id and
 			cnl.id = cce.channel_id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
-			rnal.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
-			rnal.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x'])
+			rnal.start < ' . to_sql($channel['cycle_offset'][0]['start']) . ' and
+			rnal.start >= ' . to_sql($channel['cycle_offset'][1]['start'])
 	;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result))
@@ -195,11 +208,13 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	global $config;
 	$kid = & $channel['destination_user_id'][$destination_user_id];
 
+	$cycle_offset = & $channel['cycle_offset'];
+
 	foreach ($channel['member_list'] as $k1 => $v1) {
 
 		# reset alias for this loop
 		$kis = & $channel['source_user_id'][$k1];
-
+		
 		# hardcode for mark
 		$a1 = array(
 			1 => 1,
@@ -208,25 +223,25 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 		# todo make sure get_cycle_last_start() isnt running here
 		$a2 = array(
 			0 => array(
-				'start' => $channel['cycle_restart']['yyyy-mm-dd-3x'],
-				'end' => $channel['cycle_restart']['yyyy-mm-dd-2x'],
+				'end' => $cycle_offset[0]['start'],
+				'start' => $cycle_offset[1]['start'],
 			),
 			# get_cycle_last_start($channel_parent_id, $start);
 			# todo diminishing carry 1/2
 			1 => array(
-				'start' => $channel['cycle_restart']['yyyy-mm-dd-4x'],
-				'end' => $channel['cycle_restart']['yyyy-mm-dd-3x'],
+				'end' => $cycle_offset[1]['start'],
+				'start' => $cycle_offset[2]['start'],
 			),
 			# todo diminishing carry 1/4
 			2 => array(
 				# todo reduce sql queries - get with get_channel_cycle_restart_array() - limit 6 order by date desc (and dont use cycles <= to an end cycle)
-				'start' => get_cycle_last_start($channel_parent_id, $a2[1]['start']), 
-				'end' => $channel['cycle_restart']['yyyy-mm-dd-4x'],
+				'end' => $cycle_offset[2]['start'],
+				'start' => $cycle_offset[3]['start'],
 			),
 			# todo diminishing carry 1/8
 			3 => array(
-				'start' => get_cycle_last_start($channel_parent_id, $a2[2]['start']),
-				'end' => $a2[2]['start'],
+				'end' => $cycle_offset[3]['start'],
+				'start' => $cycle_offset[4]['start'],
 			),
 		);
 
@@ -272,7 +287,7 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 				$kis['user_score_count'] += $i1;
 				}
 
-				$kid['score_offset'][$k12]['mark_count'][$k1] = $i1;
+				$kid['score_offset'][$k12]['mark_count'][$k1] += $i1;
 				$kis['score_offset'][$k12]['mark_count'] += $i1;
 			}
 		} }
@@ -289,6 +304,26 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 			/
 			$kid['source_user_id_score_count'][$k1]
 		);
+	} }
+	foreach($kid['score_offset'] as $k2 => $v2) {
+	if (!empty($v2)) {
+		foreach($v2['mark_count'] as $k3 => $v3) {
+		if (!empty($v3)) {
+			
+		
+		$kid['score_offset'][$k2]['score_sum'][$k3] = (
+			$v2['like_count'][$k3]
+			-
+			$v2['dislike_count'][$k3]
+		);
+		$kid['score_offset'][$k2]['score_sum'][$k3];
+		$kid['score_offset'][$k2]['score_average'][$k3] = (
+			$kid['score_offset'][$k2]['score_sum'][$k3]
+			/
+			$v2['mark_count'][$k3]
+		);
+
+		}} 
 	} }
 }
 

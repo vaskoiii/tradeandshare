@@ -89,7 +89,7 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 			' . $config['mysql']['prefix'] . 'channel cnl
 		where
 			cce.channel_id = cnl.id and
-			cce.start = ' . to_sql($a1['cycle_restart_offset'][2]) . ' and
+			cce.start = ' . to_sql($a1['cycle_offset'][2]['start']) . ' and
 			cnl.parent_id = ' . (int)$channel_parent_id
 	);
 }
@@ -123,24 +123,32 @@ foreach($channel_list as $k1 => $v1) {
 	$channel = & $data['user_report']['channel_list'][$k1];
 	# convenience for display:
 	add_key('channel', $k1, 'channel_name', $key);
-	if ($_GET['cycle_id'])
+	if ($_GET['cycle_id']) {
 		get_specific_channel_cycle_restart_array($channel, $k1, $_GET['cycle_id']);
+		# temp variable placeholder
+		$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset'], $channel['cycle_restart']);
+	}
 	else {
 		get_channel_cycle_restart_array($channel, $k1, get_latest_payout_cycle_id($k1));
+		# temp variable placeholder
+		$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset'], $channel['cycle_restart']);
 	}
-
-	
-	# todo die if this cycle id is before the latest
-	if ($_GET['cycle_id'])
-		if ($_GET['cycle_id'] > get_latest_payout_cycle_id($k1))
-			die('cycle not ready!');
 
 	# alias
 	$cycle_restart = & $channel['cycle_restart'];
+	$cycle_offset = & $channel['cycle_offset'];
 
-	if (empty($cycle_restart['yyyy-mm-dd-3x'])) {
+	# todo die if this cycle id is before the latest
+	$b1 = 1;
+	if ($_GET['cycle_id'])
+		if ($_GET['cycle_id'] > get_latest_payout_cycle_id($k1))
+			$b1 = 2;
+
+	# if (empty($channel['cycle_offset'][1]['start'])) {
+	if ($b1 == 2) {
 		$data['user_report']['premature_channel_list'][$k1] = $channel;
 		$data['user_report']['premature_channel_list'][$k1] = $channel;
+		$data['user_report']['premature_channel_list'][$k1]['info']['channel_parent_id'] = $k1;
 		unset($channel); # too early to evaluate
 	}
 	else {
@@ -151,13 +159,13 @@ foreach($channel_list as $k1 => $v1) {
 				select
 					cnl.name,
 					cnl.percent,
-					' . (int)$cycle_restart['length_2x_to_3x'] . ' as time,
+					' . (int)$channel['info']['payout_length'] . ' as time,
 					cnl.value as before_cost
 				from
 					' . $config['mysql']['prefix'] . 'channel cnl
 				where
 					cnl.parent_id = ' . (int)$k1 . ' and
-					cnl.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . ' and
+					cnl.modified <= ' . to_sql($cycle_offset[1]['start']) . ' and
 					1
 				order by
 					cnl.modified desc
@@ -166,7 +174,7 @@ foreach($channel_list as $k1 => $v1) {
 			';
 			$result = mysql_query($sql) or die(mysql_error());
 			while ($row = mysql_fetch_assoc($result))
-				$channel['info'] = $row;
+				$channel['info'] = array_merge($channel['info'], $row);
 		}
 		if (1) { # after
 			$channel['info']['after_cost'] = get_db_single_value('
@@ -175,7 +183,7 @@ foreach($channel_list as $k1 => $v1) {
 					' . $config['mysql']['prefix'] . 'channel cnl
 				where
 					cnl.parent_id = ' . (int)$k1 . ' and
-					cnl.modified <= ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . '
+					cnl.modified <= ' . to_sql($cycle_offset[0]['start']) . '
 				order by
 					cnl.modified desc
 			');
@@ -204,6 +212,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 
 	# update alias
 	$cycle_restart = & $channel['cycle_restart'];
+	$cycle_offset = & $channel['cycle_offset'];
 
 	# prepare additional computation arrays
 	if (!empty($vc1['member_list']))
@@ -222,7 +231,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 		# $kd1 = $destination_user_id;
 		get_score_channel_user_id_array($channel, $kc1, $kd1);
 	}
-
 
 	# time with the current membership period?
 
@@ -244,8 +252,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				where
 					rnal.point_id = pt.id and
 					rnal.user_id = ' . (int)$ks1 . ' and
-					rnal.start < ' . to_sql($cycle_restart['yyyy-mm-dd-2x']) . ' and
-					rnal.start >=' . to_sql($cycle_restart['yyyy-mm-dd-3x']) . '
+					rnal.start < ' . to_sql($cycle_offset[0]['start']) . ' and
+					rnal.start >=' . to_sql($cycle_offset[1]['start']) . '
 				order by
 					rnal.start asc
 			';
@@ -265,11 +273,11 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis['before']['time_weight'] = 0;
 					$channel['member_time']['after'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_offset[0]['start'])
 						-
 						strtotime($timeline['start'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['before'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# continue
@@ -279,17 +287,17 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['continue'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-3x'])
+						strtotime($cycle_offset[1]['start'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
 					
 					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_offset[0]['start'])
 						-
 						strtotime($timeline['continue'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['after'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# end and start
@@ -299,16 +307,16 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-3x'])
+						strtotime($cycle_offset[1]['start'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_restart['yyyy-mm-dd-2x'])
+						strtotime($cycle_offset[0]['start'])
 						-
 						strtotime($timeline['start'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['after'][$ks1] = $kis['after']['member_time'];
 				} } }
 				# end
@@ -318,9 +326,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_restart['yyyy-mm-dd-3x'])
+						strtotime($cycle_offest[1]['start'])
 					)/86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $cycle_restart['length_2x_to_3x'];
+					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
 					# there is no after time for the 3 required conditions
 					$kis['after']['member_time'] = 0;
@@ -405,6 +413,40 @@ foreach ($channel_list as $kc1 => $vc1) {
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
+	}
+	### OFFSET compute weighted averages
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias
+
+		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['score_average']))
+		foreach ($vd2['score_average'] as $k1 => $v1) {
+			$kis = & $channel['source_user_id'][$k1]; # alias
+			$kisb = & $kis['before']; # alias
+			$kisa = & $kis['after']; # alias
+			# score counts as long as it is made within the corresponding cycle
+			# score weight is later factored in as a % of membership time under the corresponding cycle
+			$i1t = $kid['score_offset'][$kd2]['mark_count'][$k1];
+			$i2t = $kis['score_offset'][$kd2]['mark_count'];
+			$s111 = $i1t / $i2t;
+			$kid['score_offset'][$kd2]['score_weight'][$k1] =
+				($s111 * $kisb['time_weight'])
+				+
+				($s111 * $kisa['time_weight'])
+			;
+			$il1 = 0;
+			$il2 = 0;
+			if (!empty($vd2['like_count'][$k1]))
+				$il1 = $vd2['like_count'][$k1];
+			if (!empty($vd2['mark_count'][$k1]))
+				$il2 = $vd2['mark_count'][$k1] - $vd2['like_count'][$k1];
+			$kid['score_offset'][$kd2]['score_math'][$k1] = 
+				'( ' . $il1 . ' - ' .  $il2 . ' ) / ' .  $kis['score_offset'][$kd2]['mark_count'] .
+				' = ' .  $vd2['score_average'][$k1] .
+				' | Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
+			;
+		} }
 	}
 	# average_weight_sum && weighted_credit
 	if (!empty($channel['destination_user_id']))
