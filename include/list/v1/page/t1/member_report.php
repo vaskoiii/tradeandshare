@@ -31,11 +31,12 @@ print_keyword_box('member_report', 1); ?>
 <div class="doc_box">
 	<h3>Channel</h3>
 	<dl><?
-		if (!empty($data['member_report']['channel']))
-		foreach($data['member_report']['channel'] as $k1 => $v1) { ?> 
+		if (!empty($data['member_report']['channel'])) {
+		foreach($data['member_report']['channel'] as $k1 => $v1) {
+		if (is_numeric($k1)) { # $k1 = 'cycle_restart' is getting set out of nowhere (on 1 server) ?> 
 			<dt><a href="./score_report/<?= ff('channel_parent_id=' . (int)$k1); ?>"><?= to_html($v1['info']['name']); ?></a> - <?= (int)$data['member_report']['order'][$k1]; ?></dt>
 			<dd><?= to_html($v1['info']['description']); ?></dd><?
-		}
+		} } }
 		else { ?> 
 			<dt>No channels with members were found</dt><?
 		} ?> 
