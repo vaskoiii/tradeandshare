@@ -51,8 +51,10 @@ while ($row = mysql_fetch_assoc($result)) {
 
 foreach($channel as $k1 => $v1) {
 	# current channel name lags behind by 1 cycle
+
 	get_channel_cycle_restart_array($channel[$k1], $k1);
-	$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset']);
+	# temp variable placeholder
+	$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel[$k1]['cycle_offset'], $channel[$k1]['cycle_restart']);
 
 	# alias
 	$cycle_offset = & $channel[$k1]['cycle_offset'];

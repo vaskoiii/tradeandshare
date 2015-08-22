@@ -42,6 +42,7 @@ function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_
 function get_deprecated_channel_cycle_restart_array($a1, $a3) {
 	# temp solution so that everything doesn't break immediately
 	$a2 = array();
+	if (!empty($a1))
 	foreach ($a1 as $k1 => $v1)
 		$a2['yyyy-mm-dd-' . ($k1 + 2) . 'x'] = $v1['start'];
 	$a2['length_2x_to_3x'] = $a3['length_2x_to_3x'];
