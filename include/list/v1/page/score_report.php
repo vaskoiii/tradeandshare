@@ -76,6 +76,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 #                                                                 #
 ###################################################################
 
+# todo number of previous cycles to carry over
+# this is a hardcode =(
+$config['cycle_carry'] = 3;
+# limit set at 8 ie) 2^8 = 512 as a safety but should be less than 3 or less
+
 # todo aahhhhh! get rid of this function in favor of get_cycle() with all the possible parameters
 # todo also there are way to many calls to this function
 # channel_origin_id is actually a more appropriate name than channel_parent_id
@@ -225,12 +230,12 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$channel['source_user_id'][$k1] = array();
 	}
 
-	initialize_score_channel_user_id_array($channel);
+	initialize_score_channel_user_id_array($channel, $config['cycle_carry']);
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		# $kc1 = $channel_parent_id;
 		# $kd1 = $destination_user_id;
-		get_score_channel_user_id_array($channel, $kc1, $kd1);
+		get_score_channel_user_id_array($channel, $kc1, $kd1, $config['cycle_carry']);
 	}
 
 	# time with the current membership period?
@@ -448,6 +453,14 @@ foreach ($channel_list as $kc1 => $vc1) {
 				' | Average: ' .  $vd2['score_average'][$k1] .
 				' | Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
+			$kid['score_offset'][$kd2]['score_weight_math'][$k1] .= 
+				'1/' . pow(2, $kd2) . ' | ' .
+				'This-User Like: ' . $il1 . ' | ' .
+				'This-User Dislike: ' . $il2 . ' | ' .
+				'All-User Score: ' . $kis['score_offset'][$kd2]['mark_count'] . ' | ' .
+				'Average: ' . $kid['score_offset'][$kd2]['score_average'][$k1] . ' | ' .
+				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
+			;
 		} }
 	}
 	# average_weight_sum && weighted_credit
@@ -515,110 +528,81 @@ foreach ($channel_list as $kc1 => $vc1) {
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
-		if (0)
-		foreach ($kid['score_offset'] as $kd2 => $vd2) {
-
-			$cso = & $channel['computed_weight']['score_offset'][$kd2];
-
-
-
-
-			$cso['average_sum'][$kd1] = 0;
-			if (!empty($vd2['score_weight'])) {
-			foreach ($vd2['score_average'] as $k11 => $v11) {
-				$cso['average_sum'][$kd1] += (
-					(
-						(
-							$vd2['score_average'][$k11]
-							+ 1 # (prevent negative scoring)
-						)
-						/ 2
-					)
-					*
-					$vd2['score_weight'][$k11]
-				);
-			} }
-		}
-
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 			$cso = & $channel['computed_weight']['score_offset'][$kd2];
-
 			$cso['dmath'][$kd1] = 0; # oh no!
 			$cso['system_divisor'][$kd1] = 0; # oh no!
 			$cso['nmath'][$kd1] = 0;
 			$cso['average_weight_sum'][$kd1] = 0;
-
-			# $cso['nmath'][$kd1] = array();
-			# $cso['average_weight_sum'][$kd1] = 0;
 			if (!empty($vd2['score_weight'])) {
-			foreach ($vd2['score_average'] as $k11 => $v11) {
-				$cso['nmath'][$kd1] .= ' += ( ( ( ' . $vd2['score_average'][$k11] . ' + 1) / 2) * ' .  $vd2['score_weight'][$k11] . ') '; 
-				$cso['average_weight_sum'][$kd1] += (
-					(
+				foreach ($vd2['score_average'] as $k11 => $v11) {
+					$cso['nmath'][$kd1] .= ' += ( ( ( ' . $vd2['score_average'][$k11] . ' + 1) / 2) * ' .  $vd2['score_weight'][$k11] . ') '; 
+					$cso['average_weight_sum'][$kd1] += (
 						(
-							$vd2['score_average'][$k11]
-							+
-							1 # (prevent negative scoring)
+							(
+								$vd2['score_average'][$k11]
+								+
+								1 # (prevent negative scoring)
+							)
+							/
+							2
 						)
-						/
-						2
-					)
-					*
-					$vd2['score_weight'][$k11]
-				); 
-				$cso['dmath'][$kd1] .= ' += ' . $vd2['score_weight'][$k11];
-				$cso['system_divisor'][$kd1] += (
-					$vd2['score_weight'][$k11]
-				);
+						*
+						$vd2['score_weight'][$k11]
+					); 
+					$cso['dmath'][$kd1] .= ' += ' . $vd2['score_weight'][$k11];
+					$cso['system_divisor'][$kd1] += (
+						$vd2['score_weight'][$k11]
+					);
+				}
 			}
-			# system score (reinforce user scores)
-			$cso['nmath'][$kd1] .= '| system += ( ( ' .  $cso['average_weight_sum'][$kd1] . ' / ' .  $cso['system_divisor'][$kd1] . ') * 1 )';
-			$cso['average_weight_sum'][$kd1] += (
+			$cso['weighted_credit_math'][$kd1] = '(' .
 				$cso['average_weight_sum'][$kd1]
-				/
-				$cso['system_divisor'][$kd1]
+			. ')'
+			. '* ( ' .
+				$channel['source_user_id'][$kd1]['before']['time_weight'] . ' + ' . 
+				$channel['source_user_id'][$kd1]['after']['time_weight']
+			. ')';
+			$cso['weighted_credit'][$kd1] = (
+				$cso['average_weight_sum'][$kd1]
+			)
+			* (
+				$channel['source_user_id'][$kd1]['before']['time_weight'] +
+				$channel['source_user_id'][$kd1]['after']['time_weight']
 			);
+		}
+	}
+	# OFSSET final computation on scores
+	if (!empty($channel['member_list']))
+	foreach ($channel['member_list'] as $k1 => $v1) {
+		$channel['computed_weight']['carry_sum']['dmath'][$k1] = '';
+		$channel['computed_weight']['carry_sum']['system_divisor'][$k1] = 0;
+		$channel['computed_weight']['carry_sum']['nmath'][$k1] = '';
+		$channel['computed_weight']['carry_sum']['average_weight_sum'][$k1] = 0;
+		$carry_sum = & $channel['computed_weight']['carry_sum'];
+		foreach ($channel['computed_weight']['score_offset'] as $k2 => $v2) {
+			$carry_sum['average_weight_sum'][$k1] += $v2['average_weight_sum'][$k1] / pow(2, $k2);
+			$carry_sum['system_divisor'][$k1] += $v2['system_divisor'][$k1] / pow(2, $k2);
+			$carry_sum['dmath'][$k1] .=  ' + ' . $v2['system_divisor'][$k1] / pow(2, $k2);
+			$carry_sum['nmath'][$k1] .=  ' + ' . $v2['average_weight_sum'][$k1] / pow(2, $k2);
+		}
+		# system score (reinforce user scores)
+		if (!empty($carry_sum['average_weight_sum'][$k1])) {
+		 	$carry_sum['nmath'][$k1] .= ' | system += ( ( ' .  $carry_sum['average_weight_sum'][$k1] . ' / ' .  $carry_sum['system_divisor'][$k1] . ') * 1 )';
+		 	$carry_sum['dmath'][$k1] .= ' | system += ( ( ' .  $carry_sum['average_weight_sum'][$k1] . ' / ' .  $carry_sum['system_divisor'][$k1] . ') * 1 )';
+		 	$carry_sum['average_weight_sum'][$k1] += (
+		 		$carry_sum['average_weight_sum'][$k1]
+		 		/
+		 		$carry_sum['system_divisor'][$k1]
+		 	);
 		}
 		else {
 			# system score (assume half credit)
-			$cso['nmath'][$kd1] = '| system: += ( ( .5 / 1 ) * 1 )';
-			$cso['average_weight_sum'][$kd1] = .5;
+			$carry_sum['nmath'][$k1] .= ' | system: += ( ( .5 / 1 ) * 1 )';
+			$carry_sum['average_weight_sum'][$k1] = .5;
 			# placeholders for readability on debugging
-			$cso['dmath'][$kd1] = '0 += 1 ';
-			$cso['system_divisor'][$kd1] = 1;
-		}
-		# $channel['average_weight_sum_denominator'] no longer needed
-		$cso['weighted_credit_math'][$kd1] = '(' .
-			$cso['average_weight_sum'][$kd1]
-		. ')'
-		. '* ( ' .
-			$channel['source_user_id'][$kd1]['before']['time_weight'] . ' + ' . 
-			$channel['source_user_id'][$kd1]['after']['time_weight']
-		. ')';
-		$cso['weighted_credit'][$kd1] = (
-			$cso['average_weight_sum'][$kd1]
-		)
-		* (
-			$channel['source_user_id'][$kd1]['before']['time_weight'] +
-			$channel['source_user_id'][$kd1]['after']['time_weight']
-		);
-	}
-
-
-	}
-	# OFSSET final computation on scores
-	if  (0)
-	if (!empty($channel['member_list']))
-	foreach ($channel['member_list'] as $k1 => $v1) {
-		# todo initialize
-		$channel['computed_weight']['carry_sum'][$k1] = 0;
-		$carry_sum = & $channel['computed_weight']['carry_sum'][$k1];
-		foreach ($channel['computed_weight']['score_offset'] as $k2 => $v2) {
-			$carry_sum += $v2['average_sum'][$k1] / pow(2, $k2);
+			$carry_sum['dmath'][$k1] = ' + 0 + 0 + 0 + 0 | system: += 1 ';
+			$carry_sum['system_divisor'][$k1] = 1;
 		}
 	}
-
-	# todo add in system rating
-	# looking back things seem to work out right but the math is hard to follow
-
 }

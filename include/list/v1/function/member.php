@@ -163,18 +163,15 @@ function get_score_count($source_user_id, $destination_user_id, $mark_id, $start
 	return 0;
 }
 
-function initialize_score_channel_user_id_array(& $channel) {
+function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 	# precall
 	# - $channel << get_channel_member_list()
 	# be careful when using the channel alias because sometimes it references channel_list and not a single channel
 
-	# todo enable for all 3 diminishing carry cycles (uncomment)
-	$a1 = array(
-		0 => 0,
-		1 => 1,
-		2 => 2,
-		3 => 3,
-	);
+	$a1 = array();
+	for ($i1 = 0; $i1 <= $cycle_carry && $i1 <= 8; $i1++) {
+		$a1[$i1] = $i1;
+	}
 
 	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {
@@ -200,52 +197,30 @@ function initialize_score_channel_user_id_array(& $channel) {
 	}
 }
 
-function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destination_user_id) {
+function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destination_user_id, $cycle_carry = 3) {
 	# precall
 	# - <channel_parent_id>
 	# - get_channel_cycle_restart_array() || get_specifig_channel_cycle_restart_array()
-	# - get_mem_list/score_report/cycle_list/score_report/?channel_parent_id=6&cycle_id=89&5~channel_parent_id=6&4~channel_parent_id=6&4~cycle_id=89&3~channel_parent_id=6&2~channel_parent_id=6&2~cycle_id=89ber_list_array()
 	# - initialize_score_channel_user_id_array()
 	global $config;
 	$kid = & $channel['destination_user_id'][$destination_user_id];
-
 	$cycle_offset = & $channel['cycle_offset'];
-
+	# hardcode for mark
+	$a1 = array(
+		1 => 1,
+		2 => 2,
+	);
+	# todo make sure get_cycle_last_start() isnt running here
+	$a2 = array();
+	for ($i1 = 0; $i1 <= $cycle_carry && $i1 <= 8; $i1++) {
+		$a2[$i1] = array(
+			'end' => $cycle_offset[$i1]['start'],
+			'start' => $cycle_offset[$i1+1]['start'],
+		);
+	}
 	foreach ($channel['member_list'] as $k1 => $v1) {
-
 		# reset alias for this loop
 		$kis = & $channel['source_user_id'][$k1];
-		
-		# hardcode for mark
-		$a1 = array(
-			1 => 1,
-			2 => 2,
-		);
-		# todo make sure get_cycle_last_start() isnt running here
-		$a2 = array(
-			0 => array(
-				'end' => $cycle_offset[0]['start'],
-				'start' => $cycle_offset[1]['start'],
-			),
-			# get_cycle_last_start($channel_parent_id, $start);
-			# todo diminishing carry 1/2
-			1 => array(
-				'end' => $cycle_offset[1]['start'],
-				'start' => $cycle_offset[2]['start'],
-			),
-			# todo diminishing carry 1/4
-			2 => array(
-				# todo reduce sql queries - get with get_channel_cycle_restart_array() - limit 6 order by date desc (and dont use cycles <= to an end cycle)
-				'end' => $cycle_offset[2]['start'],
-				'start' => $cycle_offset[3]['start'],
-			),
-			# todo diminishing carry 1/8
-			3 => array(
-				'end' => $cycle_offset[3]['start'],
-				'start' => $cycle_offset[4]['start'],
-			),
-		);
-
 		# todo factor in diminishing carry
 		foreach ($a1 as $k11 => $v11) {
 		foreach ($a2 as $k12 => $v12) {
@@ -258,7 +233,6 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 					$v12['start'],
 					$v12['end']
 				);
-				# echo '<hr>' . $k1 . ' - ' . $destination_user_id . ' - ' . $k11 . ' - ' . $v12['start'] . ' - ' . $v12['end'] . ' - ' . $i1;
 			}
 			if (!empty($i1)) {
 				switch ($k11) {
@@ -287,7 +261,6 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 				$kid['source_user_id_score_count'][$k1] += $i1;
 				$kis['user_score_count'] += $i1;
 				}
-
 				$kid['score_offset'][$k12]['mark_count'][$k1] += $i1;
 				$kis['score_offset'][$k12]['mark_count'] += $i1;
 			}
@@ -310,21 +283,18 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	if (!empty($v2)) {
 		foreach($v2['mark_count'] as $k3 => $v3) {
 		if (!empty($v3)) {
-			
-		
-		$kid['score_offset'][$k2]['score_sum'][$k3] = (
-			$v2['like_count'][$k3]
-			-
-			$v2['dislike_count'][$k3]
-		);
-		$kid['score_offset'][$k2]['score_sum'][$k3];
-		$kid['score_offset'][$k2]['score_average'][$k3] = (
-			$kid['score_offset'][$k2]['score_sum'][$k3]
-			/
-			$v2['mark_count'][$k3]
-		);
-
-		}} 
+			$kid['score_offset'][$k2]['score_sum'][$k3] = (
+				$v2['like_count'][$k3]
+				-
+				$v2['dislike_count'][$k3]
+			);
+			$kid['score_offset'][$k2]['score_sum'][$k3];
+			$kid['score_offset'][$k2]['score_average'][$k3] = (
+				$kid['score_offset'][$k2]['score_sum'][$k3]
+				/
+				$v2['mark_count'][$k3]
+			);
+		} }
 	} }
 }
 

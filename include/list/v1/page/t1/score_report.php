@@ -85,26 +85,22 @@ foreach ($channel_list as $kc1 => $vc1) {
 	# alias
 	$channel = & $channel_list[$kc1]; ?>
 	<div id="channel_<?= (int)$kc1; ?>" class="content_box"><?
-	# todo only show data pertaining to the corresponding cycle
 	$s1  = $vc1['info']['name'];
 	$s1 .= ' : ';
 	$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
-	$s1 .= ($vc1['info']['cycle_id'] == $vc1['info']['latest_payout_cycle_id'] ? ' : latest' : '');
+	if (isset($vc1['info']['cycle_id']))
+		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
 	echo '<h3>' . $s1 . '</h3>'; ?>
-
-	<?  # timeline wanted? ie) get_next_cycle_id() and get_previous_cycle_id() ?>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
-	<p>todo: Show active members that are not currently eligible for payout</p>
-	<p>todo: Use a diminishing score to help normalize scores.</p>
-	<p>todo: Factor in the carried over score.</p>
-	<hr />
 	<dl>
-		<dt>If all users in a channel score only a single user with the same score the current expression is:</dt>
+		<dt>If all users in a channel score only a single user in a single cycle with the same score the current expression is:</dt>
 		<dd>score(number_of_users + 1)</dd>
+		<dt>Previous cycle scores may be carried over with a diminishing weight of:</dt>
+		<dd> 1 / (2^previous_cycle_offset)</dd>
 	</dl>
 	<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
 	<hr />
@@ -125,6 +121,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 			<dt>Cycle Start</dt>
 				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-3x']; ?></dd><?
 		} ?> 
+		<dt>Cycle Carry</dt>
+			<dd><?= $config['cycle_carry']; ?></dd>
 	</dl>
 	<h3>Member List</h3>
 	<p><?
@@ -155,10 +153,10 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?></dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel['weighted_credit']) != 0) { ?> 
+		if (array_sum($channel['computed_weight']['carry_sum']['average_weight_sum']) != 0) { ?> 
 			<dt>Multiplier</dt>
-			<dd><?=
-				$d3 = ( $d5 ) / array_sum($channel['weighted_credit']) ;
+			<dd><?= 
+				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['carry_sum']['average_weight_sum']);
 			?></dd><?
 		}
 		else { ?>
@@ -173,30 +171,39 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
-		if (1 || !empty($kid['source_user_id_score_average'])) { ?> 
+		if (1) { ?> 
 				Time in Cycle:
 				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
-				Weighted Credit:
-				<?= !empty($channel['weighted_credit'][$kd1]) ? $channel['weighted_credit'][$kd1] : '0'; ?>
+				Weighted Credit:<?
+					$d1 = $channel['computed_weight']['carry_sum']['average_weight_sum'][$kd1];
+					echo !empty($d1) ? $d1 : '0';
+				?> 
 			<br />
 				<strong>Payout</strong>:
-				$<?= round($d3 * $channel['weighted_credit'][$kd1], 2); ?> 
-			<?
+				$<?= round($d3 * $channel['computed_weight']['carry_sum']['average_weight_sum'][$kd1], 2); ?><?
 		} ?> 
 		<dl><?
-			if (!empty($kid['source_user_id_score_average']))
-			foreach($kid['source_user_id_score_average'] as $k1 => $v1) {
-				$kis = & $channel['source_user_id'][$k1];
-				$kisb = & $kis['before'];
-				$kisa = & $kis['after'];
-				?>  
-				<dt><?
-					print_key_user_id($k1); ?> 
-				</dt>
-				<dd>
-					<?= $kid['source_user_id_score_weight_math_before'][$k1]; ?>
-				</dd><?
+			if (!empty($kid['score_offset'])) {
+			foreach($kid['score_offset'] as $k0 => $v0)
+				if (!empty($v0['score_average']))
+				foreach($v0['score_average'] as $k1 => $v1) {
+					$kis = & $channel['source_user_id'][$k1];
+					$kisb = & $kis['before'];
+					$kisa = & $kis['after'];
+					?>  
+					<dt><?
+						print_key_user_id($k1); ?> 
+					</dt>
+					<dd><?
+						for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
+							$s1 = $kid['score_offset'][$i1]['score_weight_math'][$k1];
+							if (!empty($s1)) { ?> 
+								<?= $s1; ?><br /><?
+							}
+						} ?> 
+					</dd><?
+				}
 			}
 			else
 				echo 'No scores'; ?> 
