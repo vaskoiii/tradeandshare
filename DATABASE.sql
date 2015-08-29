@@ -3086,3 +3086,5 @@ delete from ts_page where name like 'renewage%';
 update ts_page set launch = 1 where name like 'renew%';
 
 update ts_page set monitor = 1 where name like 'renewal_list';
+
+insert into ts_element set name='channel_parent_id';

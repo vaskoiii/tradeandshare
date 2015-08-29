@@ -104,7 +104,6 @@ function start_engine( & $base, $type, $login_user_id, $uid_array = array(), $lo
 	else
 		$sql = get_engine_result_listing_sql($base);
 
-
 	$base['result']['listing'] = array();
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result))
@@ -124,7 +123,6 @@ function get_engine_result_listing_sql(& $base, $limit = false, $load = false) {
 	$where_x = & $base['search']['where_x'];
 	$group_by = & $base['search']['group_by'];
 	$order_by = & $base['search']['order_by'];
-
 
 	if ($limit)
 		$limit = (int)$limit;
@@ -214,6 +212,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 	$where = & $base['search']['where'];
 	$where_x = & $base['search']['where_x'];
 	$group_by = & $base['search']['group_by'];
+	$order_by = & $base['search']['order_by'];
 
 	$prefix = $config['mysql']['prefix'];
 
@@ -704,6 +703,8 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 				)';
 		break;
 		case 'cycle': # log
+			$order_by[] = 't1.modified desc';
+			$order_by[] = 't1.id desc';
 			$select[] = 't1.id AS cycle_id';
 			$select[] = 't1.modified';
 			$select[] = 'cnl.parent_id as channel_parent_id';
@@ -735,9 +736,10 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 				)';
 			if (isset_gp('channel_parent_id'))
 				$where_x[] = 'cnl.parent_id = ' . (int)get_gp('channel_parent_id');
-				
 		break;
 		case 'renewal': # log
+			$order_by[] = 't1.modified desc';
+			$order_by[] = 't1.id desc';
 			$select[] = 't1.id AS renewal_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 't1.cycle_id';

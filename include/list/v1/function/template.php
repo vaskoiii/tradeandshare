@@ -193,7 +193,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 	}
 	else switch($v1) {
 		case 'channel_parent_id':
-			$grab .= '#' . to_html($listing[$v1]);
+			$grab .= tt('element', 'channel_parent_id') . ': ' . to_html($listing[$v1]);
 		break;
 		case 'carry_value':
 		case 'score_value': # may need to format to 2 decimal places

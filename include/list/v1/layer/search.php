@@ -31,6 +31,7 @@ add_translation('element', 'add_more');
 add_translation('element', 'add_note');
 add_translation('element', 'asearch_off');
 add_translation('element', 'asearch_on');
+add_translation('element', 'channel_parent_id'); # only used on channel page?
 add_translation('element', 'edit');
 add_translation('element', 'error');
 add_translation('element', 'extra');

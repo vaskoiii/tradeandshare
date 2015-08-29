@@ -376,14 +376,14 @@ function get_mask_subject($type, $display) {
 			$array = array(
 				$type . '_name' => $type . '_name',
 				'channel_name_spacer' => '_',
-				'channel_parent_id' => 'channel_parent_id',
-				'channel_parent_id_spacer' => '_',
 				'channel_offset' => 'channel_offset',
 				'channel_offset_spacer' => '_',
 				'channel_value' => 'channel_value',
 				'channel_value_spacer' => '_',
 				'channel_percent' => 'channel_percent',
 				'channel_percent_spacer' => '_',
+				'channel_parent_id' => 'channel_parent_id',
+				'channel_parent_id_spacer' => '_',
 				'timeframe_name' => 'timeframe_name',
 			);
 		break;
