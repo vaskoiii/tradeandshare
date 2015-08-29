@@ -74,7 +74,7 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			' . $where . '
 		order by
-			cce.start desc
+			cce.id desc
 		limit
 			6
 	';
@@ -339,22 +339,6 @@ function get_day_difference($dt1, $dt2) {
 function get_datetime_add_day($dt1, $offset) {
 	return date('Y-m-d H:i:s', strtotime($dt1) + (86400 * $offset));
 }
-# unused function but wondering if it may simplify logic
-function get_renewal_last_start($cycle_id, $user_id, $datetime) {
-	global $config;
-	return get_db_single_value('
-		rnal.start from
-			' . $config['mysql']['prefix'] . 'cycle cce,
-			' . $config['mysql']['prefix'] . 'renewal rnal
-		where
-			cce.id = rnal.cycle_id and
-			rnal.user_id = ' . (int)$user_id . ' and
-			cce.start < ' . to_sql($datetime) . ' and
-			active = 1
-		order by
-			rnal.start desc
-	');
-}
 function get_cycle_next_start($ccycle_start, $cchannel_offset) {
 	return date('Y-m-d H:i:s', strtotime($ccycle_start) + ($cchannel_offset * 86400));
 }
@@ -472,7 +456,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 						cce.active = 1 and
 						cnl.active = 1
 					order by
-						rnal.start desc
+						rnal.id desc
 					limit
 						1
 				';
@@ -571,7 +555,7 @@ function get_channel_data(& $cycle, $channel_parent_id, $period, $datetime) {
 			modified <= ' . to_sql($s1) . ' and 
 			parent_id = ' . (int)$channel_parent_id . '
 		order by
-			modified desc
+			id desc
 		limit
 			1
 	';
@@ -686,7 +670,7 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 			cce.active = 1 and
 			cnl.active = 1
 		order by
-			cce.start desc
+			cce.id desc
 		limit
 			2
 	';
@@ -767,7 +751,7 @@ function is_cycle_start($channel_parent_id) {
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			cce.point_id != 3
 		order by
-			cce.start desc
+			cce.id desc
 	',0);
 	switch($i1) {
 		case '1': # should not happen
@@ -822,7 +806,7 @@ function insert_cycle_start($channel_parent_id) {
 			cce.channel_id = cnl.id and
 			cce.point_id = 3
 		order by
-			cce.start desc
+			cce.id desc
 	');
 	if (!empty($i2)) {
 		$sql = '

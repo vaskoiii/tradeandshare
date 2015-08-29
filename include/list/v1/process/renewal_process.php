@@ -117,7 +117,7 @@ if (empty($first_cycle)) {
 		update
 			' . $prefix . 'renewal
 		set
-			timeframe_id = 1
+			timeframe_id = 1,
 			point_id = ' . (int)$lookup['point_id'] . ',
 			timeframe_id = 3,
 			modified = now()
@@ -127,20 +127,6 @@ if (empty($first_cycle)) {
 	if ($config['debug'] == 1)
 		echo '<hr>' . $sql;
 	mysql_query($sql) or die(mysql_error());
-	if (0) {
-	$sql = '
-		insert into
-			' . $prefix . 'renewage
-		set
-			point_id = ' . (int)$lookup['point_id'] . ',
-			renewal_id = ' . (int)$nrenewal['renewal_id'] . ',
-			timeframe_id = 3,
-			modified = now()
-	';
-	if ($config['debug'] == 1)
-		echo '<hr>' . $sql;
-	mysql_query($sql) or die(mysql_error());
-	}
 }
 # continuing memberships will be processed by cron
 
