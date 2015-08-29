@@ -492,6 +492,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 		break;
 		case 'channel':
 			$select[] = 't1.id as channel_id';
+			$select[] = 't1.parent_id as channel_parent_id';
 			$select[] = 't1.user_id as user_id';
 			$select[] = 't1.name as channel_name';
 			$select[] = 't1.description as channel_description';

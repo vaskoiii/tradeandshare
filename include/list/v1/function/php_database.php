@@ -324,7 +324,7 @@ function get_mask_subject($type, $display) {
 		case 'membership':
 			$array = array(
 				'channel_name' => 'channel_name',
-				'channel_spacer' => '_',
+				'channel_name_spacer' => '_',
 				'remaining_time' => 'remaining_time', # actually min time/max time (calculated value)
 			);
 		break;
@@ -376,6 +376,8 @@ function get_mask_subject($type, $display) {
 			$array = array(
 				$type . '_name' => $type . '_name',
 				'channel_name_spacer' => '_',
+				'channel_parent_id' => 'channel_parent_id',
+				'channel_parent_id_spacer' => '_',
 				'channel_offset' => 'channel_offset',
 				'channel_offset_spacer' => '_',
 				'channel_value' => 'channel_value',
