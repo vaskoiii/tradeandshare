@@ -765,6 +765,7 @@ function is_cycle_start($channel_parent_id) {
 		where
 			cnl.id = cce.channel_id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.point_id != 3
 		order by
 			cce.start desc
 	',0);
