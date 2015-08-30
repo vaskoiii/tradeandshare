@@ -463,6 +463,55 @@ foreach ($channel_list as $kc1 => $vc1) {
 			;
 		} }
 	}
+	###### todo start
+	if (1) {
+	# todo get the 100% max total with the carry
+
+	# ie) handcrafted computations for example
+	# 1/2 | This-User Like: 1 | This-User Dislike: 0 | All-User Score: 2 | Average: 1
+	# 1/8 | This-User Like: 1 | This-User Dislike: 1 | All-User Score: 3 | Average: 0
+
+	# handcrafted math:
+	# 1/2 + 1/8 = 5/8 this_score_max ( -5/8 this_score_min )
+	# 1/2 + 1/8 = 5/8 this_user_like
+	# 0/2 + 1/8 = 1/8 all this user dislike (confusing be cause not used in math actually)
+	# 2/2 + 3/8 = 11/8 all_user_score
+	# 1/2 + 0/8 = 4/8 aggregate_average
+
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias
+
+			# set placeholders
+			$kid['aggregate']['this_mark_count'] = 'todo'; # todo
+			$kid['aggregate']['this_like_count'] = 'todo';
+			$kid['aggregate']['this_dislike_count'] = 'todo'; # may not be needed
+			$kid['aggregate']['this_score_average'] = 'todo';
+	}
+
+	if (!empty($channel['source_user_id']))
+	foreach ($channel['source_user_id'] as $kd1 => $vd1) {
+		$kis = & $channel['source_user_id'][$kd1]; # alias
+		$kis['aggregate']['all_mark_count'] = 0; # todo done!
+
+		if (0) {
+			echo '<hr>';
+			echo $kd1;
+			echo '<pre>'; print_r($kis['score_offset']); echo '</pre>';
+		}
+		foreach ($kis['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['mark_count'])) {
+			if (0) { 
+				echo '<br>' . (int)$kis['aggregate']['all_mark_count']; 
+				echo ' += ' . $vd2['mark_count'] . ' / ' . pow(2, $kd2) . ' = ';
+				echo $vd2['mark_count'] / pow(2, $kd2);
+			}
+			$kis['aggregate']['all_mark_count'] += $vd2['mark_count'] / pow(2, $kd2);
+		} }
+	}
+	}
+	###### /todo end
+
 	# average_weight_sum && weighted_credit
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
