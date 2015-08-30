@@ -479,6 +479,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 	# 2/2 + 3/8 = 11/8 all_user_score
 	# 1/2 + 0/8 = 4/8 aggregate_average
 
+	# todo account for multiple users only for 1 user here
+
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
@@ -650,6 +652,10 @@ foreach ($channel_list as $kc1 => $vc1) {
 			);
 		}
 	}
+	# AGGREGATE OFFSET average_weight_sum && weighted_credit
+	# todo start
+	# 
+	# todo end
 	# OFSSET final computation on scores
 	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {

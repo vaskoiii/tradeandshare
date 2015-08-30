@@ -90,6 +90,13 @@ foreach ($channel_list as $kc1 => $vc1) {
 	$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
 	if (isset($vc1['info']['cycle_id']))
 		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
+	?>
+	<div class="notice" style="margin: 0px -18px; margin-top: -10px; margin-bottom: 10px;">
+		<p>Scores are not yet calculated correctly!</p>
+		<p>Users should only have max scoring power of 100% but under the current logic with a cycle carry of 3 users have potential scoring power of 100% + 50% + 25% + 12.5% = 175%</p>
+	</div>
+	<?
+
 	echo '<h3>' . $s1 . '</h3>'; ?>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
