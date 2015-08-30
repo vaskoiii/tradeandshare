@@ -186,11 +186,16 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dl><?
 			if (!empty($kid['score_offset'])) {
 			foreach($kid['score_offset'] as $k0 => $v0)
+				$b1 = 2;
 				if (!empty($v0['score_average']))
 				foreach($v0['score_average'] as $k1 => $v1) {
 					$kis = & $channel['source_user_id'][$k1];
 					$kisb = & $kis['before'];
 					$kisa = & $kis['after'];
+
+					$b1 = 1;
+				}
+				if ($b1 == 1) {
 					?>  
 					<dt><?
 						print_key_user_id($k1); ?> 
@@ -204,9 +209,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 						} ?> 
 					</dd><?
 				}
-			}
-			else
-				echo 'No scores'; ?> 
+				else
+					echo 'No scores';
+			} ?>
 		</dl><?
 	}
 	print_break_close(); ?>
