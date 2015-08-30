@@ -466,6 +466,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	###### todo start
 	if (1) {
 	# todo get the 100% max total with the carry
+	# ie. with a cycle carry of 3 ( not the 100% + 50% + 25% + 12.5% = 175% )
 
 	# ie) handcrafted computations for example
 	# 1/2 | This-User Like: 1 | This-User Dislike: 0 | All-User Score: 2 | Average: 1
@@ -482,11 +483,38 @@ foreach ($channel_list as $kc1 => $vc1) {
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
 
-			# set placeholders
-			$kid['aggregate']['this_mark_count'] = 'todo'; # todo
-			$kid['aggregate']['this_like_count'] = 'todo';
-			$kid['aggregate']['this_dislike_count'] = 'todo'; # may not be needed
-			$kid['aggregate']['this_score_average'] = 'todo';
+		# set placeholders
+		$kid['aggregate']['this_mark_count'] = array();
+		$kid['aggregate']['this_like_count'] = array();
+		$kid['aggregate']['this_dislike_count'] = array();
+		$kid['aggregate']['this_score_average'] = array();
+
+		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		foreach ($vd2['mark_count'] as $kd3 => $vd3) {
+		if (!empty($vd3)) {
+			$kid['aggregate']['this_mark_count'][$kd3] += $vd3 / pow(2, $kd2);
+		} } }
+
+		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['like_count'])) {
+		foreach ($vd2['like_count'] as $kd3 => $vd3) {
+		if (!empty($vd3)) {
+			$kid['aggregate']['this_like_count'][$kd3] += $vd3 / pow(2, $kd2);
+		} } } }
+
+		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['dislike_count'])) {
+		foreach ($vd2['dislike_count'] as $kd3 => $vd3) {
+		if (!empty($vd3)) {
+			$kid['aggregate']['this_dislike_count'][$kd3] += $vd3 / pow(2, $kd2);
+		} } } }
+
+		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['score_average'])) {
+		foreach ($vd2['score_average'] as $kd3 => $vd3) {
+		if (!empty($vd3)) {
+			$kid['aggregate']['this_score_average'][$kd3] += $vd3 / pow(2, $kd2);
+		} } } }
 	}
 
 	if (!empty($channel['source_user_id']))
@@ -499,6 +527,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 			echo $kd1;
 			echo '<pre>'; print_r($kis['score_offset']); echo '</pre>';
 		}
+
 		foreach ($kis['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['mark_count'])) {
 			if (0) { 
