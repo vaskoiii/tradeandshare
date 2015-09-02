@@ -90,13 +90,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 	$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
 	if (isset($vc1['info']['cycle_id']))
 		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
-	?>
-	<div class="notice" style="margin: 0px -18px; margin-top: -10px; margin-bottom: 10px;">
-		<p>Scores are not yet calculated correctly!</p>
-		<p>Users should only have max scoring power of 100% but under the current logic with a cycle carry of 3 users have potential scoring power of 100% + 50% + 25% + 12.5% = 175%</p>
-	</div>
-	<?
-
 	echo '<h3>' . $s1 . '</h3>'; ?>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
@@ -160,10 +153,10 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?></dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel['computed_weight']['carry_sum']['average_weight_sum']) != 0) { ?> 
+		if (array_sum($channel['computed_weight']['aggregate']['average_weight_sum']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?= 
-				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['carry_sum']['average_weight_sum']);
+				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['average_weight_sum']);
 			?></dd><?
 		}
 		else { ?>
@@ -183,12 +176,12 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
 				Weighted Credit:<?
-					$d1 = $channel['computed_weight']['carry_sum']['average_weight_sum'][$kd1];
+					$d1 = $channel['computed_weight']['aggregate']['average_weight_sum'][$kd1];
 					echo !empty($d1) ? $d1 : '0';
 				?> 
 			<br />
 				<strong>Payout</strong>:
-				$<?= round($d3 * $channel['computed_weight']['carry_sum']['average_weight_sum'][$kd1], 2); ?><?
+				$<?= round($d3 * $channel['computed_weight']['aggregate']['average_weight_sum'][$kd1], 2); ?><?
 		} ?> 
 		<dl><?
 			$a1p = array(); # todo fix looping so this is not needed

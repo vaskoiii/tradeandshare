@@ -32,6 +32,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - fees are automatic from your available balance
 
 # todo limit changes in channel length by a max of 10%
+# todo there may be a lot unused vars floating around that are not needed
 
 # Key
 # s = start
@@ -463,73 +464,66 @@ foreach ($channel_list as $kc1 => $vc1) {
 			;
 		} }
 	}
-	###### todo start
-	if (1) {
-	# todo get the 100% max total with the carry
-	# ie. with a cycle carry of 3 ( not the 100% + 50% + 25% + 12.5% = 175% )
-
-	# ie) handcrafted computations for example
-	# 1/2 | This-User Like: 1 | This-User Dislike: 0 | All-User Score: 2 | Average: 1
-	# 1/8 | This-User Like: 1 | This-User Dislike: 1 | All-User Score: 3 | Average: 0
-
-	# handcrafted math:
-	# 1/2 + 1/8 = 5/8 this_score_max ( -5/8 this_score_min )
-	# 1/2 + 1/8 = 5/8 this_user_like
-	# 0/2 + 1/8 = 1/8 all this user dislike (confusing be cause not used in math actually)
-	# 2/2 + 3/8 = 11/8 all_user_score
-	# 1/2 + 0/8 = 4/8 aggregate_average
-
-	# todo account for multiple users only for 1 user here
-
+	# get the 100% max total with the carry with a cycle carry of 3
+	# ( not the 100% + 50% + 25% + 12.5% = 187.5% )
+	# AGGREGATE get precalculations
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
-
 		# set placeholders
 		$kid['aggregate']['this_mark_count'] = array();
 		$kid['aggregate']['this_like_count'] = array();
 		$kid['aggregate']['this_dislike_count'] = array();
 		$kid['aggregate']['this_score_average'] = array();
-
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		foreach ($vd2['mark_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
 			$kid['aggregate']['this_mark_count'][$kd3] += $vd3 / pow(2, $kd2);
 		} } }
-
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['like_count'])) {
 		foreach ($vd2['like_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
 			$kid['aggregate']['this_like_count'][$kd3] += $vd3 / pow(2, $kd2);
 		} } } }
-
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['dislike_count'])) {
 		foreach ($vd2['dislike_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
 			$kid['aggregate']['this_dislike_count'][$kd3] += $vd3 / pow(2, $kd2);
 		} } } }
-
-		foreach ($kid['score_offset'] as $kd2 => $vd2) {
-		if (!empty($vd2['score_average'])) {
-		foreach ($vd2['score_average'] as $kd3 => $vd3) {
-		if (!empty($vd3)) {
-			$kid['aggregate']['this_score_average'][$kd3] += $vd3 / pow(2, $kd2);
-		} } } }
 	}
-
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias
+		if (!empty($kid['aggregate']['this_mark_count']))
+		foreach ($kid['aggregate']['this_mark_count'] as $kd3 => $vd3) {
+			$d1like = 0;
+			$d1dislike = 0;
+			if (!empty($kid['aggregate']['this_like_count'][$kd3]))
+				$d1like = $kid['aggregate']['this_like_count'][$kd3];
+			if (!empty($kid['aggregate']['this_dislike_count'][$kd3]))
+				$d1dislike = $kid['aggregate']['this_dislike_count'][$kd3];
+			$kid['aggregate']['this_score_average'][$kd3] = 
+				(
+					$d1like
+					-
+					$d1dislike
+				)
+				/
+				$vd3
+			;
+		}
+	}
 	if (!empty($channel['source_user_id']))
 	foreach ($channel['source_user_id'] as $kd1 => $vd1) {
 		$kis = & $channel['source_user_id'][$kd1]; # alias
 		$kis['aggregate']['all_mark_count'] = 0; # todo done!
-
 		if (0) {
 			echo '<hr>';
 			echo $kd1;
 			echo '<pre>'; print_r($kis['score_offset']); echo '</pre>';
 		}
-
 		foreach ($kis['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['mark_count'])) {
 			if (0) { 
@@ -540,9 +534,115 @@ foreach ($channel_list as $kc1 => $vc1) {
 			$kis['aggregate']['all_mark_count'] += $vd2['mark_count'] / pow(2, $kd2);
 		} }
 	}
-	}
-	###### /todo end
+	### AGGREGATE compute weighted averages
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias
 
+		if (!empty($kid['aggregate']['this_score_average']))
+		foreach ($kid['aggregate']['this_score_average'] as $k1 => $v1) {
+			$kis = & $channel['source_user_id'][$k1]; # alias
+			$kisb = & $kis['before']; # alias
+			$kisa = & $kis['after']; # alias
+			# it isnt necessary to separate scores into before and after for:
+			# - count
+			# - average
+			# instead use scores from the full cycle
+			# ie) if my valid time during the payout period is 1 day my scores for that entire cycycle would be factored into that one day ( not just the scores I made on that 1 day)
+			$s111 = ($kid['aggregate']['this_mark_count'][$k1] / $kis['aggregate']['all_mark_count']);
+			$kid['aggregate']['this_score_weight'][$k1] =
+				(
+					(
+						$s111
+					)
+					*
+					$kisb['time_weight']
+				) +
+				(
+					(
+						$s111
+					) *
+					$kisa['time_weight']
+				)
+			;
+			$il1 = 0;
+			$il2 = 0;
+			if (!empty($kid['aggregate']['this_like_count'][$k1]))
+				$il1 = $kid['aggregate']['this_like_count'][$k1];
+			if (!empty($kid['aggregate']['this_mark_count'][$k1]))
+				$il2 = $kid['aggregate']['this_mark_count'][$k1] - $kid['aggregate']['this_like_count'][$k1];
+			$kid['aggregate']['this_score_weight_math'][$k1] = 
+				'This-User Like: ' . $il1 . ' | ' .
+				'This-User Dislike: ' . $il2 . ' | ' .
+				'All-User Score: ' . $kis['aggregate']['all_mark_count'] . ' | ' .
+				'Average: ' . $kid['aggregate']['this_score_average'][$k1] . ' | ' .
+				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
+			;
+		}
+	}
+	# AGGREGATE average_weight_sum && weighted_credit
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		$kid = & $channel['destination_user_id'][$kd1]; # alias
+		$kida = & $kid['aggregate']; # alias
+		$channela = & $channel['computed_weight']['aggregate'];
+		if (!empty($kida['this_score_weight'])) {
+			$channela['dmath'][$kd1] = ' 0 '; # oh no!
+			$channela['system_divisor'][$kd1] = 0; # oh no!
+			$channela['nmath'][$kd1] = ' 0 ';
+			$channela['average_weight_sum'][$kd1] = 0;
+			foreach ($kida['this_score_average'] as $k11 => $v11) {
+				$channela['nmath'][$kd1] .= ' += ( ( ( ' . $kida['this_score_average'][$k11] . ' + 1) / 2) * ' .  $kida['this_score_weight'][$k11] . ') '; 
+				$channela['average_weight_sum'][$kd1] += (
+					(
+						(
+							$kida['this_score_average'][$k11]
+							+
+							1
+						)
+						/
+						2
+					)
+					*
+					$kida['this_score_weight'][$k11]
+				); 
+				$channela['dmath'][$kd1] .= ' += ' . $kida['this_score_weight'][$k11];
+				$channela['system_divisor'][$kd1] += (
+					$kida['this_score_weight'][$k11]
+				);
+			}
+			# system score (reinforce user scores)
+			$channela['nmath'][$kd1] .= '| system += ( ( ' .  $channela['average_weight_sum'][$kd1] . ' / ' .  $channela['system_divisor'][$kd1] . ') * 1 )';
+			$channela['average_weight_sum'][$kd1] += (
+				$channela['average_weight_sum'][$kd1]
+				/
+				$channela['system_divisor'][$kd1]
+			);
+		}
+		else {
+			# system score (assume half credit)
+			$channela['nmath'][$kd1] = '| system: += ( ( .5 / 1 ) * 1 )';
+			$channela['average_weight_sum'][$kd1] = .5;
+			# placeholders for readability on debugging
+			$channela['dmath'][$kd1] = '0 += 1 ';
+			$channela['system_divisor'][$kd1] = 1;
+		}
+		# $channela['system_divisor'] no longer needed
+		$channela['weighted_credit_math'][$kd1] = '(' .
+			$channela['average_weight_sum'][$kd1]
+		. ')'
+		. '* ( ' .
+			$channel['source_user_id'][$kd1]['before']['time_weight'] . ' + ' . 
+			$channel['source_user_id'][$kd1]['after']['time_weight']
+		. ')';
+		$channela['weighted_credit'][$kd1] = (
+			$channela['average_weight_sum'][$kd1]
+		)
+		* (
+			$channel['source_user_id'][$kd1]['before']['time_weight'] +
+			$channel['source_user_id'][$kd1]['after']['time_weight']
+		);
+	}
 	# average_weight_sum && weighted_credit
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
@@ -652,10 +752,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 			);
 		}
 	}
-	# AGGREGATE OFFSET average_weight_sum && weighted_credit
-	# todo start
-	# 
-	# todo end
 	# OFSSET final computation on scores
 	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {

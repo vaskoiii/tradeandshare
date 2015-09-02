@@ -178,6 +178,7 @@ function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 		foreach ($channel['member_list'] as $k2 => $v2) {
 			$kid = & $channel['destination_user_id'][$k1];
 			$kid['source_user_id_score_count'][$k2] = 0;
+			$kid['aggregate'] = array(); # placement for debug only
 			# set later but only if non zero result
 			# $kid['source_user_id_score_like_count'][$k2] = 0;
 			# $kid['source_user_id_score_dislike_count'][$k2] = 0;
@@ -189,6 +190,7 @@ function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 		$kis['user_score_count'] = 0;
 		$kis['user_score_like_count'] = 0;
 		$kis['user_score_dislike_count'] = 0;
+		$kis['aggregate'] = array(); # placement for debug only
 		foreach ($a1 as $k3 => $v3) {
 			$kis['score_offset'][$k3]['mark_count'] = 0;
 			$kis['score_offset'][$k3]['like_count'] = 0;
