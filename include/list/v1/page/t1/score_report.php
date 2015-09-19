@@ -156,7 +156,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		if (array_sum($channel['computed_weight']['aggregate']['average_weight_sum']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?= 
-				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['average_weight_sum']);
+				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['weighted_credit']);
 			?></dd><?
 		}
 		else { ?>
@@ -175,13 +175,13 @@ foreach ($channel_list as $kc1 => $vc1) {
 				Time in Cycle:
 				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
-				Weighted Credit:<?
-					$d1 = $channel['computed_weight']['aggregate']['average_weight_sum'][$kd1];
+				Weighted Credit: <?
+					$d1 = $channel['computed_weight']['aggregate']['weighted_credit'][$kd1];
 					echo !empty($d1) ? $d1 : '0';
 				?> 
 			<br />
 				<strong>Payout</strong>:
-				$<?= round($d3 * $channel['computed_weight']['aggregate']['average_weight_sum'][$kd1], 2); ?><?
+				$<?= round($d3 * $channel['computed_weight']['aggregate']['weighted_credit'][$kd1], 2); ?><?
 		} ?> 
 		<dl><?
 			$a1p = array(); # todo fix looping so this is not needed
