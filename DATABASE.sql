@@ -3071,7 +3071,7 @@ update ts_page set `order` = 35 where name = 'people_area';
 insert into ts_element set name="channel_percent";
 
 -- another page --
-insert into ts_page set parent_id = 321, file_id = 14, name = 'member_report', `order`=1, launch=1, monitor=2,login=1,advanced=2
+insert into ts_page set parent_id = 321, file_id = 14, name = 'member_report', `order`=1, launch=1, monitor=2,login=1,advanced=2;
 
 insert into ts_element set name = 'digest';
 update ts_page  set launch = 2 where `name` = 'score_report';
