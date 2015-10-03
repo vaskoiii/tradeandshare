@@ -192,8 +192,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis = & $channel['source_user_id'][$k1];
 					$kisb = & $kis['before'];
 					$kisa = & $kis['after'];
-
-
 					if (empty($a1p[$k1])) {
 					$a1p[$k1] = $k1; # todo fix looping so marking for repeats is not necessary
 					?>  
@@ -201,6 +199,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 						print_key_user_id($k1); ?> 
 					</dt>
 					<dd><?
+						echo 'Time in Cycle: ' . (double)($kisa['time_weight'] + $kisb['time_weight']) . '<br />';
 						for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
 							$s1 = $kid['score_offset'][$i1]['score_weight_math'][$k1];
 							if (!empty($s1)) { ?> 
@@ -213,6 +212,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 			}
 			else
 				echo 'No scores'; ?> 
+			<dt>System</dt>
+				<dd><?= to_html($channel['computed_weight']['aggregate']['nmath'][$kd1]); ?></dd>
 		</dl><?
 	}
 	print_break_close(); ?>
