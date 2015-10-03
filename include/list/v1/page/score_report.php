@@ -458,9 +458,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				'1/' . pow(2, $kd2) . ' | ' .
 				'This-User Like: ' . $il1 . ' | ' .
 				'This-User Dislike: ' . $il2 . ' | ' .
-				'All-User Score: ' . $kis['score_offset'][$kd2]['mark_count'] . ' | ' .
-				'Average: ' . $kid['score_offset'][$kd2]['score_average'][$k1]
-				#  removed time from display
+				'All-User Score: ' . $kis['score_offset'][$kd2]['mark_count']
+				#  removed average/time from display
 			;
 		} }
 	}

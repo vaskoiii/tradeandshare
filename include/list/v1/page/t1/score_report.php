@@ -199,13 +199,15 @@ foreach ($channel_list as $kc1 => $vc1) {
 						print_key_user_id($k1); ?> 
 					</dt>
 					<dd><?
-						echo 'Time in Cycle: ' . (double)($kisa['time_weight'] + $kisb['time_weight']) . '<br />';
 						for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
 							$s1 = $kid['score_offset'][$i1]['score_weight_math'][$k1];
 							if (!empty($s1)) { ?> 
 								<?= $s1; ?><br /><?
 							}
-						} ?> 
+						}
+						echo '<pre>'; print_r($kid['aggregate']['this_score_weight_math'][$k1]); echo '</pre>';
+						if (!empty($kid['aggregate']['this_score_weight_math'][$kd1]))
+							echo $kid['aggregate']['this_score_weight_math'][$kd1]  . '<br />'; ?> 
 					</dd><?
 					}
 				}
