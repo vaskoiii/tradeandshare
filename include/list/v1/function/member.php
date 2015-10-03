@@ -467,7 +467,9 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 				}
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result)) {
-					$renewal[$period] = $row;
+					$renewal[$period]['renewal_id'] = $row['renewal_id'];
+					$renewal[$period]['renewal_start'] = $row['renewal_start'];
+					$renewal[$period]['point_id'] = $row['point_id'];
 				}
 			}
 		break;

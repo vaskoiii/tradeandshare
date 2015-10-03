@@ -113,6 +113,26 @@ if ($config['debug'] == 1) {
 
 # cleanup
 if (empty($first_cycle)) {
+	# is the renewal in the current cycle or next cycle?
+	# todo make sure a user can not be renewed while a periodic_renewal.php is running
+	$i1rn = get_db_single_value('
+			rnal.id
+		from
+			' . $prefix . 'renewal rnal,
+			' . $prefix . 'cycle cce,
+			' . $prefix . 'channel cnl
+		where
+			cce.id = rnal.cycle_id and
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$lookup['channel_parent_id'] . ' and
+			rnal.user_id = ' . (int)$login_user_id . ' and
+			rnal.start > now() and
+			rnal.active = 1 and
+			cce.active = 1 and
+			cnl.active = 1
+		order by
+			rnal.id desc
+	');
 	$sql = '
 		update
 			' . $prefix . 'renewal
@@ -122,7 +142,7 @@ if (empty($first_cycle)) {
 			timeframe_id = 3,
 			modified = now()
 		where
-			id = ' . (int)$nrenewal['renewal_id'] . '
+			id = ' . (int)$i1rn . '
 	';
 	if ($config['debug'] == 1)
 		echo '<hr>' . $sql;
