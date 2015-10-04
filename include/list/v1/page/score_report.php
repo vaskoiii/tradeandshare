@@ -164,12 +164,16 @@ foreach($channel_list as $k1 => $v1) {
 			$sql = '
 				select
 					cnl.name,
+					cnl.user_id,
+					u.name as user_name,
 					cnl.percent,
 					' . (int)$channel['info']['payout_length'] . ' as time,
 					cnl.value as before_cost
 				from
-					' . $config['mysql']['prefix'] . 'channel cnl
+					' . $config['mysql']['prefix'] . 'channel cnl,
+					' . $config['mysql']['prefix'] . 'user u
 				where
+					u.id = cnl.user_id and
 					cnl.parent_id = ' . (int)$k1 . ' and
 					cnl.modified <= ' . to_sql($cycle_offset[1]['start']) . ' and
 					1

@@ -148,9 +148,18 @@ foreach ($channel_list as $kc1 => $vc1) {
 			echo to_html($d1); ?> 
 		</dd>
 		<dt>Host Fee (<?= to_html($config['hostfee_percent']); ?>% of Channel Total)</dt>
-		<dd>$<?= $d2 = .1 * $d1; ?></dd>
+		<dd>$<?= $d2 = $config['hostfee_percent'] / 100 * $d1; ?>
+		       	(<?= 
+			get_db_single_value('
+					name
+			 	from
+					' . $config['mysql']['prefix'] . 'user
+				where
+					id = ' . (int)$config['hostfee_user_id']
+				, 0); ?>)
+		</dd>
 		<dt>Mission Cut (<?= (int)$channel['info']['percent']; ?>% of Remaining Total)</dt>
-		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?></dd>
+		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
 		if (array_sum($channel['computed_weight']['aggregate']['average_weight_sum']) != 0) { ?> 

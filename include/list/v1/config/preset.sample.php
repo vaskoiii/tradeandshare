@@ -24,6 +24,7 @@ $config = array();
 # Change Every Upload
 date_default_timezone_set('UTC');
 
+$config['hostfee_user_id'] = 111; # receives the % of fees for hosting
 $config['hostfee_percent'] = 0; # percent of membership fees that go to you!
 $config['version'] = 'YYYY-MM-DD | Version Name'; 
 $config['debug'] = 1;
