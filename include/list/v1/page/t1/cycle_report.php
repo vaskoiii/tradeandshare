@@ -226,7 +226,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 			<dt>System</dt>
 				<dd>
 					<?= to_html($channel['computed_weight']['aggregate']['nmath'][$kd1]); ?>
-					<span style="color: #777;"><?= to_html($channel['computed_weight']['aggregate']['scale']['half_span']); ?></span>
+					<span style="color: #777;"><?= to_html($channel['computed_weight']['aggregate']['weighted_credit_math'][$kd1]); ?></span>
 				</dd>
 		</dl><?
 	}

@@ -679,10 +679,45 @@ $scale['min'] = min($aggregate['average_weight_sum']);
 $scale['half_span'] = $scale['max'];
 if (abs($scale['max']) < abs($scale['min']))
 	$scale['half_span'] = $scale['min'];
-# $scale['full_span'] = 2 * $scale['half_span'];
+# half span
+# .5 for the range 0 to 1
+# .5 for the range -1 to 0
+# 1 for the range -1 to 1
+# member_count - 1 is the maximum half_span
+# half_span also serves as a normalizer such that as half_span increases so does the equlity effect (freebie for everyone is half_span so that people are never negative)
+
+# economics big trade-off is equality vs efficiency
 foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
-	$aggregate['weighted_credit'][$k1] = 
-		$aggregate['average_weight_sum'][$k1] +
-		$aggregate['scale']['half_span']
-	;
+	# >0 (efficiency)
+	if ($v1 > 0) {
+		$aggregate['weighted_credit'][$k1] = 
+			$scale['half_span'] +
+			(
+				$aggregate['average_weight_sum'][$k1] *
+				$scale['half_span']
+			)
+		;
+		$aggregate['weighted_credit_math'][$k1] = 
+			'efficiency: ' . $scale['half_span'] . ' + ' .
+			' ( ' . $aggregate['average_weight_sum'][$k1] . ' * ' . $scale['half_span'] . ' )'
+		;
+	}
+	# <=0 (equality)
+	else {
+		$aggregate['weighted_credit'][$k1] = 
+			$aggregate['average_weight_sum'][$k1] +
+			$scale['half_span']
+		;
+		$aggregate['weighted_credit_math'][$k1] = 
+			' equality ' . $aggregate['average_weight_sum'][$k1] . ' + ' . $scale['half_span']
+		;
+	}
 }
+
+# too much equality and not enough efficiency
+# $aggregate['weighted_credit'][$k1] = 
+# 	$aggregate['average_weight_sum'][$k1] +
+# 	$aggregate['scale']['half_span']
+# ;
+
+
