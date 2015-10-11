@@ -77,9 +77,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 #                                                                 #
 ###################################################################
 
-# todo needs cleanup as lots of the old scoring is no longer needed
-
-# todo number of previous cycles to carry over
+# number of previous cycles to carry over
 # this is a hardcode =(
 $config['cycle_carry'] = 3;
 # limit set at 8 ie) 2^8 = 512 as a safety but should be less than 3 or less
@@ -432,7 +430,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$kid['aggregate']['this_dislike_count'] = array();
 		# todo get this_net_count
 		$kid['aggregate']['this_net_count'] = array();
-		$kid['aggregate']['this_score_average'] = array();
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		foreach ($vd2['mark_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
@@ -454,51 +451,15 @@ foreach ($channel_list as $kc1 => $vc1) {
 		if (!empty($vd2['net_count'])) {
 		foreach ($vd2['net_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
-			# $kid['aggregate']['this_net_count'][$kd3] += ($kid['aggregate']['this_like_count'][$kd3] - $kid['aggregate']['this_dislike_count'][$kd3]) / pow(2, $kd2);
 			$kid['aggregate']['this_net_count'][$kd3] += $vd3 / pow(2, $kd2);
 		} } } }
-	}
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel['destination_user_id'][$kd1]; # alias
-		if (!empty($kid['aggregate']['this_mark_count']))
-		foreach ($kid['aggregate']['this_mark_count'] as $kd3 => $vd3) {
-			$d1like = 0;
-			$d1dislike = 0;
-			if (!empty($kid['aggregate']['this_like_count'][$kd3]))
-				$d1like = $kid['aggregate']['this_like_count'][$kd3];
-			if (!empty($kid['aggregate']['this_dislike_count'][$kd3]))
-				$d1dislike = $kid['aggregate']['this_dislike_count'][$kd3];
-			$kid['aggregate']['this_score_average_math'][$kd3] = 
-				' ( ' . $d1like . ' - ' . $d1dislike . ' ) / ' .  $vd3;
-			;
-			$kid['aggregate']['this_score_average'][$kd3] = 
-				(
-					$d1like -
-					$d1dislike
-				) /
-				$vd3
-			;
-			# new rating method doesn't care about the average here
-			$kid['aggregate']['this_score_average'][$kd3] = 1;
-		}
 	}
 	if (!empty($channel['source_user_id']))
 	foreach ($channel['source_user_id'] as $kd1 => $vd1) {
 		$kis = & $channel['source_user_id'][$kd1]; # alias
 		$kis['aggregate']['all_mark_count'] = 0; # todo done!
-		if (0) {
-			echo '<hr>';
-			echo $kd1;
-			echo '<pre>'; print_r($kis['score_offset']); echo '</pre>';
-		}
 		foreach ($kis['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['mark_count'])) {
-			if (0) { 
-				echo '<br>' . (int)$kis['aggregate']['all_mark_count']; 
-				echo ' += ' . $vd2['mark_count'] . ' / ' . pow(2, $kd2) . ' = ';
-				echo $vd2['mark_count'] / pow(2, $kd2);
-			}
 			$kis['aggregate']['all_mark_count'] += $vd2['mark_count'] / pow(2, $kd2);
 			
 		} }
@@ -513,8 +474,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
 
-		if (!empty($kid['aggregate']['this_score_average']))
-		foreach ($kid['aggregate']['this_score_average'] as $k1 => $v1) {
+		if (!empty($kid['aggregate']['this_mark_count']))
+		foreach ($kid['aggregate']['this_mark_count'] as $k1 => $v1) {
 			$kis = & $channel['source_user_id'][$k1]; # alias
 			$kisb = & $kis['before']; # alias
 			$kisa = & $kis['after']; # alias
@@ -548,7 +509,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 				# Net1
 				# todo
 				'Credit: ' . $kid['aggregate']['this_score_weight'][$k1] . ' | ' . 
-				# 'Average: ' . $kid['aggregate']['this_score_average'][$k1] . ' | ' .
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
@@ -562,38 +522,14 @@ foreach ($channel_list as $kc1 => $vc1) {
 		if (!empty($kida['this_score_weight'])) {
 			$channela['nmath'][$kd1] = '';
 			$channela['average_weight_sum'][$kd1] = 0;
-			foreach ($kida['this_score_average'] as $k11 => $v11) {
+			foreach ($kida['this_mark_count'] as $k11 => $v11) {
 				$channela['nmath'][$kd1] .= 
-					# $kida['this_score_average'][$k11] . ' * ' . 
 					$kida['this_score_weight'][$k11] .
 					' + '
 				;
 				# last part should be the addition of the half_span
 				$channela['average_weight_sum'][$kd1] +=
-					$kida['this_score_average'][$k11] *
 					$kida['this_score_weight'][$k11]
-				; 
-			}
-		}
-	}
-	# average_weight_sum && weighted_credit
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel['destination_user_id'][$kd1]; # alias
-		if (!empty($kid['source_user_id_score_weight'])) {
-			$channel['average_weight_sum_denominator'][$kd1] = 0; # oh no!
-			$channel['nmath'][$kd1] = ' 0 ';
-			$channel['average_weight_sum_numerator'][$kd1] = 0;
-			foreach ($kid['source_user_id_score_average'] as $k11 => $v11) {
-				$channel['nmath'][$kd1] .= ' += ' . 
-					$kid['source_user_id_score_average'][$k11] . 
-					' * ' .
-					$kid['source_user_id_score_weight'][$k11]
-				; 
-				$channel['average_weight_sum_numerator'][$kd1] +=
-					$kid['source_user_id_score_average'][$k11]
-					*
-					$kid['source_user_id_score_weight'][$k11]
 				; 
 			}
 		}

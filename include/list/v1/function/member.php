@@ -25,7 +25,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # (including cycle handling)
 
 # also contains functions used in:
-# score_report.php
+# cycle_report.php
 
 # todo make sure changing cycle length does not permit skiping or covering multiple renewals
 # ie) the ratio into the current cycle when a renewal happens should be factored in when renewing
@@ -427,7 +427,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		# todo placeholder to insert carry over score
 
 		# todo grant payout based on:
-		# see ascii picture at ~/include/list/v1/page/score_report.php
+		# see ascii picture at ~/include/list/v1/page/cycle_report.php
 	}
 }
 function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
@@ -516,7 +516,7 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	# todo placeholder to insert carry over score
 
 	# todo grant payout based on:
-	# see ascii picture at ~/include/list/v1/page/score_report.php
+	# see ascii picture at ~/include/list/v1/page/cycle_report.php
 }
 function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {
 	get_renewal_period_array($cycle, $renewal, $user_id, 'current');

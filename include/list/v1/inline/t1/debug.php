@@ -79,6 +79,7 @@ if ($config['debug'] == 1) { ?>
 				switch($k2) {
 					# auto_open what debugs
 					case 'score_report':
+					case 'cycle_report':
 					case 'user_report': # needed because arrays reference old file
 						$v1 = 'block';
 					# nobreak;

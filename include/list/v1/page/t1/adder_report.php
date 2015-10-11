@@ -24,7 +24,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="content_box ">
 	<p> This page is a placeholder for when all of the score credits get put together in a format to compensate users by hybridizing with the monetary system </p>
-	<p>Different from score_report as it can be computed outside of membership cycles</p>
+	<p>Different from cycle_report as it can be computed outside of membership cycles</p>
 
 	<h3>User</h3>
 	<p>	

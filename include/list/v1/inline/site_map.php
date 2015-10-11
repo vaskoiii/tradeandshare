@@ -26,8 +26,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # file also used in new_report.php
 add_translation('page', 'member_report');
 add_translation('page', 'member_report', 'translation_description');
-add_translation('page', 'score_report');
-add_translation('page', 'score_report', 'translation_description');
+add_translation('page', 'cycle_report');
+add_translation('page', 'cycle_report', 'translation_description');
 add_translation('page', 'new_area');
 add_translation('page', 'new_area', 'translation_description');
 add_translation('page', 'new_report');

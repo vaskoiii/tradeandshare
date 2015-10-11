@@ -261,7 +261,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'digest':
 			switch($type) {
 				case 'cycle':
-					$grab .= $spacer . '<a href="score_report/' . ff('channel_parent_id=' . (int)$listing['channel_parent_id'] . '&cycle_id=' . $listing['cycle_id']) . '"><span class="digest">' . tt('element', $k1) . '</span></a>';
+					$grab .= $spacer . '<a href="cycle_report/' . ff('channel_parent_id=' . (int)$listing['channel_parent_id'] . '&cycle_id=' . $listing['cycle_id']) . '"><span class="digest">' . tt('element', $k1) . '</span></a>';
 				break;
 			}
 		break;

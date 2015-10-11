@@ -75,7 +75,7 @@ up_date('2014-11-11');
 	<ul>
 		<li>One's Score (Likes/Dislikes)</li>
 		<ul>
-		<li>Warning: Score and membership are still evolving at <a href="./score_report"><?= tt('page', 'score_report'); ?></a>.</li>
+		<li>Warning: Score and membership are still evolving at <a href="./cycle_report"><?= tt('page', 'cycle_report'); ?></a>.</li>
 			<li>Each user is allowed to score other users as many times as they like.</li>
 			<li>You can specify who sees the scores you make.</li>
  			<li>Users can change their scores of other users at any time unless they are committed to the log used in calculating membership payouts</li>
@@ -85,9 +85,9 @@ up_date('2014-11-11');
 			<li>
 				Rating computations can be found by examining the source code at:
 				<br />
-				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/score_report.php">github (engine)</a>
+				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/cycle_report.php">github (engine)</a>
 				<br />
-				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/t1/score_report.php">github (template)</a>
+				<a href="https://github.com/vaskoiii/tradeandshare/blob/master/include/list/v1/page/t1/cycle_report.php">github (template)</a>
 			</li>
 			<li>Physics involved that supply data for the computation are spreadout through: Rating, Channel, Cycle, and Renewal.</li>
 			<li>A user's report was originally intended to be the average of the average viewable source user scores on the destination user.</li>
