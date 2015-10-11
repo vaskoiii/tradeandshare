@@ -190,11 +190,13 @@ function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 		$kis['user_score_count'] = 0;
 		$kis['user_score_like_count'] = 0;
 		$kis['user_score_dislike_count'] = 0;
+		$kis['user_score_net_count'] = 0;
 		$kis['aggregate'] = array(); # placement for debug only
 		foreach ($a1 as $k3 => $v3) {
 			$kis['score_offset'][$k3]['mark_count'] = 0;
 			$kis['score_offset'][$k3]['like_count'] = 0;
 			$kis['score_offset'][$k3]['dislike_count'] = 0;
+			$kis['score_offset'][$k3]['net_count'] = 0;
 		}
 	}
 }
@@ -267,6 +269,10 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 				$kis['score_offset'][$k12]['mark_count'] += $i1;
 			}
 		} }
+		foreach ($kis['score_offset'] as $k3 => $v3) {
+			# $kis['score_offset'][$k3]['net_count'] = abs($v3['like_count'] - $v3['dislike_count']);
+			$kis['score_offset'][$k3]['net_count'] = ($v3['like_count'] - $v3['dislike_count']);
+		}
 	}
 	foreach ($kid['source_user_id_score_count'] as $k1 => $v1) {
 	if (!empty($v1)) {
@@ -284,6 +290,7 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	foreach($kid['score_offset'] as $k2 => $v2) {
 	if (!empty($v2)) {
 		foreach($v2['mark_count'] as $k3 => $v3) {
+		$kid['score_offset'][$k2]['net_count'][$k3] = abs($v2['like_count'][$k3] - $v2['dislike_count'][$k3]);
 		if (!empty($v3)) {
 			$kid['score_offset'][$k2]['score_sum'][$k3] = (
 				$v2['like_count'][$k3]
