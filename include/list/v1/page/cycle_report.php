@@ -606,19 +606,39 @@ if (abs($scale['max']) < abs($scale['min']))
 foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
 	# >0 (efficiency)
 	if ($v1 > 0) {
-		$aggregate['weighted_credit'][$k1] = 
-			$scale['half_span'] +
-			(
-				$aggregate['average_weight_sum'][$k1] *
+		# >1 (unbalanced economy)
+		# slope = half_span
+		if ($scale['half_span'] > 1) {
+			$aggregate['weighted_credit'][$k1] = 
+				$scale['half_span'] +
+				(
+					$aggregate['average_weight_sum'][$k1] *
+					$scale['half_span']
+				)
+			;
+			$aggregate['weighted_credit_math'][$k1] = 
+				'unbalanced efficiency:  ( ' . $aggregate['average_weight_sum'][$k1] . ' * ' . $scale['half_span'] . ' ) + ' .
 				$scale['half_span']
-			)
-		;
-		$aggregate['weighted_credit_math'][$k1] = 
-			'efficiency:  ( ' . $aggregate['average_weight_sum'][$k1] . ' * ' . $scale['half_span'] . ' ) + ' .
-			$scale['half_span']
-		;
+			;
+		}
+		# <=1 (balanced economy)
+		# slope = 1/half_span
+		else {
+			$aggregate['weighted_credit'][$k1] = 
+				$scale['half_span'] +
+				(
+					$aggregate['average_weight_sum'][$k1] /
+					$scale['half_span']
+				)
+			;
+			$aggregate['weighted_credit_math'][$k1] = 
+				'balanced efficiency:  ( ' . $aggregate['average_weight_sum'][$k1] . ' / ' . $scale['half_span'] . ' ) + ' .
+				$scale['half_span']
+			;
+		}
 	}
 	# <=0 (equality)
+	# slope = 1
 	else {
 		$aggregate['weighted_credit'][$k1] = 
 			$aggregate['average_weight_sum'][$k1] +
