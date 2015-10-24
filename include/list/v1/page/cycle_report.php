@@ -533,6 +533,10 @@ foreach ($channel_list as $kc1 => $vc1) {
 				; 
 			}
 		}
+		else {
+			$channela['nmath'][$kd1] = '';
+			$channela['average_weight_sum'][$kd1] = 0;
+		}
 	}
 	# OFFSET average_weight_sum && weighted_credit
 	if (!empty($channel['destination_user_id']))
