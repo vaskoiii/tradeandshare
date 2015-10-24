@@ -307,6 +307,12 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	} }
 }
 
+function unset_if_empty_in_array(& $a1) {
+	foreach ($a1 as $k1 => $v1)
+		if (empty($v1))
+			unset($a1[$k1]);
+}
+
 # cycle/renewal
 function get_single_channel_parent_id($type, $id) {
 	global $config;

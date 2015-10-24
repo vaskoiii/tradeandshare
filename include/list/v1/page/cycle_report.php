@@ -33,6 +33,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo limit changes in channel length by a max of 10%
 # todo there may be a lot unused vars floating around that are not needed
+# todo ie) maybe user_score_*
 
 # Key
 # s = start
@@ -242,6 +243,19 @@ foreach ($channel_list as $kc1 => $vc1) {
 		# $kc1 = $channel_parent_id;
 		# $kd1 = $destination_user_id;
 		get_score_channel_user_id_array($channel, $kc1, $kd1, $config['cycle_carry']);
+		# major cleanup
+		unset_if_empty_in_array($channel['destination_user_id'][$kd1]['source_user_id_score_count']);
+		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['mark_count']);
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['net_count']);
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]);
+		}
+	}
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
+			unset_if_empty_in_array($channel['source_user_id'][$kd1]['score_offset'][$i1]);
+		}
 	}
 
 	# time with the current membership period?
@@ -385,6 +399,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
 
+
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['score_average']))
 		foreach ($vd2['score_average'] as $k1 => $v1) {
@@ -428,13 +443,13 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$kid['aggregate']['this_mark_count'] = array();
 		$kid['aggregate']['this_like_count'] = array();
 		$kid['aggregate']['this_dislike_count'] = array();
-		# todo get this_net_count
 		$kid['aggregate']['this_net_count'] = array();
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
+		if (!empty($vd2['mark_count'])) {
 		foreach ($vd2['mark_count'] as $kd3 => $vd3) {
 		if (!empty($vd3)) {
 			$kid['aggregate']['this_mark_count'][$kd3] += $vd3 / pow(2, $kd2);
-		} } }
+		} } } }
 		foreach ($kid['score_offset'] as $kd2 => $vd2) {
 		if (!empty($vd2['like_count'])) {
 		foreach ($vd2['like_count'] as $kd3 => $vd3) {
@@ -539,6 +554,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		}
 	}
 	# OFFSET average_weight_sum && weighted_credit
+	if (0)
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
@@ -626,13 +642,16 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 }
 ($channel['computed_weight']['aggregate']['weighted_credit']);
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	$aggregate['weighted_credit_math'][$k1] = ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
 	if ($v1 > 0) {
-		$aggregate['weighted_credit'][$k1] =  abs($aggregate['info']['lowest']) + $v1;
+		$aggregate['weighted_credit'][$k1] =  1 + $v1;
+		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 + ' . $v1 . ' ) ';
 	}
 	else {
 		$aggregate['weighted_credit'][$k1] =
 			(abs($aggregate['info']['lowest']) - abs($v1))
 			/ abs($aggregate['info']['lowest']);
+		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . abs($aggregate['info']['lowest']) . ' - ' . abs($v1) . ' / ' . abs($aggregate['info']['lowest']) . ' ) ';
 	}
 	# time in cycle fix
 	$aggregate['weighted_credit'][$k1] *= (

@@ -106,7 +106,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
 	<dl>
 		<dt>If all users in a channel score only a single user in a single cycle with the same score the current expression is:</dt>
-		<dd>score(number_of_users + 1)</dd>
+		<dd>number_of_users</dd>
 		<dt>Previous cycle scores may be carried over with a diminishing weight of:</dt>
 		<dd> 1 / (2^previous_cycle_offset)</dd>
 	</dl>
@@ -195,6 +195,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 		if (1) { ?> 
 				Time in Cycle:
 				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
+			<br />
+				Average Difference:
+				<?= $channel['computed_weight']['aggregate']['average_difference'][$kd1]; ?>
 			<br />
 				Weighted Credit: <?
 					$d1 = $channel['computed_weight']['aggregate']['weighted_credit'][$kd1];
