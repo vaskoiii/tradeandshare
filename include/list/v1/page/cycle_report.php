@@ -652,4 +652,13 @@ foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
 			' equality: ' . $aggregate['average_weight_sum'][$k1] . ' + ' . $scale['half_span']
 		;
 	}
+	# time in cycle fix
+	$aggregate['weighted_credit'][$k1] *= (
+		$channel['source_user_id'][$k1]['before']['time_weight'] +
+		$channel['source_user_id'][$k1]['after']['time_weight']
+	);
+	$aggregate['weighted_credit_math'][$k1] .= ' * ( ' .
+		$channel['source_user_id'][$k1]['before']['time_weight'] . ' + ' .
+		$channel['source_user_id'][$k1]['after']['time_weight'] .
+	' ) ';
 }
