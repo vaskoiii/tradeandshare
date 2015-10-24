@@ -339,7 +339,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end'])
 						-
-						strtotime($cycle_offest[1]['start'])
+						strtotime($cycle_offset[1]['start'])
 					)/86400 ;
 					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
 					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
