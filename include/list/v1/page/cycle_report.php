@@ -634,6 +634,15 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 			(abs($aggregate['info']['lowest']) - abs($v1))
 			/ abs($aggregate['info']['lowest']);
 	}
+	# time in cycle fix
+	$aggregate['weighted_credit'][$k1] *= (
+		$channel['source_user_id'][$k1]['before']['time_weight'] +
+		$channel['source_user_id'][$k1]['after']['time_weight']
+	);
+	$aggregate['weighted_credit_math'][$k1] .= ' * ( ' .
+		$channel['source_user_id'][$k1]['before']['time_weight'] . ' + ' .
+		$channel['source_user_id'][$k1]['after']['time_weight'] .
+	' ) ';
 }
 }
 
