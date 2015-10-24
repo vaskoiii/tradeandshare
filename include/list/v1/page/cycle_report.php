@@ -661,4 +661,6 @@ foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
 		$channel['source_user_id'][$k1]['before']['time_weight'] . ' + ' .
 		$channel['source_user_id'][$k1]['after']['time_weight'] .
 	' ) ';
-}
+} 
+# adjusted by time weights
+arsort($channel['computed_weight']['aggregate']['weighted_credit']);

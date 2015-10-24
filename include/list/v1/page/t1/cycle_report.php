@@ -176,7 +176,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<p>For breakdown please see public score list of members</p>
 	</div><?
 	if (!empty($channel['destination_user_id']))
-	foreach ($channel['computed_weight']['aggregate']['average_weight_sum'] as $kd1 => $vd1) {
+	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
+	# foreach ($channel['computed_weight']['aggregate']['average_weight_sum'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
