@@ -91,6 +91,14 @@ foreach ($channel_list as $kc1 => $vc1) {
 	if (isset($vc1['info']['cycle_id']))
 		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
 	echo '<h3>' . $s1 . '</h3>'; ?>
+	<ul style="margin-top: 0px;">
+		<li>Average Credit: <?= $channel['computed_weight']['aggregate']['info']['average']; ?></li>
+		<li>Range of Difference: 
+			<?= $channel['computed_weight']['aggregate']['info']['lowest']; ?>
+			 to 
+			<?= $channel['computed_weight']['aggregate']['info']['highest']; ?>
+		</li>
+	</ul>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
