@@ -575,6 +575,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		}
 	}
 	# OFSSET final computation on scores
+	if (0)
 	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {
 		$channel['computed_weight']['carry_sum']['nmath'][$k1] = '';
@@ -590,6 +591,53 @@ foreach ($channel_list as $kc1 => $vc1) {
 # sort
 arsort($channel['computed_weight']['aggregate']['average_weight_sum']);
 
+# averages and differences fixes:
+# * no more lowering a users payout by giving them a higher score if they are the half_span leader in some situations
+# * no need to have separate logic for the 0 to 1 range
+# * the worst person will receive no payout now if score is -1 or less
+# * possible future expansion for those beyond 1 standard deviation to get amplified effects
+if (1) {
+$aggregate= & $channel['computed_weight']['aggregate'];
+# account for time in cycle
+$aggregate['average_weight_sum_timed'] = array();
+foreach ($aggregate['average_weight_sum'] as $k1 => $v1) {
+	$aggregate['average_weight_sum_timed'][$k1] = $v1; 
+	$aggregate['average_weight_sum_timed'][$k1] *= (
+		$channel['source_user_id'][$k1]['before']['time_weight'] +
+		$channel['source_user_id'][$k1]['after']['time_weight']
+	);
+}
+$aggregate['info']['total'] = 0;
+foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1) {
+	$aggregate['info']['total'] += $v1;
+}
+$aggregate['info']['member_count'] = count($aggregate['average_weight_sum_timed']);
+$aggregate['info']['average'] = $aggregate['info']['total']/ $aggregate['info']['member_count'];
+$aggregate['average_difference'] = array();
+foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1)
+	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
+$aggregate['info']['lowest'] = -1; # dont allow lowest to be less than 1
+$aggregate['info']['highest'] = 0;
+foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	if ($v1 < $aggregate['info']['lowest'])
+		$aggregate['info']['lowest'] = $v1;
+	if ($v1 > $aggregate['info']['highest'])
+		$aggregate['info']['highest'] = $v1;
+}
+($channel['computed_weight']['aggregate']['weighted_credit']);
+foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	if ($v1 > 0) {
+		$aggregate['weighted_credit'][$k1] =  abs($aggregate['info']['lowest']) + $v1;
+	}
+	else {
+		$aggregate['weighted_credit'][$k1] =
+			(abs($aggregate['info']['lowest']) - abs($v1))
+			/ abs($aggregate['info']['lowest']);
+	}
+}
+}
+
+if (0) {
 # scale
 $aggregate= & $channel['computed_weight']['aggregate'];
 $aggregate['scale'] = array();
@@ -662,5 +710,7 @@ foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
 		$channel['source_user_id'][$k1]['after']['time_weight'] .
 	' ) ';
 } 
+}
+
 # adjusted by time weights
 arsort($channel['computed_weight']['aggregate']['weighted_credit']);
