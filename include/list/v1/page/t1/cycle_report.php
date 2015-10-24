@@ -104,9 +104,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
-	<pre>
-		<? print_r($channel); ?>
-	</pre>
 	<dl>
 		<dt>If all users in a channel score only a single user in a single cycle with the same score the current expression is:</dt>
 		<dd>score(number_of_users + 1)</dd>
@@ -185,6 +182,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 		} ?> 
 	</dl>
 	<p>For breakdown please see public score list of members</p>
+	<pre>
+		<? print_r($channel); ?>
+	</pre>
 	</div><?
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
