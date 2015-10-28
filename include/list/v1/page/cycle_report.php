@@ -632,7 +632,9 @@ $aggregate['info']['average'] = $aggregate['info']['total']/ $aggregate['info'][
 $aggregate['average_difference'] = array();
 foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1)
 	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
-$aggregate['info']['lowest'] = -1; # dont allow lowest to be less than 1
+# 1 is the stabilizer at the average
+# must scale everyone if lowest is below -1
+$aggregate['info']['lowest'] = -1;
 $aggregate['info']['highest'] = 0;
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	if ($v1 < $aggregate['info']['lowest'])
@@ -640,8 +642,16 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	if ($v1 > $aggregate['info']['highest'])
 		$aggregate['info']['highest'] = $v1;
 }
-($channel['computed_weight']['aggregate']['weighted_credit']);
+$r1info = & $aggregate['info'];
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	if ($r1info['lowest'] < -1)
+		$aggregate['average_difference_scaled'][$k1] = $aggregate['average_difference'][$k1] / $rinfo['lowest'];
+	else
+		$aggregate['average_difference_scaled'][$k1] = $aggregate['average_difference'][$k1];
+}
+
+($channel['computed_weight']['aggregate']['weighted_credit']);
+foreach ($aggregate['average_difference_scaled'] as $k1 => $v1) {
 	$aggregate['weighted_credit_math'][$k1] = ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
 	if ($v1 > 0) {
 		$aggregate['weighted_credit'][$k1] =  1 + $v1;
@@ -649,9 +659,9 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	}
 	else {
 		$aggregate['weighted_credit'][$k1] =
-			(abs($aggregate['info']['lowest']) - abs($v1))
-			/ abs($aggregate['info']['lowest']);
-		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . abs($aggregate['info']['lowest']) . ' - ' . abs($v1) . ' / ' . abs($aggregate['info']['lowest']) . ' ) ';
+			(1 - abs($v1))
+			/ 1;
+		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 - ' . abs($v1) . ' / 1 ) ';
 	}
 	# time in cycle fix
 	$aggregate['weighted_credit'][$k1] *= (
