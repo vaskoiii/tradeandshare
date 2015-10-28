@@ -633,35 +633,23 @@ $aggregate['average_difference'] = array();
 foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1)
 	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
 # 1 is the stabilizer at the average
-# must scale everyone if lowest is below -1
-$aggregate['info']['lowest'] = -1;
-$aggregate['info']['highest'] = 0;
-foreach ($aggregate['average_difference'] as $k1 => $v1) {
-	if ($v1 < $aggregate['info']['lowest'])
-		$aggregate['info']['lowest'] = $v1;
-	if ($v1 > $aggregate['info']['highest'])
-		$aggregate['info']['highest'] = $v1;
-}
-$r1info = & $aggregate['info'];
-foreach ($aggregate['average_difference'] as $k1 => $v1) {
-	if ($r1info['lowest'] < -1)
-		$aggregate['average_difference_scaled'][$k1] = $aggregate['average_difference'][$k1] / $rinfo['lowest'];
-	else
-		$aggregate['average_difference_scaled'][$k1] = $aggregate['average_difference'][$k1];
-}
-
 ($channel['computed_weight']['aggregate']['weighted_credit']);
-foreach ($aggregate['average_difference_scaled'] as $k1 => $v1) {
+foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	$aggregate['weighted_credit_math'][$k1] = ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
 	if ($v1 > 0) {
 		$aggregate['weighted_credit'][$k1] =  1 + $v1;
 		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 + ' . $v1 . ' ) ';
 	}
+	else if ($v1 >= -1 && $v1 <= 0) {
+		$aggregate['weighted_credit'][$k1] = 1 - abs($v1);
+		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 - ' . abs($v1) . ' ) ';
+	}
+	# clip everyone below -1
 	else {
-		$aggregate['weighted_credit'][$k1] =
-			(1 - abs($v1))
-			/ 1;
-		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 - ' . abs($v1) . ' / 1 ) ';
+		# not sure how to handle points for users less than -1
+		# fine users?
+		$aggregate['weighted_credit'][$k1] = 0;
+		$aggregate['weighted_credit_math'][$k1] .= ' 0 ( forgiveness = ' . (1 - abs($v1)) . ' )'; 
 	}
 	# time in cycle fix
 	$aggregate['weighted_credit'][$k1] *= (
