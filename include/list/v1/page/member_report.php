@@ -52,14 +52,9 @@ while ($row = mysql_fetch_assoc($result)) {
 
 foreach($channel as $k1 => $v1) {
 	# current channel name lags behind by 1 cycle
-
 	get_channel_cycle_restart_array($channel[$k1], $k1);
-	# temp variable placeholder
-	$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel[$k1]['cycle_offset'], $channel[$k1]['cycle_restart']);
-
 	# alias
 	$cycle_offset = & $channel[$k1]['cycle_offset'];
-
 	# get name and description
 	if (!empty($cycle_offset[0]['start'])) {
 		$sql = '
@@ -86,7 +81,6 @@ foreach($channel as $k1 => $v1) {
 	}
 }
 
-#  	
 foreach($channel as $k1 => $v1) {
 	# alias
 	$cycle_offset = & $channel[$k1]['cycle_offset'];
@@ -120,6 +114,7 @@ foreach($channel as $k1 => $v1) {
 	}
 	if (1) {
 		# get the payout cycle_id for the channel
+		# offset 3 is the latest payout ( 0 = event horizon / 1 = most recent / 2 = payout hold / 3 payout )
 		$info['payout_cycle_id'] = get_db_single_value('
 			cce.id from
 				' . $config['mysql']['prefix'] . 'cycle cce,
@@ -127,7 +122,7 @@ foreach($channel as $k1 => $v1) {
 			where
 				cce.channel_id = cnl.id and
 				cnl.parent_id = ' . (int)$k1 . ' and
-				cce.start = ' . to_sql($cycle_offset[2]['start'])
+				cce.start = ' . to_sql($cycle_offset[3]['start'])
 		);
 		# cycle_id should already exist because this logic is essentially repeated
 		$sql = '
