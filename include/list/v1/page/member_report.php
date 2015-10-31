@@ -30,6 +30,7 @@ $data['member_report']['channel'] = array();
 # alias
 $channel = & $data['member_report']['channel'];
 $order = & $data['member_report']['order'];
+$payout_order = & $data['member_report']['payout_order'];
 
 # get every single channel parent id (with active members)
 # todo make it so to have a current timeframe for a channel there must be current members
@@ -103,7 +104,6 @@ foreach($channel as $k1 => $v1) {
 				cnl.parent_id = ' . (int)$k1 . ' and
 				cce.start = ' . to_sql($cycle_offset[0]['start'])
 		);
-		# get the number of renewals in that cycle (excluding ending cycles)
 		# cycle_id should already exist because this logic is essentially repeated
 		$sql = '
 			select
@@ -118,9 +118,34 @@ foreach($channel as $k1 => $v1) {
 			$order[$k1] = $row['count'];
 		}
 	}
+	if (1) {
+		# get the payout cycle_id for the channel
+		$info['payout_cycle_id'] = get_db_single_value('
+			cce.id from
+				' . $config['mysql']['prefix'] . 'cycle cce,
+				' . $config['mysql']['prefix'] . 'channel cnl 
+			where
+				cce.channel_id = cnl.id and
+				cnl.parent_id = ' . (int)$k1 . ' and
+				cce.start = ' . to_sql($cycle_offset[2]['start'])
+		);
+		# cycle_id should already exist because this logic is essentially repeated
+		$sql = '
+			select
+				count(distinct user_id) as count
+			from
+				' . $config['mysql']['prefix'] . 'renewal
+			where
+				cycle_id = ' . (int)$info['payout_cycle_id']
+		;
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			$payout_order[$k1] = $row['count'];
+		}
+	}
 }
-
 arsort($order);
+arsort($payout_order);
 
 $data['search']['response']['search_miscellaneous'] = array( 'keyword' => get_gp('keyword'));
 $data['search']['response']['search_content_2'] = get_search_content_2();
