@@ -663,6 +663,15 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 }
 }
 
+$aggregate['info']['lowest'] = 0;
+$aggregate['info']['highest'] = 0;
+foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	if ($v1 < $aggregate['info']['lowest'])
+		$aggregate['info']['lowest'] = $v1;
+	if ($v1 > $aggregate['info']['highest'])
+		$aggregate['info']['highest'] = $v1;
+}
+
 if (0) {
 # scale
 $aggregate= & $channel['computed_weight']['aggregate'];
