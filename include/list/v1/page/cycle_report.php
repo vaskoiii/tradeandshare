@@ -273,10 +273,15 @@ foreach ($channel_list as $kc1 => $vc1) {
 					pt.name as point_name,
 					rnal.start
 				from
+					' . $config['mysql']['prefix'] . 'point pt,
 					' . $config['mysql']['prefix'] . 'renewal rnal,
-					' . $config['mysql']['prefix'] . 'point pt
+					' . $config['mysql']['prefix'] . 'cycle cce,
+					' . $config['mysql']['prefix'] . 'channel cnl
 				where
-					rnal.point_id = pt.id and
+					pt.id = rnal.point_id and
+					cce.id = rnal.cycle_id and
+					cnl.id = cce.channel_id and
+					cnl.parent_id = ' . (int)$kc1 . ' and
 					rnal.user_id = ' . (int)$ks1 . ' and
 					rnal.start < ' . to_sql($cycle_offset[0]['start']) . ' and
 					rnal.start >=' . to_sql($cycle_offset[1]['start']) . '
