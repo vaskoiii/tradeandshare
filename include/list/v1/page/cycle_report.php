@@ -33,7 +33,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo limit changes in channel length by a max of 10%
 # todo there may be a lot unused vars floating around that are not needed
-# todo ie) maybe user_score_*
 
 # Key
 # s = start
@@ -100,13 +99,10 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 			cnl.parent_id = ' . (int)$channel_parent_id
 	);
 }
-
 # variable
 $data['user_report']['channel_list'] = array();
-
 # alias
 $channel_list = & $data['user_report']['channel_list'];
-
 # get only the channel that was specified if applicable
 $sql = '
 	select
@@ -124,10 +120,8 @@ $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
 	$channel_list[$row['id']] = array();
 }
-
 foreach($channel_list as $k1 => $v1) {
-	# alias
-	$channel = & $data['user_report']['channel_list'][$k1];
+	$channel = & $data['user_report']['channel_list'][$k1]; # alias
 	# convenience for display:
 	add_key('channel', $k1, 'channel_name', $key);
 	if ($_GET['cycle_id']) {
@@ -140,18 +134,13 @@ foreach($channel_list as $k1 => $v1) {
 		# temp variable placeholder
 		$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset'], $channel['cycle_restart']);
 	}
-
-	# alias
-	$cycle_restart = & $channel['cycle_restart'];
-	$cycle_offset = & $channel['cycle_offset'];
-
+	$cycle_restart = & $channel['cycle_restart']; # alias
+	$cycle_offset = & $channel['cycle_offset']; # alias
 	# todo die if this cycle id is before the latest
 	$b1 = 1;
 	if ($_GET['cycle_id'])
 		if ($_GET['cycle_id'] > get_latest_payout_cycle_id($k1))
 			$b1 = 2;
-
-	# if (empty($channel['cycle_offset'][1]['start'])) {
 	if ($b1 == 2) {
 		$data['user_report']['premature_channel_list'][$k1] = $channel;
 		$data['user_report']['premature_channel_list'][$k1] = $channel;
@@ -159,7 +148,7 @@ foreach($channel_list as $k1 => $v1) {
 		unset($channel); # too early to evaluate
 	}
 	else {
-		# cost has to have had the price set 1 month previous to be valid
+		# cost has to have had the price set 1 cycle previous to be valid
 		# todo indicate noncurrent prices on display of cost_list
 		if (1) { # before
 			$sql = '
@@ -211,32 +200,20 @@ foreach($channel_list as $k1 => $v1) {
 				$channel['info']['cycle_id'] = get_latest_payout_cycle_id(get_gp('channel_parent_id'));
 			}
 		}
-
-		$channel['member_time']['before'] = array();
-		$channel['member_time']['after'] = array();
-		# $channel[$k1]['average_weight_sum'] = array();
-		# display after debug math by commenting out
-		# $channel['weighted_credit'] = array();
 	}
 }
-
 foreach ($channel_list as $kc1 => $vc1) {
 	$channel  = & $data['user_report']['channel_list'][$kc1];
-
-	# update alias
-	$cycle_restart = & $channel['cycle_restart'];
-	$cycle_offset = & $channel['cycle_offset'];
-
+	$cycle_restart = & $channel['cycle_restart']; # alias
+	$cycle_offset = & $channel['cycle_offset']; # alias
 	# prepare additional computation arrays
 	if (!empty($vc1['member_list']))
 	foreach ($vc1['member_list'] as $k1 => $v1) {
 		# convenience for display
 		add_key('user', $k1, 'user_name', $key);
-
 		$channel['destination_user_id'][$k1] = array();
 		$channel['source_user_id'][$k1] = array();
 	}
-
 	initialize_score_channel_user_id_array($channel, $config['cycle_carry']);
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
@@ -257,16 +234,11 @@ foreach ($channel_list as $kc1 => $vc1) {
 			unset_if_empty_in_array($channel['source_user_id'][$kd1]['score_offset'][$i1]);
 		}
 	}
-
 	# time with the current membership period?
-
 	if (!empty($channel['source_user_id']))
 	foreach ($channel['source_user_id'] as $ks1 => $vs1) {
 		$kis = & $channel['source_user_id'][$ks1]; # alias
 		if (1) {
-			$channel['member_time']['before'][$ks1] = 0;
-			$channel['member_time']['after'][$ks1] = 0;
-			# $kis['after']['time_weight'] = 0;
 			$sql = '
 				select
 					rnal.point_id,
@@ -293,79 +265,78 @@ foreach ($channel_list as $kc1 => $vc1) {
 				$kis['timeline'][$row['point_name']] = $row['start'];
 			}
 			$timeline = & $kis['timeline'];
-
+			$kis['before']['member_time'] = 0;
+			$kis['before']['time_weight'] = 0;
+			$kis['after']['member_time'] = 0;
+			$kis['after']['time_weight'] = 0;
 			if (1) {
 				# start
 				if (!empty($timeline['start'])) {
 				if ( empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
-					# should be no before
-					# there is no after time for the 3 required conditions
-					$kis['before']['member_time'] = 0;
-					$kis['before']['time_weight'] = 0;
-					$channel['member_time']['after'][$ks1] = $kis['before']['member_time'];
 					$kis['after']['member_time'] = (
-						strtotime($cycle_offset[0]['start'])
-						-
+						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['start'])
 					)/86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
-					$channel['member_time']['before'][$ks1] = $kis['after']['member_time'];
+					$kis['after']['time_weight'] = (
+						$kis['after']['member_time'] /
+						$channel['info']['payout_length']
+					);
 				} } }
 				# continue
 				if ( empty($timeline['start'])) {
 				if (!empty($timeline['continue'])) {
 				if ( empty($timeline['end'])) {
 					$kis['before']['member_time'] = (
-						strtotime($timeline['continue'])
-						-
+						strtotime($timeline['continue']) -
 						strtotime($cycle_offset[1]['start'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
-					
-					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
+					$kis['before']['time_weight'] = (
+						$kis['before']['member_time'] /
+						$channel['info']['payout_length']
+					);
 					$kis['after']['member_time'] = (
-						strtotime($cycle_offset[0]['start'])
-						-
+						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['continue'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
-					$channel['member_time']['after'][$ks1] = $kis['after']['member_time'];
+					$kis['after']['time_weight'] = (
+						$kis['after']['member_time'] /
+						$channel['info']['payout_length']
+					);
 				} } }
 				# end and start
 				if (!empty($timeline['start'])) {
 				if ( empty($timeline['continue'])) {
 				if (!empty($timeline['end'])) {
 					$kis['before']['member_time'] = (
-						strtotime($timeline['end'])
-						-
+						strtotime($timeline['end']) -
 						strtotime($cycle_offset[1]['start'])
 					) / 86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
-					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
+					$kis['before']['time_weight'] = (
+						$kis['before']['member_time'] /
+						$channel['info']['payout_length']
+					);
 					$kis['after']['member_time'] = (
-						strtotime($cycle_offset[0]['start'])
-						-
+						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['start'])
 					) / 86400 ;
-					$kis['after']['time_weight'] = $kis['after']['member_time'] / $channel['info']['payout_length'];
-					$channel['member_time']['after'][$ks1] = $kis['after']['member_time'];
+					$kis['after']['time_weight'] = (
+						$kis['after']['member_time'] /
+						$channel['info']['payout_length']
+					);
 				} } }
 				# end
 				if ( empty($timeline['start'])) {
 				if ( empty($timeline['continue'])) {
 				if (!empty($timeline['end'])) {
 					$kis['before']['member_time'] = (
-						strtotime($timeline['end'])
-						-
+						strtotime($timeline['end']) -
 						strtotime($cycle_offset[1]['start'])
 					)/86400 ;
-					$kis['before']['time_weight'] = $kis['before']['member_time'] / $channel['info']['payout_length'];
-					$channel['member_time']['before'][$ks1] = $kis['before']['member_time'];
-					# there is no after time for the 3 required conditions
-					$kis['after']['member_time'] = 0;
-					$kis['after']['time_weight'] = 0;
-					$channel['member_time']['after'][$ks1] = $kis['before']['member_time'];
+					$kis['before']['time_weight'] = (
+						$kis['before']['member_time'] /
+						$channel['info']['payout_length']
+					);
 				} } }
 			}
 		}
@@ -493,7 +464,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
-
 		if (!empty($kid['aggregate']['this_mark_count']))
 		foreach ($kid['aggregate']['this_mark_count'] as $k1 => $v1) {
 			$kis = & $channel['source_user_id'][$k1]; # alias
@@ -543,14 +513,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 			$channela['nmath'][$kd1] = '';
 			$channela['average_weight_sum'][$kd1] = 0;
 			foreach ($kida['this_mark_count'] as $k11 => $v11) {
-				$channela['nmath'][$kd1] .= 
-					$kida['this_score_weight'][$k11] .
-					' + '
-				;
-				# last part should be the addition of the half_span
-				$channela['average_weight_sum'][$kd1] +=
-					$kida['this_score_weight'][$k11]
-				; 
+				$channela['nmath'][$kd1] .= $kida['this_score_weight'][$k11] .  ' + ' ;
+				$channela['average_weight_sum'][$kd1] += $kida['this_score_weight'][$k11]; 
 			}
 		}
 		else {
@@ -558,66 +522,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 			$channela['average_weight_sum'][$kd1] = 0;
 		}
 	}
-	# OFFSET average_weight_sum && weighted_credit
-	if (0)
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel['destination_user_id'][$kd1]; # alias
-		foreach ($kid['score_offset'] as $kd2 => $vd2) {
-			$cso = & $channel['computed_weight']['score_offset'][$kd2];
-			$cso['nmath'][$kd1] = 0;
-			$cso['average_weight_sum'][$kd1] = 0;
-			if (!empty($vd2['score_weight'])) {
-				if(0)
-				foreach ($vd2['score_average'] as $k11 => $v11) {
-					$cso['nmath'][$kd1] .= ' += ' .
-						$vd2['score_average'][$k11] .  ' * ' . 
-						$vd2['score_weight'][$k11]
-					;
-					$cso['average_weight_sum'][$kd1] +=
-						$vd2['score_average'][$k11] *
-						$vd2['score_weight'][$k11]
-					; 
-				}
-			}
-			$cso['weighted_credit_math'][$kd1] =
-				$cso['average_weight_sum'][$kd1] . 
-				' * ( ' .
-					$channel['source_user_id'][$kd1]['before']['time_weight'] . ' + ' . 
-					$channel['source_user_id'][$kd1]['after']['time_weight'] . 
-				' ) ';
-			$cso['weighted_credit'][$kd1] =
-				$cso['average_weight_sum'][$kd1]
-				* (
-					$channel['source_user_id'][$kd1]['before']['time_weight'] +
-					$channel['source_user_id'][$kd1]['after']['time_weight']
-				)
-			;
-		}
-	}
-	# OFSSET final computation on scores
-	if (0)
-	if (!empty($channel['member_list']))
-	foreach ($channel['member_list'] as $k1 => $v1) {
-		$channel['computed_weight']['carry_sum']['nmath'][$k1] = '';
-		$channel['computed_weight']['carry_sum']['average_weight_sum'][$k1] = 0;
-		$carry_sum = & $channel['computed_weight']['carry_sum'];
-		foreach ($channel['computed_weight']['score_offset'] as $k2 => $v2) {
-			$carry_sum['average_weight_sum'][$k1] += $v2['average_weight_sum'][$k1] / pow(2, $k2);
-			$carry_sum['nmath'][$k1] .=  ' + ' . $v2['average_weight_sum'][$k1] / pow(2, $k2);
-		}
-	}
 }
-
 # sort
 arsort($channel['computed_weight']['aggregate']['average_weight_sum']);
-
-# averages and differences fixes:
-# * no more lowering a users payout by giving them a higher score if they are the half_span leader in some situations
-# * no need to have separate logic for the 0 to 1 range
-# * the worst person will receive no payout now if score is -1 or less
-# * possible future expansion for those beyond 1 standard deviation to get amplified effects
-if (1) {
 $aggregate= & $channel['computed_weight']['aggregate'];
 # account for time in cycle
 $aggregate['average_weight_sum_timed'] = array();
@@ -666,8 +573,6 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 		$channel['source_user_id'][$k1]['after']['time_weight'] .
 	' ) ';
 }
-}
-
 $aggregate['info']['lowest'] = 0;
 $aggregate['info']['highest'] = 0;
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
@@ -676,81 +581,5 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	if ($v1 > $aggregate['info']['highest'])
 		$aggregate['info']['highest'] = $v1;
 }
-
-if (0) {
-# scale
-$aggregate= & $channel['computed_weight']['aggregate'];
-$aggregate['scale'] = array();
-$scale = & $aggregate['scale'];
-$scale['max'] = max($aggregate['average_weight_sum']);
-$scale['min'] = min($aggregate['average_weight_sum']);
-$scale['half_span'] = $scale['max'];
-if (abs($scale['max']) < abs($scale['min']))
-	$scale['half_span'] = $scale['min'];
-# half span
-# .5 for the range 0 to 1
-# .5 for the range -1 to 0
-# 1 for the range -1 to 1
-# member_count - 1 is the maximum half_span
-# half_span also serves as a normalizer such that as half_span increases so does the equlity effect (freebie for everyone is half_span so that people are never negative)
-
-# economics big trade-off is equality vs efficiency
-foreach($aggregate['average_weight_sum'] as $k1 => $v1) {
-	# >0 (efficiency)
-	if ($v1 > 0) {
-		# >1 (unbalanced economy)
-		# slope = half_span
-		if ($scale['half_span'] > 1) {
-			$aggregate['weighted_credit'][$k1] = 
-				$scale['half_span'] +
-				(
-					$aggregate['average_weight_sum'][$k1] *
-					$scale['half_span']
-				)
-			;
-			$aggregate['weighted_credit_math'][$k1] = 
-				'unbalanced efficiency:  ( ' . $aggregate['average_weight_sum'][$k1] . ' * ' . $scale['half_span'] . ' ) + ' .
-				$scale['half_span']
-			;
-		}
-		# <=1 (balanced economy)
-		# slope = 1/half_span
-		else {
-			$aggregate['weighted_credit'][$k1] = 
-				$scale['half_span'] +
-				(
-					$aggregate['average_weight_sum'][$k1] /
-					$scale['half_span']
-				)
-			;
-			$aggregate['weighted_credit_math'][$k1] = 
-				'balanced efficiency:  ( ' . $aggregate['average_weight_sum'][$k1] . ' / ' . $scale['half_span'] . ' ) + ' .
-				$scale['half_span']
-			;
-		}
-	}
-	# <=0 (equality)
-	# slope = 1
-	else {
-		$aggregate['weighted_credit'][$k1] = 
-			$aggregate['average_weight_sum'][$k1] +
-			$scale['half_span']
-		;
-		$aggregate['weighted_credit_math'][$k1] = 
-			' equality: ' . $aggregate['average_weight_sum'][$k1] . ' + ' . $scale['half_span']
-		;
-	}
-	# time in cycle fix
-	$aggregate['weighted_credit'][$k1] *= (
-		$channel['source_user_id'][$k1]['before']['time_weight'] +
-		$channel['source_user_id'][$k1]['after']['time_weight']
-	);
-	$aggregate['weighted_credit_math'][$k1] .= ' * ( ' .
-		$channel['source_user_id'][$k1]['before']['time_weight'] . ' + ' .
-		$channel['source_user_id'][$k1]['after']['time_weight'] .
-	' ) ';
-} 
-}
-
 # adjusted by time weights
 arsort($channel['computed_weight']['aggregate']['weighted_credit']);
