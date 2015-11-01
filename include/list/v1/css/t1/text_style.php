@@ -91,9 +91,6 @@ input, select, textarea {
 .contact_name, .lock_contact_name {
 	color: <?= $data['css']['text_style']['color']['contact_name']; ?>;
 	}
-.tag_description {
-	color: #585858;
-	}
 .modified {
 	color: #445f44;
 	}
@@ -141,7 +138,15 @@ input, select, textarea {
 .dislike {
 	color: #ff0000;
 	}
-.keyword, .description, .incident_description, .feedback_description, .offer_description, .transfer_description, .note_description, .group_description, .team_description {
+.description, .item_description, .incident_description, .feedback_description, .offer_description, .transfer_description, .note_description, .group_description, .team_description {
+	display: inline-block;	
+	color: #383838;
+	}
+.tag_description {
+	display: inline-block;
+	color: #585858;
+	}
+.keyword {
 	color: #383838;
 	}
 .translation_name {
