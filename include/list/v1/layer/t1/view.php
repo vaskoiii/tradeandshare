@@ -97,7 +97,7 @@ if ($x['preload']['focus'] == 'view')
 			break;
 			default: ?> 
 				<? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?> 
-				<span class="spacer">&gt;&gt;</span> <a id="view_menu2_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu2'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
+				<span class="spacer" style="margin: 0px;">&gt;&gt;</span> <a id="view_menu2_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu2'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
 
 
 <? # this is view_menu1 ?>

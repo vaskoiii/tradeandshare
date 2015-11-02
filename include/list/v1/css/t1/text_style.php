@@ -51,6 +51,8 @@ input, select, textarea {
 }
 .spacer {
 	color: <?= $data['css']['text_style']['color']['spacer']; ?>;
+	display: inline-block;
+	margin: 0px 5px;
 	}
 /* not really element */
 .access_public_web {
@@ -139,11 +141,9 @@ input, select, textarea {
 	color: #ff0000;
 	}
 .description, .item_description, .incident_description, .feedback_description, .offer_description, .transfer_description, .note_description, .group_description, .team_description {
-	display: inline-block;	
 	color: #383838;
 	}
 .tag_description {
-	display: inline-block;
 	color: #585858;
 	}
 .keyword {

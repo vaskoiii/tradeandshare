@@ -105,7 +105,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			# Sitemap ?> 
 		</ul>
 		<span style="text-align: left; display: inline;">
-			<span class="spacer">&gt;&gt;</span>
+			<span class="spacer" style="margin: 0px;">&gt;&gt;</span>
 			<a id="head_menu_toggle" href="/sitemap_doc/" onclick="more_toggle('head_menu'); return false;"/><?= tt('element', 'more'); ?></a>
 		</span>
 	

@@ -62,7 +62,7 @@ function print_keyword_box($toggle = 'asearch_box', $lock_only = false, $load = 
 		} ?> 
 		<nobr>
 		<span class="keyword_part">
-		<span class="spacer">&gt;&gt;</span>
+		<span class="spacer" style="margin: 0px;">&gt;&gt;</span>
 		<a class="keyword_part"
 			id="<?= to_html($toggle); ?>_toggle" 
 			style="display: inline;" 

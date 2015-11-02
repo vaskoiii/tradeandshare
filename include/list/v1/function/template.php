@@ -360,7 +360,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$s2 = '';
 			 if ($load == 'view')
 				$s2 = 'view_';
-			$grab .= '<span class="spacer"> &gt;&gt; </span><a id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '_toggle" href="javascript: more_toggle(\'' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '\');">' 
+			$grab .= '<span class="spacer">&gt;&gt;</span><a id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '_toggle" href="javascript: more_toggle(\'' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '\');">' 
 					. tt('element', 'more', 'translation_name', $translation) 
 				. '</a>'
 				. '</p><p class="more" style="border: none; display: none; padding: 0px; margin: 0px 20px 10px 20px;" id="' . $s2 . to_html($s1) . '_id_' . (int)$listing[$s1 . '_id'] . '">';
