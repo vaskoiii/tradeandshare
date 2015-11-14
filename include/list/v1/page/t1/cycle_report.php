@@ -99,6 +99,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 			<?= $channel['computed_weight']['aggregate']['info']['highest']; ?>
 		</li>
 		<li>Warning: Current algorithm only works if "Time in Cycle" is 1 for everyone</li>
+		<li>&Delta; = <?= $channel['info']['equalizer']; ?></li>
 	</ul>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
@@ -257,8 +258,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				echo 'No scores'; ?> 
 			<dt>System</dt>
 				<dd>
-					<?= to_html($channel['computed_weight']['aggregate']['nmath'][$kd1]); ?>
-					<span style="color: #777;"><?= to_html($channel['computed_weight']['aggregate']['weighted_credit_math'][$kd1]); ?></span>
+					<?= ($channel['computed_weight']['aggregate']['nmath'][$kd1]); ?>
+					<span style="color: #777;"><?= ($channel['computed_weight']['aggregate']['weighted_credit_math'][$kd1]); ?></span>
 				</dd>
 		</dl><?
 	}

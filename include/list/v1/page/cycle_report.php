@@ -523,7 +523,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 			foreach ($kida['this_mark_count'] as $k11 => $v11) {
 				$d1 = $kida['this_score_weight'][$k11];
 				$d2 = $channel['info']['equalizer'];
-				$channela['nmath'][$kd1] .= $d1 .  ' + eq(' . $d2 . ' * ' . $d1 . ') + ';
+				$channela['nmath'][$kd1] .= $d1 .  ' + *&Delta; + ';
 				$channela['weight_sum'][$kd1] += $d1 + ( $d2 * $d1 ); 
 			}
 		}
@@ -543,9 +543,12 @@ $equalizer = & $channel['info']['equalizer'];
 foreach ($channel['source_user_id'] as $k1 => $v1) {
 	if (!empty($v1['aggregate']['all_net_count'])) {
 		# todo add the equalizer to this user
-		$channel['computed_weight']['aggregate']['nmath'][$k1] .= ' + eq' . $equalizer;
+		$channel['computed_weight']['aggregate']['nmath'][$k1] .= ' &Delta; ';
 		$channel['computed_weight']['aggregate']['weight_sum'][$k1] += $equalizer;
 	}
+	else
+		$channel['computed_weight']['aggregate']['nmath'][$k1] .= ' 0 ';
+	$channel['computed_weight']['aggregate']['nmath'][$k1] .= ' <br /> ';
 }
 
 # hack to see what it is really supposed to be like
@@ -581,11 +584,11 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 	$aggregate['weighted_credit_math'][$k1] = ''; # ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
 	if ($v1 > 0) {
 		$aggregate['weighted_credit'][$k1] =  $stabilizer + $v1;
-		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . $stabilizer . ' + ' . $v1 . ' ) ';
+		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 + &Delta; + ' . $v1 . ' ) ';
 	}
-	else if ($v1 >= -1 && $v1 <= 0 ) {
+	else if ( $v1 <= 0 ) {
 		$aggregate['weighted_credit'][$k1] = $stabilizer - abs($v1);
-		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . $stabilizer . ' - ' . abs($v1) . ' ) ';
+		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 + &Delta; - ' . abs($v1) . ' ) ';
 	}
 	# time in cycle fix
 	$aggregate['weighted_credit'][$k1] *= (
