@@ -29,6 +29,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <?= $data['css']['text_style']['message_box']; ?>
 
+nobr {
+	/* triple click description copy fix */
+	display: inline-block;
+	}
 a:link {
 	color: <?= $data['css']['text_style']['color']['link']; ?>;
 	text-decoration: underline;
