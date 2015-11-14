@@ -378,53 +378,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 		}
 	}
 	}
-	### compute weighted averages
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		$kid = & $channel['destination_user_id'][$kd1]; # alias
-
-		if (!empty($kid['source_user_id_score_average']))
-		foreach ($kid['source_user_id_score_average'] as $k1 => $v1) {
-			$kis = & $channel['source_user_id'][$k1]; # alias
-			$kisb = & $kis['before']; # alias
-			$kisa = & $kis['after']; # alias
-			# it isnt necessary to separate scores into before and after for:
-			# - count
-			# - average
-			# instead use scores from the full cycle
-			# ie) if my valid time during the payout period is 1 day my scores for that entire cycycle would be factored into that one day ( not just the scores I made on that 1 day)
-			$s111 = ($kid['source_user_id_score_count'][$k1] / $kis['user_score_count']);
-			# $s111 = ($kid['source_user_id_score_like_count'][$k1] / $kis['user_score_like_count']);
-			$kid['source_user_id_score_weight'][$k1] =
-				(
-					(
-						$s111
-					)
-					*
-					$kisb['time_weight']
-				) +
-				(
-					(
-						$s111
-					) *
-					$kisa['time_weight']
-				)
-			;
-			$il1 = 0;
-			$il2 = 0;
-			if (!empty($kid['source_user_id_score_like_count'][$k1]))
-				$il1 = $kid['source_user_id_score_like_count'][$k1];
-			if (!empty($kid['source_user_id_score_count'][$k1]))
-				$il2 = $kid['source_user_id_score_count'][$k1] - $kid['source_user_id_score_like_count'][$k1];
-			$kid['source_user_id_score_weight_math_before'][$k1] = 
-				'This-User Like: ' . $il1 . ' | ' .
-				'This-User Dislike: ' . $il2 . ' | ' .
-				'All-User Score: ' . $kis['user_score_count'] . ' | ' .
-				'Average: ' . $kid['source_user_id_score_average'][$k1] . ' | ' .
-				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
-			;
-		}
-	}
 	### OFFSET compute weighted averages
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {

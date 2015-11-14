@@ -202,6 +202,12 @@ foreach($channel_list as $k1 => $v1) {
 		}
 	}
 }
+if (1) {
+	# todo minimum member size for computation = 3 (otherwise all get equal payout)
+	if ((count($channel['member_list'])) < 2)
+		die('all payout will be distributed equally until there are at least 3 members');
+	$channel['info']['equalizer'] = 1/(count($channel['member_list']) - 2);
+}
 foreach ($channel_list as $kc1 => $vc1) {
 	$channel  = & $data['user_report']['channel_list'][$kc1];
 	$cycle_restart = & $channel['cycle_restart']; # alias
@@ -401,10 +407,12 @@ foreach ($channel_list as $kc1 => $vc1) {
 				$il1 = $vd2['like_count'][$k1];
 			if (!empty($vd2['mark_count'][$k1]))
 				$il2 = $vd2['mark_count'][$k1] - $vd2['like_count'][$k1];
+			$il3 = $vd2['net_count'][$k1];
 			$kid['score_offset'][$kd2]['score_weight_math'][$k1] .= 
 				'1/' . pow(2, $kd2) . ' | ' .
-				'This-User Like: ' . $il1 . ' | ' .
-				'This-User Dislike: ' . $il2 . ' | ' .
+				'Like: ' . $il1 . ' | ' .
+				'Dislike: ' . $il2 . ' | ' .
+				'Net: ' . $il3 . ' | ' .
 				'All-User Net: ' . $kis['score_offset'][$kd2]['net_count']
 			;
 		} }
@@ -491,77 +499,93 @@ foreach ($channel_list as $kc1 => $vc1) {
 				$il1 = $kid['aggregate']['this_like_count'][$k1];
 			if (!empty($kid['aggregate']['this_mark_count'][$k1]))
 				$il2 = $kid['aggregate']['this_mark_count'][$k1] - $kid['aggregate']['this_like_count'][$k1];
+			$il3 = $kid['aggregate']['this_net_count'][$k1];
 			$kid['aggregate']['this_score_weight_math'][$k1] = 
-				'This-User Like: ' . $il1 . ' | ' .
-				'This-User Dislike: ' . $il2 . ' | ' .
-				# 'All-User Score: ' . $kis['aggregate']['all_mark_count'] . ' | ' .
+				'Like: ' . $il1 . ' | ' .
+				'Dislike: ' . $il2 . ' | ' .
+				'Net: ' . $il3 . ' | ' .
 				'All-User Net: ' . $kis['aggregate']['all_net_count'] .  ' | ' .
-				# Net1
-				# todo
 				'Credit: ' . $kid['aggregate']['this_score_weight'][$k1] . ' | ' . 
 				'Time: ' . ($kisa['time_weight'] + $kisb['time_weight'])
 			;
 		}
 	}
-	# AGGREGATE average_weight_sum && weighted_credit
+	# AGGREGATE weight_sum && weighted_credit
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias
 		$kida = & $kid['aggregate']; # alias
 		$channela = & $channel['computed_weight']['aggregate'];
+		# todo use the equalizer
 		if (!empty($kida['this_score_weight'])) {
 			$channela['nmath'][$kd1] = '';
-			$channela['average_weight_sum'][$kd1] = 0;
+			$channela['weight_sum'][$kd1] = 0;
 			foreach ($kida['this_mark_count'] as $k11 => $v11) {
-				$channela['nmath'][$kd1] .= $kida['this_score_weight'][$k11] .  ' + ' ;
-				$channela['average_weight_sum'][$kd1] += $kida['this_score_weight'][$k11]; 
+				$d1 = $kida['this_score_weight'][$k11];
+				$d2 = $channel['info']['equalizer'];
+				$channela['nmath'][$kd1] .= $d1 .  ' + eq(' . $d2 . ' * ' . $d1 . ') + ';
+				$channela['weight_sum'][$kd1] += $d1 + ( $d2 * $d1 ); 
 			}
 		}
 		else {
 			$channela['nmath'][$kd1] = '';
-			$channela['average_weight_sum'][$kd1] = 0;
+			$channela['weight_sum'][$kd1] = 0;
 		}
 	}
 }
+
+
+# equalizer
+# since voting at all automatically used full credit we can do this part here
+# todo still have to do the part where the destination user also gets a boost
+# todo cant do here because have to take into account more factors ie) how points are split between multiple users
+$equalizer = & $channel['info']['equalizer'];
+foreach ($channel['source_user_id'] as $k1 => $v1) {
+	if (!empty($v1['aggregate']['all_net_count'])) {
+		# todo add the equalizer to this user
+		$channel['computed_weight']['aggregate']['nmath'][$k1] .= ' + eq' . $equalizer;
+		$channel['computed_weight']['aggregate']['weight_sum'][$k1] += $equalizer;
+	}
+}
+
+# hack to see what it is really supposed to be like
+# todo where can we put this in the math above
+# $channel['computed_weight']['aggregate']['weight_sum'][134] += $equalizer;
+
 # sort
-arsort($channel['computed_weight']['aggregate']['average_weight_sum']);
+arsort($channel['computed_weight']['aggregate']['weight_sum']);
 $aggregate= & $channel['computed_weight']['aggregate'];
 # account for time in cycle
-$aggregate['average_weight_sum_timed'] = array();
-foreach ($aggregate['average_weight_sum'] as $k1 => $v1) {
-	$aggregate['average_weight_sum_timed'][$k1] = $v1; 
-	$aggregate['average_weight_sum_timed'][$k1] *= (
+$aggregate['weight_sum_timed'] = array();
+foreach ($aggregate['weight_sum'] as $k1 => $v1) {
+	$aggregate['weight_sum_timed'][$k1] = $v1; 
+	$aggregate['weight_sum_timed'][$k1] *= (
 		$channel['source_user_id'][$k1]['before']['time_weight'] +
 		$channel['source_user_id'][$k1]['after']['time_weight']
 	);
 }
 $aggregate['info']['total'] = 0;
-foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1) {
+foreach ($aggregate['weight_sum_timed'] as $k1 => $v1) {
 	$aggregate['info']['total'] += $v1;
 }
-$aggregate['info']['member_count'] = count($aggregate['average_weight_sum_timed']);
+$aggregate['info']['member_count'] = count($aggregate['weight_sum_timed']);
 $aggregate['info']['average'] = $aggregate['info']['total']/ $aggregate['info']['member_count'];
 $aggregate['average_difference'] = array();
-foreach ($aggregate['average_weight_sum_timed'] as $k1 => $v1)
+foreach ($aggregate['weight_sum_timed'] as $k1 => $v1)
 	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
-# 1 is the stabilizer at the average
+#  stabilizer at the average
+
+$stabilizer = 1 + $equalizer;
 ($channel['computed_weight']['aggregate']['weighted_credit']);
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
-	$aggregate['weighted_credit_math'][$k1] = ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
+	$aggregate['weighted_credit_math'][$k1] = ''; # ' - ' . $aggregate['info']['average'] . ' = ' . $v1 . ' | ';
 	if ($v1 > 0) {
-		$aggregate['weighted_credit'][$k1] =  1 + $v1;
-		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 + ' . $v1 . ' ) ';
+		$aggregate['weighted_credit'][$k1] =  $stabilizer + $v1;
+		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . $stabilizer . ' + ' . $v1 . ' ) ';
 	}
-	else if ($v1 >= -1 && $v1 <= 0) {
-		$aggregate['weighted_credit'][$k1] = 1 - abs($v1);
-		$aggregate['weighted_credit_math'][$k1] .= ' ( 1 - ' . abs($v1) . ' ) ';
-	}
-	# clip everyone below -1
-	else {
-		# not sure how to handle points for users less than -1
-		# fine users?
-		$aggregate['weighted_credit'][$k1] = 0;
-		$aggregate['weighted_credit_math'][$k1] .= ' 0 ( forgiveness = ' . (1 - abs($v1)) . ' )'; 
+	else if ($v1 >= -1 && $v1 <= 0 ) {
+		$aggregate['weighted_credit'][$k1] = $stabilizer - abs($v1);
+		$aggregate['weighted_credit_math'][$k1] .= ' ( ' . $stabilizer . ' - ' . abs($v1) . ' ) ';
 	}
 	# time in cycle fix
 	$aggregate['weighted_credit'][$k1] *= (
@@ -583,3 +607,4 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 }
 # adjusted by time weights
 arsort($channel['computed_weight']['aggregate']['weighted_credit']);
+# echo '<pre>'; print_r($channel); echo '</pre>'; exit;

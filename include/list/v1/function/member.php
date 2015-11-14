@@ -187,10 +187,6 @@ function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 			}
 		}
 		$kis = & $channel['source_user_id'][$k1];
-		$kis['user_score_count'] = 0;
-		$kis['user_score_like_count'] = 0;
-		$kis['user_score_dislike_count'] = 0;
-		$kis['user_score_net_count'] = 0;
 		$kis['aggregate'] = array(); # placement for debug only
 		foreach ($a1 as $k3 => $v3) {
 			$kis['score_offset'][$k3]['mark_count'] = 0;
@@ -241,29 +237,13 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 			if (!empty($i1)) {
 				switch ($k11) {
 					case 1:
-						if ($k12 == 0) {
-						# $kid['source_user_id_score_like_count'][$v1] = 0;
-						$kid['source_user_id_score_like_count'][$k1] = $i1;
-						$kis['user_score_like_count'] += $i1;
-						}
-
 						$kid['score_offset'][$k12]['like_count'][$k1] = $i1;
 						$kis['score_offset'][$k12]['like_count'] += $i1;
 					break;
 					case 2:
-						if ($k12 == 0) {
-						# $kid['source_user_id_score_dislike_count'][$v1] = 0;
-						$kid['source_user_id_score_dislike_count'][$k1] = $i1;
-						$kis['user_score_dislike_count'] += $i1;
-						}
-
 						$kid['score_offset'][$k12]['dislike_count'][$k1] = $i1;
 						$kis['score_offset'][$k12]['dislike_count'] += $i1;
 					break;
-				}
-				if ($k12 == 0) {
-				$kid['source_user_id_score_count'][$k1] += $i1;
-				$kis['user_score_count'] += $i1;
 				}
 				$kid['score_offset'][$k12]['mark_count'][$k1] += $i1;
 				$kis['score_offset'][$k12]['mark_count'] += $i1;
@@ -272,6 +252,11 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 		foreach ($kis['score_offset'] as $k3 => $v3) {
 			# $kis['score_offset'][$k3]['net_count'] = abs($v3['like_count'] - $v3['dislike_count']);
 			$kis['score_offset'][$k3]['net_count'] = ($v3['like_count'] - $v3['dislike_count']);
+			# todo calculating kid needed 1st?
+			# todo don't allow less than 0 on payout (probably ok in other computations)
+			# todo test
+			# if ($kis['score_offset'][$k3]['net_count'] < 0)
+			# 	$kis['score_offset'][$k3]['net_count'] = 0;
 		}
 	}
 	foreach ($kid['source_user_id_score_count'] as $k1 => $v1) {
@@ -291,6 +276,9 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	if (!empty($v2)) {
 		foreach($v2['mark_count'] as $k3 => $v3) {
 		$kid['score_offset'][$k2]['net_count'][$k3] = abs($v2['like_count'][$k3] - $v2['dislike_count'][$k3]);
+		# don't allow less than 0 on payout (probably ok in other computations)
+		if ($kid['score_offset'][$k2]['net_count'][$k3] < 0)
+			$kid['score_offset'][$k2]['net_count'][$k3] = 0;
 		if (!empty($v3)) {
 			$kid['score_offset'][$k2]['score_sum'][$k3] = (
 				$v2['like_count'][$k3]

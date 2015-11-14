@@ -98,20 +98,37 @@ foreach ($channel_list as $kc1 => $vc1) {
 			 to 
 			<?= $channel['computed_weight']['aggregate']['info']['highest']; ?>
 		</li>
+		<li>Warning: Current algorithm only works if "Time in Cycle" is 1 for everyone</li>
 	</ul>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
+	
+	<h3>Pending Modifications with Likes/Dislikes</h3>
+	<p><strong>Merit Key:</strong> Dislike = -1 and Like = 1</p>
+	<p>You do not get any credit for liking yourself</p>
+	<p>Only net likes to a user are counted. ie) 3 likes and 1 dislikes has a net value of 2</p>
+	<p>When liking a user the source user difference from the average should remain the same</p>
+	<p>Liking a person is essentially increasing that one person's payout while increasing payout for everyone else except for you.</p>
+	<p>Disliking a person can only go as far as bringing your net likes down to 0. ie) 11 dislike and 2 likes is 0 (not -9)</p>
+	<p>A like can be thought of as putting weight on the liked user and taking that same weight equally from all of the other users such that the liking user's difference from the average will change by 0</p>
 	<dl>
-		<dt>If all users in a channel score only a single user in a single cycle with the same score the current expression is:</dt>
-		<dd>number_of_users</dd>
-		<dt>Previous cycle scores may be carried over with a diminishing weight of:</dt>
-		<dd> 1 / (2^previous_cycle_offset)</dd>
+		<dt>Minimum Offset (freebie for everyone) occurs if a user received no likes:</dt>
+		<dd>-1 - 1/(n-2)</dd>
+		<dt>Offset Equalizer is applied to users that are not the source or destination user:</dt>
+		<dd>-1/(n-2)</dd>
+		<dt>The previous 3 cycle scores are be carried over with a diminishing weight of:</dt>
+		<dd>1/(2^previous_cycle_offset)</dd>
+		<dt>Maximum Offset occurs if all users in a channel like only the same single user in a single cycle:</dt>
+		<dd>number_of_users - 1</dd>
 	</dl>
-	<p> <strong>Merit Key:</strong> Dislike = -1 and Like = 1 </p>
+	<p>To facilitate easier calculation it may be better to calculate with just the source and destination users and then getting the average and difference from the average last</p>
+	<h3>Additional Todo</h3>
+	<p>Time of the destination user in the cycle needs to be accounted for</p>
 	<hr />
+	<h3>Cycle Data</h3>
 	<dl>
 		<dt>Length</dt>
 		<dd><?= to_html($vc1['info']['time']); ?>  Days</dd><?
@@ -170,7 +187,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel['computed_weight']['aggregate']['average_weight_sum']) != 0) { ?> 
+		if (array_sum($channel['computed_weight']['aggregate']['weight_sum']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?= 
 				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['weighted_credit']);
@@ -188,7 +205,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	</div><?
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
-	# foreach ($channel['computed_weight']['aggregate']['average_weight_sum'] as $kd1 => $vd1) {
+	# foreach ($channel['computed_weight']['aggregate']['weight_sum'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
