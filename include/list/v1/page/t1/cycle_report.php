@@ -116,14 +116,22 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<p>Disliking a person can only go as far as bringing your net likes down to 0. ie) 11 dislike and 2 likes is 0 (not -9)</p>
 	<p>A like can be thought of as putting weight on the liked user and taking that same weight equally from all of the other users such that the liking user's difference from the average will change by 0</p>
 	<dl>
-		<dt>Minimum Offset (freebie for everyone) occurs if a user received no likes:</dt>
-		<dd>-1 - 1/(n-2)</dd>
-		<dt>Offset Equalizer is applied to users that are not the source or destination user:</dt>
-		<dd>-1/(n-2)</dd>
-		<dt>The previous 3 cycle scores are be carried over with a diminishing weight of:</dt>
-		<dd>1/(2^previous_cycle_offset)</dd>
+		<dt>N</dt>
+		<dd>Number of All Users</dd>
+		<dt>T</dt>
+		<dd>Time of All Users</dd>
+		<dt>t</dt>
+		<dd>Time of 1 Users</dd>
+		<dt>Minimum Offset occurs if a user received no likes and gave no likes:</dt>
+		<dd>-(1 + 1/(N-2))(T/N)</dd>
 		<dt>Maximum Offset occurs if all users in a channel like only the same single user in a single cycle:</dt>
 		<dd>number_of_users - 1</dd>
+		<dt>o</dt>
+		<dt>Offset Equalizer (&Delta;) is applied to users that are not the source or destination user:</dt>
+		<dd>-(1/(N-2))t</dd>
+		<dd>Offset of Previous Cycle</dd>
+		<dt>The previous 3 cycle scores are be carried over with a diminishing weight of:</dt>
+		<dd>1/(2^o)</dd>
 	</dl>
 	<p>To facilitate easier calculation it may be better to calculate with just the source and destination users and then getting the average and difference from the average last</p>
 	<h3>Additional Todo</h3>
