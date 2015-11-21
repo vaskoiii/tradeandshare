@@ -235,6 +235,14 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 				);
 			}
 			if (!empty($i1)) {
+				if (1) {
+					# need to scale by destination user time
+					# (loses the ability to see the integer amount of likes)
+					$kist = & $channel['source_user_id'][$destination_user_id];
+					$kista = & $kist['after']['time_weight'];
+					$kistb = & $kist['before']['time_weight'];
+					$i1 *= ($kista + $kistb);
+				}
 				switch ($k11) {
 					case 1:
 						$kid['score_offset'][$k12]['like_count'][$k1] = $i1;

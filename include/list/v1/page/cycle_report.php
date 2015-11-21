@@ -221,25 +221,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$channel['source_user_id'][$k1] = array();
 	}
 	initialize_score_channel_user_id_array($channel, $config['cycle_carry']);
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		# $kc1 = $channel_parent_id;
-		# $kd1 = $destination_user_id;
-		get_score_channel_user_id_array($channel, $kc1, $kd1, $config['cycle_carry']);
-		# major cleanup
-		unset_if_empty_in_array($channel['destination_user_id'][$kd1]['source_user_id_score_count']);
-		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
-			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['mark_count']);
-			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['net_count']);
-			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]);
-		}
-	}
-	if (!empty($channel['destination_user_id']))
-	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
-		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
-			unset_if_empty_in_array($channel['source_user_id'][$kd1]['score_offset'][$i1]);
-		}
-	}
 	# time with the current membership period?
 	if (!empty($channel['source_user_id']))
 	foreach ($channel['source_user_id'] as $ks1 => $vs1) {
@@ -345,6 +326,26 @@ foreach ($channel_list as $kc1 => $vc1) {
 					);
 				} } }
 			}
+		}
+	}
+	# moved down because member time is important when computing score
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		# $kc1 = $channel_parent_id;
+		# $kd1 = $destination_user_id;
+		get_score_channel_user_id_array($channel, $kc1, $kd1, $config['cycle_carry']);
+		# major cleanup
+		unset_if_empty_in_array($channel['destination_user_id'][$kd1]['source_user_id_score_count']);
+		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['mark_count']);
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]['net_count']);
+			unset_if_empty_in_array($channel['destination_user_id'][$kd1]['score_offset'][$i1]);
+		}
+	}
+	if (!empty($channel['destination_user_id']))
+	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
+		for ($i1 = 0; $i1 <= $config['cycle_carry']; $i1++) {
+			unset_if_empty_in_array($channel['source_user_id'][$kd1]['score_offset'][$i1]);
 		}
 	}
 	# membership will always be the same price for everyone 
