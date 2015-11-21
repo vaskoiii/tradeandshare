@@ -517,12 +517,16 @@ foreach ($channel_list as $kc1 => $vc1) {
 			foreach ($kida['this_mark_count'] as $k11 => $v11) {
 				$d1 = $kida['this_score_weight'][$k11];
 				$d2 = $channel['info']['equalizer'];
-				# $d1 is already scaled but  scaling further  for time
+				# prevent manipulation of the average
+				# ie) if it is "cheaper" to mark members that have partial time
+				# todo verify if needing to scale $d1 or $d2 by time
+				# todo enforce max payout as: (% of time in cycle) * (max payout)
+				# - users lose marking credit if not marking users with time adding up to 1 cycle?
+				# - needs marking credit used calculation (to be factored in when scaling Delta)?
 				$kist = & $channel['source_user_id'][$k11];
 				$kista = & $kist['after']['time_weight'];
 				$kistb = & $kist['before']['time_weight'];
 				$d1 *= ($kista + $kistb);
-				$stabilizer_math .= ' * ' . ($kista + $kistb);
 				$channela['nmath'][$kd1] .= $d1 .  ' + *&Delta; + ';
 				$channela['weight_sum'][$kd1] += $d1 + ( $d2 * $d1 ); 
 			}
@@ -574,23 +578,28 @@ if (1) {
 }
 $aggregate['info']['average'] = $aggregate['info']['total'] / $aggregate['info']['time_count'];
 $aggregate['average_difference'] = array();
-foreach ($aggregate['weight_sum_timed'] as $k1 => $v1)
+# weight_sum or weight_sum_timed? ( time is now compensated for below so weight_sum_timed may not be needed)
+foreach ($aggregate['weight_sum'] as $k1 => $v1)
 	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
 foreach ($aggregate['average_difference'] as $k1 => $v1) {
+	$kist = & $channel['source_user_id'][$k1];
+	$kista = & $kist['after']['time_weight'];
+	$kistb = & $kist['before']['time_weight'];
 	$stabilizer = 1 + $equalizer;
+	$stabilizer *= ($kista + $kistb); 
 	$stabilizer *= (
 		$channel['computed_weight']['aggregate']['info']['time_count']
 		/
 		count($channel['member_list'])
 	);
-	$stabilizer_math = '(1 + &Delta;)(' .
+	$stabilizer_math = '(1 + &Delta;)(' . ($kista + $kistb) . ')(' .
 		$channel['computed_weight']['aggregate']['info']['time_count'] . '
 		/ ' . 
 		count($channel['member_list']) . '
 	)';
 	# freebie for everyone (so there is no negative credit)
-	$aggregate['weighted_credit_math'][$k1] = ' ( ( ' . $stabilizer_math . ' ) + ' . $v1 . ' ) ';
-	$aggregate['weighted_credit'][$k1] = $stabilizer + $v1;
+	$aggregate['weighted_credit_math'][$k1] = ' ( ( ' . $stabilizer_math . ' ) + ' . $v1 . '(' . ($kista + $kistb) . ') ) ';
+	$aggregate['weighted_credit'][$k1] = $stabilizer + ($v1 * ($kista + $kistb));
 }
 $aggregate['info']['lowest'] = 0;
 $aggregate['info']['highest'] = 0;
