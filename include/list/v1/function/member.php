@@ -129,8 +129,9 @@ function get_channel_member_list_array(& $channel, $channel_parent_id) {
 			cnl.id = cce.channel_id and
 			cnl.parent_id = ' . (int)$channel_parent_id . ' and
 			rnal.start < ' . to_sql($channel['cycle_offset'][0]['start']) . ' and
-			rnal.start >= ' . to_sql($channel['cycle_offset'][1]['start'])
-	;
+			rnal.start >= ' . to_sql($channel['cycle_offset'][1]['start']) . ' and
+			rnal.active = 1
+	';
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result))
 		$channel['member_list'][$row['user_id']] = $row['user_id'];
