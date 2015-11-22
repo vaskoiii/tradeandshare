@@ -31,6 +31,7 @@ $config['debug'] = 1;
 $config['write_protect'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['email_from'] = 'List <noreply@localhost>';
 $config['file_path'] = '/www/site/list/file/'; # end with /
+$config['public_path'] = '/www/site/list/public/'; # end with /
 $config['include_path'] = '/www/site/list/include/'; # end with /
 
 # Main

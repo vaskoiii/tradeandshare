@@ -696,6 +696,7 @@ switch($type) {
 	break;
 	case 'profile':
 		# todo delete file and db entry and reinsert (will autofix bad data)
+		if (!empty($_FILES['face_file']['size']))
 		if (!(get_db_single_value('
 				id
 			from
@@ -766,26 +767,22 @@ switch($type) {
 			# if no database entry for qr code make one
 			# initially only id will be allowed
 			# file handling
-			$s1 = '/www/site/list/public/phpqrcode/1.1.4/temp/' . $_SESSION['login']['login_user_name'] . '.png';
+			$s1 = $config['public_path'] . 'phpqrcode/1.1.4/temp/' . $_SESSION['login']['login_user_name'] . '.png';
 			include('phpqrcode/1.1.4/qrlib.php');
 
 			# todo make real public key functionality instead of the user_id hack
 			QRcode::png('https://' . $_SERVER['HTTP_HOST'] . '/host_portal/?public_key=' . (int)$_SESSION['login']['login_user_id'], $s1, 'L', 4, 2);
 
-			switch(filer_move($s1, 'list/v1/qrcode/')) {
+			$s2 = filer_move($s1, 'list/v1/qrcode/');
+			$s3 = 'default';
+			switch($s2) {
 				case 'exists':
-					# die('exists');
-				break;
 				case 'error':
-					# die('error');
-				break;
 				case 'written':
-					# die('written');
-				break;
-				default:
-					# die('default');
+					$s3 = $s2;
 				break;
 			}
+			# die($s3);
 
 			# remove the file
 			switch(unlink($s1)) {
@@ -797,7 +794,6 @@ switch($type) {
 				break;
 			}
 		}
-
 
 		# update pubkey based on user_id
 		$i1 = 0;

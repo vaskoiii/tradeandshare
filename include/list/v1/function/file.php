@@ -119,7 +119,8 @@ function filer_write($to) {
 function filer_move($from, $to, $id = null) {
 	# $id = allow updating a specific entry (placeholder) 2014-10-19 vaskoiii
 	global $config;
-
+	if ($from == '.jpg') # sanity check (shouldnt happen)
+		die('error getting file path');
 	# $from = full_path
 	# $to = path from ~/file  and excluding file name ie) home/v1
 	$md5 = md5(fread(fopen($from, "r"), filesize($from)));

@@ -2,7 +2,8 @@
 !.gitignore
 git-remote-https.core
 include/list/v1/config/preset.php
-public/phpqrcode/1.1.4/temp
+public/phpqrcode/1.1.4/temp/*
+!public/phpqrcode/1.1.4/temp/.keep
 file/list/v1/qrcode/*
 !file/list/v1/qrcode/.keep
 file/list/v1/face/*
