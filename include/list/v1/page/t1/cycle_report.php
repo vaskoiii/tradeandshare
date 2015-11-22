@@ -107,36 +107,38 @@ foreach ($channel_list as $kc1 => $vc1) {
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
 	
-	<h3>Pending Modifications with Likes/Dislikes</h3>
-	<p><strong>Merit Key:</strong> Dislike = -1 and Like = 1</p>
+	<h3>About Likes/Dislikes</h3>
 	<p>You do not get any credit for liking yourself</p>
-	<p>Only net likes to a user are counted. ie) 3 likes and 1 dislikes has a net value of 2</p>
-	<p>When liking a user the source user difference from the average should remain the same</p>
-	<p>Liking a person is essentially increasing that one person's payout while increasing payout for everyone else except for you.</p>
-	<p>Disliking a person can only go as far as bringing your net likes down to 0. ie) 11 dislike and 2 likes is 0 (not -9)</p>
-	<p>A like can be thought of as putting weight on the liked user and taking that same weight equally from all of the other users such that the liking user's difference from the average will change by 0</p>
+	<p>Only net likes to a user are counted. ie) 3 likes and 1 dislike has a net value of 2</p>
+	<p>Disliking a person can only go as far as bringing their net likes down to 0. ie) 11 dislike and 2 likes is 0 (not -9)</p>
+	<p>A like is essentially putting weight (payout) on the liked user and taking that same weight equally from all of the other users except for you</p>
+	<h3>Definitions</h3>
 	<dl>
+		<dt>Like</dt>
+			<dd>+1</dd>
+		<dt>Dislike</dt>
+			<dd>-1</dd>
 		<dt>N</dt>
-		<dd>Number of All Users</dd>
+			<dd>Number of All Users</dd>
 		<dt>T</dt>
-		<dd>Time of All Users</dd>
+			<dd>Time of All Users</dd>
 		<dt>t</dt>
-		<dd>Time of 1 Users</dd>
-		<dt>Minimum Offset occurs if a user received no likes and gave no likes:</dt>
-		<dd>-(1 + 1/(N-2))(T/N)</dd>
-		<dt>Maximum Offset occurs if all users in a channel like only the same single user in a single cycle:</dt>
-		<dd>number_of_users - 1</dd>
+			<dd>Time of 1 User</dd>
+		<dt>Minimum Offset<dt>
+			<dd>-(1 + 1/(N-2))(T/N)</dd>
+			<dd>Occurs if a user received no likes and gave no likes</dd>
+		<dt>Maximum Offset</dt>
+			<dd>N - 1</dd>
+			<dd>Occurs if all users in a channel like only the same single user in a single cycle</dd>
+		<dt>Offset Equalizer (&Delta;)</dt>
+			<dd>-(1/(N-2))t</dd>
+			<dd>Applied to users that are not the source or destination user</dd>
 		<dt>o</dt>
-		<dt>Offset Equalizer (&Delta;) is applied to users that are not the source or destination user:</dt>
-		<dd>-(1/(N-2))t</dd>
-		<dd>Offset of Previous Cycle</dd>
-		<dt>The previous 3 cycle scores are be carried over with a diminishing weight of:</dt>
-		<dd>1/(2^o)</dd>
+			<dd>Offset of Previous Cycle</dd>
+		<dt>Diminishing Carry</dt>
+			<dd>1/(2^o)</dd>
+			<dd>Marks from the previous 3 cycle are carried over with this formula</dd>
 	</dl>
-	<p>To facilitate easier calculation it may be better to calculate with just the source and destination users and then getting the average and difference from the average last</p>
-	<h3>Additional Todo</h3>
-	<p>Time of the destination user in the cycle needs to be accounted for</p>
-	<hr />
 	<h3>Cycle Data</h3>
 	<dl>
 		<dt>Length</dt>
@@ -196,7 +198,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
 		<dt>Remaining to be distributed</dt>
 		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel['computed_weight']['aggregate']['weight_sum']) != 0) { ?> 
+		if (array_sum($channel['computed_weight']['aggregate']['weighted_credit']) != 0) { ?> 
 			<dt>Multiplier</dt>
 			<dd><?= 
 				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['weighted_credit']);
@@ -204,10 +206,11 @@ foreach ($channel_list as $kc1 => $vc1) {
 		}
 		else { ?>
 			<dt>Multiplier</dt>
-			<dd>can not compute - No scores</dd><?
+			<dd>can not compute - no weighted credit</dd><?
 		} ?> 
 	</dl>
 	<p>For breakdown please see public score list of members</p>
+	<h3>Data Dump</h3>
 	<pre>
 		<? print_r($channel); ?>
 	</pre>
