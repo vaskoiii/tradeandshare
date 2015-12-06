@@ -881,7 +881,7 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			if (isset_gp('lock_user_id')) 
 				$where[] = '(
 					t1.source_user_id = ' . (int)get_gp('lock_user_id') . ' OR
-					t1.destination_user_id = ' . (int)$get_gp('lock_user_id') . '
+					t1.destination_user_id = ' . (int)get_gp('lock_user_id') . '
 				)';
 			if (isset_gp('score_kind_id'))
 				$where_x[] = 'k.id = ' . (int)get_gp('score_kind_id');

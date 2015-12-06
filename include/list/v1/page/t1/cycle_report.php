@@ -92,14 +92,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
 	echo '<h3>' . $s1 . '</h3>'; ?>
 	<ul style="margin-top: 0px;">
-		<li>Average Credit: <?= $channel['computed_weight']['aggregate']['info']['average']; ?></li>
-		<li>Range of Difference: 
-			<?= $channel['computed_weight']['aggregate']['info']['lowest']; ?>
-			 to 
-			<?= $channel['computed_weight']['aggregate']['info']['highest']; ?>
-		</li>
-		<li>Warning: Current algorithm only works if "Time in Cycle" is 1 for everyone</li>
-		<li>&Delta; = <?= $channel['info']['equalizer']; ?></li>
+		<li>Average Like Weight: <?= $channel['computed_weight']['aggregate']['info']['average']; ?></li>
 	</ul>
 	<p style="margin-top: 0px;">
 		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
@@ -110,34 +103,25 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>About Likes/Dislikes</h3>
 	<p>You do not get any credit for liking yourself</p>
 	<p>Only net likes to a user are counted. ie) 3 likes and 1 dislike has a net value of 2</p>
-	<p>Disliking a person can only go as far as bringing their net likes down to 0. ie) 11 dislike and 2 likes is 0 (not -9)</p>
-	<p>A like is essentially putting weight (payout) on the liked user and taking that same weight equally from all of the other users except for you</p>
+	<p>Disliking a person can only go as far as bringing their net likes down to 0. ie) 2 dislikes and 1 likes is 0 (not -1)</p>
+	<h3>Notes</h3>
+	<ul>
+		<li>No caps on payout based on time in cycle</li>
+		<li>No credit for "voting"</li>
+		<li>Equal payout for everyone with equal marks and equal time in cycle</li>
+	</ul>
 	<h3>Definitions</h3>
 	<dl>
 		<dt>Like</dt>
 			<dd>+1</dd>
 		<dt>Dislike</dt>
 			<dd>-1</dd>
-		<dt>N</dt>
-			<dd>Number of All Users</dd>
-		<dt>T</dt>
-			<dd>Time of All Users</dd>
-		<dt>t</dt>
-			<dd>Time of 1 User</dd>
-		<dt>Minimum Offset<dt>
-			<dd>-(1 + 1/(N-2))(T/N)</dd>
-			<dd>Occurs if a user received no likes and gave no likes</dd>
-		<dt>Maximum Offset</dt>
-			<dd>N - 1</dd>
-			<dd>Occurs if all users in a channel like only the same single user in a single cycle</dd>
-		<dt>Offset Equalizer (&Delta;)</dt>
-			<dd>-(1/(N-2))t</dd>
-			<dd>Applied to users that are not the source or destination user</dd>
-		<dt>o</dt>
-			<dd>Offset of Previous Cycle</dd>
 		<dt>Diminishing Carry</dt>
-			<dd>1/(2^o)</dd>
-			<dd>Marks from the previous 3 cycle are carried over with this formula</dd>
+			<dd>1/(2^offset)</dd>
+			<dd>Marks from the previous 3 cycles are carried over with this formula</dd>
+		<dt>Freebie</dt>
+			<dd>50% of the time you have in a cycle</dd>
+			<dd>Equality part in the big tradeoff of economics</dd>
 	</dl>
 	<h3>Cycle Data</h3>
 	<dl>
@@ -222,16 +206,11 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
 		if (1) { ?> 
-				Time in Cycle:
+				Time Weight:
 				<?= $channel['source_user_id'][$kd1]['before']['time_weight'] + $channel['source_user_id'][$kd1]['after']['time_weight']; ?>
 			<br />
-				Average Difference:
-				<?= $channel['computed_weight']['aggregate']['average_difference'][$kd1]; ?>
-			<br />
-				Weighted Credit: <?
-					$d1 = $channel['computed_weight']['aggregate']['weighted_credit'][$kd1];
-					echo !empty($d1) ? $d1 : '0';
-				?> 
+				Like Weight:
+				<?= $channel['computed_weight']['aggregate']['weight_sum'][$kd1]; ?>
 			<br />
 				<strong>Payout</strong>:
 				$<?= round($d3 * $channel['computed_weight']['aggregate']['weighted_credit'][$kd1], 2); ?><?
@@ -270,7 +249,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 			<dt>System</dt>
 				<dd>
 					<?= ($channel['computed_weight']['aggregate']['nmath'][$kd1]); ?>
-					<span style="color: #777;"><?= ($channel['computed_weight']['aggregate']['weighted_credit_math'][$kd1]); ?></span>
+					<!-- <span style="color: #777;"><?= ($channel['computed_weight']['aggregate']['weighted_credit_math'][$kd1]); ?></span> -->
+					<span style="color: #777;"><?= ($channel['source_user_id'][$kd1]['combined']['time_weight'])*$equalizer; ?></span>
 				</dd>
 		</dl><?
 	}

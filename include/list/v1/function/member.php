@@ -222,7 +222,6 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	foreach ($channel['member_list'] as $k1 => $v1) {
 		# reset alias for this loop
 		$kis = & $channel['source_user_id'][$k1];
-		# todo factor in diminishing carry
 		foreach ($a1 as $k11 => $v11) {
 		foreach ($a2 as $k12 => $v12) {
 			$i1 = 0;
@@ -237,7 +236,8 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 			}
 			if (!empty($i1)) {
 				if (1) {
-					# need to scale by destination user time
+					# scale by destination user time
+					# so part time users will be less likely to receive higher payout
 					# (loses the ability to see the integer amount of likes)
 					$kist = & $channel['source_user_id'][$destination_user_id];
 					$kista = & $kist['after']['time_weight'];
