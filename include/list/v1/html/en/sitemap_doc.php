@@ -119,11 +119,13 @@ function hide_other_area(string, showall) {
 
 	<dl>
 		<? print_sitemap_link('top_report'); ?> 
-		<dd><?= tt('page', 'top_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
+		<dd><?= tt('page', 'top_report', 'translation_description'); ?> - <span class="access_mixed"><?= tt('element', 'access_mixed'); ?></span></dd>
 		<? print_sitemap_link('new_report'); ?> 
-		<dd><?= tt('page', 'new_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
+		<dd><?= tt('page', 'new_report', 'translation_description'); ?> - <span class="access_mixed"><?= tt('element', 'access_mixed'); ?></span></dd>
 		<?= print_sitemap_link('search_report'); ?> 
-		<dd><?= tt('page', 'search_report', 'translation_description'); ?> - <?= tt('element', 'access_mixed'); ?></dd>
+		<dd><?= tt('page', 'search_report', 'translation_description'); ?> - <span class="access_mixed"><?= tt('element', 'access_mixed'); ?></span></dd>
+		<?= print_sitemap_link('member_report'); ?> 
+		<dd><?= tt('page', 'member_report', 'translation_description'); ?> - <span class="access_user_all"><?= tt('element', 'access_user_all'); ?></span></dd>
 	</dl>
 </div>
 

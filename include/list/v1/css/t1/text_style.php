@@ -62,6 +62,9 @@ input, select, textarea {
 .access_public_web {
 	color: #cc0000;
 	}
+.access_mixed {
+	color: #7f5d1b;
+	}
 .access_user_all {
 	color: #ee7700;
 	}
