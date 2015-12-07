@@ -3091,3 +3091,15 @@ insert into ts_element set name='channel_parent_id';
 
 -- accomodate alternate scoring page
 insert into  ts_page set  parent_id = 321,  file_id = 14,  name = 'cycle_report',  `order` = 2,  launch = 2,  monitor = 2,  login = 1,  advanced = 2 ;
+
+-- no membership_list/edit and carry_list
+delete from ts_page where id in (431,432,446);
+
+-- cleanup
+-- these tables can be removed but renaming is safer
+RENAME TABLE `ts_renewage` TO `rm_ts_renewage` ;
+RENAME TABLE `ts_grade` TO `rm_ts_grade` ;
+RENAME TABLE `ts_gauge_renewal` TO `rm_ts_gauge_renewal` ;
+RENAME TABLE `ts_membership` TO `rm_ts_membership` ;
+RENAME TABLE `ts_carry` TO `rm_ts_carry` ;
+RENAME TABLE `ts_rating` TO `rm_ts_rating` ;
