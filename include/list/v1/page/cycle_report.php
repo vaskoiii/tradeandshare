@@ -103,15 +103,16 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 $data['user_report']['channel_list'] = array();
 # alias
 $channel_list = & $data['user_report']['channel_list'];
-# get only the channel that was specified if applicable
+# get only the cycle that was specified
 $sql = '
 	select
-		cnl.id
+		cnl.parent_id as id
 	from
-		' . $config['mysql']['prefix'] . 'channel cnl
+		' . $config['mysql']['prefix'] . 'channel cnl,
+		' . $config['mysql']['prefix'] . 'cycle cce
 	where
-		cnl.id = cnl.parent_id
-		' . (get_gp('channel_parent_id') ? ' and cnl.id = ' . (int)get_gp('channel_parent_id') : '') . '
+		cnl.id = cce.channel_id and
+		cce.id = ' . (int)get_gp('cycle_id') . '
 	order by
 		cnl.id asc
 	limit 1
@@ -324,6 +325,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	# helper array
 	$channel['computed_time']['lowest'] = 0;
 	$lowest = & $channel['computed_time']['lowest'];
+	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {
 		# setup a combined time weight variable
 		$kis = & $channel['source_user_id'][$k1];
@@ -333,8 +335,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 			$lowest = $kis['combined']['time_weight'];
 		$channel['computed_time']['combined'][$k1] =  $kis['combined']['time_weight'];
 	}
-	arsort($channel['computed_time']['combined']);
-	# echo '<pre>'; print_r($channel); echo '</pre>'; exit;
+	if (!empty($channel['computed_time']['combinded']))
+		arsort($channel['computed_time']['combined']);
 	# moved down because member time is important when computing score
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['destination_user_id'] as $kd1 => $vd1) {
@@ -519,25 +521,31 @@ foreach ($channel_list as $kc1 => $vc1) {
 }
 # liking 1 time or more automatically uses max points
 $equalizer = .5; # todo allow configurability from 0 to 100%
-arsort($channel['computed_weight']['aggregate']['weight_sum']);
+if (!empty($channel['computed_weight']['aggregate']['weight_sum']))
+	arsort($channel['computed_weight']['aggregate']['weight_sum']);
 $aggregate= & $channel['computed_weight']['aggregate'];
 $aggregate['info']['total'] = 0;
+if (!empty($aggregate['weight_sum']))
 foreach ($aggregate['weight_sum'] as $k1 => $v1) {
 	$aggregate['info']['total'] += $v1;
 }
 if (1) {
 	$aggregate['info']['time_count'] = 0;
+	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {
 		$kis = & $channel['source_user_id'][$k1];
 		$aggregate['info']['time_count'] += $kis['before']['time_weight'];
 		$aggregate['info']['time_count'] += $kis['after']['time_weight'];
 	}
 }
-$aggregate['info']['average'] = $aggregate['info']['total'] / $aggregate['info']['time_count'];
+$aggregate['info']['average'] = 0;
+if (!empty($aggregate['info']['total']))
+if (!empty($aggregate['info']['time_count']))
+	$aggregate['info']['average'] = $aggregate['info']['total'] / $aggregate['info']['time_count'];
 $aggregate['average_difference'] = array();
-foreach ($aggregate['weight_sum'] as $k1 => $v1)
-	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
+if (!empty($aggregate['weight_sum']))
 foreach ($aggregate['weight_sum'] as $k1 => $v1) {
+	$aggregate['average_difference'][$k1] = $v1 - $aggregate['info']['average'];
 	# free points section (so that no user will be negative)
 	$kis = & $channel['source_user_id'][$k1];
 	$aggregate['weighted_credit_math'][$k1] = $kis['combined']['time_weight']*$equalizer . ' + ' . $v1;
@@ -552,4 +560,5 @@ foreach ($aggregate['average_difference'] as $k1 => $v1) {
 		$aggregate['info']['highest'] = $v1;
 }
 # adjusted by time weights
-arsort($channel['computed_weight']['aggregate']['weighted_credit']);
+if (!empty($channel['computed_weight']['aggregate']['weighted_credit']))
+	arsort($channel['computed_weight']['aggregate']['weighted_credit']);

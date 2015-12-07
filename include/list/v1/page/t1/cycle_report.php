@@ -67,9 +67,7 @@ if (!empty($data['user_report']['premature_channel_list'])) { ?>
 		$s1 .= ' : ';
 		$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
 		echo '<h3>' . $s1 . '</h3>'; ?>
-		<p>cycle not ready for payout</p>
-		<? # todo use ffm() ?>
-		<p>please see the <a href="<?= ffm('cycle_id=', 0); ?>">latest cycle for payout</a><?
+		<p>cycle not ready for payout</p><?
 	} ?> 
 	<? print_break_close(); ?>
 	</div><?
