@@ -214,7 +214,7 @@ function getMatchArray(tsType, myString) {
 	var suggest_more_html = '';
 	// to print a message with no result put it here
 	if (tsl_matched == 0)
-		suggest_more_html = getSuggestMoreNoResult();
+		suggest_more_html = getSuggestMoreNoResult(tsType);
 	var i = 0;
 	var tsl_0_href;
 	for (var k1 in tsl_match) {
@@ -252,7 +252,18 @@ function getMatchArray(tsType, myString) {
 	}
 }
 // If no result is found from input text
-function getSuggestMoreNoResult() {
+function getSuggestMoreNoResult(tsType) {
+	switch(tsType) {
+		case 'peopler':
+			return '<p>No Results</p><p><a href="/contact_edit/">Add a Contact</a></p>';
+		break;
+		case 'pager':
+			return '<p>No Results</p><p><a href="/sitemap_doc/">See Sitemap</a></p>';
+		break;
+		case 'scanner':
+			// no dynamic content
+		break;
+	}
 	return '';
 }
 // empty input | first launch
