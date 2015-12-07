@@ -37,3 +37,6 @@ if (isset($_SESSION['process']['action_content_1']) && !isset($_SESSION['process
 		$action_content_1[$k1] = $v1;
 	}
 }
+# default to remember login
+if (empty($_SESSION['process']['action_content_1']))
+	$action_content_1['remember_login'] = 1;
