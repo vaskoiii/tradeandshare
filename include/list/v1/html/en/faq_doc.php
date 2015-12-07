@@ -69,12 +69,15 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 <div class="notice" style="margin: 0px -18px; margin-top: -10px;">
 	Latest Modifications...
 </div>
+<div class="doc_box">
+	<h3>Listing things that have no time-to-renew?</h3>
+	<p>Selecting the status of [Listed] for items such as info, links, or free software that already exist and can be reproduced indefinately with negligible cost or time is a best practice. These items are not intended to be [Wanted] or [Available] because they have infinite supply, and they are already obtained once realized.</p>
+</div>
 
 <div class="doc_box">
 	<h3>Web Feeds do NOT work in Mozilla Thunderbird?</h3>
 	<p>Web Feeds actually work fine in Thunderbird but Thunderbird will fail (even fail silently) so it will appear that the TS Web Feeds do not work. This is because Thunderbird requires valid certificates and if they are not valid the domain of this website [https://<?= to_html($_SERVER['HTTP_HOST']); ?>]  must be manually added to Thunderbird in the Advanced and then Certificates section. After an exception is added Web Feeds will work in Thunderbird.</p>
 </div>
-
 
 <div class="doc_box">
 	<h3>Tab Navigation in Firefox?</h3>
