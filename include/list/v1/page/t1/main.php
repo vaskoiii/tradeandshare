@@ -134,6 +134,7 @@ if ($_SESSION['login']['login_user_id']) { ?>
 					<li><a href="top_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'top_report'); ?></a></li>
 					<li><a href="new_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'new_report'); ?></a></li>
 					<li><a href="search_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'search_report'); ?></a></li>
+					<li><a href="member_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'member_report'); ?></a></li>
 				</ul>
 			</div>
 		</div>
