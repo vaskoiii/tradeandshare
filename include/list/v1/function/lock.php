@@ -342,6 +342,7 @@ function search_lock(& $base, $type, $login_user_id) {
 				$where[] = 'u2.id = t1.destination_user_id';
 			}
 		break;
+		case 'accounting':
 		case 'comment':
 		case 'category':
 		case 'cost':
@@ -369,7 +370,6 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'tag':
 		case 'team':
 		case 'teammate':
-		case 'transaction':
 		case 'translation':
 		case 'user':
 		case 'vote':

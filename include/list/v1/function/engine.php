@@ -789,16 +789,19 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
 				)';
 		break;
-		case 'transaction': # log
-			$select[] = 't1.id AS transaction_id';
+		case 'accounting': # log
+			$select[] = 't1.id AS accounting_id';
 			$select[] = 't1.class_id';
 			$select[] = 't1.class_name_id';
-			$select[] = 't1.value as transaction_value';
+			$select[] = 't1.value as accounting_value';
+			$select[] = 'cs.name as class_name';
 
 			# membership duration taken from config
 			$select[] = 't1.modified';
-			$from[] = $prefix . 'transaction t1';
+			$from[] = $prefix . 'accounting t1';
 				$where[] = 't1.active = 1';
+			$from[] = $prefix . 'class cs';
+				$where[] = 'cs.id = t1.class_id';
 			# should probably work like translation to get the class data by iid
 			$where[] = 't1.user_id = u.id';
 			if (isset_gp('keyword'))

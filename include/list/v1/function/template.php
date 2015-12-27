@@ -206,7 +206,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'cycle_id':
 			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$v1];
 		break;
-		case 'transaction_value':
+		case 'accounting_value':
 		case 'cost_value':
 		case 'channel_value':
 		// case 'cycle_value':
@@ -732,6 +732,9 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					. to_html($key[ $s1 . '_id' ]['result'][  $listing['kind_name_id']  ][ $s1 . '_name' ])
 				. ')</span>';
 			}
+		break;
+		case 'class_name':
+			$grab .= '<span class="class_name">(' . to_html($listing['class_name']) . ')</span>';
 		break;
 		case 'checkbox': # checkboxes are intended to be reimplemented and toggled on by clicking [Select] right next to [Edit] in the title bar 2012-05-06 vaskoiii
 			if ($load == 'atom')

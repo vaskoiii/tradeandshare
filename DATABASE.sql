@@ -3103,3 +3103,21 @@ RENAME TABLE `ts_gauge_renewal` TO `rm_ts_gauge_renewal` ;
 RENAME TABLE `ts_membership` TO `rm_ts_membership` ;
 RENAME TABLE `ts_carry` TO `rm_ts_carry` ;
 RENAME TABLE `ts_rating` TO `rm_ts_rating` ;
+
+RENAME TABLE `ts_vote` TO `rm_ts_vote` ;
+
+
+alter table ts_decision rename rm_decision;
+alter table ts_group rename rm_group;
+alter table ts_link_contact_group rename rm_index_group_user;
+
+-- accounting --
+alter table ts_transaction rename ts_accounting;
+alter table ts_cost rename rm_cost;
+alter table ts_outcome rename rm_outcome;
+update ts_page set name = 'accounting_list' where name = 'transaction_list';
+update ts_page set name = 'accounting_edit' where name = 'transaction_edit';
+
+update ts_class set name = 'renewal' where id=3;
+update ts_class set name = 'cycle' where id = 2;
+update ts_class set name = 'bitcoin' where id = 4;
