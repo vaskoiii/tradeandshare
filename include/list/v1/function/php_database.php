@@ -330,8 +330,8 @@ function get_mask_subject($type, $display) {
 		break;
 		case 'accounting':
 			$array = array(
-				'class_name' => 'class_name',
-				'class_name_spacer' => '_',
+				'kind_name' => 'kind_name',
+				'kind_name_spacer' => '_',
 				'accounting_value' => 'accounting_value',
 			);
 		break;
@@ -755,10 +755,10 @@ function lt_detail($type) {
 	switch($type) {
 		case 'accounting':
 			$array = array(
-				'class_id' =>'class_id',
-				'class_id_spacer' => '_',
-				'class_name_id' => 'class_name_id',
-				'class_name_spacer' => '_',
+				'kind_id' =>'kind_id',
+				'kind_id_spacer' => '_',
+				'kind_name_id' => 'kind_name_id',
+				'kind_name_spacer' => '_',
 			);
 		break;
 		case 'feed':

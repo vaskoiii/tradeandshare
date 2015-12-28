@@ -3121,3 +3121,22 @@ update ts_page set name = 'accounting_edit' where name = 'transaction_edit';
 update ts_class set name = 'renewal' where id=3;
 update ts_class set name = 'cycle' where id = 2;
 update ts_class set name = 'bitcoin' where id = 4;
+
+-- merge class/kind --
+ALTER TABLE `ts_accounting` CHANGE `class_id` `kind_id` INT( 11 ) NOT NULL , CHANGE `class_name_id` `kind_name_id` INT( 11 ) NOT NULL ;
+ALTER TABLE `ts_kind` ADD `accounting` TINYINT NOT NULL AFTER `name` , ADD INDEX ( `accounting` ) ;
+update ts_kind set accounting = 2;
+update ts_kind set accounting = 1 where name like 'cycle';
+update ts_kind set accounting = 1 where name like 'renewal';
+INSERT INTO `ts_kind` ( `id` , `name` , `accounting` , `translation` , `minder` , `score`) VALUES ( NULL , 'manual', '1', '1', '2', '2'); 
+alter table ts_class rename rm_class;
+update ts_accounting set kind_id = 56;
+
+
+CREATE TABLE IF NOT EXISTS `ts_manual` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) NOT NULL,
+  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `modified` (`modified`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

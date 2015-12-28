@@ -213,12 +213,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'renewal_value':
 			$grab .= '$' . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
 		break;
-
-		# todo print human readable data for:
-		case 'class_id':
-		case 'class_name_id':
-			$grab .= to_html($k1) . ': ' . $listing[$k1]; 
-		break;
 		case 'channel_percent':
 			$grab .= (int)$listing[$k1] . '%';
 		break;
@@ -732,9 +726,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					. to_html($key[ $s1 . '_id' ]['result'][  $listing['kind_name_id']  ][ $s1 . '_name' ])
 				. ')</span>';
 			}
-		break;
-		case 'class_name':
-			$grab .= '<span class="class_name">(' . to_html($listing['class_name']) . ')</span>';
 		break;
 		case 'checkbox': # checkboxes are intended to be reimplemented and toggled on by clicking [Select] right next to [Edit] in the title bar 2012-05-06 vaskoiii
 			if ($load == 'atom')
