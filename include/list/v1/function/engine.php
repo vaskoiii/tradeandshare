@@ -31,6 +31,9 @@ function prepare_engine(& $base, $type, $login_user_id) {
 
 	$s1 = get_main_table_alias($type);
 	switch($type) {
+		case 'accounting':
+			$where[] = $s1 . '.user_id != ' . (int)$login_user_id;
+		break;
 		case 'user':
 			$where[] = $s1 . '.id != ' . (int)$login_user_id;
 		break;

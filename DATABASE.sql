@@ -3140,3 +3140,10 @@ CREATE TABLE IF NOT EXISTS `ts_manual` (
   PRIMARY KEY (`id`),
   KEY `modified` (`modified`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+update ts_element set name = 'accounting_uid' where name like 'transaction_uid';
+update ts_element set name = 'find_accounting' where name like 'find_transaction';
+
+alter table ts_accounting modify modified timestamp;
+alter table ts_manual modify modified timestamp;
