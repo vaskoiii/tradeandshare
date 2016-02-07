@@ -393,7 +393,8 @@ function get_renewal_accounting_array(& $renewal, $user_id) {
 		where
 			user_id = ' . (int)$user_id
 	;
-	print_debug($sql);
+	if ($config['debug'] == 1)
+		print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$renewal['accounting']['value_sum'] = $row['value_sum'];
