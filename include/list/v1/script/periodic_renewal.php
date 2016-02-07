@@ -3,21 +3,15 @@
 # description: process the autorenewing cycles and renewals together ( first implementation will be daily cron )
 # warning: changing a timeframe_id does not count as a modification
 
-$cfg['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
-$cfg['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
-# comment out for live data:
-# $data['run']['datetime'] = array(
-# 	'previous' => '2015-05-30 00:00:00',
-# 	'current' => '2015-06-01 00:00:00',
-# 	'next' => '2015-06-02 00:00:00',
-# );
-
 # issue
 # - doesn't account for credit
 # - doesn't account for score value
 # - the frequency with which this script (and periodic renewal) run may be the limiting factor in how fine grained the renewals can happen. ie) if it runs daily cycles may only be able account for yyyy-mm-dd and not hh:mm:ss (Y-m-d H-i-s)
 # - script dependancies are different from normal dependancies because they do not have access to .htaccess
 # - member function calls are not optimized ie) get_cycle_array() make 3 function calls
+
+# todo prepare crafted data for testing (this alone may be pretty intense)
+# todo - currently working on crafted cycle data for funds available check
 
 # todo script to reset timeframe_id - if run on every page load there will never be a delay in the correct timeframe
 # todo use locking on renewals during script run - if data can change while this script is being run this could be problematic
@@ -26,20 +20,27 @@ $cfg['write_protect'] = 2; # must be 2 for live data (will not write to the db i
 # todo factor in available funds
 # todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
 
+# config
+include('../config/preset.php');
+
+# override
+# $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
+$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
+
 # see also:
 # config/dependancy.php
-
-# config
-$script['include_path'] = '/www/site/list/include/list/v1/';
-
-# dependancy
-include($script['include_path'] . 'config/preset.php');
-include($script['include_path'] . 'inline/mysql_connect.php');
-include($script['include_path'] . 'function/main.php');
-include($script['include_path'] . 'function/member.php');
+include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
+include($config['include_path'] . 'list/v1/function/main.php');
+include($config['include_path'] . 'list/v1/function/member.php');
 
 # var
-if (empty($data['run']['datetime']))
+if ($config['debug'] == 1)
+	$data['run']['datetime'] = array(
+		'previous' => '2015-05-30 00:00:00',
+		'current' => '2015-06-01 00:00:00',
+		'next' => '2015-06-02 00:00:00',
+	);
+else
 	$data['run']['datetime'] = get_run_datetime_array();
 
 echo "rdatetime\n";
@@ -117,7 +118,7 @@ if (!empty($bcycle['all'])) {
 				id in (' . implode(', ', $bcycle['end']) . ')
 		';
 		print_debug($sql);
-		if ($cfg['write_protect'] != 1)
+		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 		# remove furture cycles if they were already inserted (safety)
 		foreach ($bcycle['end'] as $k1 => $v1) {
@@ -195,7 +196,7 @@ if (1) {
 					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
 			;		
 			print_debug($sql);
-			if ($cfg['write_protect'] != 1)
+			if ($config['write_protect'] != 1)
 				mysql_query($sql) or die(mysql_error());
 		}
 		unset($achannel[$k1]);
@@ -213,7 +214,7 @@ if (1) {
 			point_id != 3
 	';
 	print_debug($sql);
-	if ($cfg['write_protect'] != 1)
+	if ($config['write_protect'] != 1)
 		mysql_query($sql) or die(mysql_error());
 }
 unset($achannel);
@@ -285,19 +286,74 @@ foreach ($acycle as $k1 => $v1) {
 		echo "{{\n";
 		get_renewal_array($acycle[$k1], $auser[$k2], $channel_parent_id, $k2);
 		get_renewal_next_data($acycle[$k1], $auser[$k2]);
+		# echo 'dataprint'; print_r($data); exit;
 		# print_r($auser[$k2]); echo "\n";
 		if (!empty($auser[$k2]['next']['renewal_id'])) {
 			echo "do nothing renewal is already handled (may not happen)\n";
 		}
 		else {
+			if ($config['debug'] == 1) {
+				# first version of crafted data
+				echo 'crafting $auser[$k2]' . "\n";
+				# todo crafting an autorenewal?
+				# this get set for each user!
+				# todo make it so only a single user is easily targeted in debug mode
+				# (may have to set hardcodes in the functions too)
+				$auser[$k2] = array(
+					'current' => array(
+						'renewal_id' => 571,
+						'renewal_start' => '2016-01-14 01:54:43',
+						'point_id' => 2,
+					),
+					'previous' => array(
+						'renewal_id' => 566,
+						'renewal_start' => '2016-01-07 01:54:43',
+						'point_id' => 2,
+					),
+					'next' => array(
+						'r2c_day' => 6.8388425925926,
+						'r2c_ratio' => 0.023022486772487,
+						'r2c_score' => 0,
+						'r2c_renewal' => 2.3022486772487,
+						'c2r_day' => 0.16115740740741,
+						'c2r_ratio' => 0.97697751322751,
+						'c2r_score' => 0,
+						'c2r_renewal' => 97.697751322751,
+						'renewal_start' => '2016-01-21 01:54:43',
+					),
+				);
+			}
 			$i1 = $auser[$k2]['current']['point_id'];
+			# print_r($auser); exit;
 			switch($i1) {
 				# insert a new entry for continue/nextend
 				case '4':
 					$i1 = 3; # not autorenewing
 				# nobreak;
 				case '2':
-					insert_renewal_next($acycle[$k1], $auser[$k2], $channel_parent_id, $k2, $i1, $rdatetime['next']);
+					get_renewal_accounting_array($auser[$k2], $k2);
+
+					echo 'accounting_start' . "\n";
+					print_r($auser[$k2]);
+					if (($auser[$k2]['accounting']['resulting_balance'] >= 0))
+						insert_renewal_next($acycle[$k1], $auser[$k2], $channel_parent_id, $k2, $i1, $rdatetime['next']);
+					else {
+						echo 'not autorenewing due to insufficient funding' . "\n";
+						$sql = '
+							update
+								' . $prefix . 'renewal
+							set
+								point_id = 3
+							where
+								user_id = ' . (int)$k2 . ' and
+								renewal_id = ' . (int)$auser[$k2]['current']['renewal_id'] . '
+							limit 1
+						';
+						print_debug($sql);
+						if (!$config['write_protect'] == 1)
+							mysql_query($sql) or die(mysql_error());
+					}
+					echo 'accounting_end' . "\n";
 				break;
 				default:
 					echo 'no insertion for point_id = ' . (int)$i1 . "\n";
@@ -318,7 +374,7 @@ foreach ($acycle as $k1 => $v1) {
 						id = ' . (int)$auser[$k2]['previous']['renewal_id']
 				;
 				print_debug($sql);
-				if ($cfg['write_protect'] != 1)
+				if ($config['write_protect'] != 1)
 					mysql_query($sql) or die(mysql_error());
 				if (1) {
 					# set current renewal to present
@@ -331,7 +387,7 @@ foreach ($acycle as $k1 => $v1) {
 							id = ' . (int)$auser[$k2]['current']['renewal_id'] . '
 					';
 					print_debug($sql);
-					if ($cfg['write_protect'] != 1)
+					if ($config['write_protect'] != 1)
 						mysql_query($sql) or die(mysql_error());
 				}
 				# next renewal was already set to future by marked by insert_renewal_next()

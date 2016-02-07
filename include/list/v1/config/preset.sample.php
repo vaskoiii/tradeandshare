@@ -56,6 +56,7 @@ $config['everyone_team_id'] = 103; # <|*|>
 $config['root_tag_id'] = 1; # <|!|> 
 $config['main_location_id'] = 1; # <|?|>
 $config['autocreation_user_id'] = '111'; # |root|
+$config['renewal_kind_id'] = 49; # used for accounting debits
 # drop < and > from user_name as as every user_name is reserved
 
 $config['max_tag_depth'] = 5; # safe recursive limit on how deep tags can go 2012-02-23 vaskoiii

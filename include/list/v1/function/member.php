@@ -371,10 +371,47 @@ function get_cycle_last_start($channel_parent_id, $datetime) {
 	');
 }
 
+# renewal_accounting
+function get_renewal_accounting_array(& $renewal, $user_id) {
+	# precall
+	# - get_renewal_array() ?
+	# - get_renewal_next_data()
+
+	global $config;
+	global $prefix;
+	
+	if ($config['debug'] == 1) {
+		echo "\n";
+		echo 'todo make sure the user has enough funds';
+		echo "\n";
+	}
+	$sql = '
+		select
+			sum(value) as value_sum
+		from
+			' . $prefix . 'accounting
+		where
+			user_id = ' . (int)$user_id
+	;
+	print_debug($sql);
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		$renewal['accounting']['value_sum'] = $row['value_sum'];
+	}
+	# todo verify correct if cycles have different costs
+	$renewal['accounting']['renewal_cost'] = $renewal['next']['c2r_renewal'] + $renewal['next']['r2c_renewal'];
+	$renewal['accounting']['resulting_balance'] = $renewal['accounting']['value_sum'] - $renewal['accounting']['renewal_cost'];
+}
+
 # renewal
 function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id, $point_id, $datetime) {
 	# precall
+	# - get_renewal_array() ?
 	# - get_renewal_next_data()
+	# - get_renewal_accounting_array()
+
+	# does not care if there is not enough funding
+	# must check before calling insert_renewal_next() if not wanting to allow negative balance
 
 	global $config;
 	global $prefix;
@@ -426,7 +463,27 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 
-		$i1 = mysql_insert_id();
+		# needed for charging the renewal cost
+		$nrenewal['renewal_id'] = mysql_insert_id();
+
+		# requires $renewal['accounting'] to be setup outside this function
+		# todo make this dependency more clear
+		$sql = '
+			insert into
+				' . $prefix . 'accounting
+			set
+				user_id = ' . (int)$user_id . ',
+				kind_id = ' . (int)$config['renewal_kind_id'] . ',
+				kind_name_id = ' . (int)$nrenewal['renewal_id'] . ',
+				value = ' . -(double)$renewal['accounting']['renewal_cost'] . ',
+				modified = now(),
+				active = 1
+		';
+		if ($config['debug'] == 1)
+			print_debug($sql);
+		if (!$config['write_protect'] == 1)
+			mysql_query($sql) or die(mysql_error());
+
 		# todo placeholder to insert carry over score
 
 		# todo grant payout based on:
@@ -864,6 +921,14 @@ function is_renewal_start($cycle_id, $user_id) {
 		break;
 	}
 }
+function dummy_renewal_start($now) { 
+	# needed for calculating accounting value_sum
+	global $config; 
+	return array( 
+		'renewal_start' => $now, 
+		'point_id' => '1', 
+	); 
+} 
 function insert_renewal_start($cycle_id, $user_id) {
 	global $config;
 	global $prefix;
