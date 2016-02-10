@@ -482,7 +482,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		';
 		if ($config['debug'] == 1)
 			print_debug($sql);
-		if (!$config['write_protect'] == 1)
+		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 
 		# todo placeholder to insert carry over score
