@@ -26,6 +26,7 @@ include('../config/preset.php');
 # override
 # $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
+$config['craft'] = 2; # comment out to not use crafted data
 
 # see also:
 # config/dependancy.php
@@ -34,7 +35,7 @@ include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 
 # var
-if ($config['debug'] == 1)
+if ($config['craft_data'] == 1)
 	$data['run']['datetime'] = array(
 		'previous' => '2015-05-30 00:00:00',
 		'current' => '2015-06-01 00:00:00',
@@ -292,7 +293,7 @@ foreach ($acycle as $k1 => $v1) {
 			echo "do nothing renewal is already handled (may not happen)\n";
 		}
 		else {
-			if ($config['debug'] == 1) {
+			if ($config['craft'] == 1) {
 				# first version of crafted data
 				echo 'crafting $auser[$k2]' . "\n";
 				# todo crafting an autorenewal?
