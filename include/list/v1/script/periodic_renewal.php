@@ -21,7 +21,8 @@
 # todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
 
 # config
-include('../config/preset.php');
+# needs the magic variable for cron
+require(__DIR__ . '/../config/preset.php');
 
 # override
 # $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
