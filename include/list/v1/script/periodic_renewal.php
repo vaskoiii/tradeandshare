@@ -35,7 +35,7 @@ include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 
 # var
-if ($config['craft_data'] == 1)
+if ($config['craft'] == 1)
 	$data['run']['datetime'] = array(
 		'previous' => '2015-05-30 00:00:00',
 		'current' => '2015-06-01 00:00:00',
