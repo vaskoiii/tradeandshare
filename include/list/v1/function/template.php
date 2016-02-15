@@ -818,7 +818,15 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 						'expand' => array(get_load_same_edit($load)),
 					);
 					# inline style needed for html mail 2012-05-06 vaskoiii
-					$grab .= $spacer . '<a ' . $href_rss_start  . ffm(http_build_query($a1), 0) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
+					# todo enable edits right from top_report
+					# (additions for items are already supported on top report)
+					$s2 = '';
+					switch ($x['page']['name']) {
+						case 'top_report':
+							$s2 = $x['.'] . $s1 . '_edit/';
+						break; 
+					}
+					$grab .= $spacer . '<a ' . $href_rss_start . $s2 . ffm(http_build_query($a1), 0) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
 				}
 			break;
 		} }
