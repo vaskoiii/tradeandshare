@@ -70,6 +70,7 @@ if (1) {
 	}
 	if (!empty($channel_list))
 	foreach ($channel_list as $k1 => $v1) {
+		# todo check that this function is not tring to get the latest cycle more than 1 time
 		$v1['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
 	}
 }
@@ -101,30 +102,34 @@ foreach ($channel_list as $k1 => $v1) {
 	# when setting an alias within a foreach it will have to be set again in the t1 file =(
 	$channel = & $channel_list[$k1];
 
-	do_payout_computation($channel, $k1, $v1['seed']['cycle_id']);
-	get_payout_array($channel);
-	# echo '<pre>'; print_r($channel['payout']); echo '</pre>';
+	if (!empty($v1['seed']['cycle_id'])) {
+		do_payout_computation($channel, $k1, $v1['seed']['cycle_id']);
+		get_payout_array($channel);
+		# echo '<pre>'; print_r($channel['payout']); echo '</pre>';
 
-	# kind of a waste of a variable name
-	$payout = & $channel['payout'];
-	foreach ($payout['user_id'] as $k1p => $v1p) {
-		# todo sql for insert
-		$sql = '
-			insert into
-				' . $prefix . 'accounting
-			set
-				user_id = ' . (int)$k1p . ',
-				kind_id = ' . (int)$config['cycle_kind_id'] . ',
-				kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
-				value = ' . (double)$v1p . ',
-				modified = now(),
-				active = 1
-		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		# kind of a waste of a variable name
+		$payout = & $channel['payout'];
+		foreach ($payout['user_id'] as $k1p => $v1p) {
+			# todo sql for insert
+			$sql = '
+				insert into
+					' . $prefix . 'accounting
+				set
+					user_id = ' . (int)$k1p . ',
+					kind_id = ' . (int)$config['cycle_kind_id'] . ',
+					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
+					value = ' . (double)$v1p . ',
+					modified = now(),
+					active = 1
+			';
+			if ($config['debug'] == 1)
+				print_debug($sql);
+			if ($config['write_protect'] != 1)
+				mysql_query($sql) or die(mysql_error());
+		}
 	}
+	else
+		echo "channel not ready for payout \n";
 } }
 else
 	die('no cycles ended yesterday');
