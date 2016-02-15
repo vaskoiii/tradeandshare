@@ -43,6 +43,7 @@ require($x['site']['i'] . '/function/lock.php');
 require($x['site']['i'] . '/function/css.php');
 require($x['site']['i'] . '/function/file.php');
 require($x['site']['i'] . '/function/member.php');
+require($x['site']['i'] . '/function/payout.php');
 
 # form processing
 require($x['site']['i'] . '/function/process.php');

@@ -281,19 +281,38 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 			$kid['source_user_id_score_count'][$k1]
 		);
 	} }
+	if (!empty($kid['score_offset']))
 	foreach($kid['score_offset'] as $k2 => $v2) {
 	if (!empty($v2)) {
 		foreach($v2['mark_count'] as $k3 => $v3) {
-		$kid['score_offset'][$k2]['net_count'][$k3] = abs($v2['like_count'][$k3] - $v2['dislike_count'][$k3]);
+
+		# values are often empty for brevity
+		$i0like = 0;
+		if (!empty($v2['like_count'][$k3]))
+			$i0like =  $v2['like_count'][$k3];
+
+		$i0dislike = 0;
+		if (!empty($v2['dislike_count'][$k3]))
+			$i0dislike = $v2['dislike_count'][$k3];
+
+		# got too many warnings
+		# $kid['score_offset'][$k2]['net_count'][$k3] = abs($v2['like_count'][$k3] - $v2['dislike_count'][$k3]);
+		$kid['score_offset'][$k2]['net_count'][$k3] = abs($i0like - $i0dislike);
+
 		# don't allow less than 0 on payout (probably ok in other computations)
 		if ($kid['score_offset'][$k2]['net_count'][$k3] < 0)
 			$kid['score_offset'][$k2]['net_count'][$k3] = 0;
 		if (!empty($v3)) {
 			$kid['score_offset'][$k2]['score_sum'][$k3] = (
-				$v2['like_count'][$k3]
+				$i0like
 				-
-				$v2['dislike_count'][$k3]
+				$i0dislike
 			);
+			# $kid['score_offset'][$k2]['score_sum'][$k3] = (
+			# 	$v2['like_count'][$k3]
+			# 	-
+			# 	$v2['dislike_count'][$k3]
+			# );
 			$kid['score_offset'][$k2]['score_sum'][$k3];
 			$kid['score_offset'][$k2]['score_average'][$k3] = (
 				$kid['score_offset'][$k2]['score_sum'][$k3]

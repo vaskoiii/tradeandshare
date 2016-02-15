@@ -81,7 +81,8 @@ elseif (empty($channel_list)) { ?>
 else
 foreach ($channel_list as $kc1 => $vc1) {
 	# alias
-	$channel = & $channel_list[$kc1]; ?>
+	$channel = & $channel_list[$kc1];
+	$payout = & $channel['payout']; ?>
 	<div id="channel_<?= (int)$kc1; ?>" class="content_box"><?
 	$s1  = $vc1['info']['name'];
 	$s1 .= ' : ';
@@ -159,14 +160,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>Computation</h3>
 	<dl>
 		<dt>Channel Total</dt>
-		<dd>$<?
-			$d1 = 0;
-			if (!empty($channel['computed_cost']['combined']))
-				$d1 = array_sum($channel['computed_cost']['combined']);
-			echo to_html($d1); ?> 
-		</dd>
+		<dd>$<?= to_html($payout['total']); ?></dd>
 		<dt>Host Fee (<?= to_html($config['hostfee_percent']); ?>% of Channel Total)</dt>
-		<dd>$<?= $d2 = $config['hostfee_percent'] / 100 * $d1; ?>
+		<dd>$<?= to_html($payout['hostfee']); ?>
 		       	(<?= 
 			get_db_single_value('
 					name
@@ -177,19 +173,11 @@ foreach ($channel_list as $kc1 => $vc1) {
 				, 0); ?>)
 		</dd>
 		<dt>Mission Cut (<?= (int)$channel['info']['percent']; ?>% of Remaining Total)</dt>
-		<dd>$<?= $d4 = ($d1 - $d2) * (int)$channel['info']['percent'] * .01; ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
+		<dd>$<?= to_html($payout['missionfee']); ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
 		<dt>Remaining to be distributed</dt>
-		<dd>$<?= $d5 = $d1 - $d2 -$d4; ?></dd><?
-		if (array_sum($channel['computed_weight']['aggregate']['weighted_credit']) != 0) { ?> 
-			<dt>Multiplier</dt>
-			<dd><?= 
-				$d3 = ( $d5 ) / array_sum($channel['computed_weight']['aggregate']['weighted_credit']);
-			?></dd><?
-		}
-		else { ?>
-			<dt>Multiplier</dt>
-			<dd>can not compute - no weighted credit</dd><?
-		} ?> 
+		<dd>$<?= to_html($payout['remainder']); ?></dd>
+		<dt>Multiplier</dt>
+		<dd><?= !empty($payout['multiplier']) ? to_html($payout['multiplier']) : 'can not compute - no weighted credit'; ?></dd>
 	</dl>
 	<p>For breakdown please see public score list of members</p>
 	<h3>Data Dump</h3>
@@ -199,7 +187,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 	</div><?
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
-	# foreach ($channel['computed_weight']['aggregate']['weight_sum'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
@@ -211,7 +198,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<?= $channel['computed_weight']['aggregate']['weight_sum'][$kd1]; ?>
 			<br />
 				<strong>Payout</strong>:
-				$<?= round($d3 * $channel['computed_weight']['aggregate']['weighted_credit'][$kd1], 2); ?><?
+				$<?= to_html($payout['user_id'][$kd1]); ?><?
 		} ?> 
 		<dl><?
 			$a1p = array(); # todo fix looping so this is not needed

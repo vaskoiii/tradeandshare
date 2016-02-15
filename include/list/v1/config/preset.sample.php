@@ -20,15 +20,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: global configuration settings! (for all of List!)
 $config = array();
-
-# Change Every Upload
 date_default_timezone_set('UTC');
 
+# Change Every Upload
+$config['version'] = 'YYYY-MM-DD | Version Name'; 
+
+# member
 $config['hostfee_user_id'] = 111; # receives the % of fees for hosting
 $config['hostfee_percent'] = 0; # percent of membership fees that go to you!
-$config['version'] = 'YYYY-MM-DD | Version Name'; 
+$config['cycle_carry'] = 3; # number of previous cycles to factor into payout
+# limit set at 8 ie) 2^8 = 512 as a safety but should be 3 (default) or less
+
 $config['debug'] = 1;
+$config['craft'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['write_protect'] = 2; # always 2 (set in individual scripts to 1 if needed)
+
 $config['email_from'] = 'List <noreply@localhost>';
 $config['file_path'] = '/www/site/list/file/'; # end with /
 $config['public_path'] = '/www/site/list/public/'; # end with /
@@ -57,6 +63,7 @@ $config['root_tag_id'] = 1; # <|!|>
 $config['main_location_id'] = 1; # <|?|>
 $config['autocreation_user_id'] = '111'; # |root|
 $config['renewal_kind_id'] = 49; # used for accounting debits
+$config['cycle_kind_id'] = 52; # used for accounting debits
 # drop < and > from user_name as as every user_name is reserved
 
 $config['max_tag_depth'] = 5; # safe recursive limit on how deep tags can go 2012-02-23 vaskoiii
