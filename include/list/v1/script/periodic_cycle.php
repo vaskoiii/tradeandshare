@@ -66,14 +66,16 @@ if (1) {
 	$result = mysql_query($sql) or die(mysql_error());
 	echo "$sql\n";
 	while ($row = mysql_fetch_assoc($result)) {
-		$channel_list[$row['channel_parent_id']] = array(
-			'seed' => array(
-				'cycle_id' => $row['cycle_id'],
-			),
-		);
+		$channel_list[$row['channel_parent_id']] = array();
+	}
+	if (!empty($channel_list))
+	foreach ($channel_list as $k1 => $v1) {
+		$v1['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
 	}
 }
 echo "}\n";
+
+# todo check that payout has not already run for the corresponding cycle
 
 # craft for test
 if ($config['craft'] == 1) {
@@ -92,6 +94,7 @@ if ($config['craft'] == 1) {
 # loop through every cycle that ended yesterday (not just 1)
 if (!empty($channel_list)) {
 foreach ($channel_list as $k1 => $v1) {
+
 	# todo make things not dependent on GET
 	$_GET['cycle_id'] = $v1['seed']['cycle_id'];
 

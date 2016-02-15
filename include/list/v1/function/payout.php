@@ -550,6 +550,7 @@ function get_payout_array(& $channel) {
 	$aggregate = & $channel['computed_weight']['aggregate'];
 	$payout['remainder'] = $payout['total'] - $payout['hostfee'] -$payout['missionfee'];
 	$payout['muliplier'] = 0;
+	if (!empty($aggregate['weighted_credit']))
 	if (array_sum($aggregate['weighted_credit']) != 0) {
 		$payout['multiplier'] = $payout['remainder'] / array_sum($aggregate['weighted_credit']);
 	}
