@@ -139,7 +139,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 		}
 		# what cycle
 		if (1) {
-			if (!empty('cycle_id')) {
+			if (!empty($cycle_id)) {
 				$data['user_report']['info']['cycle_id'] = $cycle_id;
 			}
 			else if ($k1) {
