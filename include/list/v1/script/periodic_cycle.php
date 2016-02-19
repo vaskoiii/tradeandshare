@@ -71,7 +71,7 @@ if (1) {
 	if (!empty($channel_list))
 	foreach ($channel_list as $k1 => $v1) {
 		# todo check that this function is not tring to get the latest cycle more than 1 time
-		$v1['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
+		$channel_list[$k1]['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
 	}
 }
 echo "}\n";
