@@ -433,6 +433,15 @@ function get_default_value($input, $load, & $x = null) {
 		global $x;
 
 	switch($input) {
+		case 'status_name':
+		switch($load) {
+			case 'search':
+			break;
+			default:
+				return 'status_neutral';
+			break;
+		}
+		break;
 		case 'page_name':
 		switch($load) {
 			case 'search':

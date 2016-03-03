@@ -57,6 +57,12 @@ foreach ($v2 as $k3 => $v3) {
 	if (!$_SESSION['process']['failure']) {
 	if (!$x['load']['fast']['id']) {
 	switch($k3) {
+		# may be useful if needed elsewhere
+		# fgrep '|*|' . -R
+		case 'status_name':
+			if (!$v3)
+				$edit[$k1][$k2][$k3] = 'status_neutral';
+		break;
 		case 'parent_tag_path':
 		case 'parent_tag_name':
 			if (!$v3)

@@ -285,7 +285,7 @@ function get_action_content_1($type = false, $name = false) {
 					$array = array(
 						'tag_translation_name' => '',
 						'item_description' => '',
-						'status_name' => '',
+						# 'status_name' => '',
 					);
 				break;
 				case 'dialect':
@@ -672,6 +672,13 @@ function get_action_content_2($type, $name = false) {
 		default:
 		switch($type) {
 			case 'item':
+				$array = array(
+					'status_name' => '',
+					'parent_tag_path' => '',
+					# 'parent_tag_name' => '',
+					'team_required_name' => '',
+				);
+			break;
 			case 'transfer':
 			case 'vote':
 				$array = array(
