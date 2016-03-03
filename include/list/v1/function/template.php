@@ -378,8 +378,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$s1 = $type;
 			if ($listing['list_type']) # for top_report.php 2012-02-29 vaskoiii
 				$s1 = $listing['list_type'];
-			ob_start(); ?> 
-			<span class="uid"><?= tt('element', $s1 . '_uid', 'translation_name', $translation); ?>: <?= (int)$listing[ get_base_type($s1) . '_id']; ?></span><?
+			ob_start(); ?><span class="uid"><?= tt('element', $s1 . '_uid', 'translation_name', $translation); ?>: <?= (int)$listing[ get_base_type($s1) . '_id']; ?></span><?
 			$grab .= ob_get_clean();
 		break;
 		case 'ts_link':
@@ -631,6 +630,11 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= '<span class="' . $v1 . '">'
 				. tt(preg_replace('/\_name/', '', $v1), $listing[$v1])
 			. '</span>';
+		break;
+		case 'kind_name_uid':
+			$v1 = 'kind_name';
+			$grab .= '<span class="' . $v1 . '">(kind_name_uid)</span>';
+			$grab .= ': ' . (int)$listing['kind_name_id'];
 		break;
 		case 'tag_name':
 			$grab .= '<span style="color: ' . (isset($color['thing_name']) ? $color['thing_name'] : '') . ';" class="' . $v1 . '">'

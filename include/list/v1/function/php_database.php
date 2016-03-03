@@ -755,10 +755,8 @@ function lt_detail($type) {
 	switch($type) {
 		case 'accounting':
 			$array = array(
-				'kind_id' =>'kind_id',
-				'kind_id_spacer' => '_',
-				'kind_name_id' => 'kind_name_id',
-				'kind_name_spacer' => '_',
+				'kind_name_uid' =>'kind_name_uid',
+				'kind_name_uid_spacer' => '_',
 			);
 		break;
 		case 'feed':
