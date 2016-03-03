@@ -36,7 +36,8 @@ include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will
 			<?= $_SESSION['login']['login_user_name'] . $config['spacer']; ?> 
 			<a href="login_unset_process/<?= ff(''); ?>"><?= tt('element', 'unset_login'); ?></a>
 			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a>
-			| <a href="/manager/"><?= tt('page', 'manager'); ?></a><?
+			| <a href="/manager/"><?= tt('page', 'manager'); ?></a>
+			<span style="float: right;">$<?= number_format((float)$_SESSION['login']['accounting_value_sum'], 2); ?></span><?
 		} else { ?> 
 			<a href="login_set/<?= ff(); ?>"><?= tt('element', 'set_login'); ?></a>
 			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a><?

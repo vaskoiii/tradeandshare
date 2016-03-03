@@ -67,6 +67,8 @@ add_translation('page', 'trailer_doc');
 add_translation('page', 'transfer_list');
 add_translation('page', 'cycle_report');
 
+get_accounting_value_sum();
+
 if ($_SESSION['login']['login_user_id']) {
 	$data['search']['response']['search_miscellaneous'] = array(
 		'keyword' => get_gp('keyword'),

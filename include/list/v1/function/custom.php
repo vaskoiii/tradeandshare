@@ -20,6 +20,25 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+function get_accounting_value_sum() {
+	global $config;
+	# channel emphasis
+	# todo make more efficient so no need to run every time
+	if (!empty($_SESSION['login'])) {
+		$sql = '
+			select
+				sum(value) as accounting_value_sum
+			from
+				' . $config['mysql']['prefix'] . 'accounting
+			where
+				user_id = ' . (int)$_SESSION['login']['login_user_id']
+		;
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result))
+			$_SESSION['login']['accounting_value_sum'] = $row['accounting_value_sum'];
+	}
+}
+
 function print_go_back($name, $kind = null) {
 	global $x;
 	if ($_SESSION['login']['login_user_name']) {
