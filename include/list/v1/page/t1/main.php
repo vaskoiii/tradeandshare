@@ -37,7 +37,7 @@ include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will
 			<a href="login_unset_process/<?= ff(''); ?>"><?= tt('element', 'unset_login'); ?></a>
 			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a>
 			| <a href="/manager/"><?= tt('page', 'manager'); ?></a>
-			<span style="float: right;">$<?= number_format((float)$_SESSION['login']['accounting_value_sum'], 2); ?></span><?
+			<span style="float: right;"><span style="text-decoration: line-through;">$</span><?= number_format((float)$_SESSION['login']['accounting_value_sum'], 2); ?></span><?
 		} else { ?> 
 			<a href="login_set/<?= ff(); ?>"><?= tt('element', 'set_login'); ?></a>
 			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a><?
