@@ -3147,3 +3147,29 @@ update ts_element set name = 'find_accounting' where name like 'find_transaction
 
 alter table ts_accounting modify modified timestamp;
 alter table ts_manual modify modified timestamp;
+
+
+-- allow for donations on a cyclical basis (like renewals)
+CREATE TABLE IF NOT EXISTS `ts_sponsor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `channel_origin_id` int(11) NOT NULL,
+  `cycle_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `point_id` tinyint(4) NOT NULL,
+  `timeframe_id` tinyint(4) NOT NULL,
+  value double NOT NULL,
+  `start` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `cycle_id` (`cycle_id`),
+  KEY `start` (`start`),
+  KEY `point_id` (`point_id`),
+  KEY `timeframe_id` (`timeframe_id`),
+  KEY `modified` (`modified`),
+  KEY `channel_origin_id` (`channel_origin_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+insert into ts_page set parent_id = 321, file_id=2, name='sponsor_edit', `order`=101, launch=1, monitor=2, login=1, advanced=1;
+insert into ts_page set parent_id = 441, file_id=2, name='sponsor_list', `order`=71, launch=1, monitor=1, login=1, advanced=1;

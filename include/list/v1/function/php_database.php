@@ -335,6 +335,24 @@ function get_mask_subject($type, $display) {
 				'accounting_value' => 'accounting_value',
 			);
 		break;
+		case 'sponsor':
+			# todo add value field ($per/day because cycle is variable)
+			$array = array(
+				'channel_name' => 'channel_name',
+				'channel_spacer' => '_',
+				'sponsor_value' => 'sponsor_value',
+				'sponsor_value_spacer' => '_',
+				'cycle_id' => 'cycle_id',
+				'cycle_id_spacer' => '_',
+				'point_name' => 'point_name',
+				'point_name_spacer' => '_',
+				# 'renewal_value' => 'renewal_value',
+				# 'renewal_value_spacer' => '_',
+				'renewal_start' => 'renewal_start',
+				'renewal_start_spacer' => '_',
+				'timeframe_name' => 'timeframe_name',
+			);
+		break;
 		case 'renewal':
 			$array = array(
 				'channel_name' => 'channel_name',

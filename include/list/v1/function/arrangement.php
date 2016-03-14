@@ -260,6 +260,13 @@ function get_action_content_1($type = false, $name = false) {
 						'channel_description' => '',
 					);
 				break;
+				case 'sponsor':
+					$array = array(
+						'channel_name' => '',
+						'point_name' => '',
+						'sponsor_value' => '',
+					);
+				break;
 				case 'renewal':
 					$array = array(
 						'channel_name' => '',

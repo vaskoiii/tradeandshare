@@ -206,6 +206,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'cycle_id':
 			$grab .= tt('element', 'cycle_uid') . ': ' . (int)$listing[$v1];
 		break;
+		case 'sponsor_value':
 		case 'accounting_value':
 		case 'cost_value':
 		case 'channel_value':
@@ -302,6 +303,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# not deletable:
 			case 'channel':
 			case 'cycle':
+			case 'sponsor':
 			case 'renewal':
 			case 'incident':
 			case 'meritopic':

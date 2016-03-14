@@ -87,6 +87,7 @@ function new_report_new_count($listing_type, $when) {
 		case 'carry':
 		case 'channel':
 		case 'cycle':
+		case 'sponsor':
 		case 'renewal':
 		case 'transaction':
 			# todo make ready for integration

@@ -740,22 +740,26 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			if (isset_gp('channel_parent_id'))
 				$where_x[] = 'cnl.parent_id = ' . (int)get_gp('channel_parent_id');
 		break;
+		case 'sponsor': # log
+			# similar to renewals but intended for adding no$ to the pot only
+			$select[] = 't1.value as sponsor_value';
+		# nobreak;
 		case 'renewal': # log
 			$order_by[] = 't1.modified desc';
 			$order_by[] = 't1.id desc';
-			$select[] = 't1.id AS renewal_id';
+			$select[] = 't1.id AS ' . $type . '_id';
 			$select[] = 'cnl.id as channel_id';
 			$select[] = 't1.cycle_id';
 			$select[] = 't1.point_id';
 			$select[] = 'pt.name as point_name';
 			$select[] = 'cnl.name as channel_name';
-			$select[] = 't1.start as renewal_start';
+			$select[] = 't1.start as ' . $type . '_start';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';
 
 			# membership duration taken from config
 			$select[] = 't1.modified';
-			$from[] = $prefix . 'renewal t1';
+			$from[] = $prefix . $type . ' t1';
 				$where[] = 't1.active = 1';
 			# $from[] = $prefix . 'gauge_renewal ge_rnal';
 			$from[] = $prefix . 'channel cnl';
