@@ -3173,3 +3173,5 @@ CREATE TABLE IF NOT EXISTS `ts_sponsor` (
 
 insert into ts_page set parent_id = 321, file_id=2, name='sponsor_edit', `order`=101, launch=1, monitor=2, login=1, advanced=1;
 insert into ts_page set parent_id = 441, file_id=2, name='sponsor_list', `order`=71, launch=1, monitor=1, login=1, advanced=1;
+
+delete from ts_page where name = 'score_report';
