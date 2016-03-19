@@ -129,9 +129,15 @@ foreach ($channel_list as $kc1 => $vc1) {
 		# before and after cost is relative to the members ( since renewal can happen mid cycle )
 		# the values are needed for computation ?> 
 		<dt>Renewal Max Cost Before Cycle Start</dt>
-			<dd>$<?= to_html($vc1['info']['before_cost']); ?></dd>
+			<dd>
+				<span style="text-decoration: line-through;">$</span>
+				<?= to_html($vc1['info']['before_cost']); ?>
+			</dd>
 		<dt>Renewal Max Cost After Cycle Start</dt>
-			<dd>$<?= to_html($vc1['info']['after_cost']); ?></dd><?
+			<dd>
+				<span style="text-decoration: line-through;">$</span>
+				<?= to_html($vc1['info']['after_cost']); ?>
+			</dd><?
 		if ($vc1['cycle_restart']['yyyy-mm-dd-2x']) { ?> 
 			<dt>Cycle End<dt>
 				<dd><?= $vc1['cycle_restart']['yyyy-mm-dd-2x']; ?></dd><?
@@ -160,9 +166,14 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>Computation</h3>
 	<dl>
 		<dt>Channel Total</dt>
-		<dd>$<?= to_html($payout['total']); ?></dd>
+		<dd>
+			<span style="text-decoration: line-through;">$</span>
+			<?= to_html($payout['total']); ?>
+		</dd>
 		<dt>Host Fee (<?= to_html($config['hostfee_percent']); ?>% of Channel Total)</dt>
-		<dd>$<?= to_html($payout['hostfee']); ?>
+		<dd>
+			<span style="text-decoration: line-through;">$</span>
+			<?= to_html($payout['hostfee']); ?>
 		       	(<?= 
 			get_db_single_value('
 					name
@@ -173,9 +184,15 @@ foreach ($channel_list as $kc1 => $vc1) {
 				, 0); ?>)
 		</dd>
 		<dt>Mission Cut (<?= (int)$channel['info']['percent']; ?>% of Remaining Total)</dt>
-		<dd>$<?= to_html($payout['missionfee']); ?> (<?= to_html($channel['info']['user_name']); ?>)</dd>
+		<dd>
+			<span style="text-decoration: line-through;">$</span>
+			<?= to_html($payout['missionfee']); ?> (<?= to_html($channel['info']['user_name']); ?>)
+		</dd>
 		<dt>Remaining to be distributed</dt>
-		<dd>$<?= to_html($payout['remainder']); ?></dd>
+		<dd>
+			<span style="text-decoration: line-through;">$</span>
+			<?= to_html($payout['remainder']); ?>
+		</dd>
 		<dt>Multiplier</dt>
 		<dd><?= !empty($payout['multiplier']) ? to_html($payout['multiplier']) : 'can not compute - no weighted credit'; ?></dd>
 	</dl>
@@ -198,7 +215,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<?= $channel['computed_weight']['aggregate']['weight_sum'][$kd1]; ?>
 			<br />
 				<strong>Payout</strong>:
-				$<?= to_html($payout['user_id'][$kd1]); ?><?
+				<span style="text-decoration: line-through;">$</span>
+				<?= to_html($payout['user_id'][$kd1]); ?><?
 		} ?> 
 		<dl><?
 			$a1p = array(); # todo fix looping so this is not needed
