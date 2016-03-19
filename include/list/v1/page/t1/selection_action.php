@@ -21,7 +21,15 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Non-Javascript intermediate page before the corresponding action.
 # Known Issues: Most data has to be submitted 2x ?> 
 
-<p class="notice" style="margin: 0px 0px; margin-top: -10px;"><?= tt('page', get_gp('list_name') . '_list'); ?> : <?= tt('element', get_gp('action')); ?> : <?= count(get_gp('row')); ?></p>
+<p class="notice" style="margin: 0px 0px; margin-top: -10px;"><?
+	$a1 = get_gp('row');
+	if (!empty($a1)) {  ?> 
+		<?= tt('page', get_gp('list_name') . '_list'); ?> : <?= tt('element', get_gp('action')); ?> : <?= count(get_gp('row')); ?><?
+	}
+	else {
+		echo tt('element', 'error_nothing_selected');
+	} ?> 
+</p>
 
 <form name="f" action="/index.php" method="POST">
 	<input type="hidden" name="x" value="<?= $x['..'] . 'selection_process/'; ?>" >
@@ -29,7 +37,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<input type="hidden" name="list_name" value="<?= get_gp('list_name'); ?>" />
 	<input type="hidden" name="action" value="<?= get_gp('action'); ?>" /><?
 
-	foreach (get_gp('row') as $k1 => $v1) { ?> 
+	$a1 = get_gp('row');
+	if (!empty($a1))
+	foreach ($a1 as $k1 => $v1) { ?> 
 		<input type="hidden" name="row[]" value="<?= $v1; ?>" /><? 
 	} ?> 
 
