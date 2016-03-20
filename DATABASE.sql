@@ -3175,3 +3175,22 @@ insert into ts_page set parent_id = 321, file_id=2, name='sponsor_edit', `order`
 insert into ts_page set parent_id = 441, file_id=2, name='sponsor_list', `order`=71, launch=1, monitor=1, login=1, advanced=1;
 
 delete from ts_page where name = 'score_report';
+
+
+CREATE TABLE IF NOT EXISTS `ts_donate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `channel_parent_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `offset` int(11) NOT NULL,
+  `value` int(11) NOT NULL,
+  `modified` datetime NOT NULL,
+  `active` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `channel_parent_id` (`channel_parent_id`,`user_id`,`modified`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+ALTER TABLE `ts_sponsor` DROP `channel_origin_id`, DROP `value`;
+ALTER TABLE `ts_sponsor` DROP `user_id`;
+
+ALTER TABLE `ts_sponsor` CHANGE `cycle_id` `donate_id` INT( 11 ) NOT NULL; 

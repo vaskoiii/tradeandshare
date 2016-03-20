@@ -338,18 +338,24 @@ function get_mask_subject($type, $display) {
 		case 'sponsor':
 			# todo add value field ($per/day because cycle is variable)
 			$array = array(
-				'channel_name' => 'channel_name',
-				'channel_spacer' => '_',
-				'sponsor_value' => 'sponsor_value',
-				'sponsor_value_spacer' => '_',
-				'cycle_id' => 'cycle_id',
-				'cycle_id_spacer' => '_',
+				'channel_id_name' => 'channel_id_name',
+				'channel_id_name_spacer' => '_',
+				# 'channel_name' => 'channel_name',
+				# 'channel_name_spacer' => '_',
+				# 'channel_parent_id' => 'channel_parent_id',
+				# 'channel_parent_id_spacer' => '_',
+				'donate_offset' => 'donate_offset',
+				'donate_offset_spacer' => '_',
+				'donate_value' => 'donate_value',
+				'donate_value_spacer' => '_',
+				'sponsor_start' => 'sponsor_start',
+				'sponsor_start_spacer' => '_',
+				# donate does not really exist without sponsor
+				# donate_modified and donate_active may also be unnecessary
+				# 'donate_id' => 'donate_id',
+				# 'donate_id_spacer' => '_',
 				'point_name' => 'point_name',
 				'point_name_spacer' => '_',
-				# 'renewal_value' => 'renewal_value',
-				# 'renewal_value_spacer' => '_',
-				'renewal_start' => 'renewal_start',
-				'renewal_start_spacer' => '_',
 				'timeframe_name' => 'timeframe_name',
 			);
 		break;
@@ -394,16 +400,18 @@ function get_mask_subject($type, $display) {
 		break;
 		case 'channel':
 			$array = array(
-				$type . '_name' => $type . '_name',
-				'channel_name_spacer' => '_',
+				'channel_id_name' => 'channel_id_name',
+				'channel_id_name_spacer' => '_',
+				# 'channel_name' => 'channel_name',
+				# 'channel_name_spacer' => '_',
+				# 'channel_parent_id' => 'channel_parent_id',
+				# 'channel_parent_id_spacer' => '_',
 				'channel_offset' => 'channel_offset',
 				'channel_offset_spacer' => '_',
 				'channel_value' => 'channel_value',
 				'channel_value_spacer' => '_',
 				'channel_percent' => 'channel_percent',
 				'channel_percent_spacer' => '_',
-				'channel_parent_id' => 'channel_parent_id',
-				'channel_parent_id_spacer' => '_',
 				'timeframe_name' => 'timeframe_name',
 			);
 		break;

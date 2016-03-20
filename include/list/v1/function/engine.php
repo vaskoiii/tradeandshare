@@ -742,8 +742,40 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 		break;
 		case 'sponsor': # log
 			# similar to renewals but intended for adding no$ to the pot only
-			$select[] = 't1.value as sponsor_value';
-		# nobreak;
+			$order_by[] = 't1.modified desc';
+			$order_by[] = 't1.id desc';
+			$select[] = 't1.id as sponsor_id';
+			$select[] = 'dne.channel_parent_id';
+			$select[] = 'dne.id as donate_id';
+			$select[] = 'dne.user_id';
+			$select[] = 'dne.offset as donate_offset';
+			$select[] = 'dne.value as donate_value';
+			$select[] = 't1.point_id';
+			$select[] = 'pt.name as point_name';
+			$select[] = 't1.start as sponsor_start';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
+			$select[] = 't1.modified';
+			$from[] = $prefix . 'sponsor t1';
+				$where[] = 't1.active = 1';
+			$from[] = $prefix . 'donate dne';
+				$where[] = 'cnl.parent_id = dne.channel_parent_id';
+			$from[] = $prefix . 'channel cnl';
+			$from[] = $prefix . 'timeframe tfe';
+			$from[] = $prefix . 'point pt';
+			$where[] = 'tfe.id = t1.timeframe_id';
+			$where[] = 'pt.id = t1.point_id';
+			$where[] = 'dne.user_id = u.id';
+			# connecting to the exact channel is a bit abstract
+			# works if channel name never changes (collected above)
+			$where[] = 'dne.channel_parent_id = cnl.id';
+			$where[] = 'dne.id = t1.donate_id';
+			$select[] = 'cnl.name as channel_name';
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
 		case 'renewal': # log
 			$order_by[] = 't1.modified desc';
 			$order_by[] = 't1.id desc';

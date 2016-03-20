@@ -112,6 +112,9 @@ input, select, textarea {
 .dialect_name {
 	color: #cd3fd2;
 	}
+.channel_id_name {
+	color: #006633;
+	}
 .parent_tag_name, .parent_tag_translation_name {
 	color: #9201c2;
 	}

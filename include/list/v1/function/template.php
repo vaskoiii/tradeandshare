@@ -209,6 +209,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'sponsor_value':
 		case 'accounting_value':
 		case 'cost_value':
+		case 'donate_value':
 		case 'channel_value':
 		// case 'cycle_value':
 		case 'renewal_value':
@@ -217,6 +218,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'channel_percent':
 			$grab .= (int)$listing[$k1] . '%';
 		break;
+		case 'donate_offset':
 		case 'channel_offset':
 		// case 'cycle_start':
 			$grab .= $listing[$k1] . ' day';
@@ -661,9 +663,17 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ob_get_clean();
 			/* <a href="./location_view/<?= ffm('list_name=&list_type=&lock_location_id=' . (int)$listing['location_id'], 1); ?>"><span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></a></span><?  */
 		break;
+		case 'channel_id_name':
+			$grab .= '<span class="' . $v1 . '">'
+				. to_html($listing['channel_parent_id'])
+				. ' '
+				. to_html($listing['channel_name'])
+			. '</span>';
+		break;
+		case 'channel_name':
+		case 'sponsor_start':
 		case 'cycle_start':
 		case 'renewal_start':
-		case 'channel_name':
 		case 'dialect_name':
 		case 'meritopic_name':
 		case 'incident_name':

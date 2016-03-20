@@ -38,6 +38,7 @@ switch (get_gp('type')) {
 		process_failure('Not Allowed');
 	break;
 	# member
+	case 'sponsor':
 	case 'channel':
 	case 'renewal':
 	# special
@@ -130,6 +131,11 @@ switch($process['form_info']['type']) {
 	break;
 
 	# member?
+	case 'sponsor':
+		# separate for now until can merge
+		include('list/v1/process/sponsor_process.php');
+		exit;
+	break;
 	case 'channel':
 		# separate for now until can merge
 		include('list/v1/process/channel_process.php');

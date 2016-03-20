@@ -264,7 +264,8 @@ function get_action_content_1($type = false, $name = false) {
 					$array = array(
 						'channel_name' => '',
 						'point_name' => '',
-						'sponsor_value' => '',
+						'donate_offset' => '',
+						'donate_value' => '',
 					);
 				break;
 				case 'renewal':

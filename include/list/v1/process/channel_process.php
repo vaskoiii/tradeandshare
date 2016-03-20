@@ -39,7 +39,20 @@ switch ($k2) {
 process_field_missing('action_content_1');
 process_data_translation('action_content_1');
 
+# prevent channel name change
+if (1) {
+}
+
 if (!empty($id)) {
+	$s1 = get_db_single_value('
+			name
+		from
+			' . $prefix . 'channel
+		where
+			id = ' . (int)$id
+	);
+	if ($_POST['channel_name'] != $s1)
+		$message = tt('element', 'error_name_change_not_allowed');
 	# $message = 'can not modify channels until logic is complete only add';
 }
 process_failure($message);
