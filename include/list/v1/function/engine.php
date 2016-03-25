@@ -740,6 +740,32 @@ WHERE u.active = 1 AND u2.active = 1 AND u.id = t1.source_user_id AND u2.id = t1
 			if (isset_gp('channel_parent_id'))
 				$where_x[] = 'cnl.parent_id = ' . (int)get_gp('channel_parent_id');
 		break;
+		# todo need to separate?
+		case 'donate':
+			$order_by[] = 't1.modified desc';
+			$order_by[] = 't1.id desc';
+			$select[] = 't1.channel_parent_id';
+			$select[] = 't1.id as donate_id';
+			$select[] = 't1.user_id';
+			$select[] = 't1.offset as donate_offset';
+			$select[] = 't1.value as donate_value';
+			$select[] = 'tfe.id AS timeframe_id';
+			$select[] = 'tfe.name AS timeframe_name';
+			$select[] = 't1.modified';
+			$from[] = $prefix . 'donate t1';
+				$where[] = 't1.active = 1';
+				$where[] = 'cnl.parent_id = t1.channel_parent_id';
+			$from[] = $prefix . 'channel cnl';
+			$from[] = $prefix . 'timeframe tfe';
+			$where[] = 'tfe.id = t1.timeframe_id';
+			$where[] = 't1.user_id = u.id';
+			$where[] = 't1.channel_parent_id = cnl.id';
+			$select[] = 'cnl.name as channel_name';
+			if (isset_gp('keyword'))
+				$where_x[] = '(
+					u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
+				)';
+		break;
 		case 'sponsor': # log
 			# similar to renewals but intended for adding no$ to the pot only
 			$order_by[] = 't1.modified desc';

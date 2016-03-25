@@ -1,5 +1,4 @@
 <?
-die('not read for sponsoring yet');
 /*
 Copyright 2003-2012 John Vasko III
 
@@ -33,6 +32,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo allow user to confirm before billing
 # todo process funds charge transaction
 
+# logic for sponsoring is significantly different from cycles including database structure and underlying rules
+# sponsor has its own "cycle" defined by donate_offset
+
 function is_sponsor_start($channel_parent_id) {
 	global $prefix;
 	global $config;
@@ -64,13 +66,8 @@ function is_sponsor_start($channel_parent_id) {
 # variable
 $first_sponsor = 0;
 $now = date('Y-m-d H:i:s');
-
-# logic for sponsoring is significantly different from cycles including database structure and underlying rules
-# sponsor has its own "cycle" defined by donate_offset
 $process['action_content_1']['channel_name'] = get_gp('channel_name');
 $process['action_content_1']['point_name'] = get_gp('point_name');
-$process['action_content_1']['donate_offset'] = get_gp('donate_offset');
-$process['action_content_1']['donate_value'] = get_gp('donate_value');
 
 $lookup['channel_parent_id'] = get_db_single_value('
 		parent_id
@@ -87,18 +84,45 @@ $lookup['point_id'] = get_db_single_value('
 	where
 		name = ' . to_sql($process['action_content_1']['point_name'])
 );
-$lookup['donate_offset'] = get_gp('donate_offset');
-$lookup['donate_value'] = get_gp('donate_value');
+
+# simplify by requiring that a donate listing be created first
+
+# todo get the rest of the donation data
+# todo eliminate extra sql query above
+$sql = '
+	select
+		id as donate_id,
+		offset as donate_offset,
+		value as donate_value
+	from
+		' . $prefix . 'donate
+	where
+		channel_parent_id = ' . (int)$lookup['channel_parent_id'] . ' and
+		user_id = ' . (int)$login_user_id . '
+	limit
+		1
+';
+if ($config['debug'] == 1)
+	print_debug($sql);
+$result = mysql_query($sql) or die(mysql_error());
+while ($row = mysql_fetch_assoc($result)) {
+	$lookup['donate_id'] = $row['donate_id'];
+	$lookup['donate_offset'] = $row['donate_offset'];
+	$lookup['donate_value'] = $row['donate_value'];
+}
 
 process_field_missing('action_content_1');
 
 # todo merge into process_does_not_exist('action_content_1');
-if (!$lookup['channel_parent_id']) {
+if (empty($message))
+if (!$lookup['channel_parent_id'])
 	$message = tt('element', 'channel_name') . ' : ' . tt('element', 'error_does_not_exist');
-}
-if ($lookup['point_id'] == 1) {
+if (empty($message))
+if ($lookup['point_id'] == 1)
 	$message = tt('point', 'start') . ' : ' . tt('element', 'error');
-}
+if (empty($message))
+if (empty($lookup['donate_id']))
+	$message = tt('element', 'error_donate_id');
 
 # failure
 process_failure($message);
@@ -107,30 +131,11 @@ process_failure($message);
 $first_sponsor = is_sponsor_start($lookup['channel_parent_id']);
 
 if (!empty($first_sponsor)) {
-
-	# intention is to not be concerened with when a sponsor first starts
-	$sql = '
-		insert into
-			' . $prefix . 'donate
-		set
-			channel_parent_id = ' . (int)$lookup['channel_parent_id'] . ',
-			user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
-			offset = ' . (int)$lookup['donate_offset'] . ',
-			value = ' . (double)$lookup['donate_value'] . ',
-			-- needed? never displayed on listings:
-			modified = now(),
-			active = 1
-	';
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
-	$i1 = mysql_insert_id();
 	$sql = '
 		insert into
 			' . $prefix . 'sponsor
 		set
-			donate_id = ' . (int)$i1 . ',
+			donate_id = ' . (int)$lookup['donate_id'] . ',
 			point_id = 1,
 			timeframe_id = 2,
 			start = ' . to_sql($now) . ',
@@ -145,7 +150,7 @@ if (!empty($first_sponsor)) {
 		insert into
 			' . $prefix . 'sponsor
 		set
-			donate_id = ' . (int)$i1 . ',
+			donate_id = ' . (int)$lookup['donate_id'] . ',
 			point_id = ' . (int)$lookup['point_id'] . ',
 			timeframe_id = 3,
 			start = date_add(' . to_sql($now) . ', interval ' . (int)$lookup['donate_offset'] . ' day),
@@ -213,7 +218,6 @@ if (empty($first_sponsor)) {
 		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
 		$i1 = mysql_insert_id();
-		
 		$sql = '
 			update
 				' . $prefix . 'sponsor

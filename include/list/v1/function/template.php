@@ -305,6 +305,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# not deletable:
 			case 'channel':
 			case 'cycle':
+			case 'donate':
 			case 'sponsor':
 			case 'renewal':
 			case 'incident':

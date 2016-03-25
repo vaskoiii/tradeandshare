@@ -335,6 +335,18 @@ function get_mask_subject($type, $display) {
 				'accounting_value' => 'accounting_value',
 			);
 		break;
+		case 'donate':
+			$array = array(
+				'channel_id_name' => 'channel_id_name',
+				'channel_id_name_spacer' => '_',
+				'donate_offset' => 'donate_offset',
+				'donate_offset_spacer' => '_',
+				'donate_value' => 'donate_value',
+				'donate_value_spacer' => '_',
+				# todo?
+				'timeframe_name' => 'timeframe_name',
+			);
+		break;
 		case 'sponsor':
 			# todo add value field ($per/day because cycle is variable)
 			$array = array(

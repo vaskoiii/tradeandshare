@@ -3194,3 +3194,9 @@ ALTER TABLE `ts_sponsor` DROP `channel_origin_id`, DROP `value`;
 ALTER TABLE `ts_sponsor` DROP `user_id`;
 
 ALTER TABLE `ts_sponsor` CHANGE `cycle_id` `donate_id` INT( 11 ) NOT NULL; 
+
+
+insert into ts_page set parent_id = 321, file_id = 2, name = 'donate_edit', `order` = 100, launch = 1, monitor=2, login=1, advanced =1;
+insert into ts_page set parent_id = 441, file_id = 2, name = 'donate_list', `order` = 70, launch = 1, monitor=1, login=1, advanced = 1;
+update ts_page set `order` = 67 where name like 'renewal_list';
+ALTER TABLE `ts_donate` ADD `timeframe_id` TINYINT NOT NULL AFTER `user_id` , ADD INDEX ( `timeframe_id` ) ;

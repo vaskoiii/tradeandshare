@@ -366,6 +366,7 @@ function search_lock(& $base, $type, $login_user_id) {
 		case 'metail':
 		case 'minder':
 		case 'news':
+		case 'donate':
 		case 'sponsor':
 		case 'renewal':
 		case 'tag':
