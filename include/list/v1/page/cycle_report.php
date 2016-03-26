@@ -53,12 +53,73 @@ while ($row = mysql_fetch_assoc($result)) {
 	);
 }
 
+
+
+
 # huge computation
 foreach ($channel_list as $k1 => $v1) {
 	# when setting an alias within a foreach it will have to be set again in the t1 file =(
 	$channel = & $channel_list[$k1];
+
+	# todo need to split out these before the payout array
+	# todo need to make injecting a debug only option
+
+	# todo calculate the values
+	# todo allow increasing sponsor but never decreasing
+	# todo as such there can be many sponsors for the same cycle from the same user
+	# todo make sure the user gets charged everytime for the increasing cost
+	$channel['sponsor_user_id'] = array();
+	# to be put into an array like:
+	if ($config['debug'] == 1) {
+		$channel['sponsor_user_id'] = array(
+			'132' => array(
+				# # todo get the pre cycle sponsor id if applicable
+				# # ie. if the sponsor in the cycle will have point_id != 1
+				# $sql = '
+				# 	select
+				# 		id
+				# 	from
+				# 		ts_sponsor
+				# 	where
+				# 		id < ' . $non_start_sponsor_id . ' 
+				# 	order by
+				# 		id desc
+				# 	limit
+				# 		1
+				# ';
+				'sponsor_id' => array(
+					'1' => array(
+						'offset' => '?',
+						'overlap' => 1,
+						'value' => 2,
+					),
+					'2' => array(
+						'offset' => '?',
+						'overlap' => 1,
+						'value' => 3,
+					),
+					'3' => array(
+						'offset' => '?',
+						'overlap' => 1,
+						'value' => 4,
+					),
+				),
+				'computed' => array(
+					'donate_total' => 9,
+				),
+			),
+		);
+	}
+	# set sort
+	$channel['renewal'] = array();
+	$channel['sponsor'] = array();
+	$channel['payout'] = array();
+
+
 	do_payout_computation($channel, $k1, $_GET['cycle_id']);
 	get_payout_array($channel);
 }
+
+
 
 # all the numbers are setup to get payouts now

@@ -213,7 +213,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'channel_value':
 		// case 'cycle_value':
 		case 'renewal_value':
-			$grab .= '<span style="text-decoration: line-through;">$</span>' . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
+			$grab .= nod() . $listing[$k1]; # $ can eventually be changed to a symbol for TS Credit
 		break;
 		case 'channel_percent':
 			$grab .= (int)$listing[$k1] . '%';

@@ -152,3 +152,6 @@ foreach ($v1 as $k2 => $v2) {
 	add_option($k2);
 	add_translation('element', $k2);
 } } }
+
+
+# show donors

@@ -20,6 +20,11 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+function nod() {
+	# no dollar symbol (nod)
+	return '<span style="text-decoration: line-through;">$</span>';
+}
+
 function get_accounting_value_sum() {
 	global $config;
 	# channel emphasis

@@ -531,9 +531,20 @@ function get_payout_array(& $channel) {
 	$channel['payout'] = array();
 	$payout = & $channel['payout'];
 
+	$channel['renewal']['total'] = 0;
+	$channel['sponsor']['total'] = 0;
 	$payout['total'] = 0;
+	# renewal
 	if (!empty($channel['computed_cost']['combined']))
-		$payout['total'] = array_sum($channel['computed_cost']['combined']);
+		$channel['renewal']['total'] = array_sum($channel['computed_cost']['combined']);
+	# sponsor
+	if (!empty($channel['sponsor_user_id'])) {
+	foreach ($channel['sponsor_user_id'] as $k1 => $v1) {
+		# todo integrate a real number
+		$channel['sponsor']['total'] += $v1['computed']['donate_total'];
+	} }
+	# combined
+	$payout['total'] = $channel['renewal']['total'] + $channel['sponsor']['total'];
 
 	$payout['hostfee'] = $config['hostfee_percent'] / 100 * $payout['total'];
 	# % of remaining total
