@@ -43,6 +43,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 					?></a><?
 				} 
 			} ?>
+			<span style="float: right;"><?= date('Y-m-d H:i:s', time()); ?></span>
 		</p><?
 		if ($_SESSION['feature']['feature_lock'] == 1) { ?> 
 			<h1 id="website_name"><a href="/<?= get_lock_query(); ?>"><nobr><?= $config['website_name']; ?></nobr></a></h1><?
