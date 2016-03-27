@@ -109,5 +109,7 @@ foreach ($data['sponsor_id'] as $k1 => $v1) {
 		';
 		print_debug($sql);
 		mysql_query($sql) or die(mysql_error());
+		$i1 = mysql_insert_id();
+		do_accounting('sponsor', $i1, $v1['donate_value'], $v1['user_id']);
 	}
 } }

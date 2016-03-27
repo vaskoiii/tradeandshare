@@ -1024,3 +1024,30 @@ function update_sponsor_timeframe($a1) {
 		mysql_query($sql) or die(mysql_error());
 	}
 }
+function do_accounting($kind_name, $kind_name_id, $value, $user_id) {
+	global $config;
+	$kind_id = get_db_single_value('
+			id
+		from
+			' . $config['mysql']['prefix'] . 'kind
+		where
+			name = ' . to_sql($kind_name) . ' and
+			accounting = 1
+	');
+	$sql = '
+		insert into
+			' . $config['mysql']['prefix'] . 'accounting
+		set
+			user_id = ' . (int)$user_id . ',
+			kind_id = ' . (int)$kind_id . ',
+			kind_name_id = ' . (int)$kind_name_id . ',
+			value = ' . ($value) . ',
+			modified = now(),
+			active = 1
+	';
+	# todo make print_debug check debug value
+	if ($config['debug'] == 1)
+		print_debug($sql);
+	if ($config['write_protect'] != 1)
+		mysql_query($sql) or die(mysql_error());
+}

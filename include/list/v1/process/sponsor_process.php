@@ -146,6 +146,11 @@ if (!empty($first_sponsor)) {
 		print_debug($sql);
 	if ($config['write_protect'] != 1)
 		mysql_query($sql) or die(mysql_error());
+	# todo charge the user for this sponsor
+	$i1 = mysql_insert_id();
+
+	do_accounting('sponsor', $i1, $lookup['donate_value'], $login_user_id);
+
 	$sql = '
 		insert into
 			' . $prefix . 'sponsor
