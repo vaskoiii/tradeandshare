@@ -16,7 +16,7 @@ require(__DIR__ . '/../config/preset.php');
 # override
 # $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
-$config['craft'] = 2; # comment out to not use crafted data
+$config['craft'] = 1; # comment out to not use crafted data
 
 # see also:
 # config/dependancy.php
@@ -109,7 +109,29 @@ foreach ($data['sponsor_id'] as $k1 => $v1) {
 		';
 		print_debug($sql);
 		mysql_query($sql) or die(mysql_error());
-		$i1 = mysql_insert_id();
-		do_accounting('sponsor', $i1, $v1['donate_value'], $v1['user_id']);
+
+		# get the new present sponsor and charge for it
+		# (timeframe must be updated first)
+		$sql = '
+			select
+				ssr.id as sponsor_id,
+				dne.user_id,
+				dne.value as donate_value
+			from
+				' . $prefix . 'sponsor ssr,
+				' . $prefix . 'donate dne
+			where
+				dne.id = ssr.donate_id and
+				dne.channel_parent_id = ' . (int)$v1['channel_parent_id'] . ' and
+				ssr.timeframe_id = 2
+			limit
+				1
+		';
+		print_debug($sql);
+		$result = mysql_query($sql) or die(mysql_error());
+		# todo may be useful to use a less temporary array for debug
+		$a1 = array();
+		while ($a1 = mysql_fetch_assoc($result))
+			do_accounting('sponsor', $a1['sponsor_id'], -$a1['donate_value'], $a1['user_id']);
 	}
 } }

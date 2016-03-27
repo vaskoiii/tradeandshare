@@ -149,7 +149,7 @@ if (!empty($first_sponsor)) {
 	# todo charge the user for this sponsor
 	$i1 = mysql_insert_id();
 
-	do_accounting('sponsor', $i1, $lookup['donate_value'], $login_user_id);
+	do_accounting('sponsor', $i1, -$lookup['donate_value'], $login_user_id);
 
 	$sql = '
 		insert into

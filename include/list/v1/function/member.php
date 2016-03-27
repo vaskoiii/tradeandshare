@@ -1041,7 +1041,7 @@ function do_accounting($kind_name, $kind_name_id, $value, $user_id) {
 			user_id = ' . (int)$user_id . ',
 			kind_id = ' . (int)$kind_id . ',
 			kind_name_id = ' . (int)$kind_name_id . ',
-			value = ' . ($value) . ',
+			value = ' . (int)$value . ',
 			modified = now(),
 			active = 1
 	';
