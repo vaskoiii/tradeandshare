@@ -3200,3 +3200,8 @@ insert into ts_page set parent_id = 321, file_id = 2, name = 'donate_edit', `ord
 insert into ts_page set parent_id = 441, file_id = 2, name = 'donate_list', `order` = 70, launch = 1, monitor=1, login=1, advanced = 1;
 update ts_page set `order` = 67 where name like 'renewal_list';
 ALTER TABLE `ts_donate` ADD `timeframe_id` TINYINT NOT NULL AFTER `user_id` , ADD INDEX ( `timeframe_id` ) ;
+
+insert into ts_kind set name='donate', accounting = 2, translation = 1, minder = 2, score = 2;
+insert into ts_kind set name='sponsor', accounting = 1, translation = 1, minder = 2, score = 2;
+ALTER TABLE `ts_kind` ADD UNIQUE ( `name`);
+

@@ -126,6 +126,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<dl>
 		<dt>Length</dt>
 		<dd><?= to_html($vc1['info']['time']); ?>  Days</dd><?
+		# todo check that before and after cycle cost is handled correctly
+		# todo ie) is the member paying the correct amount for their renewal
 		# before and after cost is relative to the members ( since renewal can happen mid cycle )
 		# the values are needed for computation ?> 
 		<dt>Renewal Max Cost Before Cycle Start</dt>
@@ -167,7 +169,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		<dd>
 			<?= nod() . to_html($channel['renewal']['total']); ?>
 		<dd>
-		<dt>Donate Total</dt>
+		<dt>Sponsor Total</dt>
 		<dd>
 			<?= nod() . to_html($channel['sponsor']['total']); ?>
 		<dd>
@@ -207,26 +209,26 @@ foreach ($channel_list as $kc1 => $vc1) {
 	# allow increasing sponsor but never decreasing
 	# as such there can be many sponsors for the same cycle
 	# $channel['donate_user_id'] built in the controller
-	?> 
-	<h3>Sponsor</h3><?
-	if (!empty($channel['donate_value'])) {
-	foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
-		<hr />
-		<h4>
-			<?= (int)$ks1; ?>:
-			<?= to_html($key['user_id']['result'][$ks1]['contact_name']); ?>
-			(<?= to_html($key['user_id']['result'][$ks1]['user_name']); ?>)
-		</h4>
-		<p><?= nod() . (double)$vs1; ?></p><?
-	} }
-	else { ?> 
-		<p>No sponsors this cycle =(</p><?
-	} ?> 
-	<h3>Member</h3><?
+
+	print_break_close();
+	print_break_open('Sponsor');
+		if (!empty($channel['donate_value'])) {
+		foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
+			<h4>
+				<?= (int)$ks1; ?>:
+				<?= to_html($key['user_id']['result'][$ks1]['contact_name']); ?>
+				(<?= to_html($key['user_id']['result'][$ks1]['user_name']); ?>)
+			</h4>
+			<p><?= nod() . '-' . (double)number_format($vs1, 2); ?></p><?
+		} }
+		else { ?> 
+			<p>No sponsors this cycle =(</p><?
+		}
+	print_break_close();
+	print_break_open('Member');
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
-		<hr style="margin-bottom: 20px;" />
 		<h3><?= print_key_user_id($kd1); ?></h3><? 
 		if (1) { ?> 
 				Time Weight:
@@ -277,6 +279,35 @@ foreach ($channel_list as $kc1 => $vc1) {
 				</dd>
 		</dl><?
 	}
+	print_break_close();
+	print_break_open('Mission');
+		# will only have multiple  people if master slave channels are implemented
+		if (!empty($payout['missionfee'])) { ?> 
+			<h4>
+				<?= to_html($channel['info']['user_id']); ?>:
+				<?= to_html($key['user_id']['result'][$channel['info']['user_id']]['contact_name']); ?>
+				(<?= to_html($channel['info']['user_name']); ?>)
+			</h4>
+			<p><?= nod() . to_html(number_format($payout['missionfee'], 2)); ?></p><?
+		}
+		else { ?> 
+			<p>No mission fee this cycle</p><?
+		}
+	print_break_close();
+	print_break_open('Hosting');
+		# will only have multiple people if hosts can be linked together (decentralized)
+		if (!empty($payout['hostfee'])) { ?> 
+			<hr />
+			<h4>
+				<?= (int)$config['hostfee_user_id']; ?>:
+				<?= to_html($key['user_id']['result'][$config['hostfee_user_id']]['contact_name']); ?>
+				(<?= to_html($key['user_id']['result'][$config['hostfee_user_id']]['user_name']); ?>)
+			</h4>
+			<p><?= nod() . to_html($payout['hostfee']); ?></p><?
+		}
+		else { ?> 
+			<p>No hosting fee this cycle =)</p><?
+		}
 	print_break_close(); ?>
 	</div><?
 }
