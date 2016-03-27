@@ -362,6 +362,7 @@ function get_run_datetime_array() {
 		'previous' => date('Y-m-d H:i:s', $i1 - $i2),
 		'current' => date('Y-m-d H:i:s', $i1),
 		'next' => date('Y-m-d H:i:s', $i1 + $i2),
+		'horizon' => date('Y-m-d H:i:s', $i1 + 2 * $i2),
 	);
 }
 function get_day_difference($dt1, $dt2) {
@@ -971,4 +972,55 @@ function insert_renewal_start($cycle_id, $user_id) {
 
 	$i1 = mysql_insert_id();
 	# todo placeholder to insert carry over score
+}
+
+function update_sponsor_timeframe($a1) {
+	global $config;
+	# todo update previous timeframe_id to future
+	# todo get a collection of timeframe ids
+	# no need to update the donate timeframe_id 
+	$a2 = array();
+	$sql = '
+		select
+			ssr.id as sponsor_id,
+			ssr.point_id,
+			ssr.timeframe_id
+		from
+			' . $config['mysql']['prefix'] . 'sponsor ssr,
+			' . $config['mysql']['prefix'] . 'donate dne
+		where
+			dne.id = ssr.donate_id and
+			ssr.timeframe_id in (2,3) and 
+			dne.user_id = ' . (int)$a1['user_id'] . ' and
+			channel_parent_id = ' . $a1['channel_parent_id']
+	;
+	print_debug($sql);
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result))
+		$a2[$row['sponsor_id']] = $row; 
+	foreach ($a2 as $k2 => $v2) {
+		$i1 = 0; # for timeframe_id
+		switch ($v2['timeframe_id']) {
+			case '3':
+				# future goes to present
+				$i1 = 2;
+			break;
+			case '2':
+				# present goes to past
+				$i1 = 1;
+			break;
+		}
+		$sql = '
+			update 
+				' . $config['mysql']['prefix'] . 'sponsor
+			set
+				timeframe_id = ' . (int)$i1 . '
+			where
+				id = ' . (int)$k2 . '
+			limit
+				1
+		';
+		print_debug($sql);
+		mysql_query($sql) or die(mysql_error());
+	}
 }
