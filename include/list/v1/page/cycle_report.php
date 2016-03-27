@@ -18,8 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# todo this variable will have to be accounted for in another function
-
 # number of previous cycles to carry over
 # this is a hardcode =(
 $config['cycle_carry'] = 3;
@@ -60,66 +58,81 @@ while ($row = mysql_fetch_assoc($result)) {
 foreach ($channel_list as $k1 => $v1) {
 	# when setting an alias within a foreach it will have to be set again in the t1 file =(
 	$channel = & $channel_list[$k1];
-
-	# todo need to split out these before the payout array
-	# todo need to make injecting a debug only option
-
-	# todo calculate the values
-	# todo allow increasing sponsor but never decreasing
-	# todo as such there can be many sponsors for the same cycle from the same user
-	# todo make sure the user gets charged everytime for the increasing cost
-	$channel['sponsor_user_id'] = array();
-	# to be put into an array like:
-	if ($config['debug'] == 1) {
-		$channel['sponsor_user_id'] = array(
-			'132' => array(
-				# # todo get the pre cycle sponsor id if applicable
-				# # ie. if the sponsor in the cycle will have point_id != 1
-				# $sql = '
-				# 	select
-				# 		id
-				# 	from
-				# 		ts_sponsor
-				# 	where
-				# 		id < ' . $non_start_sponsor_id . ' 
-				# 	order by
-				# 		id desc
-				# 	limit
-				# 		1
-				# ';
-				'sponsor_id' => array(
-					'1' => array(
-						'offset' => '?',
-						'overlap' => 1,
-						'value' => 2,
-					),
-					'2' => array(
-						'offset' => '?',
-						'overlap' => 1,
-						'value' => 3,
-					),
-					'3' => array(
-						'offset' => '?',
-						'overlap' => 1,
-						'value' => 4,
-					),
-				),
-				'computed' => array(
-					'donate_total' => 9,
-				),
-			),
-		);
-	}
 	# set sort
 	$channel['renewal'] = array();
 	$channel['sponsor'] = array();
 	$channel['payout'] = array();
-
-
 	do_payout_computation($channel, $k1, $_GET['cycle_id']);
+
+	# todo allow increasing sponsor but never decreasing
+	# todo as such there can be many sponsors for the same cycle from the same user
+	# todo make sure the user gets charged everytime for the increasing cost
+	$channel['donate_user_id'] = array();
+	$channel['donate_computed'] = array();
+	# todo make donate/sponsor computations before donate computations
+	if ($config['debug'] == 1) {
+		$donate_user_id = & $channel['donate_user_id'];
+		$sql = '
+			select
+				"none" as overflow,
+				dne.user_id as donate_user_id,
+				ssr.id as sponsor_id,
+				ssr.point_id,
+				ssr.start,
+				dne.offset as donate_offset,
+				dne.value as donate_value
+			from
+				ts_donate dne,
+				ts_sponsor ssr
+			where
+				dne.id = ssr.donate_id and
+				ssr.start < ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-2x']) . ' and
+				ssr.start >= ' . to_sql($channel['cycle_restart']['yyyy-mm-dd-3x']) . ' and
+				1
+			order by
+				dne.id desc
+		';
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			$donate_user_id[$row['donate_user_id']][$row['sponsor_id']] = $row;
+		}
+		# set overflow for the cyspons
+		foreach ($donate_user_id as $k1 => $v1) {
+			$donate_user_id[$k1] += get_left_cyspon_array($channel['cycle_restart']['yyyy-mm-dd-3x'], $k1);
+			$i1 = get_right_cyspon_id($channel['cycle_restart']['yyyy-mm-dd-2x'], $k1);
+			$donate_user_id[$k1][$i1]['overflow'] = 'right';
+		}
+		# since the first and last cycspons are marked it is now possible to calculate
+		# already have all the sponsors in the timeframe so just need to fill in the holes
+		$d1 = 0; # get the total value
+		foreach ($donate_user_id as $k1 => $v1) {
+		foreach ($v1 as $k2 => $v2) {
+			switch($v2['overflow']) {
+				case 'left':
+					$d1 += get_cyspon_left_value(
+						$v2,
+						$channel['cycle_restart']['yyyy-mm-dd-3x'] 
+					);
+				break;
+				case 'none':
+					$d1 += $v1['offset'] * $v1['value'];
+				break;
+				case 'right':
+					$d1 += get_cyspon_right_value(
+						$v2,
+						$channel['cycle_restart']['yyyy-mm-dd-2x']
+					);
+				break;
+				default:
+					die('bad type for sponsor');
+				break;
+			}
+		} }
+		# todo more concise data structure possible?
+		$channel['donate_value']['user_id'][$k1] = $d1;
+	}
+
 	get_payout_array($channel);
 }
-
-
 
 # all the numbers are setup to get payouts now

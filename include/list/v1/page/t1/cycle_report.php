@@ -206,52 +206,23 @@ foreach ($channel_list as $kc1 => $vc1) {
 	</div><?
 	# allow increasing sponsor but never decreasing
 	# as such there can be many sponsors for the same cycle
-	$channel['sponsor_user_id'] = array(
-		'132' => array(
-			# # todo get the pre cycle sponsor id if applicable
-			# # ie. if the sponsor in the cycle will have point_id != 1
-			# $sql = '
-			# 	select
-			# 		id
-			# 	from
-			# 		ts_sponsor
-			# 	where
-			# 		id < ' . $non_start_sponsor_id . ' 
-			# 	order by
-			# 		id desc
-			# 	limit
-			# 		1
-			# ';
-			'sponsor_id' => array(
-				'1' => array(
-					'offset' => '?',
-					'overlap' => 1,
-					'value' => 2,
-				),
-				'2' => array(
-					'offset' => '?',
-					'overlap' => 1,
-					'value' => 3,
-				),
-				'3' => array(
-					'offset' => '?',
-					'overlap' => 1,
-					'value' => 4,
-				),
-			),
-			'computed' => array(
-				'donate_total' => 9,
-			),
-		),
-	);
-	if (!empty($channel['sponsor_user_id']))
-	foreach ($channel['sponsor_user_id'] as $ks1 => $vs1) {
-		
-	}
-
-
-
-
+	# $channel['donate_user_id'] built in the controller
+	?> 
+	<h3>Sponsor</h3><?
+	if (!empty($channel['donate_value'])) {
+	foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
+		<hr />
+		<h4>
+			<?= (int)$ks1; ?>:
+			<?= to_html($key['user_id']['result'][$ks1]['contact_name']); ?>
+			(<?= to_html($key['user_id']['result'][$ks1]['user_name']); ?>)
+		</h4>
+		<p><?= nod() . (double)$vs1; ?></p><?
+	} }
+	else { ?> 
+		<p>No sponsors this cycle =(</p><?
+	} ?> 
+	<h3>Member</h3><?
 	if (!empty($channel['destination_user_id']))
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 

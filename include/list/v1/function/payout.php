@@ -538,11 +538,8 @@ function get_payout_array(& $channel) {
 	if (!empty($channel['computed_cost']['combined']))
 		$channel['renewal']['total'] = array_sum($channel['computed_cost']['combined']);
 	# sponsor
-	if (!empty($channel['sponsor_user_id'])) {
-	foreach ($channel['sponsor_user_id'] as $k1 => $v1) {
-		# todo integrate a real number
-		$channel['sponsor']['total'] += $v1['computed']['donate_total'];
-	} }
+	if (!empty($channel['donate_value']['user_id']))
+		$channel['sponsor']['total'] += array_sum($channel['donate_value']['user_id']);
 	# combined
 	$payout['total'] = $channel['renewal']['total'] + $channel['sponsor']['total'];
 
@@ -588,4 +585,84 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 			cce.start = ' . to_sql($a1['cycle_offset'][2]['start']) . ' and
 			cnl.parent_id = ' . (int)$channel_parent_id
 	);
+}
+
+# cycle and sponsor hybrid functions
+function get_cyspon_left_value(& $sponsora, $cycle_start) {
+	$i1 =
+		strtotime($sponsora['start'])
+		+
+		( $sponsora['donate_offset'] * 86400 )
+		-
+		strtotime($cycle_start)
+	;
+	return ( $i1 / ($sponsora['donate_offset'] * 86400) ) * $sponsora['donate_value'];
+}
+function get_cyspon_right_value(& $sponsora, $cycle_end) {
+	# todo check to make sure cycle length  matches
+	$i1 = 
+		strtotime($cycle_end)
+		-
+		strtotime($sponsora['start'])
+	;
+	return ( $i1 / ($sponsora['donate_offset'] * 86400) ) * $sponsora['donate_value'];
+}
+function get_left_cyspon_array($start, $user_id) {
+	global $config;
+	$a1 = array();
+	$sql = '
+		select
+			"left" as overflow,
+			dne.id as donate_id,
+			dne.offset as donate_offset,
+			dne.value as donate_value,
+			ssr.id as sponsor_id,
+			ssr.point_id as point_id,
+			ssr.start	
+		from
+			' . $config['mysql']['prefix'] . 'donate dne,
+			' . $config['mysql']['prefix'] . 'sponsor ssr
+		where
+			dne.id = ssr.donate_id and
+			ssr.start < ' . to_sql($start) . ' and
+			dne.user_id = ' . (int)$user_id . '
+		order by
+			ssr.start desc
+		limit
+			1
+	';
+	# echo $sql;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		$a1[$row['sponsor_id']] = $row;
+	}
+	return $a1;
+}
+function get_right_cyspon_id($end, $user_id) {
+	global $config;
+	$a1 = array();
+	$sql = '
+		select
+			ssr.id as sponsor_id,
+			ssr.point_id
+		from
+			' . $config['mysql']['prefix'] . 'donate dne,
+			' . $config['mysql']['prefix'] . 'sponsor ssr
+		where
+			dne.id = ssr.donate_id and
+			ssr.start < ' . to_sql($end) . ' and
+			dne.user_id = ' . (int)$user_id . '
+		order by
+			ssr.start desc
+		limit
+			1
+	';
+	# echo $sql;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result))
+		$a1 = $row;
+	if (!empty($a1))
+	if ($a1['point_id'] != 3) # could also mean that there is bad data in the db
+		return $a1['sponsor_id'];
+	return false;
 }
