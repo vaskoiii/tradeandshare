@@ -78,18 +78,20 @@ if (1) {
 			1
 	';
 	$a1 = array();
-	if ($config['debug'] == 1)
-		print_debug($sql);
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while($row = mysql_fetch_assoc($result)) {
 		$a1 = $row;
 	}
 	$b1 = 1;
+	$i2 = 0;
 	if (!empty($a1)) {
 		# todo verify this part is working
 		if ($a1['donate_offset'] == $lookup['donate_offset'])
-		if ($a1['donate_value'] == $lookup['donate_value'])
+		if ($a1['donate_value'] == $lookup['donate_value']) {
 			$b1 = 2;
+			$i2 = $a1['donate_id'];
+		}
 	}
 	if ($b1 == 1) {
 		$sql = '
@@ -104,29 +106,53 @@ if (1) {
 				modified = now(),
 				active = 1
 		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
+		print_debug($sql);
 		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
+
+		$i2 = mysql_insert_id();
 	}
-	if ($b1 == 2) {
-		# todo - update donate 
+	if (1) {
+		# todo update sponsor to point to the new donate
+		# todo show the debug message
+		$i1 = 0;
 		$sql = '
-			update
-				' . $prefix . 'donate
-			set
-				offset = ' . (int)$lookup['donate_offset'] . ',
-				value = ' . (double)$lookup['donate_value'] . ',
-				modified = now()
+			select
+				ssr.id,
+				ssr.point_id
+			from
+				' . $prefix . 'sponsor ssr,
+				' . $prefix . 'donate dne
 			where
-				id = ' . (int)$a1['donate_id'] . '
+				dne.id = ssr.donate_id and
+				dne.user_id = ' . $login_user_id . ' and
+				dne.channel_parent_id = ' . $lookup['channel_parent_id'] . '
+			order by
+				ssr.id desc
 			limit
 				1
 		';
-		if ($config['debug'] == 1)
+		print_debug($sql);
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result))
+			$a2 = $row;
+		# todo fix bad error checkning
+		# no sponsor donate (or resuming donate after sponsor end) will not have a value for $a2['id']
+		if (!empty($a2))
+		if ($a2['point_id'] != 3) {
+			$sql = '
+				update
+					' . $prefix . 'sponsor
+				set
+					donate_id = ' . (int)$i2 . '
+				where
+					id = ' . (int)$a2['id'] . '
+				limit
+					1	
+			';
 			print_debug($sql);
-		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
+		}
 	}
 }
 if ($config['debug'] == 1)

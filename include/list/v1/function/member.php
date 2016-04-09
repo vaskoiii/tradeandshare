@@ -33,7 +33,9 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo show functions that need to be called before the current function is called - keyword: precall
 
 function print_debug($s1) {
-	echo "\n<hr>\n<pre>\n$s1\n</pre>\n";
+	global $config;
+	if ($config['debug'] == 1)
+		echo "\n<hr />\n<pre>\n$s1\n</pre>\n";
 }
 
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
