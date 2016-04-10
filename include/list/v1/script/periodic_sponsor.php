@@ -103,7 +103,7 @@ foreach ($data['sponsor_id'] as $k1 => $v1) {
 				donate_id = ' .  (int)$v1['donate_id'] . ',
 				point_id = ' . (int)$i1 . ',
 				timeframe_id = 3,
-				start = date_add(' . to_sql($v1['sponsor_start']) . ', interval ' . (int)$v1['donate_offset'] . ' day),
+				start = date_add(' . to_sql($v1['sponsor_start']) . ', interval ' . (int)$v1['donate_offset'] . ' second),
 				modified = now(),
 				active = 1
 		';

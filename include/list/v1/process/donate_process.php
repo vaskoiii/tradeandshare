@@ -34,7 +34,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # variable
 # $config['write_protect'] = 1;
 $process['action_content_1']['channel_name'] = get_gp('channel_name');
-$process['action_content_1']['donate_offset'] = get_gp('donate_offset');
+$process['action_content_1']['donate_offset_day'] = get_gp('donate_offset_day');
 $process['action_content_1']['donate_value'] = get_gp('donate_value');
 
 # translation
@@ -46,7 +46,7 @@ $lookup['channel_parent_id'] = get_db_single_value('
 		name = ' . to_sql($process['action_content_1']['channel_name']) . ' and
 		active = 1
 ');
-$lookup['donate_offset'] = get_gp('donate_offset');
+$lookup['donate_offset'] = get_gp('donate_offset_day') * 86400;
 $lookup['donate_value'] = get_gp('donate_value');
 
 process_field_missing('action_content_1');

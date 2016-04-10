@@ -218,6 +218,10 @@ function process_data_translation($container) {
 	if ($v1) {
 	switch($k1) {
 		# data translation
+		case 'channel_offset':
+			# input is in days (need to convert)
+			$output[$k1] = $input[$k1] * 86400;
+		break;
 		case 'channel_parent_name':
 			$output['channel_parent_id'] = get_db_single_value('
 				id from

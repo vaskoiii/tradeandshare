@@ -313,11 +313,11 @@ foreach ($acycle as $k1 => $v1) {
 						'point_id' => 2,
 					),
 					'next' => array(
-						'r2c_day' => 6.8388425925926,
+						'r2c_second' => 6.8388425925926,
 						'r2c_ratio' => 0.023022486772487,
 						'r2c_score' => 0,
 						'r2c_renewal' => 2.3022486772487,
-						'c2r_day' => 0.16115740740741,
+						'c2r_second' => 0.16115740740741,
 						'c2r_ratio' => 0.97697751322751,
 						'c2r_score' => 0,
 						'c2r_renewal' => 97.697751322751,

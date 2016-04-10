@@ -254,7 +254,7 @@ function get_action_content_1($type = false, $name = false) {
 					$array = array(
 						# 'user_name' => '',
 						'channel_name' => '',
-						'channel_offset' => '',
+						'channel_offset_day' => '',
 						'channel_value' => '',
 						'channel_percent' => '',
 						'channel_description' => '',
@@ -263,7 +263,7 @@ function get_action_content_1($type = false, $name = false) {
 				case 'donate':
 					$array = array(
 						'channel_name' => '',
-						'donate_offset' => '',
+						'donate_offset_day' => '',
 						'donate_value' => '',
 					);
 				break;
@@ -272,7 +272,7 @@ function get_action_content_1($type = false, $name = false) {
 						'channel_name' => '',
 						'point_name' => '',
 						# todo separate?
-						# 'donate_offset' => '',
+						# 'donate_offset_day' => '',
 						# 'donate_value' => '',
 					);
 				break;

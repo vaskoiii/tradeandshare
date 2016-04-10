@@ -105,6 +105,7 @@ foreach ($channel_list as $k1 => $v1) {
 		# since the first and last cycspons are marked it is now possible to calculate
 		# already have all the sponsors in the timeframe so just need to fill in the holes
 		$d1 = 0; # get the total value
+		$k1 = 0;
 		foreach ($donate_user_id as $k1 => $v1) {
 		foreach ($v1 as $k2 => $v2) {
 			switch($v2['overflow']) {
@@ -129,7 +130,8 @@ foreach ($channel_list as $k1 => $v1) {
 			}
 		} }
 		# todo more concise data structure possible?
-		$channel['donate_value']['user_id'][$k1] = $d1;
+		if (!empty($k1))
+			$channel['donate_value']['user_id'][$k1] = $d1;
 	}
 
 	get_payout_array($channel);

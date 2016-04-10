@@ -218,23 +218,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'channel_percent':
 			$grab .= (int)$listing[$k1] . '%';
 		break;
+		case 'donate_offset_day':
+		case 'channel_offset_day':
+			$grab .= $listing[str_replace('_day', '', $k1)] / 86400 . ' day';
+		break;
 		case 'donate_offset':
 		case 'channel_offset':
 		// case 'cycle_start':
-			$grab .= $listing[$k1] . ' day';
-		break;
-		case 'remaining_time':
-			/*
-			$s1 = strtotime($listing['membership_start']) + 30*24*3600;
-			$s2 = strtotime(date('Y-m-d'));
-			$s3 = $s1 - $s2;
-			if ($s3 < 0)
-				$s3 = 0;
-			$s3 /= 86400;
-			$grab .= $s3;
-			*/
-			$grab .= 'forever';
-			
+			$grab .= $listing[$k1] . ' second';
 		break;
 		case 'checkbox':
 			# temporary disabled fields while we restore functionality to TS 2012-02-16 vaskoiii

@@ -946,7 +946,7 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 			<div class="k"><span class="<?= $k1; ?>"><?= tt('element', $k1); ?></span>:</div>
 			<div class="v"><?
 				if ( !str_match('_description', $k1) ) { ?> 
-					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
+					<input type="text" class="<?= $k1; ?>" name="<?= $k1; ?>" value="<?= ( $v1 !== 0 || !empty($v1)) ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?>" maxlength="255" /><?
 				}
 				else { ?> 
 					<? # textarea display hacks 2012-02-26 vaskoiii ?> 

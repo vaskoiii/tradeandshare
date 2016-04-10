@@ -320,14 +320,6 @@ function get_mask_subject($type, $display) {
 	# $display is used but barely. It is still good to have because it allows more flexibility and doesnt hurt 2012-02-26 vaskoiii
 	$array = array();
 	switch($type) {
-		# todo no need for this page
-		case 'membership':
-			$array = array(
-				'channel_name' => 'channel_name',
-				'channel_name_spacer' => '_',
-				'remaining_time' => 'remaining_time', # actually min time/max time (calculated value)
-			);
-		break;
 		case 'accounting':
 			$array = array(
 				'kind_name' => 'kind_name',
@@ -339,8 +331,8 @@ function get_mask_subject($type, $display) {
 			$array = array(
 				'channel_id_name' => 'channel_id_name',
 				'channel_id_name_spacer' => '_',
-				'donate_offset' => 'donate_offset',
-				'donate_offset_spacer' => '_',
+				'donate_offset_day' => 'donate_offset_day',
+				'donate_offset_day_spacer' => '_',
 				'donate_value' => 'donate_value',
 				'donate_value_spacer' => '_',
 				# todo?
@@ -356,8 +348,8 @@ function get_mask_subject($type, $display) {
 				# 'channel_name_spacer' => '_',
 				# 'channel_parent_id' => 'channel_parent_id',
 				# 'channel_parent_id_spacer' => '_',
-				'donate_offset' => 'donate_offset',
-				'donate_offset_spacer' => '_',
+				'donate_offset_day' => 'donate_offset_day',
+				'donate_offset_day_spacer' => '_',
 				'donate_value' => 'donate_value',
 				'donate_value_spacer' => '_',
 				'sponsor_start' => 'sponsor_start',
@@ -418,8 +410,8 @@ function get_mask_subject($type, $display) {
 				# 'channel_name_spacer' => '_',
 				# 'channel_parent_id' => 'channel_parent_id',
 				# 'channel_parent_id_spacer' => '_',
-				'channel_offset' => 'channel_offset',
-				'channel_offset_spacer' => '_',
+				'channel_offset_day' => 'channel_offset_day',
+				'channel_offset_day_spacer' => '_',
 				'channel_value' => 'channel_value',
 				'channel_value_spacer' => '_',
 				'channel_percent' => 'channel_percent',

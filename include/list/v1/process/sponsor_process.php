@@ -18,9 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# todo investigate session messages not displaying on the resulting page
-# todo implement periodic_sponsor
-
 # description: process "first" donate/sponsor and upcoming sponsors - (does not process upcoming sponsors)
 
 # note
@@ -29,8 +26,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # - max = 1 year?
 # - estimated norm = 30 days
 
+# todo investigate session messages not displaying on the resulting page
 # todo allow user to confirm before billing
-# todo process funds charge transaction
 
 # logic for sponsoring is significantly different from cycles including database structure and underlying rules
 # sponsor has its own "cycle" defined by donate_offset
@@ -158,7 +155,7 @@ if (!empty($first_sponsor)) {
 			donate_id = ' . (int)$lookup['donate_id'] . ',
 			point_id = ' . (int)$lookup['point_id'] . ',
 			timeframe_id = 3,
-			start = date_add(' . to_sql($now) . ', interval ' . (int)$lookup['donate_offset'] . ' day),
+			start = date_add(' . to_sql($now) . ', interval ' . (int)$lookup['donate_offset'] . ' second),
 			modified = now(),
 			active = 1
 	';
@@ -191,62 +188,20 @@ if (empty($first_sponsor)) {
 			1
 	';
 	$a1 = array();
-	# if ($config['debug'] == 1)
-		print_debug($sql);
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while($row = mysql_fetch_assoc($result)) {
 		$a1 = $row;
 	}
-	# todo update the future sponsor
-	# todo minimize updates to donate
-	# todo check to make sure offset and 
-	$b1 = 1;
-	if ($a1['donate_offset'] == $lookup['donate_offset'])
-	if ($a1['donate_value'] == $lookup['donate_value'])
-		$b1 = 2;
-
-	if ($b1 == 1) {
-		# todo - update donate (insert in this case)
-		$sql = '
-			insert into
-				' . $prefix . 'donate
-			set
-				channel_parent_id = ' . (int)$lookup['channel_parent_id'] . ',
-				user_id = ' . (int)$login_user_id . ',
-				offset = ' . (int)$a1['offset'] . ',
-				value = ' . (double)$a1['value'] . ',
-				modified = now(),
-				active = 1
-		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
-		$i1 = mysql_insert_id();
-		$sql = '
-			update
-				' . $prefix . 'sponsor
-			set
-				donate_id = ' . (int)$a1['donate_id'] . '
-			where
-				id = ' . (int)$i1 . '
-			limit
-				1
-		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
-	}
-	if ($b1 == 2) {
-		# todo - update sponsor 
-		# todo update the point_id
+	# update value/offset of the future sponsor is done through donate
+	if (1) {
 		$sql = '
 			update
 				' . $prefix . 'sponsor
 			set
 				point_id = ' . (int)$lookup['point_id'] . ',
-				donate_id = ' . (int)$a1['donate_id'] . '
+				donate_id = ' . (int)$a1['donate_id'] . ',
+				modified = now(),
 			where
 				id = ' . (int)$a1['sponsor_id'] . '
 			limit

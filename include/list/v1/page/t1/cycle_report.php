@@ -42,23 +42,8 @@ function print_key_user_id($k1) {
 # todo fix print_break_open to fix/accomodate the below div and !!! ts_focus
 # global seach for [<div] to find the hacked divs
 # print_break_open('user_report', 'page');
-?>
-
-<script>
-	function score_report_focus(s1) { <?
-		# hide everything
-		foreach ($data['user_report']['channel'] as $k1 => $v1) {
-			if (!isset($data['user_report']['premature_channel_list'][$v1['channel_id']])) { ?> 
-				did('channel_<?= (int)$k1; ?>').style.display = 'none';<?
-			}
-		}
-		# unhide 1 ?> 
-		did(s1).style.display = 'block';
-	}
-</script>
-
-<?
 # only focus 1 channel to start
+
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<div class="content_box"><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) {
@@ -125,7 +110,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>Cycle Data</h3>
 	<dl>
 		<dt>Length</dt>
-		<dd><?= to_html($vc1['info']['time']); ?>  Days</dd><?
+		<dd><?= to_html($vc1['info']['time']/86400); ?>  Days</dd><?
 		# todo check that before and after cycle cost is handled correctly
 		# todo ie) is the member paying the correct amount for their renewal
 		# before and after cost is relative to the members ( since renewal can happen mid cycle )
@@ -212,6 +197,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 
 	print_break_close();
 	print_break_open('Sponsor');
+		echo '<pre>'; print_r($channel['donate_value']); echo '</pre>';
 		if (!empty($channel['donate_value'])) {
 		foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
 			<h4>

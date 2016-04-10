@@ -3205,3 +3205,7 @@ insert into ts_kind set name='donate', accounting = 2, translation = 1, minder =
 insert into ts_kind set name='sponsor', accounting = 1, translation = 1, minder = 2, score = 2;
 ALTER TABLE `ts_kind` ADD UNIQUE ( `name`);
 
+-- day_size
+-- only needed if not preconverted
+-- update ts_channel set offset = offset * 86400;
+-- update ts_donate set offset = offset * 86400;

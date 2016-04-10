@@ -204,7 +204,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['after']['member_time'] = (
 						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['start'])
-					)/86400 ;
+					);
 					$kis['after']['time_weight'] = (
 						$kis['after']['member_time'] /
 						$channel['info']['payout_length']
@@ -217,7 +217,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['continue']) -
 						strtotime($cycle_offset[1]['start'])
-					) / 86400 ;
+					);
 					$kis['before']['time_weight'] = (
 						$kis['before']['member_time'] /
 						$channel['info']['payout_length']
@@ -225,7 +225,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['after']['member_time'] = (
 						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['continue'])
-					) / 86400 ;
+					);
 					$kis['after']['time_weight'] = (
 						$kis['after']['member_time'] /
 						$channel['info']['payout_length']
@@ -238,7 +238,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end']) -
 						strtotime($cycle_offset[1]['start'])
-					) / 86400 ;
+					);
 					$kis['before']['time_weight'] = (
 						$kis['before']['member_time'] /
 						$channel['info']['payout_length']
@@ -246,7 +246,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['after']['member_time'] = (
 						strtotime($cycle_offset[0]['start']) -
 						strtotime($timeline['start'])
-					) / 86400 ;
+					);
 					$kis['after']['time_weight'] = (
 						$kis['after']['member_time'] /
 						$channel['info']['payout_length']
@@ -259,7 +259,7 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					$kis['before']['member_time'] = (
 						strtotime($timeline['end']) -
 						strtotime($cycle_offset[1]['start'])
-					)/86400 ;
+					);
 					$kis['before']['time_weight'] = (
 						$kis['before']['member_time'] /
 						$channel['info']['payout_length']
@@ -592,11 +592,11 @@ function get_cyspon_left_value(& $sponsora, $cycle_start) {
 	$i1 =
 		strtotime($sponsora['start'])
 		+
-		( $sponsora['donate_offset'] * 86400 )
+		( $sponsora['donate_offset'])
 		-
 		strtotime($cycle_start)
 	;
-	return ( $i1 / ($sponsora['donate_offset'] * 86400) ) * $sponsora['donate_value'];
+	return ( $i1 / ($sponsora['donate_offset']) ) * $sponsora['donate_value'];
 }
 function get_cyspon_right_value(& $sponsora, $cycle_end) {
 	# todo check to make sure cycle length  matches
@@ -605,7 +605,7 @@ function get_cyspon_right_value(& $sponsora, $cycle_end) {
 		-
 		strtotime($sponsora['start'])
 	;
-	return ( $i1 / ($sponsora['donate_offset'] * 86400) ) * $sponsora['donate_value'];
+	return ( $i1 / ($sponsora['donate_offset']) ) * $sponsora['donate_value'];
 }
 function get_left_cyspon_array($start, $user_id) {
 	global $config;

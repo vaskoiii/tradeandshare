@@ -39,6 +39,10 @@ switch ($k2) {
 process_field_missing('action_content_1');
 process_data_translation('action_content_1');
 
+# extra conversion for the offset
+# todo this is actually a $lookup not a $process
+$process['action_content_1']['channel_offset'] = get_gp('channel_offset_day') * 86400;
+
 # prevent channel name change
 if (1) {
 }

@@ -108,8 +108,8 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 		$dt3 = $channel['cycle_restart']['yyyy-mm-dd-3x'];
 
 		# calculate from 2 cycles back to 3 cycles back
-		$channel['cycle_restart']['length_2x_to_3x'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
-		$channel['info']['payout_length'] = abs((strtotime($dt2) - strtotime($dt3))/86400);
+		$channel['cycle_restart']['length_2x_to_3x'] = abs(strtotime($dt2) - strtotime($dt3));
+		$channel['info']['payout_length'] = abs(strtotime($dt2) - strtotime($dt3));
 
 		# can not choose a current or future cycle
 		$dtlast = $channel['cycle_restart']['yyyy-mm-dd-last'] = get_cycle_last_start($channel_parent_id, date('Y-m-d H:i:s'));
@@ -367,14 +367,14 @@ function get_run_datetime_array() {
 		'horizon' => date('Y-m-d H:i:s', $i1 + 2 * $i2),
 	);
 }
-function get_day_difference($dt1, $dt2) {
-	return abs((strtotime($dt1) - strtotime($dt2))/86400);
+function get_second_difference($dt1, $dt2) {
+	return abs((strtotime($dt1) - strtotime($dt2)));
 }
-function get_datetime_add_day($dt1, $offset) {
-	return date('Y-m-d H:i:s', strtotime($dt1) + (86400 * $offset));
+function get_datetime_add_second($dt1, $offset) {
+	return date('Y-m-d H:i:s', strtotime($dt1) + ($offset));
 }
 function get_cycle_next_start($ccycle_start, $cchannel_offset) {
-	return date('Y-m-d H:i:s', strtotime($ccycle_start) + ($cchannel_offset * 86400));
+	return date('Y-m-d H:i:s', strtotime($ccycle_start) + ($cchannel_offset));
 }
 
 function get_cycle_last_start($channel_parent_id, $datetime) {
@@ -543,7 +543,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 						cnl.parent_id = ' . (int)$cycle[$period]['channel_parent_id'] . ' and
 						rnal.user_id = ' . (int)$user_id . ' and
 						rnal.start >= ' . to_sql($cycle[$period]['cycle_start']) . ' and
-						rnal.start < date_add(' . to_sql($cycle[$period]['cycle_start']) . ', interval + ' . (int)$cycle[$period]['channel_offset'] . ' day) and
+						rnal.start < date_add(' . to_sql($cycle[$period]['cycle_start']) . ', interval + ' . (int)$cycle[$period]['channel_offset'] . ' second) and
 						rnal.active = 1 and
 						cce.active = 1 and
 						cnl.active = 1
@@ -582,19 +582,19 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	if (empty($ncycle['cycle_start']))
 		$ncycle['cycle_start'] = get_cycle_next_start($ccycle['cycle_start'], $ccycle['channel_offset']);
 
-	$nrenewal['r2c_day'] = get_day_difference($crenewal['renewal_start'], $ncycle['cycle_start']);
-	$nrenewal['r2c_ratio'] = 1 - ($nrenewal['r2c_day'] / $ccycle['channel_offset']);
+	$nrenewal['r2c_second'] = get_second_difference($crenewal['renewal_start'], $ncycle['cycle_start']);
+	$nrenewal['r2c_ratio'] = 1 - ($nrenewal['r2c_second'] / $ccycle['channel_offset']);
 	$nrenewal['r2c_score'] = 0;
 	$nrenewal['r2c_renewal'] = $nrenewal['r2c_ratio'] * $ccycle['channel_value'];
 	# c2r
 	# todo calclulate score
 	# todo factor in score with value
-	$nrenewal['c2r_day'] = abs($nrenewal['r2c_day'] - $ncycle['channel_offset']);
+	$nrenewal['c2r_second'] = abs($nrenewal['r2c_second'] - $ncycle['channel_offset']);
 	$nrenewal['c2r_ratio'] = 1 - $nrenewal['r2c_ratio'];
 	$nrenewal['c2r_score'] = 0;
 	$nrenewal['c2r_renewal'] = $nrenewal['c2r_ratio'] * $ncycle['channel_value'];
 	# misc
-	$nrenewal['renewal_start'] = get_datetime_add_day($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
+	$nrenewal['renewal_start'] = get_datetime_add_second($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
 	
 	# todo placeholder to insert carry over score
 
@@ -689,7 +689,7 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 
 		# ahead of time calculation
 		# repeated from get_renewal_next_data()
-		$ncycle_start = date('Y-m-d H:i:s', strtotime($ccycle['cycle_start']) + $ccycle['channel_offset'] * 86400);
+		$ncycle_start = date('Y-m-d H:i:s', strtotime($ccycle['cycle_start']) + $ccycle['channel_offset']);
 		$ncycle_start = get_cycle_next_start($ccycle['cycle_start'], $ccycle['channel_offset']);
 		
 		$sql = '

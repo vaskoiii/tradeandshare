@@ -500,6 +500,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$select[] = 't1.description as channel_description';
 			$select[] = 't1.value AS channel_value';
 			$select[] = 't1.offset AS channel_offset';
+			# todo better way?
+			$select[] = 't1.offset / 86400 AS channel_offset_day';
 			$select[] = 't1.percent AS channel_percent';
 			$select[] = 'tfe.id AS timeframe_id';
 			$select[] = 'tfe.name AS timeframe_name';
