@@ -63,7 +63,12 @@ $config['root_tag_id'] = 1; # <|!|>
 $config['main_location_id'] = 1; # <|?|>
 $config['autocreation_user_id'] = '111'; # |root|
 $config['renewal_kind_id'] = 49; # used for accounting debits
-$config['cycle_kind_id'] = 52; # used for accounting debits
+
+# used for accounting debits
+$config['cycle_kind_id'] = 52;
+$config['cycle_hostfee_kind_id'] = 59;
+$config['cycle_missionfee_kind_id'] = 61;
+
 # drop < and > from user_name as as every user_name is reserved
 
 $config['max_tag_depth'] = 5; # safe recursive limit on how deep tags can go 2012-02-23 vaskoiii

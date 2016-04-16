@@ -3209,3 +3209,17 @@ ALTER TABLE `ts_kind` ADD UNIQUE ( `name`);
 -- only needed if not preconverted
 -- update ts_channel set offset = offset * 86400;
 -- update ts_donate set offset = offset * 86400;
+
+alter table ts_kind add parent_id int(11) after id;
+insert into ts_kind set parent_id = 0, name = 'accounting_hosting', accounting = 1, translation = 2, minder= 2, score = 2;
+update ts_kind set parent_id = 59 where parent_id is null;
+insert into ts_kind set parent_id = 0, name = 'origin', accounting = 2, translation = 2, minder= 2, score = 2;
+update ts_kind set parent_id = 60 where parent_id = 59;
+insert into ts_kind set parent_id = 60, name = 'accounting_mission', accounting = 1, translation = 2, minder= 2, score = 2;
+update ts_kind set parent_id = 60 where id = 59 limit 1;
+alter table ts_kind add index `parent_id` (`parent_id`);
+
+
+update ts_kind set name = 'cycle_hostfee' where id = '59';
+update ts_kind set name = 'cycle_missionfee' where id = '61';
+update ts_kind set parent_id = 52 where id in (59, 61);

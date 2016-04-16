@@ -122,8 +122,40 @@ foreach ($channel_list as $k1 => $v1) {
 					modified = now(),
 					active = 1
 			';
-			if ($config['debug'] == 1)
-				print_debug($sql);
+			print_debug($sql);
+			if ($config['write_protect'] != 1)
+				mysql_query($sql) or die(mysql_error());
+		}
+		if (1) {
+			$sql = '
+				insert into
+					' . $prefix . 'accounting
+				set
+					user_id = ' . (int)$config['hostfee_user_id'] . ',
+					kind_id = ' . (int)$config['cycle_hostfee_kind_id'] . ',
+					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
+					value = ' . (double)$payout['hostfee'] . ',
+					modified = now(),
+					active = 1
+			';
+			print_debug($sql);
+			if ($config['write_protect'] != 1)
+				mysql_query($sql) or die(mysql_error());
+		}
+		if (!empty($payout['missionfee'])) {
+			# todo searching for parent and children in the same result set
+			$sql = '
+				insert into
+					' . $prefix . 'accounting
+				set
+					user_id = ' . (int)$channel['info']['user_id'] . ',
+					kind_id = ' . (int)$config['cycle_missionfee_kind_id'] . ',
+					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
+					value = ' . (double)$payout['missionfee'] . ',
+					modified = now(),
+					active = 1
+			';
+			print_debug($sql);
 			if ($config['write_protect'] != 1)
 				mysql_query($sql) or die(mysql_error());
 		}
