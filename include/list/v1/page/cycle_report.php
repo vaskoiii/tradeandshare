@@ -69,8 +69,7 @@ foreach ($channel_list as $k1 => $v1) {
 	# todo make sure the user gets charged everytime for the increasing cost
 	$channel['donate_user_id'] = array();
 	$channel['donate_computed'] = array();
-	# todo make donate/sponsor computations before donate computations
-	if ($config['debug'] == 1) {
+	if (1) {
 		$donate_user_id = & $channel['donate_user_id'];
 		$sql = '
 			select
