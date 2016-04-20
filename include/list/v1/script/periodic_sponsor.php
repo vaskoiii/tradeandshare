@@ -35,6 +35,11 @@ if ($config['craft'] == 1)
 else
 	$data['run']['datetime'] = get_run_datetime_array();
 
+echo "\n";
+echo "sponsor\n";
+echo "-------\n";
+echo "\n";
+
 echo "rdatetime\n";
 echo "{\n";
 print_r($data['run']['datetime']);
