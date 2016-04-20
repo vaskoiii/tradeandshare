@@ -197,7 +197,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 
 	print_break_close();
 	print_break_open('Sponsor');
-		echo '<pre>'; print_r($channel['donate_value']); echo '</pre>';
 		if (!empty($channel['donate_value'])) {
 		foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
 			<h4>
