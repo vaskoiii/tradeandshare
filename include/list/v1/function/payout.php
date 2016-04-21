@@ -589,6 +589,8 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 
 # cycle and sponsor hybrid functions
 function get_cyspon_left_value(& $sponsora, $cycle_start) {
+	# todo possible to make less abstract? ie) maybe next_renewal_start - cycle_start
+	# will fail if pre_cycle_renewal is manually changed in the database ie. crafting test data
 	$i1 =
 		strtotime($sponsora['start'])
 		+
@@ -596,7 +598,11 @@ function get_cyspon_left_value(& $sponsora, $cycle_start) {
 		-
 		strtotime($cycle_start)
 	;
-	return ( $i1 / ($sponsora['donate_offset']) ) * $sponsora['donate_value'];
+	$d1 = ( $i1 / ($sponsora['donate_offset']) ) * $sponsora['donate_value'];
+	# todo enforce:
+	# if ($d1 < 0)
+	# 	die('negative sponsor not allowed');
+	return $d1;
 }
 function get_cyspon_right_value(& $sponsora, $cycle_end) {
 	# todo check to make sure cycle length  matches

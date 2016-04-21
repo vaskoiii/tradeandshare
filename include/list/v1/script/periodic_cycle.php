@@ -110,12 +110,10 @@ foreach ($channel_list as $k1 => $v1) {
 	if (!empty($v1['seed']['cycle_id'])) {
 		do_payout_computation($channel, $k1, $v1['seed']['cycle_id']);
 		get_payout_array($channel);
-		# echo '<pre>'; print_r($channel['payout']); echo '</pre>';
-
-		# kind of a waste of a variable name
+		# sponsor accounting happen separate from payouts
+		# (do not charge for here)
 		$payout = & $channel['payout'];
 		foreach ($payout['user_id'] as $k1p => $v1p) {
-			# todo sql for insert
 			$sql = '
 				insert into
 					' . $prefix . 'accounting

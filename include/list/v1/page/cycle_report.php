@@ -68,7 +68,6 @@ foreach ($channel_list as $k1 => $v1) {
 	# todo as such there can be many sponsors for the same cycle from the same user
 	# todo make sure the user gets charged everytime for the increasing cost
 	$channel['donate_user_id'] = array();
-	$channel['donate_computed'] = array();
 	if (1) {
 		$donate_user_id = & $channel['donate_user_id'];
 		$sql = '
@@ -115,7 +114,7 @@ foreach ($channel_list as $k1 => $v1) {
 					);
 				break;
 				case 'none':
-					$d1 += $v1['offset'] * $v1['value'];
+					$d1 += $v2['donate_offset'] / 86400 * $v2['donate_value'];
 				break;
 				case 'right':
 					$d1 += get_cyspon_right_value(
