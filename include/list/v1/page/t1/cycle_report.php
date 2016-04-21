@@ -282,7 +282,6 @@ foreach ($channel_list as $kc1 => $vc1) {
 	print_break_open('Hosting');
 		# will only have multiple people if hosts can be linked together (decentralized)
 		if (!empty($payout['hostfee'])) { ?> 
-			<hr />
 			<h4>
 				<?= (int)$config['hostfee_user_id']; ?>:
 				<?= to_html($key['user_id']['result'][$config['hostfee_user_id']]['contact_name']); ?>

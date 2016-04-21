@@ -96,6 +96,7 @@ foreach ($channel_list as $k1 => $v1) {
 		}
 		# set overflow for the cyspons
 		foreach ($donate_user_id as $k1 => $v1) {
+			$key['user_id']['search'][$k1] = $k1; # used in t1
 			$donate_user_id[$k1] += get_left_cyspon_array($channel['cycle_restart']['yyyy-mm-dd-3x'], $k1);
 			$i1 = get_right_cyspon_id($channel['cycle_restart']['yyyy-mm-dd-2x'], $k1);
 			$donate_user_id[$k1][$i1]['overflow'] = 'right';
@@ -133,6 +134,8 @@ foreach ($channel_list as $k1 => $v1) {
 	}
 
 	get_payout_array($channel);
+	$key['user_id']['search'][$channel['info']['user_id']] = $channel['info']['user_id']; # used in t1
 }
+$key['user_id']['search'][$config['hostfee_user_id']] = $config['hostfee_user_id']; # used in t1
 
 # all the numbers are setup to get payouts now
