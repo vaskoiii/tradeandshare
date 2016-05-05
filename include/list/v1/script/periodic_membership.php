@@ -38,7 +38,7 @@ else
 	$data['run']['datetime'] = get_run_datetime_array();
 
 echo "\n";
-echo "cycle\n";
+echo "membership\n";
 echo "-----\n";
 echo "\n";
 
