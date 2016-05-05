@@ -32,6 +32,7 @@ if ($config['craft'] == 1)
 		'previous' => '2015-05-30 00:00:00',
 		'current' => '2015-06-01 00:00:00',
 		'next' => '2015-06-02 00:00:00',
+		'horizon' => '2015-06-03 00:00:00', # (not used)
 	);
 else
 	$data['run']['datetime'] = get_run_datetime_array();

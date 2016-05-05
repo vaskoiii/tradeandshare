@@ -1,23 +1,19 @@
 <?
 # author: vaskoiii
-# description: process the autorenewing cycles and renewals together ( first implementation will be daily cron )
-# warning: changing a timeframe_id does not count as a modification
+# description: process the autorenewing cycles and renewals together for "tomorrow" as Y-m-d ( run with daily cron )
+
+# warning:
+# - changing a timeframe_id does not count as a modification
 
 # issue
-# - doesn't account for credit
-# - doesn't account for score value
 # - the frequency with which this script (and periodic renewal) run may be the limiting factor in how fine grained the renewals can happen. ie) if it runs daily cycles may only be able account for yyyy-mm-dd and not hh:mm:ss (Y-m-d H-i-s)
 # - script dependancies are different from normal dependancies because they do not have access to .htaccess
 # - member function calls are not optimized ie) get_cycle_array() make 3 function calls
 
-# todo prepare crafted data for testing (this alone may be pretty intense)
-# todo - currently working on crafted cycle data for funds available check
-
-# todo script to reset timeframe_id - if run on every page load there will never be a delay in the correct timeframe
+# todo fix issue: changing renewal point_id = 3 to 2 | 4 or vise versa through the ui is problematic from up to 2 days before the renewal point_id
+# todo separate cycle logic for cycles and renewals?
 # todo use locking on renewals during script run - if data can change while this script is being run this could be problematic
-# todo eliminade delay in marking current cycles by remembering the last script run time and updating accordingly on each page load.
-# todo charge users the day before the renewal begins
-# todo factor in available funds
+# todo eliminade incorrect timeframes by remembering the last script run time and updating accordingly on each page load (ie. running the scrip on every page load)
 # todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
 
 # config
@@ -41,6 +37,7 @@ if ($config['craft'] == 1)
 		'previous' => '2015-05-30 00:00:00',
 		'current' => '2015-06-01 00:00:00',
 		'next' => '2015-06-02 00:00:00',
+		'horizon' => '2015-06-03 00:00:00',
 	);
 else
 	$data['run']['datetime'] = get_run_datetime_array();
@@ -72,15 +69,15 @@ $auser = & $data['run']['after']['user'];
 echo "bcycle\n";
 echo "{\n";
 # run first so that a future cycle is not inserted
-if (1) {
+if (0) {
 	$sql = '
 		select
 			id as cycle_id
 		from
 			' . $prefix . 'cycle
 		where
-			start >= ' . to_sql($rdatetime['previous']) . ' and
-			start < ' . to_sql($rdatetime['current'])
+			start >= ' . to_sql($rdatetime['current']) . ' and
+			start < ' . to_sql($rdatetime['next'])
 	;
 	$result = mysql_query($sql) or die(mysql_error());
 	echo "$sql\n";
@@ -89,6 +86,8 @@ if (1) {
 	}
 }
 # end cycles with no renewals
+# todo fix (1st sql statement below assumes there is only a 1 day period where a renewal is possible)
+if (0)
 if (!empty($bcycle['all'])) {
 	# prep
 	$sql = '
@@ -97,8 +96,8 @@ if (!empty($bcycle['all'])) {
 		from
 			' . $prefix . 'renewal rnal
 		where
-			rnal.start >= ' . to_sql($rdatetime['previous']) . ' and
-			rnal.start < ' . to_sql($rdatetime['current']) . ' and
+			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
+			rnal.start < ' . to_sql($rdatetime['next']) . ' and
 			rnal.cycle_id in (' . implode(', ', $bcycle['all']) . ') 
 		group by
 			rnal.cycle_id
@@ -164,7 +163,7 @@ echo "}\n";
 
 echo "acycle\n";
 echo "{\n";
-# get all cycles for "next" (indirectly obtained from channel)
+# get cycles for "tomorrow" (00:00:00 to 23:59:59)
 if (1) {
 	$sql = '
 		select
@@ -176,8 +175,8 @@ if (1) {
 
 		where
 			cce.channel_id = cnl.id and
-			start >= ' . to_sql($rdatetime['current']) . ' and
-			start < ' . to_sql($rdatetime['next']) . '
+			cce.start >= ' . to_sql($rdatetime['next']) . ' and
+			cce.start < ' . to_sql($rdatetime['horizon']) . '
 	';
 	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
@@ -209,15 +208,15 @@ if (1) {
 		unset($achannel[$k1]);
 		# print_r($achannel[$k1]); echo "\n";
 	}
-	# not really a "modification" only changing a marker/flag
+	# not really a "modification" only changing a marker/flag (and doing it early)
 	$sql = '
 		update
 			' . $prefix . 'cycle
 		set
 			timeframe_id = 2
 		where
-			start >= ' . to_sql($rdatetime['previous']) . ' and
-			start < ' . to_sql($rdatetime['current']) . ' and
+			start >= ' . to_sql($rdatetime['next']) . ' and
+			start < ' . to_sql($rdatetime['horizon']) . ' and
 			point_id != 3
 	';
 	print_debug($sql);
@@ -235,8 +234,8 @@ if (1) {
 		from
 			' . $prefix . 'renewal rnal
 		where
-			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
-			rnal.start < ' . to_sql($rdatetime['next']) . ' and
+			rnal.start >= ' . to_sql($rdatetime['next']) . ' and
+			rnal.start < ' . to_sql($rdatetime['horizon']) . ' and
 			rnal.point_id in (2, 3, 4)
 			-- no "1" because can not start a renewal here
 		group by
@@ -269,8 +268,8 @@ foreach ($acycle as $k1 => $v1) {
 		from
 			' . $prefix . 'renewal rnal
 		where
-			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
-			rnal.start < ' . to_sql($rdatetime['next']) . ' and
+			rnal.start >= ' . to_sql($rdatetime['next']) . ' and
+			rnal.start < ' . to_sql($rdatetime['horizon']) . ' and
 			rnal.point_id in (2, 3, 4) and
 			rnal.cycle_id = ' . (int)$k1 . '
 			-- no "1" because can not start a renewal here
