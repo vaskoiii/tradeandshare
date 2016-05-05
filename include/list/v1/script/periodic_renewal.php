@@ -21,9 +21,9 @@
 require(__DIR__ . '/../config/preset.php');
 
 # override
-# $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
-$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
+$config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
+$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
 # see also:
 # config/dependancy.php
@@ -66,166 +66,6 @@ $achannel = & $data['run']['after']['channel'];
 $acycle = & $data['run']['after']['cycle'];
 $auser = & $data['run']['after']['user'];
 
-echo "bcycle\n";
-echo "{\n";
-# run first so that a future cycle is not inserted
-if (0) {
-	$sql = '
-		select
-			id as cycle_id
-		from
-			' . $prefix . 'cycle
-		where
-			start >= ' . to_sql($rdatetime['current']) . ' and
-			start < ' . to_sql($rdatetime['next'])
-	;
-	$result = mysql_query($sql) or die(mysql_error());
-	echo "$sql\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$bcycle['all'][$row['cycle_id']] = $row['cycle_id'];
-	}
-}
-# end cycles with no renewals
-# todo fix (1st sql statement below assumes there is only a 1 day period where a renewal is possible)
-if (0)
-if (!empty($bcycle['all'])) {
-	# prep
-	$sql = '
-		select
-			rnal.cycle_id
-		from
-			' . $prefix . 'renewal rnal
-		where
-			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
-			rnal.start < ' . to_sql($rdatetime['next']) . ' and
-			rnal.cycle_id in (' . implode(', ', $bcycle['all']) . ') 
-		group by
-			rnal.cycle_id
-	';
-	print_debug($sql);
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		$bcycle['continue'][$row['cycle_id']] = $row['cycle_id'];
-	}
-	# if no renewals then it is an ending cycle
-	if (!empty($bcycle['continue']))
-	foreach ($bcycle['continue'] as $k1 => $v1)
-		if (!in_array($k1, $bcycle['all']))
-			$bcycle['end'][$k1] = $k1;
-	# todo ended cycle is timeframe_id = 2 (present) or 1 (past)? add to sql:
-	# todo what happens if there was a renewal today (before this script ran) but no renewals yesterday?
-	if (!empty($bcycle['end'])) {
-		$sql = '
-			update
-				' . $prefix . 'cycle
-			set
-				point_id = 3
-			where
-				id in (' . implode(', ', $bcycle['end']) . ')
-		';
-		print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
-		# remove furture cycles if they were already inserted (safety)
-		foreach ($bcycle['end'] as $k1 => $v1) {
-			$i1 = get_single_channel_parent_id('cycle', $k1);
-			if (!empty($i1)) {
-				$sql = '
-					select
-						cce.id as cycle_id
-					from
-						' . $prefix . 'cycle cce,
-						' . $prefix . 'cycle cnl
-					where
-						cce.channel_id = cnl.id and
-						cce.start >= ' . $rdatetime['current'] . ' and
-						cnl.parent_id = ' . (int)$i1
-				;
-				$result = mysql_query($sql) or die(mysql_error());
-				while ($row = mysql_fetch_assoc($result)) {
-					$a1[$cycle_id] = $row['cycle_id'];
-				}
-			}
-			$sql = '
-				delete from 
-					' . $prefix . 'cycle
-				where
-					id in (' . implode(', ', $a1['cycle_id']) . ')
-			';
-			print_debug($sql);
-			if ($config['write_protect'] != 1) 
-				mysql_query($sql) or die(mysql_error());
-		}
-	}
-}
-unset($bcycle);
-echo "}\n";
-
-echo "acycle\n";
-echo "{\n";
-# get cycles for "tomorrow" (00:00:00 to 23:59:59)
-if (1) {
-	$sql = '
-		select
-			cce.id as cycle_id,
-			cnl.parent_id as channel_parent_id
-		from
-			' . $prefix . 'cycle cce,
-			' . $prefix . 'channel cnl
-
-		where
-			cce.channel_id = cnl.id and
-			cce.start >= ' . to_sql($rdatetime['next']) . ' and
-			cce.start < ' . to_sql($rdatetime['horizon']) . '
-	';
-	print_debug($sql);
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		$achannel[$row['channel_parent_id']] = array();
-	}
-	if (empty($achannel))
-		echo 'cant autorenew anything - future cycles DNE - please set manually' . "\n";
-	foreach ($achannel as $k1 => $v1) {
-		# overwrite each time
-		get_cycle_array($achannel[$k1], $k1, $rdatetime['next']); 
-		insert_cycle_next($achannel[$k1], $k1, $rdatetime['next']);
-		# todo make previous cycles for those channels updated above past
-		# incorrect logic because cycles before the previous cycle are the ones that are past
-		if (0)
-		if (!empty($achannel[$k1]['previous']['cycle_id'])) {
-			$sql = '
-				update
-					' . $prefix . 'cycle
-				set
-					timeframe_id = 1
-				where
-					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
-			;		
-			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
-		}
-		unset($achannel[$k1]);
-		# print_r($achannel[$k1]); echo "\n";
-	}
-	# not really a "modification" only changing a marker/flag (and doing it early)
-	$sql = '
-		update
-			' . $prefix . 'cycle
-		set
-			timeframe_id = 2
-		where
-			start >= ' . to_sql($rdatetime['next']) . ' and
-			start < ' . to_sql($rdatetime['horizon']) . ' and
-			point_id != 3
-	';
-	print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
-}
-unset($achannel);
-echo "}\n";
-
 echo 'continuing with cycles that have renewals' . "\n";
 if (1) {
 	$sql = '
@@ -259,6 +99,7 @@ foreach ($acycle as $k1 => $v1) {
 	echo "{\n";
 	$channel_parent_id = get_single_channel_parent_id('cycle', $k1);
 	get_cycle_array($acycle[$k1], $channel_parent_id, $rdatetime['next']);
+	# todo remove insert_cycle_next() if it is not necessary here
 	insert_cycle_next($acycle[$k1], $channel_parent_id, $rdatetime['next']);
 	get_cycle_next_array($acycle[$k1], $channel_parent_id, $rdatetime['next']);
 	# renewals

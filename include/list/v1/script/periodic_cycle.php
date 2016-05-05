@@ -1,30 +1,24 @@
 <?
 # author: vaskoiii
-# description: do accounting for the payout in a cron job for all cycles ending the previous day
+# description: process the autorenewing cycles for "tomorrow" as Y-m-d ( run with daily cron before renewals )
 
 # issue
-# - script dependancies are different from normal dependancies because they do not have access to .htaccess
-
-# todo prepare crafted data for testing
-# todo eliminade delay in payout by remembering the last script run time and updating accordingly on each page load
-# todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
+# - member function calls are not optimized ie) get_cycle_array() make 3 function calls
 
 # config
 # needs the magic variable for cron
-include(__DIR__ . '/../config/preset.php');
+require(__DIR__ . '/../config/preset.php');
 
 # override
-$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 $config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
-$config['craft'] = 2; # can set to 1 if needed for testing
+$config['craft'] = 2; # comment out to not use crafted data
+$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
 # see also:
 # config/dependancy.php
 include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
-include($config['include_path'] . 'list/v1/function/payout.php');
-include($config['include_path'] . 'list/v1/function/key.php');
 
 # var
 if ($config['craft'] == 1)
@@ -32,14 +26,14 @@ if ($config['craft'] == 1)
 		'previous' => '2015-05-30 00:00:00',
 		'current' => '2015-06-01 00:00:00',
 		'next' => '2015-06-02 00:00:00',
-		'horizon' => '2015-06-03 00:00:00', # (not used)
+		'horizon' => '2015-06-03 00:00:00',
 	);
 else
 	$data['run']['datetime'] = get_run_datetime_array();
 
 echo "\n";
 echo "cycle\n";
-echo "-----\n";
+echo "-------\n";
 echo "\n";
 
 echo "rdatetime\n";
@@ -47,125 +41,175 @@ echo "{\n";
 print_r($data['run']['datetime']);
 echo "}\n";
 
-$data['user_report']['channel_list'] = array();
-$channel_list = & $data['user_report']['channel_list'];
+$data['run']['after']['channel'] = array();
+$data['run']['after']['user'] = array();
+# bcycle data structure is totally different from acycle
+$data['run']['before']['cycle'] = array();
+$data['run']['after']['cycle'] = array();
 
 # alias
 $rdatetime = & $data['run']['datetime'];
 $prefix = & $config['mysql']['prefix'];
+$bcycle = & $data['run']['before']['cycle'];
+$achannel = & $data['run']['after']['channel'];
+$acycle = & $data['run']['after']['cycle'];
 
-echo "get cycles that ended yesterday\n";
+echo "bcycle\n";
 echo "{\n";
+# run first so that a future cycle is not inserted
+if (0) {
+	$sql = '
+		select
+			id as cycle_id
+		from
+			' . $prefix . 'cycle
+		where
+			start >= ' . to_sql($rdatetime['current']) . ' and
+			start < ' . to_sql($rdatetime['next'])
+	;
+	$result = mysql_query($sql) or die(mysql_error());
+	echo "$sql\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$bcycle['all'][$row['cycle_id']] = $row['cycle_id'];
+	}
+}
+# end cycles with no renewals
+# todo fix (1st sql statement below assumes there is only a 1 day period where a renewal is possible)
+if (0)
+if (!empty($bcycle['all'])) {
+	# prep
+	$sql = '
+		select
+			rnal.cycle_id
+		from
+			' . $prefix . 'renewal rnal
+		where
+			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
+			rnal.start < ' . to_sql($rdatetime['next']) . ' and
+			rnal.cycle_id in (' . implode(', ', $bcycle['all']) . ') 
+		group by
+			rnal.cycle_id
+	';
+	print_debug($sql);
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_assoc($result)) {
+		$bcycle['continue'][$row['cycle_id']] = $row['cycle_id'];
+	}
+	# if no renewals then it is an ending cycle
+	if (!empty($bcycle['continue']))
+	foreach ($bcycle['continue'] as $k1 => $v1)
+		if (!in_array($k1, $bcycle['all']))
+			$bcycle['end'][$k1] = $k1;
+	# todo ended cycle is timeframe_id = 2 (present) or 1 (past)? add to sql:
+	# todo what happens if there was a renewal today (before this script ran) but no renewals yesterday?
+	if (!empty($bcycle['end'])) {
+		$sql = '
+			update
+				' . $prefix . 'cycle
+			set
+				point_id = 3
+			where
+				id in (' . implode(', ', $bcycle['end']) . ')
+		';
+		print_debug($sql);
+		if ($config['write_protect'] != 1)
+			mysql_query($sql) or die(mysql_error());
+		# remove furture cycles if they were already inserted (safety)
+		foreach ($bcycle['end'] as $k1 => $v1) {
+			$i1 = get_single_channel_parent_id('cycle', $k1);
+			if (!empty($i1)) {
+				$sql = '
+					select
+						cce.id as cycle_id
+					from
+						' . $prefix . 'cycle cce,
+						' . $prefix . 'cycle cnl
+					where
+						cce.channel_id = cnl.id and
+						cce.start >= ' . $rdatetime['current'] . ' and
+						cnl.parent_id = ' . (int)$i1
+				;
+				$result = mysql_query($sql) or die(mysql_error());
+				while ($row = mysql_fetch_assoc($result)) {
+					$a1[$cycle_id] = $row['cycle_id'];
+				}
+			}
+			$sql = '
+				delete from 
+					' . $prefix . 'cycle
+				where
+					id in (' . implode(', ', $a1['cycle_id']) . ')
+			';
+			print_debug($sql);
+			if ($config['write_protect'] != 1) 
+				mysql_query($sql) or die(mysql_error());
+		}
+	}
+}
+unset($bcycle);
+echo "}\n";
+
+echo "acycle\n";
+echo "{\n";
+# get cycles for "tomorrow" (00:00:00 to 23:59:59)
 if (1) {
 	$sql = '
 		select
 			cce.id as cycle_id,
 			cnl.parent_id as channel_parent_id
 		from
-			' . $prefix . 'channel cnl,
-			' . $prefix . 'cycle cce
+			' . $prefix . 'cycle cce,
+			' . $prefix . 'channel cnl
+
 		where
-			cnl.id = cce.channel_id and
-			start >= ' . to_sql($rdatetime['previous']) . ' and
-			start < ' . to_sql($rdatetime['current'])
-	;
+			cce.channel_id = cnl.id and
+			cce.start >= ' . to_sql($rdatetime['next']) . ' and
+			cce.start < ' . to_sql($rdatetime['horizon']) . '
+	';
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
-	echo "$sql\n";
 	while ($row = mysql_fetch_assoc($result)) {
-		$channel_list[$row['channel_parent_id']] = array();
+		$achannel[$row['channel_parent_id']] = array();
 	}
-	if (!empty($channel_list))
-	foreach ($channel_list as $k1 => $v1) {
-		# todo check that this function is not tring to get the latest cycle more than 1 time
-		$channel_list[$k1]['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
+	if (empty($achannel))
+		echo 'no cycle points found for tomorrow' . "\n";
+	foreach ($achannel as $k1 => $v1) {
+		# overwrite each time
+		get_cycle_array($achannel[$k1], $k1, $rdatetime['next']); 
+		insert_cycle_next($achannel[$k1], $k1, $rdatetime['next']);
+		# todo verify cycles are updating correctly
+		if (!empty($achannel[$k1]['previous']['cycle_id'])) {
+			$sql = '
+				update
+					' . $prefix . 'cycle
+				set
+					timeframe_id = 1
+				where
+					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
+			;		
+			print_debug($sql);
+			if ($config['write_protect'] != 1)
+				mysql_query($sql) or die(mysql_error());
+		}
+		unset($achannel[$k1]);
 	}
+	# not really a "modification" only changing a marker/flag (and doing it early)
+	$sql = '
+		update
+			' . $prefix . 'cycle
+		set
+			timeframe_id = 2
+		where
+			start >= ' . to_sql($rdatetime['next']) . ' and
+			start < ' . to_sql($rdatetime['horizon']) . ' and
+			point_id != 3
+	';
+	print_debug($sql);
+	if ($config['write_protect'] != 1)
+		mysql_query($sql) or die(mysql_error());
 }
+unset($acycle);
+unset($achannel);
 echo "}\n";
 
-# todo check that payout has not already run for the corresponding cycle
-
-# craft for test
-if ($config['craft'] == 1) {
-	unset($data['user_report']['channel_list']);
-	# have to reset alias after craft
-	$channel_list = & $data['user_report']['channel_list'];
-	
-	# todo why isnt getting reset here 
-	$data['user_report']['channel_list'][10] = array(
-		'seed' => array(
-			'cycle_id' => 151,
-		),
-	);
-}
-
-# loop through every cycle that ended yesterday (not just 1)
-if (!empty($channel_list)) {
-foreach ($channel_list as $k1 => $v1) {
-
-	# todo make things not dependent on GET
-	$_GET['cycle_id'] = $v1['seed']['cycle_id'];
-
-	# when setting an alias within a foreach it will have to be set again in the t1 file =(
-	$channel = & $channel_list[$k1];
-
-	if (!empty($v1['seed']['cycle_id'])) {
-		do_payout_computation($channel, $k1, $v1['seed']['cycle_id']);
-		get_payout_array($channel);
-		# sponsor accounting happen separate from payouts
-		# (do not charge for here)
-		$payout = & $channel['payout'];
-		foreach ($payout['user_id'] as $k1p => $v1p) {
-			$sql = '
-				insert into
-					' . $prefix . 'accounting
-				set
-					user_id = ' . (int)$k1p . ',
-					kind_id = ' . (int)$config['cycle_kind_id'] . ',
-					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
-					value = ' . (double)$v1p . ',
-					modified = now(),
-					active = 1
-			';
-			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
-		}
-		if (1) {
-			$sql = '
-				insert into
-					' . $prefix . 'accounting
-				set
-					user_id = ' . (int)$config['hostfee_user_id'] . ',
-					kind_id = ' . (int)$config['cycle_hostfee_kind_id'] . ',
-					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
-					value = ' . (double)$payout['hostfee'] . ',
-					modified = now(),
-					active = 1
-			';
-			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
-		}
-		if (!empty($payout['missionfee'])) {
-			# todo searching for parent and children in the same result set
-			$sql = '
-				insert into
-					' . $prefix . 'accounting
-				set
-					user_id = ' . (int)$channel['info']['user_id'] . ',
-					kind_id = ' . (int)$config['cycle_missionfee_kind_id'] . ',
-					kind_name_id = ' . (int)$v1['seed']['cycle_id'] . ',
-					value = ' . (double)$payout['missionfee'] . ',
-					modified = now(),
-					active = 1
-			';
-			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
-		}
-	}
-	else
-		echo "channel not ready for payout \n";
-} }
-else
-	die('no cycles ended yesterday');
+exit;

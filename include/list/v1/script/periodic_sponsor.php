@@ -14,9 +14,9 @@
 require(__DIR__ . '/../config/preset.php');
 
 # override
-# $config['write_protect'] = 1; # must be 2 for live data (will not write to the db if 1)
-$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
+$config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
+$config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
 # see also:
 # config/dependancy.php
