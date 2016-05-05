@@ -56,36 +56,36 @@ $acycle = & $data['run']['after']['cycle'];
 
 echo "bcycle\n";
 echo "{\n";
-# run first so that a future cycle is not inserted
-if (0) {
+# get all cycles to check for no renewals
+if (1) {
 	$sql = '
 		select
 			id as cycle_id
 		from
 			' . $prefix . 'cycle
 		where
-			start >= ' . to_sql($rdatetime['current']) . ' and
-			start < ' . to_sql($rdatetime['next'])
+			start >= ' . to_sql($rdatetime['previous']) . ' and
+			start < ' . to_sql($rdatetime['current'])
 	;
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
-	echo "$sql\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$bcycle['all'][$row['cycle_id']] = $row['cycle_id'];
 	}
 }
-# end cycles with no renewals
-# todo fix (1st sql statement below assumes there is only a 1 day period where a renewal is possible)
-if (0)
 if (!empty($bcycle['all'])) {
-	# prep
+	# get cycles with renewals
+	$bcycle['continue'] = array();
 	$sql = '
 		select
 			rnal.cycle_id
 		from
-			' . $prefix . 'renewal rnal
+			' . $prefix . 'renewal rnal,
+			' . $prefix . 'cycle cce
 		where
-			rnal.start >= ' . to_sql($rdatetime['current']) . ' and
-			rnal.start < ' . to_sql($rdatetime['next']) . ' and
+			cce.id = rnal.cycle_id and
+			cce.start >= ' . to_sql($rdatetime['previous']) . ' and
+			cce.start < ' . to_sql($rdatetime['current']) . ' and
 			rnal.cycle_id in (' . implode(', ', $bcycle['all']) . ') 
 		group by
 			rnal.cycle_id
@@ -96,54 +96,24 @@ if (!empty($bcycle['all'])) {
 		$bcycle['continue'][$row['cycle_id']] = $row['cycle_id'];
 	}
 	# if no renewals then it is an ending cycle
-	if (!empty($bcycle['continue']))
-	foreach ($bcycle['continue'] as $k1 => $v1)
-		if (!in_array($k1, $bcycle['all']))
+	foreach ($bcycle['all'] as $k1 => $v1)
+		if (!in_array($k1, $bcycle['continue']))
 			$bcycle['end'][$k1] = $k1;
-	# todo ended cycle is timeframe_id = 2 (present) or 1 (past)? add to sql:
-	# todo what happens if there was a renewal today (before this script ran) but no renewals yesterday?
+	# end cycles if no renewals
 	if (!empty($bcycle['end'])) {
 		$sql = '
 			update
 				' . $prefix . 'cycle
 			set
-				point_id = 3
+				point_id = 3,
+				timeframe_id = 2
 			where
 				id in (' . implode(', ', $bcycle['end']) . ')
 		';
 		print_debug($sql);
 		if ($config['write_protect'] != 1)
 			mysql_query($sql) or die(mysql_error());
-		# remove furture cycles if they were already inserted (safety)
-		foreach ($bcycle['end'] as $k1 => $v1) {
-			$i1 = get_single_channel_parent_id('cycle', $k1);
-			if (!empty($i1)) {
-				$sql = '
-					select
-						cce.id as cycle_id
-					from
-						' . $prefix . 'cycle cce,
-						' . $prefix . 'cycle cnl
-					where
-						cce.channel_id = cnl.id and
-						cce.start >= ' . $rdatetime['current'] . ' and
-						cnl.parent_id = ' . (int)$i1
-				;
-				$result = mysql_query($sql) or die(mysql_error());
-				while ($row = mysql_fetch_assoc($result)) {
-					$a1[$cycle_id] = $row['cycle_id'];
-				}
-			}
-			$sql = '
-				delete from 
-					' . $prefix . 'cycle
-				where
-					id in (' . implode(', ', $a1['cycle_id']) . ')
-			';
-			print_debug($sql);
-			if ($config['write_protect'] != 1) 
-				mysql_query($sql) or die(mysql_error());
-		}
+		# (should not have to delete cycles ever)
 	}
 }
 unset($bcycle);
@@ -171,11 +141,28 @@ if (1) {
 	while ($row = mysql_fetch_assoc($result)) {
 		$achannel[$row['channel_parent_id']] = array();
 	}
-	if (empty($achannel))
-		echo 'no cycle points found for tomorrow' . "\n";
+}
+if (empty($achannel))
+	echo 'no cycle points found for tomorrow' . "\n";
+else {
+	# not really a "modification" only changing a marker/flag (and doing it early)
+	$sql = '
+		update
+			' . $prefix . 'cycle
+		set
+			timeframe_id = 2
+		where
+			start >= ' . to_sql($rdatetime['next']) . ' and
+			start < ' . to_sql($rdatetime['horizon']) . ' and
+			point_id != 3
+	';
+	print_debug($sql);
+	if ($config['write_protect'] != 1)
+		mysql_query($sql) or die(mysql_error());
+
 	foreach ($achannel as $k1 => $v1) {
-		# overwrite each time
 		get_cycle_array($achannel[$k1], $k1, $rdatetime['next']); 
+		# todo make it so that a new cycle is not inserted if there are no renewals
 		insert_cycle_next($achannel[$k1], $k1, $rdatetime['next']);
 		# todo verify cycles are updating correctly
 		if (!empty($achannel[$k1]['previous']['cycle_id'])) {
@@ -193,20 +180,6 @@ if (1) {
 		}
 		unset($achannel[$k1]);
 	}
-	# not really a "modification" only changing a marker/flag (and doing it early)
-	$sql = '
-		update
-			' . $prefix . 'cycle
-		set
-			timeframe_id = 2
-		where
-			start >= ' . to_sql($rdatetime['next']) . ' and
-			start < ' . to_sql($rdatetime['horizon']) . ' and
-			point_id != 3
-	';
-	print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
 }
 unset($acycle);
 unset($achannel);
