@@ -44,11 +44,16 @@ function print_key_user_id($k1) {
 # print_break_open('user_report', 'page');
 # only focus 1 channel to start
 
+# todo limit cycle_report to display only 1 cycle at a time (eliminate the need for foreach)
+if (!empty($channel_list))
+foreach ($channel_list as $k1 => $v1)
+if (empty($channel_list[$k1]['info']['user_id']))
+	$data['user_report']['premature_channel_list'][$k1] = array();
+
 if (!empty($data['user_report']['premature_channel_list'])) { ?> 
 	<div class="content_box"><?
 	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) {
-		echo '<pre>'; print_r($data['user_report']['premature_channel_list']['info']); echo '</pre>';
-		$s1 = $key['channel_id']['result'][$v1['info']['channel_parent_id']]['channel_name'];
+		$s1 = $key['channel_id']['result'][$k1]['channel_name'];
 		$s1 .= ' : ';
 		$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
 		echo '<h3>' . $s1 . '</h3>'; ?>

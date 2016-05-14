@@ -141,6 +141,7 @@ function do_key(& $key, & $translation, $dialect_id = 0, $login_user_id = 0) {
 	# new style using select array
 	if ($key)
 	foreach ($key as $k1 => $v1) {
+	if (!empty($v1['select']))
 	foreach ($v1['select'] as $k2 => $v2) {
 	switch ($k2) {
 		# kinds

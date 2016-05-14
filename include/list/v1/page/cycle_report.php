@@ -134,7 +134,8 @@ foreach ($channel_list as $k1 => $v1) {
 	}
 
 	get_payout_array($channel);
-	$key['user_id']['search'][$channel['info']['user_id']] = $channel['info']['user_id']; # used in t1
+	if (!empty($channel['info']['user_id']))
+		$key['user_id']['search'][$channel['info']['user_id']] = $channel['info']['user_id']; # used in t1
 }
 $key['user_id']['search'][$config['hostfee_user_id']] = $config['hostfee_user_id']; # used in t1
 
