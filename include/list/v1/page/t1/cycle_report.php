@@ -292,7 +292,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<?= to_html($key['user_id']['result'][$config['hostfee_user_id']]['contact_name']); ?>
 				(<?= to_html($key['user_id']['result'][$config['hostfee_user_id']]['user_name']); ?>)
 			</h4>
-			<p><?= nod() . to_html($payout['hostfee']); ?></p><?
+			<p><?= nod() . to_html(number_format($payout['hostfee'], 2)); ?></p><?
 		}
 		else { ?> 
 			<p>No hosting fee this cycle =)</p><?

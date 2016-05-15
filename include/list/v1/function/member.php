@@ -84,11 +84,13 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 	# todo fix $i1
 	# member_report needs 0 but payout needs 1?
 	$i1 = 1;
-	$b1 = 1; # dont count cycles that are not connected
+	# todo support cycles that have breaks ie) they ended and then restarted at a later time
+	# $b1 = 1; # dont count cycles that are not connected
 	while ($row = mysql_fetch_assoc($result)) {
 		$i1++;
 		$channel['cycle_restart']['yyyy-mm-dd-' . $i1 . 'x'] = $row['cycle_start'];
-		if ($b1 == 1) {
+		# if ($b1 == 1) {
+		if (1) {
 			switch ($row['cycle_point_id']) {
 				case '1':
 				case '2':
@@ -98,7 +100,8 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 					$channel['cycle_offset'][$i1 - 2]['point_id'] = $row['cycle_point_id'];
 				break;
 				case '3':
-					$b1 = 2;
+					# $b1 = 2;
+					# removed $b1 on 2016-05-14
 				break;
 			}
 		}
