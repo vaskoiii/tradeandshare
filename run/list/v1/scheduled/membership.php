@@ -1,24 +1,19 @@
 <?
 # author: vaskoiii
-# description: do accounting for the payout in a cron job for all cycles ending the previous day
+# description: do accounting for the payout for all cycles in the void - intervals can be as long or as short as needed as the only anticipated side effect will be that payouts are porocessed later or earlier
 
-# issue
-# - script dependancies are different from normal dependancies because they do not have access to .htaccess
-
-# todo
-# todo eliminade delay in payout by remembering the last script run time and updating accordingly on each page load
-# todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
+# issue: take care not cause memory overload with a long run
 
 # header
 echo "membership\n";
-echo "================\n";
+echo "= = = = = = = = \n";
 
 # config
 require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
 $config['run'] = 1;
-$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # can set to 1 if needed for testing
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
@@ -28,30 +23,30 @@ include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 include($config['include_path'] . 'list/v1/function/payout.php');
 include($config['include_path'] . 'list/v1/function/key.php');
+include($config['include_path'] . 'list/v1/function/runner.php');
+
+# error checking
+# todo better error checking
+if (empty($argv[1]))
+	die("error\n\tno start date\n");
+if (empty($argv[2]))
+	die("error\n\tno end date\n");
 
 # var
-if ($config['craft'] == 1)
-	$data['run']['datetime'] = array(
-		'previous' => '2015-05-30 00:00:00',
-		'current' => '2015-06-01 00:00:00',
-		'next' => '2015-06-02 00:00:00',
-		'horizon' => '2015-06-03 00:00:00', # (not used)
-	);
-else
-	$data['run']['datetime'] = get_run_datetime_array();
-
-echo "rdatetime ";
-print_r_no_newline($data['run']['datetime']);
-
+# todo should probably use date('c');
 $data['user_report']['channel_list'] = array();
+
+# reference
+$r1start = & $argv[1];
+$r1end = & $argv[2];
+$prefix = & $config['mysql']['prefix'];
 $channel_list = & $data['user_report']['channel_list'];
 
-# alias
-$rdatetime = & $data['run']['datetime'];
-$prefix = & $config['mysql']['prefix'];
+# do it
+echo "argv ";
+print_r_debug($argv);
 
-echo "get cycles that ended yesterday\n";
-echo "{\n";
+echo "info\n\tget cycles in the void\n";
 if (1) {
 	$sql = '
 		select
@@ -62,11 +57,11 @@ if (1) {
 			' . $prefix . 'cycle cce
 		where
 			cnl.id = cce.channel_id and
-			start >= ' . to_sql($rdatetime['previous']) . ' and
-			start < ' . to_sql($rdatetime['current'])
+			start >= ' . to_sql($r1start) . ' and
+			start < ' . to_sql($r1end)
 	;
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
-	echo "$sql\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$channel_list[$row['channel_parent_id']] = array();
 	}
@@ -76,7 +71,6 @@ if (1) {
 		$channel_list[$k1]['seed']['cycle_id'] = get_latest_payout_cycle_id($k1);
 	}
 }
-echo "}\n";
 
 # todo check that payout has not already run for the corresponding cycle
 
@@ -94,7 +88,7 @@ if ($config['craft'] == 1) {
 	);
 }
 
-# loop through every cycle that ended yesterday (not just 1)
+# loop through every cycle in the void (not just 1)
 if (!empty($channel_list)) {
 foreach ($channel_list as $k1 => $v1) {
 
@@ -158,7 +152,7 @@ foreach ($channel_list as $k1 => $v1) {
 		}
 	}
 	else
-		echo "channel not ready for payout \n";
+		echo "info\n\tchannel not ready for payout\n";
 } }
 else
-	die('no cycles ended yesterday');
+	die("info\n\tno cycles in the void\n");

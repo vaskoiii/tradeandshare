@@ -1,8 +1,6 @@
 <?
 # author: vaskoiii
-# description: insert the next future cycles from now - intended to be a part of periodic_all.php
-
-# previous description: process the autorenewing cycles for "tomorrow" as Y-m-d ( run with daily cron before renewals )
+# description: insert the future cycles based on the void - intended to be a part of periodic_all.php
 
 # issue
 # - member function calls are not optimized ie) get_cycle_array() make 3 function calls
@@ -18,7 +16,7 @@ require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 # override
 # todo take in protect as an argument
 $config['run'] = 1;
-$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
@@ -35,10 +33,7 @@ if (empty($argv[1]))
 if (empty($argv[2]))
 	die("error\n\tno end date\n");
 
-# do it
-echo "argv ";
-print_r_debug($argv);
-
+# var
 $data['run']['after']['channel'] = array();
 $data['run']['after']['user'] = array();
 # bcycle data structure is totally different from acycle
@@ -53,6 +48,11 @@ $prefix = & $config['mysql']['prefix'];
 $bcycle = & $data['run']['before']['cycle'];
 $achannel = & $data['run']['after']['channel'];
 $acycle = & $data['run']['after']['cycle'];
+
+# do it
+echo "argv ";
+print_r_debug($argv);
+
 
 # todo allow cycles to end (ie. if no renewals)
 # currently disabled to keep it simple

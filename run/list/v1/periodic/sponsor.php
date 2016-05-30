@@ -1,6 +1,6 @@
 <?
 # author: vaskoiii
-# description: process the autorenewing sponsors happening since last run
+# description: process the autorenewing sponsors happening in the void 
 
 # todo start using UTC_TIMESTAMP to keep all data in the same timezone
 
@@ -14,7 +14,7 @@ require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
 $config['run'] = 1;
-$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
@@ -23,6 +23,7 @@ $config['debug'] = 1; # script should always run in debug mode ( ui will not be 
 include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
+include($config['include_path'] . 'list/v1/function/runner.php');
 
 # error checking
 # todo better error checking
@@ -34,8 +35,8 @@ if (empty($argv[2]))
 echo "argv ";
 print_r_debug($argv);
 
+# might want to break out from here to show the periodic
 $data['run']['after']['user'] = array();
-# bcycle data structure is totally different from acycle
 
 # alias
 $start = & $argv[1];
@@ -65,6 +66,9 @@ $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
 	$data['sponsor_id'][$row['sponsor_id']] = $row;
 }
+
+if (empty($data['sponsor_id']))
+	die("info\n\tno sponsors to renew\n");
 
 if (!empty($data['sponsor_id'])) {
 foreach ($data['sponsor_id'] as $k1 => $v1) {

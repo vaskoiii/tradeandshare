@@ -18,7 +18,7 @@ require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
 $config['run'] = 1;
-$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['protect'] = 1; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 

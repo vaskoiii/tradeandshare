@@ -1,11 +1,8 @@
 <?
 # author: vaskoiii
-# description: process the autorenewing cycles then renewals then sponsors (in that order) since the last run time ensurigin that there is exactly 1 of each for the corresponding entity in the future if applicable - assuming that everything is ok up to the previous run time
+# description: process the autorenewing cycles then renewals then sponsors (in that order) since the last run time ensurigin that there is exactly 1 of each for the corresponding entity in the future if applicable - run intervals can not be longer than the shortest cycle (currently intervals must be less than 1 day)
 
 # todo possible to revert? ie. linked table for what was added ie. do something based on run timeframes
-
-# should command line scripts have a separate living space ie. ~/run/ (fomatting is different from html)
-# php also has a separate config file for command line scripts vs html ones
 
 # header
 echo "all\n";
@@ -19,7 +16,7 @@ require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 # config/dependancy.php
 include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
-# include($config['include_path'] . 'list/v1/function/member.php');
+include($config['include_path'] . 'list/v1/function/runner.php');
 
 # override
 $config['run'] = 1;
@@ -28,77 +25,22 @@ $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
 # var
-
 # todo should probably use date('c');
-$s1 = date('Y-m-d H:i:s');
-
-# ui is most recent to oldest however the arrays below are built oldest to most recent (reading top to bottom)
-if (1) {
-	# make sure now() has the same value in every instance
-	# https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_now
-	$sql = '
-		select
-			modified as previous,
-			' . to_sql($s1) . ' as current
-		from
-			' . $config['mysql']['prefix'] . 'runner
-		where
-			script_id = 1 and
-			modified < ' . to_sql($s1) . '
-		order by
-			modified desc
-		limit
-			1
-	';
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		$a1['info'] = $row;
-	}
-}
-
-if (empty($a1)) {
-	$sql = '
-		insert into
-			' . $config['mysql']['prefix'] . 'runner
-		set
-			modified = ' . to_sql($s1) . ',
-			script_id = 1
-	';
-	print_debug($sql);
-	if ($config['protect'] == 1)
-		mysql_query($sql) or die(mysql_error());
-	die('first run: no need for further processing nothing happened' . "\n");
-}
-# does not work from the zero date
-# -- timestampdiff(day, "0000-00-00", now()) as daydiff
-
-$a1['info']['daydiff'] = (int)(
-	(
-		strtotime($a1['info']['current']) -
-		strtotime($a1['info']['previous'])
-	) / 86400
+$s1 = get_runner_modified_current();
+$a1['info']['previous'] = get_runner_modified_previous(1, $s1);
+$a1['info']['current'] = $s1;
+# extra call for debug readability
+$a1['info']['daydiff'] = get_runner_modified_daydiff($a1['info']['previous'], $a1['info']['current']);
+$a1['chunk'] = get_runner_chunk_array(
+	$a1['info']['previous'],
+	$a1['info']['current']
 );
-
-$i1 = 0;
-while ($i1 <= $a1['info']['daydiff']) {
-	$a1['chunk'][$i1]['start'] = date(
-		'Y-m-d H:i:s',
-		strtotime($a1['info']['previous']) + ($i1 * 86400)
-	); 
-	if (($a1['info']['daydiff'] - $i1) > 0)
-		$a1['chunk'][$i1]['end'] = date(
-			'Y-m-d H:i:s',
-			strtotime($a1['info']['previous']) + ($i1 + 1 * 86400)
-		); 
-	else
-		$a1['chunk'][$i1]['end'] = $a1['info']['current'];
-	$i1++;
-}
 
 # do it
 if (1) {
 	# todo mail a summary with the following info
 	print_r_debug($a1);
+	insert_runner_modified(1, $s1);
 }
 
 # todo verify that running as such will not cause complications
@@ -120,26 +62,13 @@ foreach ($a1['chunk'] as $k1 => $v1) {
 		'\'' . $a1['chunk'][$k1]['start'] . '\' ' .
 		'\'' . $a1['chunk'][$k1]['end'] . '\' '
 	;
-	# $s3 = `$s2`;
-	# echo "\n" . $s3;
+	$s3 = `$s2`;
+	echo "\n" . $s3;
 
 	$s2 = 'php ' . $config['run_path'] . 'list/v1/periodic/sponsor.php ' .
 		'\'' . $a1['chunk'][$k1]['start'] . '\' ' .
 		'\'' . $a1['chunk'][$k1]['end'] . '\' '
 	;
-	# $s3 = `$s2`;
-	# echo "\n" . $s3;
-}
-
-if (1) {
-	$sql = '
-		insert into
-			' . $config['mysql']['prefix'] . 'runner
-		set
-			modified = ' . to_sql($s1) . ',
-			script_id = 1
-	';
-	print_debug($sql);
-	mysql_query_process($sql);
-	die("info\n\tfinished\n");
+	$s3 = `$s2`;
+	echo "\n" . $s3;
 }
