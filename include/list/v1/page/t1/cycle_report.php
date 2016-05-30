@@ -194,7 +194,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>Data Dump</h3>
 	<pre><?
 		echo "\n";
-		print_r_debug($channel); ?> 
+		# exception so can not use print_r_debug(directly)
+		echo to_html(print_r_no_newline($channel, 1)); ?> 
 	</pre>
 	</div><?
 	# allow increasing sponsor but never decreasing
