@@ -19,8 +19,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?> 
 
-reusable scripts need to be kept forever in the reusable subdir.
-./php_reusable
+# suggested debug headings in command line (used outside this function)
+# file1 ==========
+# file2 = = = = = 
+# file3 =  =  =  =
+# h1 ----------
+# h2 - - - - - 
+# h3 -  -  -  -
 
 all one time scripts go in this folder and can be deleted after use and should be prefixed as:
 1time_

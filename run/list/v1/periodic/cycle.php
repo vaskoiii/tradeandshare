@@ -1,16 +1,24 @@
 <?
 # author: vaskoiii
-# description: process the autorenewing cycles for "tomorrow" as Y-m-d ( run with daily cron before renewals )
+# description: insert the next future cycles from now - intended to be a part of periodic_all.php
+
+# previous description: process the autorenewing cycles for "tomorrow" as Y-m-d ( run with daily cron before renewals )
 
 # issue
 # - member function calls are not optimized ie) get_cycle_array() make 3 function calls
 
+# header
+echo "cycle\n";
+echo "= = = = = = = = \n";
+
 # config
 # needs the magic variable for cron
-require(__DIR__ . '/../config/preset.php');
+require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
-$config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+# todo take in protect as an argument
+$config['run'] = 1;
+$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
@@ -20,26 +28,16 @@ include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 
-# var
-if ($config['craft'] == 1)
-	$data['run']['datetime'] = array(
-		'previous' => '2015-05-30 00:00:00',
-		'current' => '2015-06-01 00:00:00',
-		'next' => '2015-06-02 00:00:00',
-		'horizon' => '2015-06-03 00:00:00',
-	);
-else
-	$data['run']['datetime'] = get_run_datetime_array();
+# error checking
+# todo better error checking
+if (empty($argv[1]))
+	die("error\n\tno start date\n");
+if (empty($argv[2]))
+	die("error\n\tno end date\n");
 
-echo "\n";
-echo "cycle\n";
-echo "-------\n";
-echo "\n";
-
-echo "rdatetime\n";
-echo "{\n";
-print_r($data['run']['datetime']);
-echo "}\n";
+# do it
+echo "argv ";
+print_r_debug($argv);
 
 $data['run']['after']['channel'] = array();
 $data['run']['after']['user'] = array();
@@ -48,15 +46,19 @@ $data['run']['before']['cycle'] = array();
 $data['run']['after']['cycle'] = array();
 
 # alias
-$rdatetime = & $data['run']['datetime'];
+$start = & $argv[1];
+$end = & $argv[2];
+
 $prefix = & $config['mysql']['prefix'];
 $bcycle = & $data['run']['before']['cycle'];
 $achannel = & $data['run']['after']['channel'];
 $acycle = & $data['run']['after']['cycle'];
 
+# todo allow cycles to end (ie. if no renewals)
+# currently disabled to keep it simple
+if (0) {
 echo "bcycle\n";
 echo "{\n";
-# get all cycles to check for no renewals
 if (1) {
 	$sql = '
 		select
@@ -64,10 +66,10 @@ if (1) {
 		from
 			' . $prefix . 'cycle
 		where
-			start >= ' . to_sql($rdatetime['previous']) . ' and
-			start < ' . to_sql($rdatetime['current'])
+			start >= ' . to_sql('???') . ' and
+			start < ' . to_sql('???')
 	;
-	print_debug($sql);
+	print_debug($sql, 2);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$bcycle['all'][$row['cycle_id']] = $row['cycle_id'];
@@ -84,8 +86,8 @@ if (!empty($bcycle['all'])) {
 			' . $prefix . 'cycle cce
 		where
 			cce.id = rnal.cycle_id and
-			cce.start >= ' . to_sql($rdatetime['previous']) . ' and
-			cce.start < ' . to_sql($rdatetime['current']) . ' and
+			cce.start >= ' . to_sql('???') . ' and
+			cce.start < ' . to_sql('???') . ' and
 			rnal.cycle_id in (' . implode(', ', $bcycle['all']) . ') 
 		group by
 			rnal.cycle_id
@@ -99,6 +101,7 @@ if (!empty($bcycle['all'])) {
 	foreach ($bcycle['all'] as $k1 => $v1)
 		if (!in_array($k1, $bcycle['continue']))
 			$bcycle['end'][$k1] = $k1;
+	# todo make sure cycles can be restarted as well!
 	# end cycles if no renewals
 	if (!empty($bcycle['end'])) {
 		$sql = '
@@ -110,18 +113,18 @@ if (!empty($bcycle['all'])) {
 			where
 				id in (' . implode(', ', $bcycle['end']) . ')
 		';
-		print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql, 2);
+		mysql_query_process($sql);
 		# (should not have to delete cycles ever)
 	}
 }
 unset($bcycle);
 echo "}\n";
+}
 
 echo "acycle\n";
-echo "{\n";
-# get cycles for "tomorrow" (00:00:00 to 23:59:59)
+echo "----------------\n";
+# get cycles for insert
 if (1) {
 	$sql = '
 		select
@@ -130,40 +133,38 @@ if (1) {
 		from
 			' . $prefix . 'cycle cce,
 			' . $prefix . 'channel cnl
-
 		where
 			cce.channel_id = cnl.id and
-			cce.start >= ' . to_sql($rdatetime['next']) . ' and
-			cce.start < ' . to_sql($rdatetime['horizon']) . '
+			cce.start >= ' . to_sql($start) . ' and
+			cce.start < ' . to_sql($end) . '
 	';
-	print_debug($sql);
+	print_debug($sql, 2);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$achannel[$row['channel_parent_id']] = array();
 	}
 }
 if (empty($achannel))
-	echo 'no cycle points found for tomorrow' . "\n";
+	die("info\n\tno cycle points found for insert\n");
 else {
-	# not really a "modification" only changing a marker/flag (and doing it early)
+	# not really a "modification" only changing a marker/flag
 	$sql = '
 		update
 			' . $prefix . 'cycle
 		set
 			timeframe_id = 2
 		where
-			start >= ' . to_sql($rdatetime['next']) . ' and
-			start < ' . to_sql($rdatetime['horizon']) . ' and
+			start >= ' . to_sql($start) . ' and
+			start < ' . to_sql($end) . ' and
 			point_id != 3
 	';
-	print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql, 2);
+	mysql_query_process($sql);
 
 	foreach ($achannel as $k1 => $v1) {
-		get_cycle_array($achannel[$k1], $k1, $rdatetime['next']); 
+		get_cycle_array($achannel[$k1], $k1, $end); 
 		# todo make it so that a new cycle is not inserted if there are no renewals
-		insert_cycle_next($achannel[$k1], $k1, $rdatetime['next']);
+		insert_cycle_next($achannel[$k1], $k1, $end);
 		# todo verify cycles are updating correctly
 		if (!empty($achannel[$k1]['previous']['cycle_id'])) {
 			$sql = '
@@ -174,15 +175,11 @@ else {
 				where
 					id = ' . (int)$achannel[$k1]['previous']['cycle_id']
 			;		
-			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
+			print_debug($sql, 2);
+			mysql_query_process($sql);
 		}
 		unset($achannel[$k1]);
 	}
 }
 unset($acycle);
 unset($achannel);
-echo "}\n";
-
-exit;

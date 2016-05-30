@@ -3223,3 +3223,19 @@ alter table ts_kind add index `parent_id` (`parent_id`);
 update ts_kind set name = 'cycle_hostfee' where id = '59';
 update ts_kind set name = 'cycle_missionfee' where id = '61';
 update ts_kind set parent_id = 52 where id in (59, 61);
+
+-- preparation for more dynamic scripts
+create table ts_script (
+	id int not null auto_increment,
+	name varchar(255),
+	primary key (id)
+);
+insert into ts_script set name = 'periodic/all.php';
+insert into ts_script set name = 'scheduled/membership.php';
+create table ts_runner (
+	id int not null auto_increment,
+	script_id int,
+	modified datetime,
+	primary key (id)
+);
+alter table ts_runner add index script_id (`script_id`);

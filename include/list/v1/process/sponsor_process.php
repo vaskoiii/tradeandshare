@@ -139,10 +139,8 @@ if (!empty($first_sponsor)) {
 			modified = now(),
 			active = 1
 	';
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	mysql_query_process($sql);
 	# todo charge the user for this sponsor
 	$i1 = mysql_insert_id();
 
@@ -159,10 +157,8 @@ if (!empty($first_sponsor)) {
 			modified = now(),
 			active = 1
 	';
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	mysql_query_process($sql);
 	if (1) {
 		# todo update the previous timeframe_id
 	}
@@ -207,10 +203,8 @@ if (empty($first_sponsor)) {
 			limit
 				1
 		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		mysql_query_process($sql);
 	}
 }
 # todo continuing sponsorships will be processed by cron

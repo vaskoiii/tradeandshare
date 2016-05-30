@@ -92,7 +92,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 	<h3>About Likes/Dislikes</h3>
 	<p>You do not get any credit for liking yourself</p>
 	<p>Only net likes to a user are counted. ie) 3 likes and 1 dislike has a net value of 2</p>
-	<p>Disliking a person can only go as far as bringing their net likes down to 0. ie) 2 dislikes and 1 likes is 0 (not -1)</p>
+	<p>Disliking a person can only go as far as bringing their net likes down to 0. ie) 2 dislikes and 1 like is 0 (not -1)</p>
 	<h3>Notes</h3>
 	<ul>
 		<li>No caps on payout based on time in cycle</li>
@@ -192,8 +192,9 @@ foreach ($channel_list as $kc1 => $vc1) {
 	</dl>
 	<p>For breakdown please see public score list of members</p>
 	<h3>Data Dump</h3>
-	<pre>
-		<? print_r($channel); ?>
+	<pre><?
+		echo "\n";
+		print_r_debug($channel); ?> 
 	</pre>
 	</div><?
 	# allow increasing sponsor but never decreasing

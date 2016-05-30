@@ -5,21 +5,24 @@
 # issue
 # - script dependancies are different from normal dependancies because they do not have access to .htaccess
 
-# todo prepare crafted data for testing
+# todo
 # todo eliminade delay in payout by remembering the last script run time and updating accordingly on each page load
 # todo add limits on the shortness of an interval because buffer time will be needed for the autorenew script to run
 
+# header
+echo "membership\n";
+echo "================\n";
+
 # config
-# needs the magic variable for cron
-include(__DIR__ . '/../config/preset.php');
+require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
-$config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['run'] = 1;
+$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # can set to 1 if needed for testing
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
-# see also:
-# config/dependancy.php
+# include
 include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
@@ -37,15 +40,8 @@ if ($config['craft'] == 1)
 else
 	$data['run']['datetime'] = get_run_datetime_array();
 
-echo "\n";
-echo "membership\n";
-echo "-----\n";
-echo "\n";
-
-echo "rdatetime\n";
-echo "{\n";
-print_r($data['run']['datetime']);
-echo "}\n";
+echo "rdatetime ";
+print_r_no_newline($data['run']['datetime']);
 
 $data['user_report']['channel_list'] = array();
 $channel_list = & $data['user_report']['channel_list'];
@@ -127,8 +123,7 @@ foreach ($channel_list as $k1 => $v1) {
 					active = 1
 			';
 			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
+			mysql_query_process($sql);
 		}
 		if (1) {
 			$sql = '
@@ -143,8 +138,7 @@ foreach ($channel_list as $k1 => $v1) {
 					active = 1
 			';
 			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
+			mysql_query_process($sql);
 		}
 		if (!empty($payout['missionfee'])) {
 			# todo searching for parent and children in the same result set
@@ -160,8 +154,7 @@ foreach ($channel_list as $k1 => $v1) {
 					active = 1
 			';
 			print_debug($sql);
-			if ($config['write_protect'] != 1)
-				mysql_query($sql) or die(mysql_error());
+			mysql_query_process($sql);
 		}
 	}
 	else

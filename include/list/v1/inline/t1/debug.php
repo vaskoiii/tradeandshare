@@ -24,7 +24,7 @@ if ($config['debug'] == 1) { ?>
 <div class="content">
 	<? # phpinfo(); ?> 
 
-	<center><h2>echo to_html(print_r($array, 1));</h2></center>
+	<center><h2>print_r_debug($array);</h2></center>
 	<br />
 	<br /><?
 	# rearrange here to change debug order
@@ -86,9 +86,9 @@ if ($config['debug'] == 1) { ?>
 						<div class="debug_variable">
 							<h3><?= '$data[\'' . $k2 .'\']'; ?></h3>
 							<a id="debug_<?= $k2; ?>_toggle" href="javascript: more_toggle('debug_<?= $k2; ?>');"><?= tt('element', 'more'); ?></a> 
-							<pre id="debug_<?= $k2; ?>" style="display: <?= $v1; ?>;"><?
-								echo to_html(print_r($data[$k2], 1)); ?> 
-							</pre>
+							<div id="debug_<?= $k2; ?>" style="display: <?= $v1; ?>;"><?
+								print_r_debug($data[$k2]); ?> 
+							</div>
 						</div><?
 					break;
 				}
@@ -102,16 +102,22 @@ if ($config['debug'] == 1) { ?>
 			<div class="debug_variable">
 				<h3>$<?= $k1; ?></h3>
 				<a id="debug_<?= $k1; ?>_toggle" href="javascript: more_toggle('debug_<?= $k1; ?>');"><?= tt('element', 'more'); ?><a>
-				<pre id="debug_<?= $k1; ?>" style="display: <?= $v1; ?>;"><?
+				<div id="debug_<?= $k1; ?>" style="display: <?= $v1; ?>;"><?
 				switch($k1) {
-					case '_GET': echo to_html(print_r($_GET, 1)); break;
-					case '_POST': echo to_html(print_r($_POST, 1)); break;
-					case '_REQUEST': echo 'NOT used but php still assigns values<br />'; echo to_html(print_r($_REQUEST, 1)); break;
-					case '_COOKIE': echo to_html(print_r($_COOKIE, 1)); break;
-					case '_SESSION': echo to_html(print_r($_SESSION, 1)); break;
-					default: echo to_html(print_r(${$k1}, 1)); break; # variable variables!
+					case '_REQUEST':
+						echo 'NOT used but php still assigned values<br />';
+						print_r_debug($_REQUEST);
+					break;
+					case '_POST':
+					case '_COOKIE':
+					case '_SESSION':
+					case '_GET':
+					default:
+						# variable variables!
+						echo print_r_debug(${$k1});
+					break;
 				} ?> 
-				</pre>
+				</div>
 			</div><?
 		break;
 	} ?> 

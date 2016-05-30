@@ -1,20 +1,20 @@
 <?
 # author: vaskoiii
-# description: process the autorenewing sponsors happening tomorrow not today
+# description: process the autorenewing sponsors happening since last run
 
-# see also periodic_renewal.php for similar scripting issues
-
-# todo account for credit in accounting (charge users the day before the sponsor begins)
-# todo factor in available funds
 # todo start using UTC_TIMESTAMP to keep all data in the same timezone
-# todo chunk out potentially large dataset for processing in parts
+
+# header
+echo "sponsor\n";
+echo "= = = = = = = = \n";
 
 # config
 # needs the magic variable for cron
-require(__DIR__ . '/../config/preset.php');
+require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 
 # override
-$config['write_protect'] = 2; # must be 2 for live data (will not write to the db if 1)
+$config['run'] = 1;
+$config['protect'] = 2; # must be 2 for live data (will not write to the db if 1)
 $config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
@@ -24,32 +24,22 @@ include($config['include_path'] . 'list/v1/inline/mysql_connect.php');
 include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 
-# var
-if ($config['craft'] == 1)
-	$data['run']['datetime'] = array(
-		'previous' => '2015-10-13 00:00:00',
-		'current' => '2015-10-14 00:00:00',
-		'next' => '2015-10-15 00:00:00',
-		'horizon' => '2015-10-16 00:00:00',
-	);
-else
-	$data['run']['datetime'] = get_run_datetime_array();
+# error checking
+# todo better error checking
+if (empty($argv[1]))
+	die('error: no start date');
+if (empty($argv[2]))
+	die('error: no end date');
 
-echo "\n";
-echo "sponsor\n";
-echo "-------\n";
-echo "\n";
-
-echo "rdatetime\n";
-echo "{\n";
-print_r($data['run']['datetime']);
-echo "}\n";
+echo "argv ";
+print_r_debug($argv);
 
 $data['run']['after']['user'] = array();
 # bcycle data structure is totally different from acycle
 
 # alias
-$rdatetime = & $data['run']['datetime'];
+$start = & $argv[1];
+$end = & $argv[2];
 $prefix = & $config['mysql']['prefix'];
 
 $sql = '
@@ -67,8 +57,8 @@ $sql = '
 		' . $prefix . 'donate dne
 	where
 		dne.id = ssr.donate_id and
-		ssr.start >= ' . to_sql($rdatetime['next']) . ' and
-		ssr.start < ' . to_sql($rdatetime['horizon']) . '
+		ssr.start >= ' . to_sql($start) . ' and
+		ssr.start < ' . to_sql($end) . '
 ';
 print_debug($sql);
 $result = mysql_query($sql) or die(mysql_error());

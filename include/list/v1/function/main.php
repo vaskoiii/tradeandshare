@@ -18,6 +18,92 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+function mysql_query_process($sql) {
+	global $config;
+	if ($config['protect'] != 1)
+		mysql_query($sql) or die(mysql_error());
+}
+
+function print_r_no_newline($s1, $return = 2) {
+	# used for vertically compacting debug scripts while maintaing readability
+	# do not use if variables in your array may contain newlines
+	$s1 = print_r($s1, true);
+	# prefer tabs over spaces
+	$s1 = preg_replace('/        /', "\t", $s1);
+	$s1 = preg_replace('/    /', "\t", $s1);
+	$a0 = explode("\n", $s1);
+	$s2 = '';
+	foreach ($a0 as $k1 => $v1) {
+		$a1 = array(
+			"/^\s+\($/",
+			"/^\s+\)$/",
+			"/^$/",
+			"/^\($/",
+			"/^\)$/",
+			"/^\n$/",
+		);
+		foreach ($a1 as $k2 => $v2)
+		if (preg_match($v2, $v1))
+			unset($a0[$k1]);
+	}
+	$s3 = implode("\n", $a0) . "\n";
+	if ($return == 1)
+		return $s3;
+	else
+		echo $s3;
+}
+
+function get_indent_trim($s1) {
+	# strip unnecessary preceeding whitespace from sql statements
+	# ( easier debug of cron style scripts )
+	$s1 = ltrim($s1, "\n");
+	$s1 = rtrim($s1);
+	$i1 = strspn($s1, "\t");
+	$s2 = '';
+	while ($i1 > 0) {
+		$s2 .= "\t";
+		$i1--;
+	}
+	$a1 = explode("\n", $s1);
+	foreach ($a1 as $k1 => $v1) {
+		# internal sql is always using tabs so no need to convert spaces
+		$a1[$k1] = preg_replace('/^' . $s2 . '/', "\t", $a1[$k1]); # strip out indentation
+	}
+	return implode("\n", $a1) . "\n";
+}
+
+function print_r_debug($a1) {
+	# default label will be 'Array' from the print_r statement (use print_debug() if not an array)
+	global $config;
+	if ($config['debug'] == 1) {
+		if ($config['run'] != 1) { # outputting to html
+			echo "\n<hr />\n<pre>";
+			echo to_html(print_r_no_newline($a1, 1));
+			echo "</pre>\n";
+		}
+		else if ($config['run'] == 1) { # outputting to command line
+			print_r_no_newline($a1);
+		}
+	}
+}
+
+function print_debug($s1) {
+	# eliminates the need for checking if debug/run is set as it is built in here
+	# only for printing a single variable - use print_r_debug() to print an array
+	# $config['run']; # if set will not use html tags on output
+	$label = 'var';
+	global $config;
+	if ($config['debug'] == 1) {
+		if ($config['run'] != 1) # outputting to html
+			echo "\n<hr />\n<pre>\n$s1\n</pre>\n";
+		else if ($config['run'] == 1) { # outputting to command line
+			$s1 = get_indent_trim($s1);
+			echo $label . "\n";
+			echo $s1;
+		}
+	}
+}
+
 function debug_die($string) {
 	global $config;
 	if ($config['debug'] == 1)

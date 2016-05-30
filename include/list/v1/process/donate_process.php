@@ -32,7 +32,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # todo orphan data can be removed later
 
 # variable
-# $config['write_protect'] = 1;
+# $config['protect'] = 1;
+
 $process['action_content_1']['channel_name'] = get_gp('channel_name');
 $process['action_content_1']['donate_offset_day'] = get_gp('donate_offset_day');
 $process['action_content_1']['donate_value'] = get_gp('donate_value');
@@ -107,8 +108,7 @@ if (1) {
 				active = 1
 		';
 		print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		mysql_query_process($sql);
 
 		$i2 = mysql_insert_id();
 	}

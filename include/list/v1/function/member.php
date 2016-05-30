@@ -32,11 +32,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo show functions that need to be called before the current function is called - keyword: precall
 
-function print_debug($s1) {
-	global $config;
-	if ($config['debug'] == 1)
-		echo "\n<hr />\n<pre>\n$s1\n</pre>\n";
-}
 
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	get_specific_channel_cycle_restart_array($channel, $channel_parent_id, $cycle_id);
@@ -484,10 +479,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				active = 1,
 				cycle_id = ' . (int)$ncycle['cycle_id']
 		;
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		mysql_query_process($sql);
 
 		# needed for charging the renewal cost
 		$nrenewal['renewal_id'] = mysql_insert_id();
@@ -505,10 +498,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 				modified = now(),
 				active = 1
 		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		mysql_query_process($sql);
 
 		# todo placeholder to insert carry over score
 
@@ -706,10 +697,8 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 				timeframe_id = 3,
 				active = 1
 		';
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		mysql_query_process($sql);
 	}
 }
 function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
@@ -889,10 +878,8 @@ function insert_cycle_start($channel_parent_id) {
 			modified = now(),
 			active = 1
 	';
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	mysql_query_process($sql);
 	# previous end cycle is no longer current
 	$i2 = get_db_single_value('
 			cce.id
@@ -914,10 +901,8 @@ function insert_cycle_start($channel_parent_id) {
 			where
 				id = ' . (int)$i2
 		;
-		if ($config['debug'] == 1)
-			print_debug($sql);
-		if ($config['write_protect'] != 1)
-			mysql_query($sql) or die(mysql_error());
+		print_debug($sql);
+		mysql_query_process($sql);
 	}
 }
 # first ever renewal
@@ -970,10 +955,8 @@ function insert_renewal_start($cycle_id, $user_id) {
 			active = 1,
 			cycle_id = ' . (int)$cycle_id
 	;
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	mysql_query_process($sql);
 
 	$i1 = mysql_insert_id();
 	# todo placeholder to insert carry over score
@@ -1050,9 +1033,6 @@ function do_accounting($kind_name, $kind_name_id, $value, $user_id) {
 			modified = now(),
 			active = 1
 	';
-	# todo make print_debug check debug value
-	if ($config['debug'] == 1)
-		print_debug($sql);
-	if ($config['write_protect'] != 1)
-		mysql_query($sql) or die(mysql_error());
+	print_debug($sql);
+	mysql_query_process($sql);
 }
