@@ -77,8 +77,8 @@ if (empty($acycle))
 	echo "info\n\tno cycles have renewals\n";
 if (!empty($acycle)) {
 foreach ($acycle as $k1 => $v1) {
-	echo "renewal1 - cycle: $k1\n";
-	echo "{\n";
+	echo "renewal cycle: $k1\n";
+	echo "----------------\n";
 	$channel_parent_id = get_single_channel_parent_id('cycle', $k1);
 	get_cycle_array($acycle[$k1], $channel_parent_id, $end);
 	# todo remove insert_cycle_next() if it is not necessary here
@@ -105,21 +105,29 @@ foreach ($acycle as $k1 => $v1) {
 	while ($row = mysql_fetch_assoc($result)) {
 		$auser[$row['user_id']] = array();
 	}
-	echo 'foreach user: '; print_r($auser); echo "\n";
+	echo "user ";
+	print_r_debug($auser);
 	if (empty($auser))
 		echo "no after user renewal\n";
 	if (!empty($auser)) {
 	foreach ($auser as $k2 => $v2) {
-		echo "renewal2 - user: $k2\n";
-		echo "{{\n";
+		echo "renewal user: $k2\n";
+		echo "----------------\n";
 		get_renewal_array($acycle[$k1], $auser[$k2], $channel_parent_id, $k2);
 		get_renewal_next_data($acycle[$k1], $auser[$k2]);
 		# echo 'dataprint'; print_r($data); exit;
 		# print_r($auser[$k2]); echo "\n";
-		if (!empty($auser[$k2]['next']['renewal_id'])) {
-			echo "do nothing renewal is already handled (may not happen)\n";
-		}
+		# todo different logic needed if $config['protect'] == 1
+
+		$b1 = 2;
+		if ($config['protect'] == 1)
+			$b1 = 1;
+		if (empty($auser[$k2]['next']['renewal_id']))
+			$b1 = 1;
+		if ($b1 == 2)
+			echo "info\n\tdo nothing renewal is already handled (may not happen)\n";
 		else {
+			# todo crafting needed if already possible to specify points in the past?
 			if ($config['craft'] == 1) {
 				# first version of crafted data
 				echo 'crafting $auser[$k2]' . "\n";
@@ -160,12 +168,13 @@ foreach ($acycle as $k1 => $v1) {
 				case '2':
 					get_renewal_accounting_array($auser[$k2], $k2);
 
-					echo 'accounting_start' . "\n";
-					print_r($auser[$k2]);
+					echo "accounting\n";
+					echo "- - - - - - - - \n";
+					print_r_debug($auser[$k2]);
 					if (($auser[$k2]['accounting']['resulting_balance'] >= 0))
 						insert_renewal_next($acycle[$k1], $auser[$k2], $channel_parent_id, $k2, $i1, $end);
 					else {
-						echo 'not autorenewing due to insufficient funding' . "\n";
+						echo "info\n\tnot autorenewing due to insufficient funding\n";
 						$sql = '
 							update
 								' . $prefix . 'renewal
@@ -179,17 +188,16 @@ foreach ($acycle as $k1 => $v1) {
 						print_debug($sql);
 						mysql_query_process($sql);
 					}
-					echo 'accounting_end' . "\n";
 				break;
 				default:
-					echo 'no insertion for point_id = ' . (int)$i1 . "\n";
+					echo "info\n\tno insertion for point_id = " . (int)$i1 . "\n";
 				break;
 			}
 			# todo fix invalid timeframe logic
 			# invalid logic because renewals before the previous renewal are the ones that are past
 			# not taking into account before timeframe (previous cycle may not have happened yet)
 			if (1) {
-				print_r($auser[$k2]); echo "\n";
+				print_r_debug($auser[$k2]);
 				# set previous renewal to current (runs 1 day ahead)
 				$sql = '
 					update
@@ -218,10 +226,8 @@ foreach ($acycle as $k1 => $v1) {
 			}
 		}
 		unset($auser[$k2]);
-		echo "}}\n";
 	} }
 	unset($acycle[$k1]);
-	echo "}\n";
 } }
 unset($acycle);
 unset($auser);

@@ -32,7 +32,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # todo show functions that need to be called before the current function is called - keyword: precall
 
-
 function get_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	get_specific_channel_cycle_restart_array($channel, $channel_parent_id, $cycle_id);
 }
@@ -48,7 +47,6 @@ function get_deprecated_channel_cycle_restart_array($a1, $a3) {
 }
 function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id, $cycle_id = null) {
 	global $config;
-
 	if (empty($cycle_id)) {
 		# assume most recent cycle from now()
 		$where = ' cce.start <= ' . to_sql(date('Y-m-d H:i:s'));
@@ -56,7 +54,6 @@ function get_specific_channel_cycle_restart_array(& $channel, $channel_parent_id
 	else {
 		$where = ' cce.id <= ' . (int)$cycle_id;
 	}
-
 	# get cycle_id array
 	$sql = '
 		select
@@ -168,12 +165,10 @@ function initialize_score_channel_user_id_array(& $channel, $cycle_carry = 3) {
 	# precall
 	# - $channel << get_channel_member_list()
 	# be careful when using the channel alias because sometimes it references channel_list and not a single channel
-
 	$a1 = array();
 	for ($i1 = 0; $i1 <= $cycle_carry && $i1 <= 8; $i1++) {
 		$a1[$i1] = $i1;
 	}
-
 	if (!empty($channel['member_list']))
 	foreach ($channel['member_list'] as $k1 => $v1) {
 		foreach ($channel['member_list'] as $k2 => $v2) {
@@ -259,13 +254,9 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 			}
 		} }
 		foreach ($kis['score_offset'] as $k3 => $v3) {
-			# $kis['score_offset'][$k3]['net_count'] = abs($v3['like_count'] - $v3['dislike_count']);
 			$kis['score_offset'][$k3]['net_count'] = ($v3['like_count'] - $v3['dislike_count']);
-			# todo calculating kid needed 1st?
-			# todo don't allow less than 0 on payout (probably ok in other computations)
-			# todo test
-			# if ($kis['score_offset'][$k3]['net_count'] < 0)
-			# 	$kis['score_offset'][$k3]['net_count'] = 0;
+			if ($kis['score_offset'][$k3]['net_count'] < 0)
+				$kis['score_offset'][$k3]['net_count'] = 0;
 		}
 	}
 	foreach ($kid['source_user_id_score_count'] as $k1 => $v1) {
@@ -284,21 +275,15 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 	if (!empty($kid['score_offset']))
 	foreach($kid['score_offset'] as $k2 => $v2) {
 	if (!empty($v2)) {
-		foreach($v2['mark_count'] as $k3 => $v3) {
-
+	foreach($v2['mark_count'] as $k3 => $v3) {
 		# values are often empty for brevity
 		$i0like = 0;
 		if (!empty($v2['like_count'][$k3]))
 			$i0like =  $v2['like_count'][$k3];
-
 		$i0dislike = 0;
 		if (!empty($v2['dislike_count'][$k3]))
 			$i0dislike = $v2['dislike_count'][$k3];
-
-		# got too many warnings
-		# $kid['score_offset'][$k2]['net_count'][$k3] = abs($v2['like_count'][$k3] - $v2['dislike_count'][$k3]);
 		$kid['score_offset'][$k2]['net_count'][$k3] = abs($i0like - $i0dislike);
-
 		# don't allow less than 0 on payout (probably ok in other computations)
 		if ($kid['score_offset'][$k2]['net_count'][$k3] < 0)
 			$kid['score_offset'][$k2]['net_count'][$k3] = 0;
@@ -308,19 +293,14 @@ function get_score_channel_user_id_array(& $channel, $channel_parent_id, $destin
 				-
 				$i0dislike
 			);
-			# $kid['score_offset'][$k2]['score_sum'][$k3] = (
-			# 	$v2['like_count'][$k3]
-			# 	-
-			# 	$v2['dislike_count'][$k3]
-			# );
 			$kid['score_offset'][$k2]['score_sum'][$k3];
 			$kid['score_offset'][$k2]['score_average'][$k3] = (
 				$kid['score_offset'][$k2]['score_sum'][$k3]
 				/
 				$v2['mark_count'][$k3]
 			);
-		} }
-	} }
+		}
+	} } }
 }
 
 function unset_if_empty_in_array(& $a1) {
@@ -400,11 +380,7 @@ function get_renewal_accounting_array(& $renewal, $user_id) {
 	global $config;
 	global $prefix;
 	
-	if ($config['debug'] == 1) {
-		echo "\n";
-		echo 'todo make sure the user has enough funds';
-		echo "\n";
-	}
+	print_debug('todo make sure the user has enough funds');
 	$sql = '
 		select
 			sum(value) as value_sum
@@ -413,8 +389,7 @@ function get_renewal_accounting_array(& $renewal, $user_id) {
 		where
 			user_id = ' . (int)$user_id
 	;
-	if ($config['debug'] == 1)
-		print_debug($sql);
+	print_debug($sql);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$renewal['accounting']['value_sum'] = $row['value_sum'];
@@ -433,12 +408,9 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 
 	# does not care if there is not enough funding
 	# must check before calling insert_renewal_next() if not wanting to allow negative balance
-
 	global $config;
 	global $prefix;
-	if ($config['debug'] == 1) {
-		echo '<pre>'; print_r($cycle); echo '</pre>';
-	}
+	print_r_debug($cycle);
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
@@ -462,8 +434,7 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 			rnal.start > ' . to_sql($datetime) . ' and
 			rnal.active = 1
 	',0);
-	if ($config['debug'] == 1)
-		print_debug($i2);
+	print_debug($i2);
 	if (empty($i2)) {
 		# account for the ratio into the next cycle
 		# make sure get_renewal_next_data() already ran and set $nrenewal['renewal_start']
@@ -481,10 +452,8 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		;
 		print_debug($sql);
 		mysql_query_process($sql);
-
 		# needed for charging the renewal cost
 		$nrenewal['renewal_id'] = mysql_insert_id();
-
 		# requires $renewal['accounting'] to be setup outside this function
 		# todo make this dependency more clear
 		$sql = '
@@ -500,11 +469,6 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		';
 		print_debug($sql);
 		mysql_query_process($sql);
-
-		# todo placeholder to insert carry over score
-
-		# todo grant payout based on:
-		# see ascii picture at ~/include/list/v1/page/cycle_report.php
 	}
 }
 function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
@@ -513,9 +477,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	# channel_parent_id probably is already part of the other array
 	# get most recent renewal data
 
-	if ($config['debug'] == 1)
-		print_debug($period);
-	# echo '<pre>'; print_r($cycle[$period]); echo '</pre>';
+	print_debug($period);
 
 	switch($period) {
 		case 'next':
@@ -546,9 +508,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 					limit
 						1
 				';
-				if ($config['debug'] == 1) {
-					print_debug($sql);
-				}
+				print_debug($sql);
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result)) {
 					$renewal[$period]['renewal_id'] = $row['renewal_id'];
@@ -560,7 +520,6 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	}
 }
 function get_renewal_next_data(& $cycle, & $renewal) {
-
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
@@ -568,32 +527,23 @@ function get_renewal_next_data(& $cycle, & $renewal) {
 	$nrenewal = & $renewal['next'];
 	$crenewal = & $renewal['current'];
 	$prenewal = & $renewal['previous'];
-	# r2c
-	# todo calclulate score
-	# todo factor in score with value
-
 	# logic repeated from insert_cycle_next();
 	if (empty($ncycle['cycle_start']))
 		$ncycle['cycle_start'] = get_cycle_next_start($ccycle['cycle_start'], $ccycle['channel_offset']);
-
+	# r2c
 	$nrenewal['r2c_second'] = get_second_difference($crenewal['renewal_start'], $ncycle['cycle_start']);
 	$nrenewal['r2c_ratio'] = 1 - ($nrenewal['r2c_second'] / $ccycle['channel_offset']);
 	$nrenewal['r2c_score'] = 0;
 	$nrenewal['r2c_renewal'] = $nrenewal['r2c_ratio'] * $ccycle['channel_value'];
 	# c2r
-	# todo calclulate score
-	# todo factor in score with value
 	$nrenewal['c2r_second'] = abs($nrenewal['r2c_second'] - $ncycle['channel_offset']);
 	$nrenewal['c2r_ratio'] = 1 - $nrenewal['r2c_ratio'];
 	$nrenewal['c2r_score'] = 0;
 	$nrenewal['c2r_renewal'] = $nrenewal['c2r_ratio'] * $ncycle['channel_value'];
 	# misc
-	$nrenewal['renewal_start'] = get_datetime_add_second($ncycle['cycle_start'], $nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
-	
-	# todo placeholder to insert carry over score
-
-	# todo grant payout based on:
-	# see ascii picture at ~/include/list/v1/page/cycle_report.php
+	$nrenewal['renewal_start'] = get_datetime_add_second(
+		$ncycle['cycle_start'],
+		$nrenewal['r2c_ratio'] * $ncycle['channel_offset']);
 }
 function get_renewal_array(& $cycle, & $renewal, $channel_parent_id, $user_id) {
 	get_renewal_period_array($cycle, $renewal, $user_id, 'current');
@@ -760,9 +710,7 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 		limit
 			2
 	';
-	# -- now could be the current cycle!
-	if ($config['debug'] == 1)
-		print_debug($sql);
+	print_debug($sql);
 	$i1 = 1;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
@@ -957,9 +905,6 @@ function insert_renewal_start($cycle_id, $user_id) {
 	;
 	print_debug($sql);
 	mysql_query_process($sql);
-
-	$i1 = mysql_insert_id();
-	# todo placeholder to insert carry over score
 }
 
 function update_sponsor_timeframe($a1) {
