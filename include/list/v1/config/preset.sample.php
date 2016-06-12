@@ -32,6 +32,8 @@ $config['cycle_carry'] = 3; # number of previous cycles to factor into payout
 # limit set at 8 ie) 2^8 = 512 as a safety but should be 3 (default) or less
 
 $config['debug'] = 1;
+$config['debug_level'] = 1; # anticipated max = 3 && min = 1
+
 $config['run'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['craft'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['protect'] = 2; # always 2 (set in individual scripts to 1 if needed)

@@ -15,7 +15,6 @@ require __DIR__ . '/../../../../include/list/v1/config/preset.php';
 # override
 $config['run'] = 1;
 $config['protect'] = 1; # must be 2 for live data (will not write to the db if 1)
-$config['craft'] = 2; # comment out to not use crafted data
 $config['debug'] = 1; # script should always run in debug mode ( ui will not be affected )
 
 # see also:
@@ -25,24 +24,19 @@ include($config['include_path'] . 'list/v1/function/main.php');
 include($config['include_path'] . 'list/v1/function/member.php');
 include($config['include_path'] . 'list/v1/function/runner.php');
 
-# error checking
-# todo better error checking
-if (empty($argv[1]))
-	die('error: no start date');
-if (empty($argv[2]))
-	die('error: no end date');
-
-echo "argv ";
-print_r_debug($argv);
-
 # might want to break out from here to show the periodic
 $data['run']['after']['user'] = array();
 
+# prerun
+$data['getopt'] = periodic_script_getopt();
+periodic_script_setup($data['getopt']);
+
 # alias
-$start = & $argv[1];
-$end = & $argv[2];
+$start = $data['getopt']['gte'];
+$end = $data['getopt']['lt'];
 $prefix = & $config['mysql']['prefix'];
 
+# do it
 $sql = '
 	select
 		ssr.id as sponsor_id,
@@ -60,8 +54,10 @@ $sql = '
 		dne.id = ssr.donate_id and
 		ssr.start >= ' . to_sql($start) . ' and
 		ssr.start < ' . to_sql($end) . '
+	order by
+		dne.channel_parent_id desc
 ';
-print_debug($sql);
+print_debug($sql, 3);
 $result = mysql_query($sql) or die(mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
 	$data['sponsor_id'][$row['sponsor_id']] = $row;

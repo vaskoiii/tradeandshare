@@ -380,7 +380,6 @@ function get_renewal_accounting_array(& $renewal, $user_id) {
 	global $config;
 	global $prefix;
 	
-	print_debug('todo make sure the user has enough funds');
 	$sql = '
 		select
 			sum(value) as value_sum
@@ -389,7 +388,7 @@ function get_renewal_accounting_array(& $renewal, $user_id) {
 		where
 			user_id = ' . (int)$user_id
 	;
-	print_debug($sql);
+	print_debug($sql, 3);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$renewal['accounting']['value_sum'] = $row['value_sum'];
@@ -410,7 +409,6 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 	# must check before calling insert_renewal_next() if not wanting to allow negative balance
 	global $config;
 	global $prefix;
-	print_r_debug($cycle);
 	# alias
 	$ncycle = & $cycle['next'];
 	$ccycle = & $cycle['current'];
@@ -419,22 +417,28 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 	$crenewal = & $renewal['current'];
 	$prenewal = & $renewal['previous'];
 	# next renewal
+	print_r_debug($nrenewal);
 	$i2 = 0;
-	$i2 = get_db_single_value('
-			rnal.id
-		from
-			' . $prefix . 'channel cnl,
-			' . $prefix . 'cycle cce,
-			' . $prefix . 'renewal rnal
-		where
-			cnl.id = cce.channel_id and
-			cce.id = rnal.cycle_id and
-			cnl.parent_id = ' . (int)$channel_parent_id . ' and
-			rnal.user_id = ' . (int)$user_id . ' and
-			rnal.start > ' . to_sql($datetime) . ' and
-			rnal.active = 1
-	',0);
-	print_debug($i2);
+	if (!empty($nrenewal['renewal_id']))
+		$i2 = $nrenewal['renewal_id']; # save from needing to run an extra query
+	if (empty($i2)) # safe check
+		$i2 = get_db_single_value('
+				rnal.id
+			from
+				' . $prefix . 'channel cnl,
+				' . $prefix . 'cycle cce,
+				' . $prefix . 'renewal rnal
+			where
+				cnl.id = cce.channel_id and
+				cce.id = rnal.cycle_id and
+				cnl.parent_id = ' . (int)$channel_parent_id . ' and
+				rnal.user_id = ' . (int)$user_id . ' and
+				rnal.start > ' . to_sql($datetime) . ' and
+				rnal.active = 1
+		',0);
+	
+	if (!empty($i2))
+		echo "\ninfo\n\trenewal already happened\n";
 	if (empty($i2)) {
 		# account for the ratio into the next cycle
 		# make sure get_renewal_next_data() already ran and set $nrenewal['renewal_start']
@@ -470,15 +474,14 @@ function insert_renewal_next(& $cycle, & $renewal, $channel_parent_id, $user_id,
 		print_debug($sql);
 		mysql_query_process($sql);
 	}
+	echo 'nrenewal ';
+	print_r_debug($nrenewal);
 }
 function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 	global $config;
 	global $prefix;
 	# channel_parent_id probably is already part of the other array
 	# get most recent renewal data
-
-	print_debug($period);
-
 	switch($period) {
 		case 'next':
 		case 'current':
@@ -508,7 +511,7 @@ function get_renewal_period_array(& $cycle, & $renewal, $user_id, $period) {
 					limit
 						1
 				';
-				print_debug($sql);
+				print_debug($sql, 3);
 				$result = mysql_query($sql) or die(mysql_error());
 				while ($row = mysql_fetch_assoc($result)) {
 					$renewal[$period]['renewal_id'] = $row['renewal_id'];
@@ -613,17 +616,21 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 	# alias
 	$ccycle = & $cycle['current'];
 
+	$ncycle_id = 0;
+	if (!empty($cycle['next']['cycle_id']))
+		$ncycle_id = $cycle['next']['cycle_id'];
 	# protect against array not already being set
-	$ncycle_id = get_db_single_value('
-			cce.id
-		from
-			' . $prefix . 'channel cnl,
-			' . $prefix . 'cycle cce
-		where
-			cnl.id = cce.channel_id and
-			cce.start > ' . to_sql($datetime) . ' and
-			cnl.parent_id = ' . (int)$channel_parent_id
-	,0);
+	if (empty($ncycle_id))
+		$ncycle_id = get_db_single_value('
+				cce.id
+			from
+				' . $prefix . 'channel cnl,
+				' . $prefix . 'cycle cce
+			where
+				cnl.id = cce.channel_id and
+				cce.start > ' . to_sql($datetime) . ' and
+				cnl.parent_id = ' . (int)$channel_parent_id
+		,0);
 
 	# ensure next cycle exists in db
 	if (empty($ncycle_id)) {
@@ -649,6 +656,11 @@ function insert_cycle_next(& $cycle, $channel_parent_id, $datetime) {
 		';
 		print_debug($sql);
 		mysql_query_process($sql);
+	}
+	else {
+		echo "\ninfo\n\tnext cycle already inserted\n";
+		echo 'ncycle ';
+		print_r_debug($cycle['next']);
 	}
 }
 function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
@@ -679,6 +691,7 @@ function get_cycle_next_array(& $cycle, $channel_parent_id, $datetime) {
 		limit
 			1
 	';
+	print_debug($sql, 3);
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		$cycle['next'] = $row;
@@ -710,7 +723,8 @@ function get_cycle_current_array(& $cycle, $channel_parent_id, $datetime) {
 		limit
 			2
 	';
-	print_debug($sql);
+	# may be easier to understand debug without this message
+	print_debug($sql, 3);
 	$i1 = 1;
 	$result = mysql_query($sql) or die(mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
@@ -849,7 +863,7 @@ function insert_cycle_start($channel_parent_id) {
 			where
 				id = ' . (int)$i2
 		;
-		print_debug($sql);
+		print_debug($sql, 3);
 		mysql_query_process($sql);
 	}
 }

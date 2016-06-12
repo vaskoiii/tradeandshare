@@ -3239,3 +3239,5 @@ create table ts_runner (
 	primary key (id)
 );
 alter table ts_runner add index script_id (`script_id`);
+
+alter table ts_runner add `start` datetime after script_id;

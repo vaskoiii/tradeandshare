@@ -72,10 +72,12 @@ function get_indent_trim($s1) {
 	return implode("\n", $a1) . "\n";
 }
 
-function print_r_debug($a1) {
+function print_r_debug($a1, $level = 1) {
 	# default label will be 'Array' from the print_r statement (use print_debug() if not an array)
+	# $optional makes it so that messages will not always be printed
 	global $config;
-	if ($config['debug'] == 1) {
+	if ($config['debug'] == 1)
+	if ($config['debug_level'] >= $level) {
 		if ($config['run'] != 1) { # outputting to html
 			echo "\n<hr />\n<pre>";
 			echo to_html(print_r_no_newline($a1, 1));
@@ -87,13 +89,14 @@ function print_r_debug($a1) {
 	}
 }
 
-function print_debug($s1) {
+function print_debug($s1, $level = 1) {
 	# eliminates the need for checking if debug/run is set as it is built in here
 	# only for printing a single variable - use print_r_debug() to print an array
 	# $config['run']; # if set will not use html tags on output
 	$label = 'var';
 	global $config;
-	if ($config['debug'] == 1) {
+	if ($config['debug'] == 1)
+	if ($config['debug_level'] >= $level) {
 		if ($config['run'] != 1) # outputting to html
 			echo "\n<hr />\n<pre>\n$s1\n</pre>\n";
 		else if ($config['run'] == 1) { # outputting to command line
