@@ -24,7 +24,6 @@ periodic_script_setup($data['getopt']);
 
 # var
 $a1['info'] = array(
-	'now' => '',
 	'current' => '',
 	'previous' => '',
 	'end' => '',
@@ -39,10 +38,7 @@ $start = & $a1['info']['start'];
 
 # translation
 
-$info['now'] = get_runner_modified_now();
-$info['current'] = get_runner_modified_previous(1, $info['now']);
-
-# todo
+$info['current'] = get_runner_modified_now();
 $info['previous'] = get_runner_modified_previous(1, $info['current']);
 
 $end = $info['current'];
