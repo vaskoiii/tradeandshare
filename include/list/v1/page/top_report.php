@@ -92,8 +92,10 @@ $data['result']['result']['listing'] = array();
 # doesnt account for entries with the same datetime
 function top_reportage($type, $limit, $datetime_lower_limit = '', $datetime_upper_limit = '') {
 	global $data;
+	print_debug($type);
 	search_lock($data['result'], $type, $_SESSION['login']['login_user_id']);
 	listing_engine($data['result'], $type, $_SESSION['login']['login_user_id']);
+	prepare_engine($data['result'], $type, $_SESSION['login']['login_user_id']);
 
 	# Note: Facebook shows YOUR listings in the news.
 	$table_alias = get_main_table_alias($type);
@@ -235,6 +237,7 @@ function datetime_reportage(& $data, $listing_key) {
 
 	search_lock($data['result'], $type, $_SESSION['login']['login_user_id']);
 	listing_engine($data['result'], $type, $_SESSION['login']['login_user_id']);
+	prepare_engine($data['result'], $type, $_SESSION['login']['login_user_id']);
 
 	# Equal To (NOT range)
 	$table_alias = get_main_table_alias($type);

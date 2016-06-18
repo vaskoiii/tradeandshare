@@ -26,7 +26,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div id="action">
 	<div class="title">
-		<h2><? print_ts_focus(get_translation('page', $x['page']['name']), 'action'); ?></h2><?
+		<h2><? 
+			$s1 = $x['page']['name'];
+			if (!empty($x['load']['list']['name']))
+				$s1 = $x['load']['list']['type'] . '_' . $x['load']['list']['name'];
+			print_ts_focus(get_translation('page', $s1), 'action'); ?>
+		</h2><?
 		switch($x['page']['name']) {
 			case 'guest_portal': ?> 
 				<center>

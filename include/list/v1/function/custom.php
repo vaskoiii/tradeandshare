@@ -269,7 +269,6 @@ function get_interpreted_variable($string) {
 	return $string;
 }
 
-
 function print_ts_focus($string, $load, & $x = null) {
 	if (!$x)
 		global $x;
@@ -281,9 +280,13 @@ function print_ts_focus($string, $load, & $x = null) {
 		$b1 = 1;
 
 	# preserve lock_array on view pages
+	if ($x['preload']['focus'] == 'view')
+		$b1 = 1;
+	$s1 = $x['load']['list']['type'];
+	$s2 = $s1 . '_' . $x['load']['list']['name'];
 	if (!empty($x['load']['view']['type'])) {
 		if ($b1 == 1) { ?> 
-			<a id="ts_focus" href="<?= ffm('page=&list_name=list&list_type=' . $x['load'][$load]['type'] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $x['load'][$load]['type'] . '_list'); ?></a>*<?
+			<a id="ts_focus" href="<?= ffm('page=&list_name=list&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $s2); ?></a>*<?
 		}
 		else {
 			# could also just take you back to the initial page when clicking on the contact/user name

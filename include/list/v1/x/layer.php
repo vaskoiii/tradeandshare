@@ -380,9 +380,8 @@ switch($x['load']['list']['name']) {
 	break;
 	case 'report':
 		# tired hack (wrong name and duplicate ts_focus) 
-		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/search.php');
-		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php');
-		include($x['site']['i'] . '/page/' . $x['site']['t'] . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php');
+		include('list/v1/inline/t1/header_after.php');
+		include('list/v1/page/t1/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php');
 	break;
 }
 if ($x['load']['footer']['name'])

@@ -21,6 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: The Behind the scenes engine stuff that makes listings go - based on parameters specified in the URL
 # Note: References used frequently to help reduce wordiness
 
+# for mixed pages only ie. new_report && top_report
 function prepare_engine(& $base, $type, $login_user_id) {
 	global $x;
 	global $data;
@@ -31,6 +32,9 @@ function prepare_engine(& $base, $type, $login_user_id) {
 
 	$s1 = get_main_table_alias($type);
 	switch($type) {
+		case 'note':
+			# not applicable to mixed listings since private
+		break;
 		case 'accounting':
 			$where[] = $s1 . '.user_id != ' . (int)$login_user_id;
 		break;
