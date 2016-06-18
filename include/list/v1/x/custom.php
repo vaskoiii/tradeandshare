@@ -57,8 +57,10 @@ switch ($x['name']) {
 	case 'main':
 	default: # in case the url is messed up it will still bring you home!
 		# testing out more engagement for end users
-		header('location: /top_report/');
-		exit;
+		if (!empty($_SESSION['login']['login_user_id'])) {
+			header('location: /top_report/');
+			exit;
+		}
 		# how are fast and header included in main? should be uncommented here? 2014-09-01 vaskoiii
 		include($x['site']['i'] . '/inline/head.php');
 		include($x['site']['i'] . 'inline/edit.php');
