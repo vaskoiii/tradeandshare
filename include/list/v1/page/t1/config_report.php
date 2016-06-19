@@ -24,20 +24,33 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	if ($_SESSION['login']['login_user_name']) { ?> 
 		<div class="doc_box">
 			<h3><?= tt('page', 'guest_portal'); ?></h3>
-			<p>
-				 <a href="guest_portal/<?= ff(); ?>"><span class="edit"><?= tt('element', 'view'); ?></span></a>
+			<p><?
+				# placement? ?> 
+				<a href="guest_portal/<?= ff(); ?>"><span class="edit"><?= tt('element', 'view'); ?></span></a>
 			</p>
 		</div>
 		<div class="doc_box">
 			<h3><?= tt('page', 'profile_edit'); ?></h3>
 			<p>
+			<p><?
+				# avatar? ?> 
 				<a href="profile_edit/<?= ff(''); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</p>
 		</div>
 		<div class="doc_box">
-			<h3><?= tt('element', 'team_name'); ?> <?= to_html($my_team_name); ?> </h3>
+			<h3><?= tt('page', 'item_list'); ?></h3>
 			<p>
-				<a href="./team_view/?team_id=<?= (int)$my_team_id; ?>&lock_team_id=<?= (int)$my_team_id; ?>"><span class="team_name"><?= tt('element', 'view'); ?></span></a>
+				<span class="user_name">(<?= to_html($_SESSION['login']['login_user_name']); ?>)</span>
+				-
+				<a href="user_view/?list_name=list&list_type=item&lock_user_id=<?= (int)$_SESSION['login']['login_user_id']; ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+			</p>
+		</div>
+		<div class="doc_box">
+			<h3><?= tt('element', 'team_name'); ?></h3>
+			<p>
+				<span class="team_name"><?= to_html($my_team_name); ?></span>
+				-
+				<a href="./team_view/?team_id=<?= (int)$my_team_id; ?>&lock_team_id=<?= (int)$my_team_id; ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</p>
 		</div><?
 		if ($_SESSION['feature']['feature_lock'] == 1) { ?> 
