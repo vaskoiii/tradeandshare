@@ -66,8 +66,8 @@ if (isset($data['getopt']['w'])) {
 	if (!empty($data['getopt']['gte']))
 		die("error\n\tcan not specify start if writing to the db\n");
 	if (!empty($data['getopt']['lt']))
-	if ($info['current'] >= $data['getopt']['lt'])
-		die("error\n\ta later entry has already been added to the db must be after current runner\n");
+	if ($info['previous'] >= $data['getopt']['lt'])
+		die("error\n\ta later entry has already been added to the db must be after previous runner\n");
 }
 
 $a1['chunk'] = get_runner_chunk_array($end, $start);
