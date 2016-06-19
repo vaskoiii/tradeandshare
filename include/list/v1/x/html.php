@@ -65,7 +65,22 @@ switch ($s1) {
 	break;
 } ?> 
 </div>
-<div class="menu_1"></div>
-<div class="menu_2"></div><?
-
+<div class="menu_1"></div><?
+switch($x['page']['name']) {
+	case 'trailer_doc': ?> 
+		<div class="menu_2" style="text-align: center;">
+			<ul>
+				<li><a href="download_doc/<?= ff(); ?>"><?= tt('page', 'download_doc'); ?></a></li>
+				<li><a href="about_doc/<?= ff(); ?>"><?= tt('page', 'about_doc'); ?></a></li>
+				<li><a href="faq_doc/<?= ff(); ?>"><?= tt('page', 'faq_doc'); ?></a></li>
+				<li><a href="sitemap_doc/<?= ff(); ?>"><?= tt('page', 'sitemap_doc'); ?></a></li>
+				<li><a href="disclaimer_doc/<?= ff(); ?>"><?= tt('page', 'disclaimer_doc'); ?></a></li>
+				<li><a href="donate_doc/<?= ff(); ?>"><?= tt('page', 'donate_doc'); ?></a></li>
+			</ul>
+		</div><?
+	break;
+	default: ?> 
+		<div class="menu_2"></div><?
+	break;
+}
 include('list/v1/inline/t1/footer.php');

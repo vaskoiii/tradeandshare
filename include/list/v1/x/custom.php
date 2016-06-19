@@ -61,6 +61,10 @@ switch ($x['name']) {
 			header('location: /top_report/');
 			exit;
 		}
+		else {
+			header('location: /trailer_doc/');
+			exit;
+		}
 		# how are fast and header included in main? should be uncommented here? 2014-09-01 vaskoiii
 		include('list/v1/inline/head.php');
 		include('list/v1/inline/edit.php');
