@@ -163,6 +163,7 @@ else { ?>
 				<li><a href="download_doc/<?= ff(); ?>"><?= tt('page', 'download_doc'); ?></a></li>
 				<li><a href="about_doc/<?= ff(); ?>"><?= tt('page', 'about_doc'); ?></a></li>
 				<li><a href="faq_doc/<?= ff(); ?>"><?= tt('page', 'faq_doc'); ?></a></li>
+				<li><a href="sitemap_doc/<?= ff(); ?>"><?= tt('page', 'sitemap_doc'); ?></a></li>
 				<li><a href="disclaimer_doc/<?= ff(); ?>"><?= tt('page', 'disclaimer_doc'); ?></a></li>
 				<li><a href="donate_doc/<?= ff(); ?>"><?= tt('page', 'donate_doc'); ?></a></li>
 				

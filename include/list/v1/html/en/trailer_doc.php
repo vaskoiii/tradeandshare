@@ -30,27 +30,17 @@ up_date('2014-03-22'); ?>
 	#lisTShareVideo {
 		width: 256px;
 		height: 192px;
-		<?
-		// background: url('/list/v1/video/ts_give_to_billy_preview.jpg');
-		// background-repeat: no-repeat;
-		// background-size: 256px 192px;
-		?> 
 		text-align: center;
 		}
 </style>
 
 <center>
 	<div id="lisTShareVideo">
-	
 		<video width="256px" height="192px" controls>
 			<source src="/list/v1/video/list_share.mp4" type="video/mp4"><? # MP4 = H264 video / AAC audio ?> 
 			<source src="/list/v1/video/list_share.ogg" type="video/ogg"><? # Ogg = Theora video / Vorbis audio ?> 
 			<source src="/list/v1/video/list_share.webm" type="video/webm"><? # WebM = VP8 video / Vorbis audio ?> 
 			Your browser does not support the video tag.
 		</video> 
-
 	</div>
-	<p>
-		<a href="/list/v1/video/list_share.mp4">Right Click to Download</a>
-	</p>
 </center>

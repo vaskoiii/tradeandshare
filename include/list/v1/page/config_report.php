@@ -24,6 +24,7 @@ add_translation('display', $_SESSION['display']['display_name']);
 add_translation('element', 'edit');
 add_translation('element', 'load_javascript');
 add_translation('load', $_SESSION['load']['load_name']);
+add_translation('page', 'login_unset_process');
 add_translation('page', 'item_list');
 add_translation('page', 'dialect_set');
 add_translation('page', 'display_set');

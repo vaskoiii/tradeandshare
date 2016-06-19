@@ -28,10 +28,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div style="background: url('/list/v1/theme/<?= to_html(str_replace('theme_', '', $_SESSION['theme']['theme_name'])); ?>/ts_icon.png') no-repeat -9999px -9999px;"></div>
 	<div class="title">
 		<p id="topper"><?
-			if ($_SESSION['login']['login_user_name']) {
-				echo $_SESSION['login']['login_user_name'] . $config['spacer'];
-				print_go_back('go_back', 'element');
-			} else { 
+			if ($_SESSION['login']['login_user_name']) { ?> 
+				<?= to_html($_SESSION['login']['login_user_name']); ?> 
+				|<?
+				switch ($x['page']['name']) {
+					case 'top_report': ?> 
+						<a href="/config_report/"><?= tt('page', 'config_report'); ?></a><?
+					break;
+					default:
+						print_go_back('go_back', 'element');
+					break;
+				}
+			}
+			else { ?>  
+				<a href="./login_set/"><?= tt('element', 'set_login'); ?></a>
+				|<?
 				if ($x['page']['name'] == 'login_set') {
 					# if not logged in and you click back on login_set it will keep headering you back to login set! ?> 
 					<a href="/<?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 

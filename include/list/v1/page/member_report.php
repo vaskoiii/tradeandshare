@@ -20,22 +20,28 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # description: order by the most relevant channels - go by more recent cycle not most recent payout period
 
+# todo show all cycle data trailing back to the payment_cycle
+# todo include a warning message on premature payment_cycle data
+# todo still display premature payment_cycle data from what is available
+
 add_translation('element', 'search_mixed');
 add_translation('page', 'member_report');
 
 # variable
 $data['member_report']['order'] = array();
 $data['member_report']['channel'] = array();
+# todo $data['member_report']['cycle_offset'][$k1]['user_count'] = '???';
+# todo $data['member_report']['channel_sort'];
 
 # alias
 $channel = & $data['member_report']['channel'];
 $order = & $data['member_report']['order'];
 $payout_order = & $data['member_report']['payout_order'];
 
-# get every single channel parent id (with active members)
-# todo make it so to have a current timeframe for a channel there must be current members
-# todo if everybody left a channel then the channel will change to a future channel
-# todo channels where that are not upcomming or current should be past
+# todo how to find what channels are within the last 3 cycles?
+# todo get every single channel parent id
+# todo get all the latest renewals for every channel
+# todo then see if there is an accounting entry to matchup for those cycles
 $sql = '
 	select
 		distinct(cnl.parent_id)

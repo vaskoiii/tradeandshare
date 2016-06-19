@@ -19,6 +19,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 add_translation('page', $x['name']);
+add_translation('element', 'set_login');
 add_translation('page', 'guest_portal');
 
 # TODO where is best to put this? 2012-01-13 vaskoiii

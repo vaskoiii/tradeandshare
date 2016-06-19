@@ -61,6 +61,7 @@ foreach ($v1 as $k2 => $v2) {
 	add_translation('element', $k2);
 } } }
 
+add_translation('page', 'config_report');
 add_translation('element', 'default');
 add_translation('element', 'delete');
 add_translation('element', 'edit');

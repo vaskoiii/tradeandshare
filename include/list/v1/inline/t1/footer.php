@@ -24,6 +24,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div id="footer">
 	<div class="title">
 		<span class="footer_title"><nobr><small><?= $config['version']; ?></small></nobr></span>
+		| <?
+		if ($_SESSION['login']['login_user_name']) {
+			# does it encourage looking at the version in the footer? ?> 
+			<small><?= nod() . number_format((float)$_SESSION['login']['accounting_value_sum'], 2); ?></small><?
+		}
+		else 
+			echo nod(); ?> 
 	</div>
 	<div class="content">
 		<p class="top_foot">

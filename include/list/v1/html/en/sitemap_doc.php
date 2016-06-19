@@ -47,7 +47,6 @@ if (!empty($v1['page_id'])) {
 	}
 } }
 
-add_translation('page', 'main');
 add_translation('page', 'new_area');
 add_translation('page', 'top_report');
 add_translation('page', 'new_report');
@@ -103,15 +102,6 @@ function hide_other_area(string, showall) {
 	<a href="javascript: hide_other_area('sitemap_other_area');">Other</a>
 </div>
 */ ?> 
-
-<div id="sitemap_ts_area" class="doc_box">
-	<h3><?= tt('page', 'ts_area'); ?></h3>
-	<p><?= tt('page', 'ts_area', 'translation_description'); ?></p>
-	<dl>
-		<dt><a href="/"><?= tt('page', 'main'); ?></a></dt>
-			<dd><?= tt('page', 'main', 'translation_description'); ?></dd>
-	</dl>
-</div>
 
 <div id="sitemap_new_area" class="doc_box">
 	<h3><?= tt('page', 'new_area'); ?></h3>

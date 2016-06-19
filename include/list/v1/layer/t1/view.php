@@ -108,6 +108,7 @@ if ($x['preload']['focus'] == 'view')
 		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
 		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=new&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
 		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
+		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=member&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'member_report'); ?></a>*
 	</dd><?
 	foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 		switch ($v1['page_name']) {

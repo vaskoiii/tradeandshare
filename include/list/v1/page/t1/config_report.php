@@ -23,11 +23,21 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="content_box"><?
 	if ($_SESSION['login']['login_user_name']) { ?> 
 		<div class="doc_box">
-			<h3><?= tt('page', 'guest_portal'); ?></h3>
-			<p><?
-				# placement? ?> 
-				<a href="guest_portal/<?= ff(); ?>"><span class="edit"><?= tt('element', 'view'); ?></span></a>
-			</p>
+			<h3>Action</h3>
+			<ul>
+				<li style="margin-bottom: 10px;">
+					<a href="login_unset_process/"><span class="edit"><?=
+						tt('page', 'login_unset_process')
+						. ' (logout)'
+					?></a>
+				</li>
+				<li>
+					<a href="guest_portal/<?= ff(); ?>"><span class="edit"><?=
+						tt('page', 'guest_portal')
+						. ' ' . tt('element', 'print') 
+					?></span></a>
+				</li>
+			</ul>
 		</div>
 		<div class="doc_box">
 			<h3><?= tt('page', 'profile_edit'); ?></h3>
