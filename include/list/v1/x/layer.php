@@ -305,7 +305,7 @@ include('list/v1/layer/fast.php');
 if ($x['load']['motion']['name'])
 	include('list/v1/layer/motion.php');
 if ($x['load']['view']['name'])
-	include('list/v1layer/view.php');
+	include('list/v1/layer/view.php');
 include('list/v1/layer/quick.php');
 if ($x['load']['action']['name'])
 	include('list/v1/layer/action.php');
