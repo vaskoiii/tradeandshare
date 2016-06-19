@@ -36,7 +36,7 @@ add_translation('page', 'news_list');
 add_translation('page', 'item_list');
 add_translation('page', 'vote_list');
 
-include($x['site']['i'] . '/inline/visit_track.php');
+include('list/v1/inline/visit_track.php');
 
 # todo integrate the following:
 # $s1 = $config['run_path] . 'list/v1/periodic/all.php';

@@ -50,7 +50,7 @@ include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will
 	} ?> 
 </div><?
 include('list/v1/inline/t1/header_helper.php');
-include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php'); ?> 
+include('list/v1/layer/t1/fast.php'); ?> 
 <div class="title"><center><h2><a href="." id="main_ts_focus" onclick="return false;"><?= tt('page', 'main'); ?></a></h2></center></div>
 <? print_message_bar(); ?><?
 if ($_SESSION['login']['login_user_id']) { ?> 
@@ -67,7 +67,7 @@ if ($_SESSION['login']['login_user_id']) { ?>
 					?><img
 						style="text-decoration: none; border: none;"
 						alt="<?= tt('element', 'add_item'); ?>"
-						src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg"
+						src="/list/v1/theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/plus_icon.jpg"
 					/><br /><?= tt('element', 'add_item'); ?><?
 				?></a>
 			</div>
@@ -96,7 +96,7 @@ if ($_SESSION['login']['login_user_id']) { ?>
 						?><img
 							style="text-decoration: none; border: none;"
 							alt="<?= tt('element', 'add_item'); ?>"
-							src="/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/ts_icon_256x256.png"
+							src="/list/v1/theme/<?= str_replace('theme_', '', $_SESSION['theme']['theme_name']); ?>/ts_icon_256x256.png"
 							width="128px"
 							height="128px"
 						/><br /><?= tt('element', 'find_item'); ?><?

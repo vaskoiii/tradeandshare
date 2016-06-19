@@ -22,12 +22,12 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 header('HTTP/1.0 200 Found');
 
-include($x['site']['i'] . '/inline/head.php');
-include($x['site']['i'] . '/inline/header.php');
-include($x['site']['i'] . '/page/area.php');
-include($x['site']['i'] . '/inline/footer.php');
+include('list/v1/inline/head.php');
+include('list/v1/inline/header.php');
+include('list/v1/page/area.php');
+include('list/v1/inline/footer.php');
 
-include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header.php');
-include($x['site']['i'] . '/page/' . $x['site']['t'] . '/area.php');
-include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
+include('list/v1/inline/t1/head.php');
+include('list/v1/inline/t1/header.php');
+include('list/v1/page/t1/area.php');
+include('list/v1/inline/t1/footer.php');

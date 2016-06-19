@@ -64,7 +64,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		case 'import': ?> 
 		<div class="table"><?
 			$data['container']['search_content_box']['element']['team_required_name'] = '<|*|>'; 
-			#include($x['site']['i'] . 'inline/option.php');  obsolete! 2012-02-06 vaskoiii
+			#include('list/v1/inline/option.php');  obsolete! 2012-02-06 vaskoiii
 			# maybe instead use something like:
 			/*
 			foreach ($data['search']['response'] as $k1 => $v1)

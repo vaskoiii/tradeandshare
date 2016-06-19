@@ -18,17 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# todo where is best to put this? 2012-01-13 vaskoiii
-# also in head.php AND new_report.php
-# include($x['site']['i'] . '/inline/site_map.php');
-
 # Contents/Description: Helper heading for beginners ?>
 <div class="content">
 	<div>
 		<center><p id="ts_helper_text">Stuff You Want or Want to Share</p></center>
 	</div>
-
-
 
 <!------------------------->
         <div class="menu_1_directory">
@@ -149,7 +143,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 		</div>
 	</center>
         </div>
-
 
 	<div class="menu_2">
 	</div>

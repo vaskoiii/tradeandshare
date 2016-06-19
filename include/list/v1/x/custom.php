@@ -62,19 +62,19 @@ switch ($x['name']) {
 			exit;
 		}
 		# how are fast and header included in main? should be uncommented here? 2014-09-01 vaskoiii
-		include($x['site']['i'] . '/inline/head.php');
-		include($x['site']['i'] . 'inline/edit.php');
-		# include($x['site']['i'] . 'layer/fast.php');
-		# include($x['site']['i'] . 'layer/quick.php');
-		# include($x['site']['i'] . '/inline/header.php');
-		include($x['site']['i'] . '/page/main.php');
-		include($x['site']['i'] . '/inline/footer.php');
+		include('list/v1/inline/head.php');
+		include('list/v1/inline/edit.php');
+		# include('list/v1/layer/fast.php');
+		# include('list/v1/layer/quick.php');
+		# include('list/v1/inline/header.php');
+		include('list/v1/page/main.php');
+		include('list/v1/inline/footer.php');
 
-		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
-		# include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
-		# include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header.php');
-		include($x['site']['i'] . '/page/' . $x['site']['t'] . '/main.php');
-		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
+		include('list/v1/inline/t1/head.php');
+		# include('list/v1/layer/t1/fast.php');
+		# include('list/v1/layer/t1/quick.php');
+		# include('list/v1/inline/t1/header.php');
+		include('list/v1/page/t1/main.php');
+		include('list/v1/inline/t1/footer.php');
 	break;
 }

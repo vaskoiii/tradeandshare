@@ -21,7 +21,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Display feed data - x.php should have already authenticated access
 # Known Issues: Even though feed uses $_SESSION the session should not be started so values should NOT be persistent
 
-$config[$x['site']['t']]['result_amount_per_page'] = 20; # override exception on value defined in config!
+$config['t1/']['result_amount_per_page'] = 20; # override exception on value defined in config!
 
 $key = array();
 $translation = array();

@@ -21,24 +21,24 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Render engine and template files in the [page] directory
 
 header('HTTP/1.0 200 Found');
-include($x['site']['i'] . '/inline/head.php');
-include($x['site']['i'] . 'inline/header.php');
+include('list/v1/inline/head.php');
+include('list/v1/inline/header.php');
 
 # the fast and quick box so it can get translations
-include($x['site']['i'] . 'inline/edit.php');
-include($x['site']['i'] . 'layer/fast.php');
-include($x['site']['i'] . 'layer/quick.php');
+include('list/v1/inline/edit.php');
+include('list/v1/layer/fast.php');
+include('list/v1/layer/quick.php');
 
-include($x['site']['i'] . '/page/' . $x['page']['name'] . '.php');
-include($x['site']['i'] . '/inline/footer.php');
+include('list/v1/page/' . $x['page']['name'] . '.php');
+include('list/v1/inline/footer.php');
 
-include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header.php');
+include('list/v1/inline/t1/head.php');
+include('list/v1/inline/t1/header.php');
 
-include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/fast.php');
-include($x['site']['i'] . '/layer/' . $x['site']['t'] . '/quick.php');
+include('list/v1/layer/t1/fast.php');
+include('list/v1/layer/t1/quick.php');
 
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . '/header_after.php');
+include('list/v1/inline/t1/header_after.php');
 
-include($x['site']['i'] . '/page/' . $x['site']['t'] . '/' . $x['page']['name'] . '.php');
-include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
+include('list/v1/page/t1/' . $x['page']['name'] . '.php');
+include('list/v1/inline/t1/footer.php');

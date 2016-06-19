@@ -261,7 +261,7 @@ switch($type) {
 	case 'transfer':
 	case 'vote':
 		$lookup['tag_id'] = auto_tag($action_content_2['parent_tag_path'], $action_content_1['tag_translation_name'], $_SESSION['dialect']['dialect_id'], $config['autocreation_user_id'] );
-		#include($x['site']['i'] . 'inline/auto_tag.php');
+		#include('list/v1/inline/auto_tag.php');
 	break;
 }
 

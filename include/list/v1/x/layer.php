@@ -296,19 +296,19 @@ if (!$x['load']['view']['id']) {
 
 # ENGINE
 if ($x['load']['header']['name']) {
-	include($x['site']['i'] . '/inline/head.php');
-	include($x['site']['i'] . 'inline/header.php');
+	include('list/v1/inline/head.php');
+	include('list/v1/inline/header.php');
 }
 
-include($x['site']['i'] . 'inline/edit.php'); # the fast and quick box so it can get translations
-include($x['site']['i'] . 'layer/fast.php');
+include('list/v1/inline/edit.php'); # the fast and quick box so it can get translations
+include('list/v1/layer/fast.php');
 if ($x['load']['motion']['name'])
-	include($x['site']['i'] . 'layer/motion.php');
+	include('list/v1/layer/motion.php');
 if ($x['load']['view']['name'])
-	include($x['site']['i'] . 'layer/view.php');
-include($x['site']['i'] . 'layer/quick.php');
+	include('list/v1layer/view.php');
+include('list/v1/layer/quick.php');
 if ($x['load']['action']['name'])
-	include($x['site']['i'] . 'layer/action.php');
+	include('list/v1/layer/action.php');
 switch($x['load']['list']['name']) {
 	case 'list':
 		# dont show user names if not logged in
@@ -318,8 +318,8 @@ switch($x['load']['list']['name']) {
 			$b1 = 1;
 		} }
 		if ($b1 == 2) {
-			include($x['site']['i'] . 'layer/search.php');
-			include($x['site']['i'] . 'layer/result.php');
+			include('list/v1/layer/search.php');
+			include('list/v1/layer/result.php');
 		}
 		unset($b1);
 	break;
@@ -327,28 +327,28 @@ switch($x['load']['list']['name']) {
 		# not yet...
 	break;
 	case 'report':
-		include($x['site']['i'] . '/page/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php');
+		include('list/v1/page/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php');
 	break;
 }
 
 if ($x['load']['footer']['name'])
-	include($x['site']['i'] . '/inline/footer.php');
+	include('list/v1/inline/footer.php');
 
 # TEMPLATE
 if ($x['load']['header']['name']) {
-	include($x['site']['i'] . '/inline/' . $x['site']['t'] . 'head.php');
-	include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'header.php');
+	include('list/v1/inline/t1/head.php');
+	include('list/v1/inline/t1/header.php');
 }
-include($x['site']['i'] . 'inline/' . $x['site']['t'] . 'edit.php'); # placeholder
+include('list/v1/inline/t1/edit.php'); # placeholder
 
-include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'fast.php');
+include('list/v1/layer/t1/fast.php');
 if ($x['load']['motion']['name'])
-	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'motion.php');
+	include('list/v1/layer/t1/motion.php');
 if ($x['load']['view']['name'])
-	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'view.php');
-include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'quick.php'); # needs to be after view
+	include('list/v1/layer/t1/view.php');
+include('list/v1/layer/t1/quick.php'); # needs to be after view
 if ($x['load']['action']['name'])
-	include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'action.php');
+	include('list/v1/layer/t1/action.php');
 switch($x['load']['list']['name']) {
 	case 'list':
 		# dont show user names if not logged in
@@ -358,21 +358,21 @@ switch($x['load']['list']['name']) {
 			$b1 = 1;
 		} }
 		if ($b1 == 2) {
-			include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'search.php');
-			include($x['site']['i'] . 'layer/' . $x['site']['t'] . 'result.php');
+			include('list/v1/layer/t1/search.php');
+			include('list/v1/layer/t1/result.php');
 		}
 		unset($b1);
 	break;
 	case 'doc':
-		include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header_after.php'); ?> 
+		include('list/v1/inline/t1/header_after.php'); ?> 
 		<div class="content"><div class="content_box"><?
 			$s1 = '/' . $x['load']['list']['type'] . '_' . $x['load']['list']['name'] . '.php';
-			if (file_exists($config['include_path'] . $x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1)) {
-				include($x['site']['i'] . 'html/' . $_SESSION['dialect']['dialect_code'] . $s1);
+			if (file_exists($config['include_path'] . 'list/v1/html/' . $_SESSION['dialect']['dialect_code'] . $s1)) {
+				include('list/v1/html/' . $_SESSION['dialect']['dialect_code'] . $s1);
 			}
 			else {
 				echo '<div class="doc_notice notice" style="margin: 10px -18px; margin-top: -20px;">English Only!</div>';
-				include($x['site']['i'] . 'html/en/' . $s1);
+				include('list/v1/html/en/' . $s1);
 			} ?> 
 		</div></div>
 		<div class="menu_1"></div>
@@ -385,4 +385,4 @@ switch($x['load']['list']['name']) {
 	break;
 }
 if ($x['load']['footer']['name'])
-	include($x['site']['i'] . '/inline/' . $x['site']['t'] . 'footer.php');
+	include('list/v1/inline/t1/footer.php');

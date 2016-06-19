@@ -20,8 +20,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Loads the appropriate pages and loads the 404 page if necessary.
 
-# At this point we should know what version version we are dealing with
-# See ($x['site']['i'] . 'inline/' . $x['site']['t'] . 'debug.php') for GLOBAL variables
 # SCRIPTS can be run from after session_start (do a keyword search for this file you will see it):
 
 if ($config['debug'] != 1)
@@ -51,7 +49,7 @@ $sql = '
 		' . $config['mysql']['prefix'] . 'page p
 	WHERE
 		f.id = p.file_id AND
-		f.path = ' . to_sql($x['site']['i'] . 'x/') . ' AND
+		f.path = ' . to_sql('list/v1/x/') . ' AND
 		p.name = ' . to_sql($x['name']) . '
 	LIMIT
 		1
@@ -107,7 +105,7 @@ switch ($x['page']['name']) {
 			$_SESSION['login']['login_user_name'] = $x['feed_atom']['user_name'];
 			$_SESSION['dialect']['dialect_id'] = $x['feed_atom']['dialect_id'];
 			parse_str($_SERVER['REDIRECT_QUERY_STRING'] . ($x['feed_atom']['query'] ? '&' . $x['feed_atom']['query'] : ''), $_GET);
-			include($x['site']['i'] . '/x/' . $x['page']['file_name']);
+			include('list/v1/x/' . $x['page']['file_name']);
 			exit;
 		}
 		else {
@@ -116,7 +114,7 @@ switch ($x['page']['name']) {
 			header('HTTP/1.0 200 Found');
 			header('Content-type: text/xml');
 			header('Content-Type: application/xml; charset=ISO-8859-1'); 
-			include($x['site']['i'] . '/xml/' . $x['site']['t'] . '/denied_atom.php');
+			include('list/v1/xml/t1/denied_atom.php');
 			exit;
 		}
 	break;
@@ -208,14 +206,14 @@ switch ($x['page']['name']) {
 		switch ($x['page']['name']) {
 			case 'login_set':
 				header('HTTP/1.0 200 Found');
-				include($x['site']['i'] . '/inline/head.php');
-				include($x['site']['i'] . '/inline/header.php');
-				include($x['site']['i'] . '/page/login_set.php'); # standalone
-				include($x['site']['i'] . '/inline/footer.php');
-				include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/head.php');
-				include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/header.php');
-				include($x['site']['i'] . '/page/' . $x['site']['t'] . '/login_set.php'); # standalone
-				include($x['site']['i'] . '/inline/' . $x['site']['t'] . '/footer.php');
+				include('list/v1/inline/head.php');
+				include('list/v1/inline/header.php');
+				include('list/v1/page/login_set.php'); # standalone
+				include('list/v1/inline/footer.php');
+				include('list/v1/inline/t1/head.php');
+				include('list/v1/inline/t1/header.php');
+				include('list/v1/page/t1/login_set.php'); # standalone
+				include('list/v1/inline/t1/footer.php');
 				exit;
 			break;
 			case 'login_set_process':
@@ -262,7 +260,7 @@ switch ($x['page']['name']) {
 		else {
 			$x['page']['display_name'] = '404';
 			$x['page']['id'] = '68';
-			include($x['site']['i'] . '/x/404.php');
+			include('list/v1/x/404.php');
 			exit;
 		}
 	break;

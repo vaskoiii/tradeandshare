@@ -22,5 +22,5 @@ header('HTTP/1.0 200 Found');
 header('Content-type: text/xml');
 header('Content-Type: application/xml; charset=ISO-8859-1');
 
-include($x['site']['i'] . '/xml/' . $x['page']['name'] . '.php');
-include($x['site']['i'] . '/xml/' . $x['site']['t'] . '/' . $x['page']['name'] . '.php');
+include('list/v1/xml/' . $x['page']['name'] . '.php');
+include('list/v1/xml/t1/' . $x['page']['name'] . '.php');

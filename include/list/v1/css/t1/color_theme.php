@@ -25,7 +25,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 body {
 	color: #000001;
 	word-wrap: break-word; /* why is this NOT default! */
-	background: transparent url("/<?= $x['site']['p']; ?>theme/<?= str_replace('theme_', '', $_SESSION['theme']['background_theme_name']); ?>/background.jpg") repeat;
+	background: transparent url("/list/v1/theme/<?= str_replace('theme_', '', $_SESSION['theme']['background_theme_name']); ?>/background.jpg") repeat;
 	margin: 0px auto;
 	padding: 0px;
 	<?= $data['css']['body_width_percentage']; ?>

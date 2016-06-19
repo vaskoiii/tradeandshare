@@ -21,4 +21,4 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Contents/Description: Load the process file (based on "x" AKA the "form name" or "process name") ie) /edit_process/
 
 header('HTTP/1.0 200 Found');
-require($x['site']['i'] . '/process/' . $x['page']['name'] . '.php');
+require('list/v1/process/' . $x['page']['name'] . '.php');

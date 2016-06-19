@@ -23,5 +23,5 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 header('HTTP/1.0 200 Found');
 header('Content-type: text/css');
 
-include($x['site']['i'] . '/css/' . $x['page']['name'] . '.php');
-include($x['site']['i'] . '/css/' . $x['site']['t'] . '/' . $x['page']['name'] . '.php');
+include('list/v1/css/' . $x['page']['name'] . '.php');
+include('list/v1/css/t1/' . $x['page']['name'] . '.php');

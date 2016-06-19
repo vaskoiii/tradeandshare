@@ -22,7 +22,7 @@ add_translation('page', $x['name']);
 add_translation('page', 'guest_portal');
 
 # TODO where is best to put this? 2012-01-13 vaskoiii
-include($x['site']['i'] . '/inline/site_map.php');
+include('list/v1/inline/site_map.php');
 foreach($data['new_report']['page_id'] as $k1 => $v1) {
 	if (!empty($v1['page_id'])) {
 		add_translation('page', $v1['page_name']);

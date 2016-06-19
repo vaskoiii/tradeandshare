@@ -23,7 +23,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 header('HTTP/1.0 200 Found');
 header('Content-type: text/plain');
 
-include($x['site']['i'] . '/ajax/' . $x['page']['name'] . '.php');
+include('list/v1/ajax/' . $x['page']['name'] . '.php');
 # template file (included below) will output JSON data ONLY
 # needed because engine files can not (should not) ouput any data ie) the above include
-include($x['site']['i'] . '/ajax/' . $x['site']['t'] . $x['page']['name'] . '.php');
+include('list/v1/ajax/t1/' . $x['page']['name'] . '.php');

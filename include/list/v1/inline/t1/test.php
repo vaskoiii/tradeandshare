@@ -18,10 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# todo where is best to put this? 2012-01-13 vaskoiii
-# also in head.php AND new_report.php
-# include($x['site']['i'] . '/inline/site_map.php');
-
 # Description: Test file for potential future integration
 # Current contents are a exploration to replace the iframe
 # Issue: colors are not yet dynamic
@@ -35,7 +31,6 @@ $s1 = str_replace('theme_', '', $_SESSION['theme']['launcher_theme_name']);
 $data['theme']['color'] = $s1;
 #$data['theme']['color'] = 'green'; # testing override 2012-03-18 vaskoiii
 $data['css']['theme_name'] = 'theme_' . $data['theme']['color']; # like using a function paramerter for the include below
-#include($x['site']['i'] . 'css/background_color.php');
 $data['css'] = array_merge($data['css'], get_background($s1));
 
 ?>

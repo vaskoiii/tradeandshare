@@ -24,33 +24,33 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # for now it is easier to keep everything in one place
 
 # CONFIG
-require($x['site']['i'] . '/config/preset.php');
+require('list/v1/config/preset.php');
 
 # FUNCTION
-require($x['site']['i'] . '/function/main.php');
-require($x['site']['i'] . '/function/circular_distance.php');
-require($x['site']['i'] . '/function/q.php');
-require($x['site']['i'] . '/function/key.php');
-require($x['site']['i'] . '/function/option.php');
-require($x['site']['i'] . '/function/php_database.php');
-require($x['site']['i'] . '/function/arrangement.php');
-require($x['site']['i'] . '/function/search.php');
-require($x['site']['i'] . '/function/custom.php');
-require($x['site']['i'] . '/function/link.php');
-require($x['site']['i'] . '/function/engine.php');
-require($x['site']['i'] . '/function/template.php');
-require($x['site']['i'] . '/function/lock.php');
-require($x['site']['i'] . '/function/css.php');
-require($x['site']['i'] . '/function/file.php');
-require($x['site']['i'] . '/function/member.php');
-require($x['site']['i'] . '/function/payout.php');
+require('list/v1/function/main.php');
+require('list/v1/function/circular_distance.php');
+require('list/v1/function/q.php');
+require('list/v1/function/key.php');
+require('list/v1/function/option.php');
+require('list/v1/function/php_database.php');
+require('list/v1/function/arrangement.php');
+require('list/v1/function/search.php');
+require('list/v1/function/custom.php');
+require('list/v1/function/link.php');
+require('list/v1/function/engine.php');
+require('list/v1/function/template.php');
+require('list/v1/function/lock.php');
+require('list/v1/function/css.php');
+require('list/v1/function/file.php');
+require('list/v1/function/member.php');
+require('list/v1/function/payout.php');
 
 # form processing
-require($x['site']['i'] . '/function/process.php');
-require($x['site']['i'] . '/function/email.php');
+require('list/v1/function/process.php');
+require('list/v1/function/email.php');
 
 # DB CONNECT
-require($x['site']['i'] . '/inline/mysql_connect.php');
+require('list/v1/inline/mysql_connect.php');
 
 # X
-require($x['site']['i'] . '/config/x.php');
+require('list/v1/config/x.php');

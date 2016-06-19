@@ -52,7 +52,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 </div><? 
 
 	if ($config['debug'] == 1)
-		include($x['site']['i'] . '/inline/t1/debug.php'); ?> 
+		include('list/v1/inline/t1/debug.php'); ?> 
 
 </body>
 </html><?

@@ -120,8 +120,8 @@ function start_engine( & $base, $type, $login_user_id, $uid_array = array(), $lo
 }
 
 function get_engine_result_listing_sql(& $base, $limit = false, $load = false) {
-	global $config; # $config[$x['site']['t']]['result_amount_per_page'] && $config['debug']
-	global $x; # $x['site']['t'] && $x['page']['name'] 
+	global $config;
+	global $x;
 
 	# reduce wordiness
 	$select = & $base['search']['select'];
@@ -134,7 +134,7 @@ function get_engine_result_listing_sql(& $base, $limit = false, $load = false) {
 	if ($limit)
 		$limit = (int)$limit;
 	else
-		$limit = $config[$x['site']['t']]['result_amount_per_page'];
+		$limit = $config['t1/']['result_amount_per_page'];
 
 
 	$i1 = get_gp('page');

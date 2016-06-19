@@ -69,7 +69,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="menu_2"><?
 	if (!$_SESSION['process']['failure'] && $data['result']['result']['total'])
-		print_paging(get_gp('page'), $data['result']['result']['total'], $config[$x['site']['t']]['result_amount_per_page']); ?> 
+		print_paging(get_gp('page'), $data['result']['result']['total'], $config['t1/']['result_amount_per_page']); ?> 
 </div>
 
 </form>
