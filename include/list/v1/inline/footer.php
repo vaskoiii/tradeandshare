@@ -33,3 +33,6 @@ do_key($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login'
 do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION['login']['login_user_id']); # must be after do key 2012-03-27 vaskoiii
 
 sort_option(); # avoid left outer join 2012-02-23 vaskoiii
+
+if (!isset($_SESSION['login']['accounting_value_sum']))
+	get_accounting_value_sum();
