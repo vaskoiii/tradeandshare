@@ -269,7 +269,18 @@ function get_db_enum($table_name, $field_name) {
 	return $enum_fields;
 }
 
+function get_db1v($sql, $debug = false) {
+	$sql = 'SELECT ' . $sql . ' LIMIT 1';
+	if ($debug) 
+		echo '<hr />' . $sql;
+	$result = mysql_query($sql) or die(mysql_error());
+	while ($row = mysql_fetch_row($result))
+		return $row[0];
+	return false;
+}
+
 function get_db_single_value($sql, $debug = false) {
+	# deprecate in favor of get_db1v()
 	$sql = 'SELECT ' . $sql . ' LIMIT 1';
 	if ($debug) 
 		echo '<hr />' . $sql;

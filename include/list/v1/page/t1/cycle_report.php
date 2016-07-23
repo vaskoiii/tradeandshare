@@ -50,19 +50,22 @@ foreach ($channel_list as $k1 => $v1)
 if (empty($channel_list[$k1]['info']['user_id']))
 	$data['user_report']['premature_channel_list'][$k1] = array();
 
-if (!empty($data['user_report']['premature_channel_list'])) { ?> 
-	<div class="content_box"><?
-	foreach($data['user_report']['premature_channel_list'] as $k1 => $v1) {
-		$s1 = $key['channel_id']['result'][$k1]['channel_name'];
-		$s1 .= ' : ';
-		$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
-		echo '<h3>' . $s1 . '</h3>'; ?>
-		<p>cycle not ready for payout</p><?
-	} ?> 
-	<? print_break_close(); ?>
+if (!empty($channel['notice'])) { ?> 
+	<div class="notice" style="margin-top: -10px;">
+		<p><?= tt('element', 'preview_only'); ?><p>
+		<ul><?
+			foreach ($channel['notice'] as $k1 => $v1) { ?> 
+				<li><?= to_html($v1); ?></li><?
+			} ?> 
+		</ul><?
+		# todo set something up
+		# $a1 = get_payout_cycle_offset_zero_array($kc1);
+		# get_payout_cycle_offset_unfinalized_array($kc1, $a1['0']['cycle_id']);
+		?>
 	</div><?
 }
-elseif (empty($channel_list)) { ?>
+
+if (empty($channel_list)) { ?>
 	<div class="content_box">
 		<p>No channel was selected</p>
 	<? print_break_close(); ?>
@@ -70,21 +73,28 @@ elseif (empty($channel_list)) { ?>
 }
 else
 foreach ($channel_list as $kc1 => $vc1) {
+	# intentionally limit to 1 cycle at a time
 	# alias
 	$channel = & $channel_list[$kc1];
-	$payout = & $channel['payout']; ?>
+	$payout = & $channel['payout']; ?> 
+
 	<div id="channel_<?= (int)$kc1; ?>" class="content_box"><?
+	# todo cycle offset needs to be shifted by 2
 	$s1  = $vc1['info']['name'];
-	$s1 .= ' : ';
-	$s1 .= (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
 	if (isset($vc1['info']['cycle_id']))
 		$s1 .= ($vc1['info']['cycle_id'] == get_latest_payout_cycle_id($kc1) ? ' : latest' : '');
-	echo '<h3>' . $s1 . '</h3>'; ?>
+	echo '<h3 style="margin-top: 10px;">' . $s1 . '</h3>'; ?>
 	<ul style="margin-top: 0px;">
+		<li><?
+			$s1 = (isset_gp('cycle_id') ? (int)get_gp('cycle_id') : (int)$vc1['info']['cycle_id']);
+			echo 'Cycle UID: ' . (int)$s1; ?> 
+		</li>
 		<li>Average Like Weight: <?= $channel['computed_weight']['aggregate']['info']['average']; ?></li>
+		<?/*<li>
+			<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
+		</li>*/?>
 	</ul>
 	<p style="margin-top: 0px;">
-		<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
 		&gt;&gt; <a href="#" id="channel_<?= (int)$k1; ?>_summary_toggle" onclick="more_toggle('channel_<?= (int)$k1; ?>_summary'); return false;"><?= tt('element', 'more'); ?></a>
 	</p>
 	<div id="channel_<?= (int)$k1; ?>_summary" style="display: none;">
@@ -202,7 +212,36 @@ foreach ($channel_list as $kc1 => $vc1) {
 	# as such there can be many sponsors for the same cycle
 	# $channel['donate_user_id'] built in the controller
 
-	print_break_close();
+	# print_break_close();
+	# todo put paging here ?> 
+
+	</div>
+	<div class="menu_1">
+	</div>
+	<div class="menu_2">
+		<ul><?
+			if ($paging_cycle_id['first'] == $paging_cycle_id['current']) { ?> 
+				<li>|&lt;</li>
+				<li>&lt;&lt;</li><?
+			}
+			else { ?> 
+				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['first'], 0); ?>">|&lt;</a></li>
+				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['previous'], 0); ?>">&lt;&lt;</a></li><?
+			} ?> 
+			<li><?= (int)$channel['seed']['cycle_id']; ?></li><?
+			if ($paging_cycle_id['next'] == $paging_cycle_id['current']) { ?>  
+				<li>&gt;&gt;</li>
+				<li>&gt;|</li><?
+			}
+			else { ?> 
+				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['next'], 0); ?>">&gt;&gt;</a></li>
+				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['last'], 0); ?>">&gt;|</a></li><?
+			} ?> 
+		</ul>
+	</div>
+</div><?
+	
+	
 	print_break_open('Sponsor');
 		if (!empty($channel['donate_value'])) {
 		foreach ($channel['donate_value']['user_id'] as $ks1 => $vs1) { ?> 
@@ -218,7 +257,10 @@ foreach ($channel_list as $kc1 => $vc1) {
 		}
 	print_break_close();
 	print_break_open('Member');
-	if (!empty($channel['destination_user_id']))
+	if (empty($channel['destination_user_id'])) { ?> 
+		<p>TODO show member renewal status</p><?
+	}
+	else
 	foreach ($channel['computed_weight']['aggregate']['weighted_credit'] as $kd1 => $vd1) {
 		$kid = & $channel['destination_user_id'][$kd1]; # alias ?> 
 		<h3><?= print_key_user_id($kd1); ?></h3><? 

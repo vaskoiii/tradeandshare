@@ -52,8 +52,6 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 
-
-
 # huge computation
 foreach ($channel_list as $k1 => $v1) {
 	# when setting an alias within a foreach it will have to be set again in the t1 file =(
@@ -62,6 +60,31 @@ foreach ($channel_list as $k1 => $v1) {
 	$channel['renewal'] = array();
 	$channel['sponsor'] = array();
 	$channel['payout'] = array();
+
+	$channel['paging']['cycle_id'] = array(
+		'first' => 0,
+		'previous' => 0,
+		'seed' => 0,
+		'current' => 0,
+		'next' => 0,
+		'last' => 0,
+	);
+	$paging_cycle_id = & $channel['paging']['cycle_id'];
+
+	if (1)
+	if (!empty($v1['seed']['cycle_id'])) {
+		# paging
+		$paging_cycle_id['first'] = get_cycle_id_first($k1);
+		$paging_cycle_id['previous'] = get_cycle_id_previous($k1, $channel['seed']['cycle_id']);
+
+		$paging_cycle_id['current'] = $channel['seed']['cycle_id'];
+
+		$paging_cycle_id['last'] = get_cycle_id_last($k1);
+		$paging_cycle_id['next'] = get_cycle_id_next($k1, $channel['seed']['cycle_id'], $paging_cycle_id['last']);
+		# used for notice messages
+		$paging_cycle_id['present'] = get_cycle_id_present($k1);
+	}
+
 	do_payout_computation($channel, $k1, $_GET['cycle_id']);
 
 	# todo allow increasing sponsor but never decreasing

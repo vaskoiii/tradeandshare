@@ -31,31 +31,15 @@ print_keyword_box('member_report', 1); ?>
 <div class="doc_box">
 	<h3>Channel</h3>
 	<dl><?
-		if (!empty($data['member_report']['payout_order'])) {
-		foreach($data['member_report']['payout_order'] as $k1 => $v1) {
-		if (is_numeric($k1)) { # $k1 = 'cycle_restart' is getting set out of nowhere (on 1 server) ?><?
-			if (!empty($data['member_report']['channel'][$k1]['cycle_offset'][2]['id'])) { ?> 
-				<dt>
-					<a href="./cycle_report/<?= ff('cycle_id=' . (int)$data['member_report']['channel'][$k1]['cycle_offset'][2]['id']); ?>"><?= to_html($data['member_report']['channel'][$k1]['info']['name']); ?></a>
-					-
-					<?= $data['member_report']['payout_order'][$k1]
-						? (int)$data['member_report']['payout_order'][$k1]
-						: 0; ?> 
-					&rarr;
-					?
-					&rarr;
-					<?= (int)$data['member_report']['order'][$k1]; ?></dt><?
-			}
-			else { ?> 
-				<dt>
-					<?= to_html($data['member_report']['channel'][$k1]['info']['name']); ?>
-					-
-					0
-					&rarr;
-					?
-					&rarr;
-					<?= (int)$data['member_report']['order'][$k1]; ?></dt><?
-			} ?> 
+		if (!empty($data['member_report']['order'])) {
+		foreach($data['member_report']['order'] as $k1 => $v1) {
+		if (is_numeric($k1)) {
+			# present (not future_horizon) ?>
+			<dt>
+				<a href="./cycle_report/<?= ff('cycle_id=' . (int)$data['member_report']['channel'][$k1]['cycle_offset'][1]['id']); ?>"><?= to_html($data['member_report']['channel'][$k1]['info']['name']); ?></a>
+				-
+				<?= (int)$data['member_report']['order'][$k1]; ?>
+			</dt>
 			<dd><?= to_html($data['member_report']['channel'][$k1]['info']['description']); ?></dd><?
 		} } }
 		else { ?> 

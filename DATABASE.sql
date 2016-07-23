@@ -3241,3 +3241,23 @@ create table ts_runner (
 alter table ts_runner add index script_id (`script_id`);
 
 alter table ts_runner add `start` datetime after script_id;
+
+-- too much work/additional complication for now
+-- also a one-to-many relationship may not be necessary
+-- CREATE TABLE IF NOT EXISTS `ts_pointer` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `kind_id` int(11) NOT NULL,
+--   `kind_name_id` int(11) NOT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+-- alter table ts_pointer add index kind_id (`kind_id`);
+-- alter table ts_pointer add index kind_name_id (`kind_name_id`);
+
+-- easier option: refining timeframes
+-- psuedo one-to-many via parent_id ie) sub catergories
+alter table ts_timeframe add parent_id int(11) after id;
+update ts_timeframe set parent_id = 0;
+insert into ts_timeframe set name='future_horizon', parent_id=3;
+insert into ts_timeframe set name='future_upcoming', parent_id=3;
+insert into ts_timeframe set name='past_pending', parent_id=1;
+insert into ts_timeframe set name='past_settlement', parent_id=1;

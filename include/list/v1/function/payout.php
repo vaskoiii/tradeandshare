@@ -68,34 +68,27 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 
 	$kc1 = $k1;
 	$vc1 = & $channel;
-	# $cycle_id = $_GET['cycle_id']
 
 	# convenience for display:
 	add_key('channel', $k1, 'channel_name', $key);
-	if (!empty($cycle_id)) {
+	if (!empty($cycle_id))
 		get_specific_channel_cycle_restart_array($channel, $k1, $cycle_id);
-		# temp variable placeholder
-		$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset'], $channel['cycle_restart']);
-	}
-	else {
-		get_channel_cycle_restart_array($channel, $k1, get_latest_payout_cycle_id($k1));
-		# temp variable placeholder
-		$channel['cycle_restart'] = get_deprecated_channel_cycle_restart_array($channel['cycle_offset'], $channel['cycle_restart']);
-	}
+	else
+		die('require cycle_id');
 
 	$cycle_restart = & $channel['cycle_restart']; # alias
 	$cycle_offset = & $channel['cycle_offset']; # alias
-	# todo die if this cycle id is before the latest
-	$b1 = 1;
-	if (!empty($cycle_id))
-		if ($cycle_id > get_latest_payout_cycle_id($k1))
-			$b1 = 2;
-	if ($b1 == 2) {
-		$data['user_report']['premature_channel_list'][$k1] = $channel;
-		$data['user_report']['premature_channel_list'][$k1]['info']['channel_parent_id'] = $k1;
-		unset($channel); # too early to evaluate
-	}
-	else {
+
+	if ($channel['seed']['cycle_id'] > $channel['paging']['cycle_id']['last'])
+		$channel['notice'][] = tt('element', 'cycle_not_started');
+	if ($channel['seed']['cycle_id'] > $channel['paging']['cycle_id']['current'])
+		$channel['notice'][] = tt('element', 'cycle_not_complete');
+	# todo fix duplicate function
+	if ($cycle_id > get_latest_payout_cycle_id($k1))
+		$channel['notice'][] = tt( 'element', 'cycle_not_finalized');
+
+	# allow evaluating incomplete cycles
+	if (1) {
 		# cost has to have had the price set 1 cycle previous to be valid
 		# todo indicate noncurrent prices on display of cost_list
 		if (1) { # before
@@ -108,8 +101,8 @@ function do_payout_computation(& $channel, $k1, $cycle_id = null) {
 					' . (int)$channel['info']['payout_length'] . ' as time,
 					cnl.value as before_cost
 				from
-					' . $config['mysql']['prefix'] . 'channel cnl,
-					' . $config['mysql']['prefix'] . 'user u
+					ts_channel cnl,
+					ts_user u
 				where
 					u.id = cnl.user_id and
 					cnl.parent_id = ' . (int)$k1 . ' and
@@ -585,6 +578,8 @@ function get_latest_payout_cycle_id($channel_parent_id) {
 			cce.start = ' . to_sql($a1['cycle_offset'][2]['start']) . ' and
 			cnl.parent_id = ' . (int)$channel_parent_id
 	);
+
+
 }
 
 # cycle and sponsor hybrid functions
@@ -671,4 +666,101 @@ function get_right_cyspon_id($end, $user_id) {
 	if ($a1['point_id'] != 3) # could also mean that there is bad data in the db
 		return $a1['sponsor_id'];
 	return false;
+}
+
+
+# paging
+
+function get_cycle_id_first($channel_parent_id) {
+	# todo get the first cycle ever
+	# todo have a timeframe_id as "origin" (would allow getting "origin" and "present" simultaneously
+	return get_db1v('
+			cce.id as cycle_id
+		from
+			ts_channel cnl,
+			ts_cycle cce
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . '
+		order by
+			cnl.id asc
+	');
+}
+
+function get_cycle_id_last($channel_parent_id) {
+	# future cycles are not shown in the paging because they will have no settlement data
+	return get_db1v('
+			cce.id as cycle_id
+		from
+			ts_channel cnl,
+			ts_cycle cce
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.timeframe_id = 2
+		order by
+			cce.id desc
+	');
+}
+
+function get_cycle_id_next($channel_parent_id, $cycle_id, $future_cycle_id) {
+	$i1 = get_db1v('
+			cce.id as cycle_id
+		from
+			ts_channel cnl,
+			ts_cycle cce
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.id > ' . (int)$cycle_id . '
+		order by
+			cce.id asc
+	');
+	if ($i1 > $future_cycle_id)
+		$i1 = $future_cycle_id;
+	return $i1;
+}
+
+function get_cycle_id_previous($channel_parent_id, $cycle_id) {
+	return get_db1v('
+			cce.id as cycle_id
+		from
+			ts_channel cnl,
+			ts_cycle cce
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.id < ' . (int)$cycle_id . '
+		order by
+			cce.id desc
+	');
+}
+
+function get_cycle_id_count($channel_parent_id) {
+	# placeholder
+	return get_db1v('
+			count(*)
+		from
+			ts_cycle cce,
+			ts_channel cnl
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id
+	);
+}
+
+function get_cycle_id_present($channel_parent_id) {
+	# placeholder
+	return get_db1v('
+			cce.id
+		from
+			ts_cycle cce,
+			ts_channel cnl
+		where
+			cnl.id = cce.channel_id and
+			cnl.parent_id = ' . (int)$channel_parent_id . ' and
+			cce.timeframe_id = 2
+		order by
+			cce.id desc
+	');
 }
