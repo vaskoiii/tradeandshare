@@ -267,10 +267,11 @@ switch($type) {
 
 # more error checking
 switch($type) {
-	case 'category':
 	case 'tag':
 		if ($process['form_info']['id'])
 			$message = tt('element', 'error') . ' : ' . tt('element', 'only_mergeable');
+	# nobreak;
+	case 'category':
 		if (!$lookup['tag_id'])
 			$message = tt('element', 'error') . ' : ' . tt('element', 'tag_path');
 		# simplify logic by requiring parent_tag_path 2012-03-10 vaskoiii
