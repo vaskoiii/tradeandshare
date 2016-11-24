@@ -286,7 +286,7 @@ function print_ts_focus($string, $load, & $x = null) {
 	$s2 = $s1 . '_' . $x['load']['list']['name'];
 	if (!empty($x['load']['view']['type'])) {
 		if ($b1 == 1) { ?> 
-			<a id="ts_focus" href="<?= ffm('page=&list_name=list&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $s2); ?></a>*<?
+			<a id="ts_focus" href="<?= ffm('page=&list_name=' . $x['load']['list']['name'] . '&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $s2); ?></a>*<?
 		}
 		else {
 			# could also just take you back to the initial page when clicking on the contact/user name
