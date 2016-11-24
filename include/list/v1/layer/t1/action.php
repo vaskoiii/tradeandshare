@@ -134,6 +134,13 @@ $s1 = 'edit';
 $s2 = '';
 # special cases:
 switch ($x['load']['action']['type']) {
+	case 'login':
+		switch ($x['load']['action']['name']) {
+			case 'recover':
+				$s1 = 'recover';
+			break;
+		}
+	break;
 	case 'user':
 		$s1 = 'user';
 	break;
