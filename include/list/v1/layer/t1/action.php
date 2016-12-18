@@ -348,5 +348,6 @@ switch($k1) {
 </div>
 
 </form>
-<?
+</div>
+</span><?
 # action_box end ?> 
