@@ -238,6 +238,7 @@ function get_action_content_1($type = false, $name = false) {
 		case 'recover':
 			switch($type) {
 				case 'login':
+					if ($config['email_enable'] == 1)
 					$array = array(
 						'login_user_name' => '',
 					);

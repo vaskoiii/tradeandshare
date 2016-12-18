@@ -29,6 +29,9 @@ $process['form_info'] = get_action_header_1();
 foreach($process['form_info'] as $k1 => $v1)
 	$process['form_info'][$k1] = get_gp($k1);
 
+if ($config['email_enable'] != 1)
+	die('email is disabled - recover your login by contacting the admin');
+
 switch($process['form_info']['type']) {
 	case 'login':
 		$process['action_content_1']['login_user_name'] = get_gp('login_user_name');
@@ -109,14 +112,10 @@ $email_sent = mail(
 	get_tsmail_header()
 );
 
-process_success(
-	tt('element', 'transaction_complete') . (
+$interpret['message'] = tt('element', 'transaction_complete') . (
 	$email_sent
 		? ' : ' . tt('element', 'email_sent')
 		: ''
-	) . (
-	$auto_enabled == 1 
-		?  ' : ' . tt('element', 'auto_enabled')
-		: ''
-	)
 );
+
+process_success($interpret['message']);

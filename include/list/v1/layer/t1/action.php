@@ -227,6 +227,11 @@ foreach($data['action']['response']['action_footer_1'] as $k1 => $v1) {
 switch($k1) {
 	case 'recover':
 		# special case
+		if ($x['name'] == 'login_recover')
+		if ($config['email_enable'] != 1) { ?> 
+			<p style="margin-top: -10px;">please contact the admin directly to regain access</p><?
+			break;
+		}
 		if ($x['name'] == 'feed_recover') {
 			if (get_db_single_value('
 					id
@@ -343,6 +348,5 @@ switch($k1) {
 </div>
 
 </form>
-</div>
-</span><?
+<?
 # action_box end ?> 
