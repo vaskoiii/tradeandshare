@@ -24,6 +24,7 @@ add_translation('element', 'like');
 add_translation('element', 'dislike');
 add_translation('element', 'comment');
 
+add_translation('page', 'config_report');
 add_translation('page', 'cycle_report');
 
 add_translation('element', 'list');

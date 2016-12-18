@@ -43,16 +43,18 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			else { ?>  
 				<a href="./login_set/"><?= tt('element', 'set_login'); ?></a>
 				|<?
-				if ($x['page']['name'] == 'login_set') {
-					# if not logged in and you click back on login_set it will keep headering you back to login set! ?> 
-					<a href="/<?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
-						tt('element', 'go_back'); 
-					?></a><?
-				} else { ?> 
-					<a href="<?= $x['..']; ?><?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
-						tt('element', 'go_back'); 
-					?></a><?
-				} 
+				switch ($x['page']['name']) {
+					case 'trailer_doc':
+						if ($x['level'] == 1) { ?> 
+							<a href="/config_report/"><?= tt('page', 'config_report'); ?></a><?
+						}
+						else
+							print_go_back('go_back', 'element');
+					break;
+					default:
+						print_go_back('go_back', 'element');
+					break;
+				}
 			} ?>
 			<span style="float: right;"><?= date('Y-m-d H:i:s', time()); ?></span>
 		</p><?
