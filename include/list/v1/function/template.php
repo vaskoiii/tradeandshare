@@ -883,9 +883,11 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# onclick intended to prevent unintentional logging to browser history
 			# todo onclick copy to clipboard (with prompt)
 			# todo translatable text
-			$s1 = 'https://' . $_SERVER['HTTP_HOST'] . '/feed_atom/?set_feed_id=' . (int)$listing['feed_id'] . '&amp;set_feed_key=' . to_html($listing['feed_key']);
-			if ($listing['user_id'] == $login_user_id)
-				$grab .= $spacer . '<a onclick="alert(\'Copyable Link Only: Try right click (with a mouse) or longpress (with a touchscreen) to save the link address for use with an &quot;Atom Feed Reader&quot;\'); return false;" href="' . $s1 . '"><span class="incident_id">Link</span></a>';
+			if ($x['page']['name'] != 'feed_atom') {
+				$s1 = 'https://' . $_SERVER['HTTP_HOST'] . '/feed_atom/?set_feed_id=' . (int)$listing['feed_id'] . '&amp;set_feed_key=' . to_html($listing['feed_key']);
+				if ($listing['user_id'] == $login_user_id)
+					$grab .= $x['page_name'] . $spacer . '<a onclick="alert(\'Copyable Link Only: Try right click (with a mouse) or longpress (with a touchscreen) to save the link address for use with an &quot;Atom Feed Reader&quot;\'); return false;" href="' . $s1 . '"><span class="incident_id">Link</span></a>';
+			}
 		break;
 		# remember/forget
 		case 'minder_minder':
