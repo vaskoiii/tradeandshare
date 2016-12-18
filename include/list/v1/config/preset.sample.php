@@ -38,7 +38,10 @@ $config['run'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['craft'] = 2; # always 2 (set in individual scripts to 1 if needed)
 $config['protect'] = 2; # always 2 (set in individual scripts to 1 if needed)
 
+# email
+$config['email_enable'] = 2; # email is deprecated in favor of atom feeds
 $config['email_from'] = 'List <noreply@localhost>';
+
 $config['file_path'] = '/www/site/list/file/'; # end with /
 $config['public_path'] = '/www/site/list/public/'; # end with /
 $config['include_path'] = '/www/site/list/include/'; # end with /

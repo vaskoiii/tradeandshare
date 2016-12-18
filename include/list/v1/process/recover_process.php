@@ -101,6 +101,7 @@ switch($process['form_info']['type']) {
 	break;
 }
 
+if ($config['email_enable'] == 1)
 $email_sent = mail(
 	$email_to,
 	$email_subject,

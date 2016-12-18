@@ -1187,6 +1187,8 @@ function process_does_exist() {
 						$subject = get_tsmail_subject($tsmail);
 						$body = get_tsmail_body($tsmail);
 						$header = get_tsmail_header($tsmail);
+						# parent {} was never enabled?
+						if ($config['email_enable'] == 1)
 						$email_sent = mail( $to, $subject, $body, $header);
 					}
 				}

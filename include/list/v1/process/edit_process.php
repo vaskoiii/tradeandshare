@@ -852,6 +852,7 @@ switch($type) {
 		$tsmail['data']['search']['response']['search_miscellaneous']['feature_minnotify'] = 1;
 		$tsmail['data']['search']['response']['search_miscellaneous']['email_boundary'] = false;
 
+		if ($config['email_enable'] == 1)
 		$email_sent = mail(
 			$action_content_1['invite_email'],
 			$email_subject,
@@ -870,6 +871,7 @@ switch($type) {
 			$tsmail['search']['response']['search_miscellaneous'] = get_user_email_array($login_user_id);
 			$email_subject = $config['title_prefix'] . 'Feed Recover Link: ' . ucfirst(str_replace('_list', '', $lookup['page_name']));
 			$email_body = 'https://' . $_SERVER['HTTP_HOST'] . '/feed_atom/?' . 'set_feed_id=' . (int)$lookup['feed_id'] . '&set_feed_key=' . to_url($lookup['feed_key']);
+			if ($config['email_enable'] == 1)
 			$email_sent = mail(
 				$tsmail['search']['response']['search_miscellaneous']['email'],
 				$email_subject,
@@ -912,6 +914,7 @@ switch($type) {
 				$subject = get_tsmail_subject($tsmail);
 				$body = get_tsmail_body($tsmail);
 				$header = get_tsmail_header($tsmail);
+				if ($config['email_enable'] == 1)
 				$email_sent = mail( $to, $subject, $body, $header);
 			}
 		}
@@ -1001,6 +1004,7 @@ switch($type) {
 				$subject = get_tsmail_subject($tsmail);
 				$body = get_tsmail_body($tsmail);
 				$header = get_tsmail_header($tsmail);
+				if ($config['email_enable'] == 1)
 				$email_sent = mail( $to, $subject, $body, $header);
 			}
 		}
@@ -1171,4 +1175,6 @@ switch($type) {
 	break;
 }
 
-process_success(tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : ''));
+# set for debug
+$message = tt('element', 'transaction_complete') . ($email_sent ? ' : ' . tt('element', 'email_sent') : '');
+process_success($message);
