@@ -879,6 +879,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($listing['user_id'] == $login_user_id)
 				$grab .= $spacer . '<a href="' . $href_prepend . 'feed_recover/' . ff('id=' . (int)$listing['feed_id'] . $glue . $href_append, $ff_level) . '"><span class="feed_recover">' . tt('element', 'recover') . '</span></a>';
 		break;
+		case 'feed_link_copyable':
+			# onclick intended to prevent unintentional logging to browser history
+			# todo onclick copy to clipboard (with prompt)
+			# todo translatable text
+			$s1 = 'https://' . $_SERVER['HTTP_HOST'] . '/feed_atom/?set_feed_id=' . (int)$listing['feed_id'] . '&amp;set_feed_key=' . to_html($listing['feed_key']);
+			if ($listing['user_id'] == $login_user_id)
+				$grab .= $spacer . '<a onclick="alert(\'Copyable Link Only: Try right click (with a mouse) or longpress (with a touchscreen) to save the link address for use with an &quot;Atom Feed Reader&quot;\'); return false;" href="' . $s1 . '"><span class="incident_id">Link</span></a>';
+		break;
 		# remember/forget
 		case 'minder_minder':
 			$s1 = $listing['kind_name'];

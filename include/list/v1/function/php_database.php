@@ -738,9 +738,10 @@ function lt_body($type) {
 		case 'vote':
 			$array = array($type . '_description');
 		break;
-		# case 'feed':
+		case 'feed':
+			$array[$type . '_link_copyable'] = $type . '_link_copyable';
 		# 	$array = array('ts_link'); # show link to the "list" page (not the "feed") - useful as a bookmark - 2012-02-27 vaskoiii
-		# break;
+		break;
 		# todo update integrate 2012-02-27 vaskoiii
 		
 		#case 'tag':
