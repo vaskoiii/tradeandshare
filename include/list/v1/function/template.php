@@ -385,14 +385,19 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			);
 		break;
 		case 'way_name':
+			# =) and (= instead of &gt;&gt; and &lt;&lt;
+			# for increased compatibility and consistentcy and happiness
+			# ie. avoid htmlentities in atom feed titles
 			$s1 = 'style="color: ' . (isset($color['direction_name']) ? $color['direction_name'] : '') . ';"';
 			if ($listing['source_user_id'] == $login_user_id)
-				$grab .= '<span ' . $s1 . ' class="direction_name"> &gt;&gt; </span>';
+				$grab .= '<span ' . $s1 . ' class="direction_name">=)</span>';
 			else
-				$grab .= '<span ' . $s1 . ' class="direction_name"> &lt;&lt; </span>';
+				$grab .= '<span ' . $s1 . ' class="direction_name">(=</span>';
+			$grab .= ' ';
 		break;
 		case 'direction_right_name':
-			$grab .= '<span class="direction_name"> &gt;&gt; </span>';
+			$grab .= '<span class="direction_name">=)</span>';
+			$grab .= ' ';
 		break;
 		case 'meritopic_children':
 		case 'group_children':
