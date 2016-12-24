@@ -231,7 +231,7 @@ function from_html($f) {
 }
 
 function to_xml($t) {
-	return '<![CDATA[' . $t . ']]>';
+	return '<![CDATA[' . trim($t) . ']]>';
 }
 
 function from_xml($f) {
