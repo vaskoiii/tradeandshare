@@ -136,15 +136,15 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 				# hack for thunderbird so to display the from name correctly
 				# <email>@</email> ?> 
 			</author> 
-			<summary type="html"><?
+			<content type="html"><?
 				ob_start();
 				print_listing_template($listing[$k1], $key, $translation, 'result', 'feed', 'summary', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0] );
 				$s1 = ob_get_clean();
 				$s1 = strip_tags($s1, '<a>');
 				# hack
 				$s1 = str_replace('style="color: ;" ', '', $s1);
-				echo to_xml($s1); ?> 
-			</summary> 
+				echo to_xml($s1); ?>
+			</content> 
 			<updated><?= to_xml(
 				gmdate('c', strtotime($listing[$k1]['modified']))
 			); ?></updated> 
