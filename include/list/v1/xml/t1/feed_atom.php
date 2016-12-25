@@ -25,37 +25,24 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Notes:
 # Enclose HTML Stuff inside: <![CDATA[]]>
-# Use " \n" for source to show nice in firefox at the end of lines
+# using an extra space at the line endings for better formatting when viewing source
 
-# TODO modify to_xml() to account for ]]> within the CDATA
-# ie) ]]> goes to ]]]]><![CDATA[>
-# Maybe not necessary since we replace all <> with {}
-
-echo '<?xml version="1.0" encoding="utf-8"?> ' . "\n";
-echo '<?xml-stylesheet type="text/css" href="/text_style/" ?> ' . "\n"; # xml stylesheet is even used?
+echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
+/*
+# xml style possible?
+echo '<?xml-stylesheet type="text/css" href="/text_style/" ?> ' . PHP_EOL;
+*/
 
 $listing = & $data['result']['result']['listing'];
 
-# Mozilla Thunderbird:
-# --------------------
-# author.name => from.name ( Not really supported with < and > as it is parsed incorrectly )
-# author.email => from.email
-# link => website
-# title => subject
-# summary => body
-# ---------------
-# < and > are replaced with { and } because thunderbird and other RSS readers are not able to interpret the author field so well.
+# Mozilla Thunderbird :
+# <author><name> => from.name
+# <author><email> => from.email (faked)
+# <link> => website
+# <title> => subject
+# <summary> => body
 # to_xml() with thunderbird seems to want to enclose everything between < and > (it is omitted for now)
 # https://bugzilla.mozilla.org/show_bug.cgi?id=679195
-# if feed reader support was reliable enough ideally we would NOT need the ltgt functions. currently used on:
-# <author><name>
-# <title>
-function ltgt_replace_decode($t) {
-	return ltgt_replace(html_entity_decode($t));
-}
-function ltgt_replace($t, $decode = 1) {
-	return str_replace(array('<', '>'), array('{', '}'), $t);
-}
 
 $x['feed_atom']['contact_name'] = get_sender_contact_name($x['feed_atom']['user_id']);
 $x['feed_atom']['contact_id'] = get_db_single_value('
@@ -69,9 +56,9 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 		c.user_id = ' . (int)$x['feed_atom']['user_id'] . ' AND
 		c.name = ' . to_sql($x['feed_atom']['contact_name'])
 , 0); ?> 
-
-<feed xmlns="http://www.w3.org/2005/Atom">
-	<title type="text"><?= to_xml( ltgt_replace_decode($x['feed_atom']['name']) ); ?></title>
+<feed xmlns="http://www.w3.org/2005/Atom"> 
+	<title type="html"><?= to_xml($x['feed_atom']['name']); ?></title><?
+	# is either <link> needed here? 2016-12-24 vaskoiii ?> 
 	<link href="<?= 
 		to_html(
 			'https://'
@@ -88,23 +75,15 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 		. 'feed_uid=' . (int)$x['feed_atom']['id']
 	); ?></id> 
 	<updated><?= gmdate('c'); ?></updated> 
-	<subtitle type="text"><?= to_xml(('Trade and Share - Want it? Get it! Have it? Share it! Don\'t want it? Trade it!')); ?></subtitle> 
+	<subtitle type="html"><?= to_xml(('Trade and Share - Want it? Get it! Have it? Share it! Don\'t want it? Trade it!')); ?></subtitle> 
 	<author> 
-		<name><?= to_xml(ltgt_replace_decode($x['feed_atom']['contact_name'] 
+		<name><?= to_xml(!empty($x['feed_atom']['contact_name']) 
 			? $x['feed_atom']['contact_name'] 
 			: $config['unabstracted_prefix'] . $x['feed_atom']['user_name']. $config['unabstracted_suffix']
-		)); ?></name><? /*
-		# What is the feed author's website? Also not needed for atom on thunderbird - 2013-03-22 vaskoiii
-		# uncomment if the website field is not displaying in thunderbird
-		<uri><?= to_html(
-				'https://'
-				. $_SERVER['HTTP_HOST'] 
-				. '/' . $x['feed_atom']['page_name'] . '/' 
-				. ($x['feed_atom']['query'] ? '?' . $x['feed_atom']['query'] : '') 
-		); ?></uri> */ ?> 
-	</author> <? # feed owner
+		); ?></name> 
+	</author><? # feed owner
 	foreach ($listing as $k1 => $v1) { ?> 
-		<entry>
+		<entry> 
 			<title type="html"><?
 				$style = array(); # hack
 				ob_start();
@@ -112,8 +91,6 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 				$s1 = strip_tags(ob_get_clean());
 				echo to_xml(
 					# no HTML in RSS title (Similar to email subject)
-					# but maybe we can with ATOM
-					# trim is important because of extra whitepsaces
 					trim($s1)
 				); 
 			?></title><?
@@ -155,13 +132,17 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 					# needs 2x trims for some reason
 					$s1 = get_listing_template_output($a1, $listing[$k1], $key, $translation, 'list', 'feed', 'author', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0]);
 					echo to_xml(html_entity_decode(trim(trim(strip_tags($s1)))));
-				 ?></name>
-				<email>@</email><? # hack for thunderbird so that it will display the from name correctly in at least 1 place ?> 
+				?></name><?
+				# hack for thunderbird so to display the from name correctly
+				# <email>@</email> ?> 
 			</author> 
 			<summary type="html"><?
 				ob_start();
 				print_listing_template($listing[$k1], $key, $translation, 'result', 'feed', 'summary', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0] );
 				$s1 = ob_get_clean();
+				$s1 = strip_tags($s1, '<a>');
+				# hack
+				$s1 = str_replace('style="color: ;" ', '', $s1);
 				echo to_xml($s1); ?> 
 			</summary> 
 			<updated><?= to_xml(
