@@ -773,8 +773,10 @@ function a_link_replace($t) {
 	// All in one shot!
 	//$t = preg_replace('/([a-z]+:[^:\s]+)(?!:)/i', '<a href="$1">$1</a>', $t);
 	//return $t;
-	$t = str_replace("<", "&lt;", $t);
-	$t = str_replace(">", "&gt;", $t);
+	# $t = str_replace("<", "&lt;", $t);
+	# $t = str_replace(">", "&gt;", $t);
+	# resulting output should be in html
+	$t = htmlentities($t);
 	$t = ' ' . $t . ' '; # needed!
 	$t = preg_replace('/ /', '  ', $t); # needed!
 	# Most generic check
