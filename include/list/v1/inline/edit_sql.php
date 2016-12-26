@@ -106,10 +106,10 @@ switch($type) {
 				name = ' . to_sql($action_content_1['feed_name']) . ',
 				active = 1,
 				user_id = ' . (int)$login_user_id . ',
+				page_id = ' . (int)$lookup['page_id'] . ',
+				query = ' . to_sql($content_2['feed_query']) . ',
 				dialect_id = ' . (int)$lookup['dialect_id'] . '
 				' . ($id ? '' : ', `key` = ' . to_sql($lookup['feed_key'])) . '
-				' . ($id ? '' : ', page_id = ' . (int)$lookup['page_id']) . '
-				' . ($id ? '' : ', query = ' . to_sql($content_2['feed_query'])) . '
 			' . ($id ? 'WHERE id = ' . (int)$id : '') . '
 		';
 	break;
