@@ -109,6 +109,9 @@ input, select, textarea {
 .parent_tag_path, .parent_tag_name {
 	color: #418783;
 	}
+.feed_query {
+	color: #800080;
+	}
 .dialect_name {
 	color: #cd3fd2;
 	}

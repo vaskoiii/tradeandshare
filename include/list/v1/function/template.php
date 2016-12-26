@@ -377,6 +377,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			ob_start(); ?><span class="uid"><?= tt('element', $s1 . '_uid', 'translation_name', $translation); ?>: <?= (int)$listing[ get_base_type($s1) . '_id']; ?></span><?
 			$grab .= ob_get_clean();
 		break;
+		case 'feed_query':
+			$grab .= '<span class="feed_query">';
+			if (!empty($listing['query']))
+				$grab .= to_html($listing['query']);
+			else
+				$grab .= tt('element', 'unspecified');
+			$grab .= '</span>';
+		break;
 		case 'ts_link':
 			$grab .= a_link_replace(
 				'https://' . $_SERVER['HTTP_HOST'] . '/'

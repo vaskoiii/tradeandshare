@@ -791,7 +791,14 @@ function lt_detail($type) {
 			);
 		break;
 		case 'feed':
-			$array = array('dialect_name', '_');
+			$array = array(
+				'page_name' => 'page_name', 
+				'page_name_spacer' => '_',
+				'feed_query' => 'feed_query', 
+				'query_name_spacer' => '_',
+				'dialect_name' => 'dialect_name',
+				'dialect_name_spacer' => '_',
+			);
 		break;
 		case 'feedback':
 			$array = array('incident_id', '_');
