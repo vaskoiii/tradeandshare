@@ -64,25 +64,25 @@ if ($x['preload']['focus'] == 'view')
 						<li>
 							<a
 								id="item_q_swap1"
-								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+								href="<?= to_html(ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0)); ?>"
 								onclick="javascript: if (document.getElementById('offer_q_box').style.display == 'block') more_toggle_swap('offer_q'); more_toggle_swap('item_q'); return false;"
 							><?= tt('page', 'item_list'); ?></a>
 							
 							<a
 								id="item_q_swap2" style="display: none; font-weight: bold;"
-								href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+								href="<?= to_html(ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0)); ?>"
 							><?= tt('page', 'item_list'); ?></a>
 							<span style="margin-left: -5px;">*</span>
 						</li>
 						<li>
 							<a
 								id="offer_q_swap1"
-								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+								href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 								onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
 							><?= tt('page', 'offer_list'); ?></a>
 							<a
 								id="offer_q_swap2" style="display: none; font-weight: bold;"
-								href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+								href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 							><?= tt('page', 'offer_list'); ?></a>
 							<span style="margin-left: -5px;">*</span>
 						</li><?
@@ -96,7 +96,7 @@ if ($x['preload']['focus'] == 'view')
 			case 'meritopic':
 			break;
 			default: ?> 
-				<? /* <li><a href="<?= ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?> 
+				<? /* <li><a href="<?= to_html(ffm('list_name=doc&list_type=sitemap&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', 'sitemap_doc'); ?></a>*</li> */ ?> 
 				<span class="spacer" style="margin: 0px;">&gt;&gt;</span> <a id="view_menu2_toggle" href="/sitemap_doc/" onclick="javascript: more_toggle('<?= to_html('view_menu2'); ?>'); return false;"/><?= tt('element', 'more'); ?></a>
 
 
@@ -105,10 +105,10 @@ if ($x['preload']['focus'] == 'view')
 <dl>
 	<dt><?= tt('page', 'new_area'); ?></dt>
 	<dd>
-		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'top_report'); ?></a>*
-		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=new&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'new_report'); ?></a>*
-		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'search_report'); ?></a>*
-		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= ffm('page=&list_name=report&list_type=member&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', 'member_report'); ?></a>*
+		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= to_html(ffm('page=&list_name=report&list_type=top&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', 'top_report'); ?></a>*
+		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= to_html(ffm('page=&list_name=report&list_type=new&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', 'new_report'); ?></a>*
+		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= to_html(ffm('page=&list_name=report&list_type=search&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', 'search_report'); ?></a>*
+		<span class="spacer"><?= $config['spacer']; ?></span><a href="<?= to_html(ffm('page=&list_name=report&list_type=member&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', 'member_report'); ?></a>*
 	</dd><?
 	foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 		switch ($v1['page_name']) {
@@ -125,7 +125,7 @@ if ($x['preload']['focus'] == 'view')
 			$e1 = explode('_', $v2['page_name']); ?> 
 			<nobr>
 				<span class="spacer"><?= $config['spacer'] ?></span>
-				<a href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+				<a href="<?= to_html(ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', $v2['page_name']); ?></a>*
 			</nobr><?
 		} }
 		switch ($v1['page_name']) {

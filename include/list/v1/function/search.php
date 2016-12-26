@@ -68,9 +68,9 @@ function print_keyword_box($toggle = 'asearch_box', $lock_only = false, $load = 
 			style="display: inline;" 
 			href="./<? # if javascript is turned off
 				if (get_gp('asearch_on') == 1) 
-					echo ffm('asearch_on=', 0);
+					echo to_html(ffm('asearch_on=', 0));
 				else
-					echo ffm('asearch_on=1', 0);
+					echo to_html(ffm('asearch_on=1', 0));
 			?>"	
 			onclick="javascript: more_toggle('<?= to_html($toggle); ?>'); return false;"
 		><?= (!get_gp('asearch_on') && (!$_SESSION['process']['failure'])) ? tt('element', 'more') : tt('element', 'less'); ?></a><?

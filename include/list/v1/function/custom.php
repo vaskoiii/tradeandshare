@@ -48,14 +48,14 @@ function print_go_back($name, $kind = null) {
 	global $x;
 	if ($_SESSION['login']['login_user_name']) {
 		if ($_SESSION['feature']['feature_lock'] == 1 && $x['page']['name'] == 'lock_set') { ?> 
-			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm(get_lock_query('preview%5B0%5D=&focus=&expand%5B0%5D='), -1); ?>"><?= 
+			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= to_html(ffm(get_lock_query('preview%5B0%5D=&focus=&expand%5B0%5D='), -1)); ?>"><?= 
 				!empty($kind)
 					? tt($kind, $name) 
 					: $name
 				;
 			?></a><?
 		} else { ?> 
-			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= ffm('preview%5B0%5D=&focus=&expand%5B0%5D=', -1); ?>"><?=
+			<a href="<?= str_replace('_edit', '_list', $x['..']); ?><?= to_html(ffm('preview%5B0%5D=&focus=&expand%5B0%5D=', -1)); ?>"><?=
 				!empty($kind)
 					? tt($kind, $name) 
 					: $name
@@ -286,7 +286,7 @@ function print_ts_focus($string, $load, & $x = null) {
 	$s2 = $s1 . '_' . $x['load']['list']['name'];
 	if (!empty($x['load']['view']['type'])) {
 		if ($b1 == 1) { ?> 
-			<a id="ts_focus" href="<?= ffm('page=&list_name=' . $x['load']['list']['name'] . '&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $s2); ?></a>*<?
+			<a id="ts_focus" href="<?= to_html(ffm('page=&list_name=' . $x['load']['list']['name'] . '&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', $s2); ?></a>*<?
 		}
 		else {
 			# could also just take you back to the initial page when clicking on the contact/user name
@@ -300,7 +300,7 @@ function print_ts_focus($string, $load, & $x = null) {
 					<a id="ts_focus" href="<?= $_SERVER['REDIRECT_URI']; ?>"><?= to_html($string); ?></a><?
 				break;
 				default: ?> 
-					<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0); ?>"><?= to_html($string); ?></a><?
+					<a id="ts_focus" href="<?= str_replace('_edit', '_list', $x['.']) . to_html(ffm('id=&action_id=&action_name=&action_type=&preview%5B0%5D=&expand%5B0%5D=', 0)); ?>"><?= to_html($string); ?></a><?
 				break;
 			}
 		}
@@ -839,8 +839,8 @@ function print_paging($current_page, $result_amount_total, $result_amount_per_pa
 			$last_page--;
 
 		if ($current_page && $current_page != 1) { ?> 
-			<li><a href="<?= ffm('page=1&expand%5B0%5D=', 0); ?>">|&lt;&lt;</a></li>
-			<li><a href="<?= ffm('page=' . (int)($current_page - 1) . '&expand%5B0%5D=', 0); ?>">&lt;&lt;</a></li><?
+			<li><a href="<?= to_html(ffm('page=1&expand%5B0%5D=', 0)); ?>">|&lt;&lt;</a></li>
+			<li><a href="<?= to_html(ffm('page=' . (int)($current_page - 1) . '&expand%5B0%5D=', 0)); ?>">&lt;&lt;</a></li><?
 		}
 		else { ?> 
 			<li><span class="spacer">|&lt;&lt;</span></li> 
@@ -850,8 +850,8 @@ function print_paging($current_page, $result_amount_total, $result_amount_per_pa
 		<li><span id="current_page"><?= (int)($current_page); ?></span></li><?
 
 		if ($current_page < $last_page && $last_page > 0) { ?> 
-			<li><a href="<?= ffm('page=' . (int)($current_page + 1) . '&expand%5B0%5D=', 0); ?>">&gt;&gt;</a></li>
-			<li><a href="<?= ffm('page=' . (int)$last_page . '&expand%5B0%5D=', 0); ?>">&gt;&gt;|</a></li><?
+			<li><a href="<?= to_html(ffm('page=' . (int)($current_page + 1) . '&expand%5B0%5D=', 0)); ?>">&gt;&gt;</a></li>
+			<li><a href="<?= to_html(ffm('page=' . (int)$last_page . '&expand%5B0%5D=', 0)); ?>">&gt;&gt;|</a></li><?
 		} 
 		else { ?> 
 			<li><span class="spacer">&gt;&gt;</span></li>

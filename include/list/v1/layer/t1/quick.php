@@ -35,7 +35,7 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 				$s1 = str_replace('_list', '', $v2['page_name']);
 				$s2 = '/' . $s1 . '_list/';
 				if (!empty($x['load']['view']['name']))
-					$s2 = ffm('page=&list_name=list&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0);
+					$s2 = to_html(ffm('page=&list_name=list&list_type=' . $s1 . '&focus=&expand%5B0%5D=', 0));
 
 				# todo dont let the action steal focus from quick
 				$b1 = 2;

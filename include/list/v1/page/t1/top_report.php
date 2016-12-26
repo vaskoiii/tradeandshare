@@ -80,9 +80,9 @@ print_keyword_box('search_report', 1); ?>
 	$s1 = '';
 	if ($x['name'] == '' || $x['name'] == 'main')
 		$s1 = 'top_report/'; ?> 
-	<li><a href="./<?= $s1 . ffm('list_datetime_upper_limit=', 0); ?>">|&lt;&lt;</a></li><?
+	<li><a href="./<?= $s1 . to_html(ffm('list_datetime_upper_limit=', 0)); ?>">|&lt;&lt;</a></li><?
 	if ($data['result']['result']['listing_key_count']) { ?> 
-		<li><a href="./<?= $s1 . ffm(get_lock_query('list_name=report&list_type=top&list_datetime_upper_limit=' . to_url($datetime_lower_limit)), 0); ?>"><?# tt('page', 'top_report'); ?> &gt;&gt;</a></li><?
+		<li><a href="./<?= $s1 . to_html(ffm(get_lock_query('list_name=report&list_type=top&list_datetime_upper_limit=' . to_url($datetime_lower_limit)), 0)); ?>"><?# tt('page', 'top_report'); ?> &gt;&gt;</a></li><?
 	} ?> 
 </ul>
 </div>

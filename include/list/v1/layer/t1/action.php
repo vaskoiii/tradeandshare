@@ -323,7 +323,7 @@ switch($k1) {
 				# no showing of a new form
 			break;
 			default: ?> 
-				<li><a href="./<?= ffm('id=&action_id=&action_tag_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
+				<li><a href="./<?= to_html(ffm('id=&action_id=&action_tag_id=&preview%5B0%5D=&expand%5B0%5D=action&focus=action', 0)); ?>"><?= tt('element', 'new_form'); ?></a>*</li><?
 			break;
 		}
 	}

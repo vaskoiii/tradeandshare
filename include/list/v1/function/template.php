@@ -414,8 +414,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'my_user_name': # feed only
 			if (!empty($x['feed_atom'])) {
 				$grab .= ($x['feed_atom']['contact_name'] 
-					? '<a href="' . $href_prepend . 'contact_view/' . ffm('list_name=&list_type=&lock_contact_id=' . (int)$x['feed_atom']['contact_id'] . $glue . $href_append, $ff_level) . '">' . $x['feed_atom']['contact_name'] . '</a>' 
-					: '<a href="' . $href_prepend . 'user_view/' . ffm('list_name=&list_type=&lock_user_id=' . (int)$x['feed_atom']['user_id'] . $glue . $href_append, $ff_level) . '">' . to_html($config['unabstracted_prefix'] . $x['feed_atom']['user_name'] . $config['unabstracted_suffix']) . '</a>'
+					? '<a href="' . $href_prepend . 'contact_view/' . to_html(ffm('list_name=&list_type=&lock_contact_id=' . (int)$x['feed_atom']['contact_id'] . $glue . $href_append, $ff_level)) . '">' . $x['feed_atom']['contact_name'] . '</a>' 
+					: '<a href="' . $href_prepend . 'user_view/' . to_html(ffm('list_name=&list_type=&lock_user_id=' . (int)$x['feed_atom']['user_id'] . $glue . $href_append, $ff_level)) . '">' . to_html($config['unabstracted_prefix'] . $x['feed_atom']['user_name'] . $config['unabstracted_suffix']) . '</a>'
 				);
 			}
 		break;
@@ -444,20 +444,20 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			}
 
 			if ($i1 == 1) {
-				$grab .= '<a href="' . $href_prepend . 'contact_view/' . ffm('list_name=&list_type='
+				$grab .= '<a href="' . $href_prepend . 'contact_view/' . to_html(ffm('list_name=&list_type='
 					.
 					((int)$key_contact[  $listing['contact_id']  ]['user_id']
 						?  '&lock_user_id=' . (int)$key_contact[  $listing['contact_id']  ]['user_id']
 						: '&lock_contact_id=' .  $listing['contact_id'] 
 					)
-				. $glue . $href_append, $ff_level)
+				. $glue . $href_append, $ff_level))
 				.  '"><span class="contact_name">'. to_html($listing['contact_name']) . '</span></a>';
 			}
 			if ($i3 == 1) {
 			if ($key_contact[ $listing['contact_id'] ]['user_id']) {
 			if ($key_contact[ $listing['contact_id'] ]['user_name']) {
 				$grab .= ' <a href="' . $href_prepend . 'user_view/' 
-					. ffm('list_name=&list_type=&lock_user_id=' . $key_contact[ $listing['contact_id'] ]['user_id']  . $glue . $href_append, $ff_level) 
+					. to_html(ffm('list_name=&list_type=&lock_user_id=' . $key_contact[ $listing['contact_id'] ]['user_id']  . $glue . $href_append, $ff_level)) 
 				. '"><span class="user_name">'
 					. to_html($config['unabstracted_prefix'] . $key_contact[ $listing['contact_id'] ]['user_name'] . $config['unabstracted_suffix']) 
 				. '</span></a>';
@@ -476,7 +476,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$i2 = 1;
 			if ($i1 == 1) {
 				$grab .= '<a ' . $s1  . ' href="' . $href_prepend . 'contact_view/'
-					. ffm('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level)
+					. to_html(ffm('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level))
 					. '"><span ' . $s2 . ' class="contact_name">'
 						. $key_user[ $listing['team_owner_user_id'] ]['contact_name']
 					. '</span></a>';
@@ -657,7 +657,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			ob_start(); ?> 
 			<span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></span><?
 			$grab .= ob_get_clean();
-			/* <a href="./location_view/<?= ffm('list_name=&list_type=&lock_location_id=' . (int)$listing['location_id'], 1); ?>"><span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></a></span><?  */
+			/* <a href="./location_view/<?= to_html(ffm('list_name=&list_type=&lock_location_id=' . (int)$listing['location_id'], 1)); ?>"><span class="<?= $v1; ?>"><?= to_html($listing[$v1]); ?></a></span><?  */
 		break;
 		case 'channel_id_name':
 			$grab .= '<span class="' . $v1 . '">'
@@ -838,7 +838,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 							$s2 = $x['.'] . $s1 . '_edit/';
 						break; 
 					}
-					$grab .= $spacer . '<a ' . $href_rss_start . $s2 . ffm(http_build_query($a1), 0) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
+					$grab .= $spacer . '<a ' . $href_rss_start . $s2 . to_html(ffm(http_build_query($a1), 0)) . '"><span class="' . $v1 . '">' . tt('element', 'edit', 'translation_name', $translation) . '</span></a>';
 				}
 			break;
 		} }
@@ -917,14 +917,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'incident_view':
 		case 'meritopic_view':
 			$s1 = str_replace('_view', '', $v1);
-				$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id'] . '&action_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
+				$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . to_html(ffm('list_name=&list_type=&' . $s1 . '_id=' . (int)$listing[$s1 . '_id'] . '&action_' . $s1 . '_id=' . (int)$listing[$s1 . '_id'])) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
 		break;
 		case 'user_view':
 		case 'team_view':
 		case 'group_view':
 		case 'location_view':
 			$s1 = str_replace('_view', '', $v1);
-			$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . ffm('list_name=&list_type=&lock_' . $s1 . '_id=' . (int)$listing[$s1 . '_id']) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
+			$grab .= $spacer . '<a ' . $href_rss_start . $s1 . '_view/' . to_html(ffm('list_name=&list_type=&lock_' . $s1 . '_id=' . (int)$listing[$s1 . '_id'])) . '"><span class="' . $s1 . '_name">' . tt('element', 'view') . '</span></a>';
 		break;
 		case 'incident_id':
 			$grab .= '<span class="' . $v1 . '">' .  tt('element', $v1, 'translation_name', $translation) . '</span>: <span class="' . $v1 . '">' . (int)$listing['incident_id'] . '</span>';

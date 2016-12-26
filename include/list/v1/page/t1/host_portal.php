@@ -144,14 +144,14 @@ else {
 				<a
 					id="item_q_swap1"
 					class="todohack"
-					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+					href="<?= to_html(ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0)); ?>"
 					onclick="javascript: if (document.getElementById('offer_q_box').style.display == 'block') more_toggle_swap('offer_q'); more_toggle_swap('item_q'); return false;"
 				><?= tt('page', 'item_list'); ?></a>
 				<a
 					id="item_q_swap2"
 					class="todohack"
 					style="display: none; font-weight: bold;"
-					href="<?= ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0); ?>"
+					href="<?= to_html(ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0)); ?>"
 				><?= tt('page', 'item_list'); ?></a>
 				*
 			</li>
@@ -159,14 +159,14 @@ else {
 				<a
 					id="offer_q_swap1"
 					class="todohack"
-					href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+					href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 					onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
 				><?= tt('page', 'offer_list'); ?></a>
 				<a
 					id="offer_q_swap2"
 					class="todohack"
 					style="display: none; font-weight: bold;"
-					href="<?= ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0); ?>"
+					href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 				><?= tt('page', 'offer_list'); ?></a>
 				*
 			</li><?
@@ -195,7 +195,7 @@ else {
 					<dd><?
 						foreach ($a1 as $k1 => $v1) { ?> 
 							<span class="spacer"><?= $config['spacer']; ?></span>
-							<a class="todohack" href="<?= ffm('page=&list_name=report&focus=&expand%5B0%5D=&list_type=' . $v1, 0); ?>"><?= tt('page', $v1 . '_report'); ?></a>*<?
+							<a class="todohack" href="<?= to_html(ffm('page=&list_name=report&focus=&expand%5B0%5D=&list_type=' . $v1, 0)); ?>"><?= tt('page', $v1 . '_report'); ?></a>*<?
 						} ?> 
 					</dd><?
 					foreach ($data['new_report']['page_id'] as $k1 => $v1) {
@@ -211,7 +211,7 @@ else {
 										$e1 = explode('_', $v2['page_name']); ?> 
 										<nobr>
 											<span class="spacer"><?= $config['spacer'] ?></span>
-											<a class="todohack" href="<?= ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0); ?>"><?= tt('page', $v2['page_name']); ?></a>*
+											<a class="todohack" href="<?= to_html(ffm('page=&list_name=' . $e1['1'] . '&list_type=' . $e1[0] . '&focus=&expand%5B0%5D=', 0)); ?>"><?= tt('page', $v2['page_name']); ?></a>*
 										</nobr><?
 									} } ?> 
 								</dd><?

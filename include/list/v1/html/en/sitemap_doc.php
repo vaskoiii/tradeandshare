@@ -33,9 +33,9 @@ function print_sitemap_link($page_name) {
 
 	if ($x['load']['view']['type']) { 
 		$e1 = explode('_', $page_name); ?> 
-		<dt><a href="./<?= ffm('list_name=' . $e1[1] . '&list_type=' . $e1[0], 0); ?>"><?= tt('page', $page_name); ?></a>*</dt><?
+		<dt><a href="./<?= to_html(ffm('list_name=' . $e1[1] . '&list_type=' . $e1[0], 0)); ?>"><?= tt('page', $page_name); ?></a>*</dt><?
 	} else { ?> 
-		<dt><a href="./<?= $page_name; ?>/<?= ffm('', 0); ?>"><?= tt('page', $page_name); ?></a></dt><?
+		<dt><a href="./<?= $page_name; ?>/<?= to_html(ffm('', 0)); ?>"><?= tt('page', $page_name); ?></a></dt><?
 	}
 }
 

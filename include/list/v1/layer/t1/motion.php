@@ -42,10 +42,10 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	switch($x['load']['motion']['type']) {
 		case 'user':
 			if (!$key['user_id']['result'][   $data['view']['result']['listing'][0]['user_id']   ]['contact_id']) { ?> 
-				<a href="./<?= ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action&action_user_id=' . (int)get_gp('lock_user_id') . '&lock_user_id=' . (int)get_gp('lock_user_id'), 0); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
+				<a href="./<?= to_html(ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action&action_user_id=' . (int)get_gp('lock_user_id') . '&lock_user_id=' . (int)get_gp('lock_user_id'), 0)); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
 			}
 			else { ?> 
-				<a href="./<?= ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action', 0); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
+				<a href="./<?= to_html(ffm('list_name=list&list_type=contact&focus=&expand%5B0%5D=action', 0)); ?>"><?= tt('page', 'contact_list'); ?></a>*<?
 			}
 		break;
 		default:
