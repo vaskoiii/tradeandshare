@@ -523,18 +523,18 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($key_user[ $listing[str_replace('_name', '_id', $v1)] ]['contact_name']) {
 				$s1 = str_replace('_name', '_id', $v1);
 				$grab .= '<a style="color: ' . (isset($color['link']) ? $color['link'] : '') .';" href="' . $href_prepend . 'contact_view/' 
-					. ffm('list_name=report&list_type=top' .
+					. to_html(ffm('list_name=report&list_type=top' .
 						((int)$listing[$s1]
 							?  '&lock_user_id=' . (int)$listing[$s1]
 							: '&lock_contact_id=' . (int)$key_user[ $listing[$s1] ]['contact_id']
-					)  . $glue . $href_append, $ff_level)
+					)  . $glue . $href_append, $ff_level))
 					. '"><span style="color: ' . (isset($color['contact_name']) ? $color['contact_name'] : '') . ';" class="contact_name">'
 						. $key_user[ $listing[$s1] ]['contact_name'] 
 					. '</span></a>';
 			} }
 			if ($i3 == 1) {
 				$grab .= ' <a style="color: ' . (isset($color['link']) ? $color['link'] : '') .';" href="' . $href_prepend . 'user_view/' 
-					. ffm('list_name=report&list_type=top&lock_user_id=' . to_url($listing[str_replace('_name', '_id', $v1)]) . $glue . $href_append, $ff_level) 
+					. to_html(ffm('list_name=report&list_type=top&lock_user_id=' . to_url($listing[str_replace('_name', '_id', $v1)]) . $glue . $href_append, $ff_level)) 
 					. '"><span style="color: ' . (isset($color['user_name']) ? $color['user_name'] : '') . ';" class="' . $v1 . '">' 
 						. to_html($config['unabstracted_prefix'] . $listing[$v1] . $config['unabstracted_suffix']) 
 					. '</span></a>';
