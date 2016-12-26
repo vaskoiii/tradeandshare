@@ -145,7 +145,7 @@ function ff($string = '', $ff = 1) {
 	global $x;
 	$destination_level = $ff + $x['level'];
 	$string = trim($string, '?&');
-	return htmlentities(get_q_query($destination_level, $string));
+	return get_q_query($destination_level, $string);
 }
 
 # Fast Forward Modification
@@ -156,5 +156,5 @@ function ffm($string, $ff = 1) {
 	$string = trim($string, '?&');
 	$array = array();
 	parse_str($string, $array);
-	return htmlentities(get_q_query($destination_level, get_q_query_modified($destination_level, $array)));
+	return get_q_query($destination_level, get_q_query_modified($destination_level, $array));
 }

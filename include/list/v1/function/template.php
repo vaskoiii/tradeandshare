@@ -386,8 +386,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'way_name':
 			# =) and (= instead of &gt;&gt; and &lt;&lt;
-			# for increased compatibility and consistentcy and happiness
-			# ie. avoid htmlentities in atom feed titles
+			# for increased compatibility and smaller size and more happiness
 			$s1 = 'style="color: ' . (isset($color['direction_name']) ? $color['direction_name'] : '') . ';"';
 			if ($listing['source_user_id'] == $login_user_id)
 				$grab .= '<span ' . $s1 . ' class="direction_name">=)</span>';
