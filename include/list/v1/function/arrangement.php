@@ -389,6 +389,7 @@ function get_action_content_1($type = false, $name = false) {
 				case 'feed':
 					$array = array(
 						'feed_name' => '',
+						'page_name' => '',
 					);
 				break;
 				case 'team':
@@ -723,7 +724,6 @@ function get_action_content_2($type, $name = false) {
 			break;
 			case 'feed':
 				$array = array(
-					'page_name' => '',
 					'feed_query' => '',
 					'dialect_name' => '',
 				);
