@@ -20,19 +20,23 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: ATOM 403
 # todo: add translations (currently only in english)
-# todo: make to_xml check for the pattern ]]> or whatever the terminating thing of cdata is.
 
 echo '<?xml version="1.0" encoding="utf-8"?>' . "\n";
-echo '<?xml-stylesheet type="text/css" href="/text_style/" ?>' . "\n";
 ?><feed xmlns="http://www.w3.org/2005/Atom">
-	<title><?= to_xml(('Trade and Share')); ?></title>
-	<link href="<?= 'https://' . $_SERVER['HTTP_HOST']; ?>" />
-	<subtitle><?= to_xml(('Want it? Get it! Have it? Share it! Don\'t want it? Trade it!')); ?></subtitle>
+	<id>https://<?= $_SERVER['HTTP_HOST']; ?>/feed_list/</id>
+	<link href="<?= 'https://' . $_SERVER['HTTP_HOST']; ?>/feed_list/" />
+	<link href="https://<?= $_SERVER['HTTP_HOST']; ?>/feed_atom/?<?= to_html($_SERVER['REDIRECT_QUERY_STRING']); ?>" rel="self" /> 
+	<updated><?= gmdate('c'); ?></updated>
+	<title>Trade and Share</title>
+	<subtitle>Want it? Get it! Have it? Share it! Don't want it? Trade it!</subtitle>
 	<entry>
-		<title><?= to_xml(('Access Denied!')); ?></title>
-		<link href="<?= 'https://' . $_SERVER['HTTP_HOST']; ?>" />
-		<author><name>TS</name></author>
-		<summary type="html"><?= to_xml(('Error invalid feed.')); ?></summary>
-		<updated><?= to_xml((date('Y-m-d'))); ?></updated>
+		<id><?= 'https://' . $_SERVER['HTTP_HOST']; ?>/feed_atom/?updated=<?= urlencode(gmdate('c')); ?></id>
+		<updated><?= gmdate('c'); ?></updated>
+		<title>Access Denied!</title>
+		<link href="<?= 'https://' . $_SERVER['HTTP_HOST']; ?>/feed_list/" />
+		<author>
+			<name>TS</name>
+		</author>
+		<content>Error invalid feed.</content>
 	</entry> 
 </feed>
