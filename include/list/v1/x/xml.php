@@ -20,7 +20,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 header('HTTP/1.0 200 Found');
 header('Content-type: text/xml');
-header('Content-Type: application/xml; charset=ISO-8859-1');
 
 include('list/v1/xml/' . $x['page']['name'] . '.php');
 include('list/v1/xml/t1/' . $x['page']['name'] . '.php');

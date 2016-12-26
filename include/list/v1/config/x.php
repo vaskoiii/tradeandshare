@@ -94,7 +94,6 @@ switch ($x['page']['name']) {
 			$_SESSION['dialect']['dialect_id'] = '2'; # English
 			header('HTTP/1.0 200 Found');
 			header('Content-type: text/xml');
-			header('Content-Type: application/xml; charset=ISO-8859-1'); 
 			include('list/v1/xml/t1/denied_atom.php');
 			exit;
 		}
