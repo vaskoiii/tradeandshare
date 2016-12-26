@@ -230,6 +230,20 @@ function from_html($f) {
 		return $f;
 }
 
+# double escaped & and < hurt readability
+function to_xml_atom_html($s1) {
+	$a1 = array(
+		'/&/',
+		'/</',
+	);
+	$a2 = array(
+		'&amp;',
+		'&lt;',
+	);
+	return preg_replace($a1, $a2, $s1);
+}
+
+# atom feed readers may lack support for type="xhtml" syntax
 function to_xml_atom_xhtml($s1, $i1 = 0) {
 	$s2 = '';
 	while ($i1 > 0 && $i1 < 9) {

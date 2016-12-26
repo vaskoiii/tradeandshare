@@ -125,7 +125,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 					echo strip_tags($s1);
 				?></name>
 			</author> 
-			<content type="xhtml"><?
+			<content type="html"><?
 				ob_start();
 				print_listing_template($listing[$k1], $key, $translation, 'result', 'feed', 'summary', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0] );
 				$s1 = ob_get_clean();
@@ -133,7 +133,15 @@ echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 				# hack
 				$s1 = str_replace('style="color: ;" ', '', $s1);
 				$s1 = trim($s1);
-				echo PHP_EOL . to_xml_atom_xhtml($s1, 4); ?> 
+				echo PHP_EOL;
+				# https://tools.ietf.org/html/rfc4287
+				# (best option for rendering links?)
+				# type="html" with CDATA
+				echo to_xml($s1);
+				# type="html" without CDATA and and double escaped & and <
+				# echo to_xml_atom_html($s1);
+				# type="xhtml" (preferential option if it had more client support)
+				# echo to_xml_atom_xhtml($s1, 4); ?> 
 			</content> 
 			<updated><?= gmdate('c', strtotime($listing[$k1]['modified'])); ?></updated> 
 		</entry><?
