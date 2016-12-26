@@ -797,7 +797,7 @@ function lt_detail($type) {
 				'feed_query' => 'feed_query', 
 				'query_name_spacer' => '_',
 				'dialect_name' => 'dialect_name',
-				'dialect_name_spacer' => '_',
+				'detail_endline' => '.',
 			);
 		break;
 		case 'feedback':
