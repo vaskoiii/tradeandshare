@@ -230,6 +230,19 @@ function from_html($f) {
 		return $f;
 }
 
+function to_xml_atom_xhtml($s1, $i1 = 0) {
+	$s2 = '';
+	while ($i1 > 0 && $i1 < 9) {
+		$s2 .= "\t";
+		$i1--;
+	}
+	return $s2 . '<div xmlns="http://www.w3.org/1999/xhtml">
+		' . $s2 . $s1 . PHP_EOL .
+	$s2 . '</div>';
+}
+
+# CDATA may not play well with the atom specification:
+# https://tools.ietf.org/html/rfc4287
 function to_xml($t) {
 	return '<![CDATA[' . trim($t) . ']]>';
 }

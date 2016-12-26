@@ -24,25 +24,19 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # http://validator.w3.org/feed/
 
 # Notes:
-# Enclose HTML Stuff inside: <![CDATA[]]>
-# using an extra space at the line endings for better formatting when viewing source
+# using an extra space at the php line endings for better formatting when viewing source
+# type="xhtml" is not as widely supported as type="text" (validator gives a warning)
+# but using type="xhtml" where possible as it has better view-source readability
+# use htmlentities for atom feed type="text" tags:
+# https://tools.ietf.org/html/rfc4287#page-8
 
-echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
-/*
-# xml style possible?
-echo '<?xml-stylesheet type="text/css" href="/text_style/" ?> ' . PHP_EOL;
-*/
-
-$listing = & $data['result']['result']['listing'];
-
-# Mozilla Thunderbird :
-# <author><name> => from.name
-# <author><email> => from.email (faked)
+# Mozilla Thunderbird:
+# <author> => from
 # <link> => website
 # <title> => subject
-# <summary> => body
-# to_xml() with thunderbird seems to want to enclose everything between < and > (it is omitted for now)
-# https://bugzilla.mozilla.org/show_bug.cgi?id=679195
+# <content> => body
+
+$listing = & $data['result']['result']['listing'];
 
 $x['feed_atom']['contact_name'] = get_sender_contact_name($x['feed_atom']['user_id']);
 $x['feed_atom']['contact_id'] = get_db_single_value('
@@ -55,9 +49,10 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 		c.id = lcu.contact_id AND
 		c.user_id = ' . (int)$x['feed_atom']['user_id'] . ' AND
 		c.name = ' . to_sql($x['feed_atom']['contact_name'])
-, 0); ?> 
+, 0);
+echo '<?xml version="1.0" encoding="utf-8"?>'; ?> 
 <feed xmlns="http://www.w3.org/2005/Atom"> 
-	<title type="html"><?= to_xml($x['feed_atom']['name']); ?></title><?
+	<title><?= to_html($x['feed_atom']['name']); ?></title><?
 	# is either <link> needed here? 2016-12-24 vaskoiii ?> 
 	<link href="<?= 
 		to_html(
@@ -75,24 +70,21 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 		. 'feed_uid=' . (int)$x['feed_atom']['id']
 	); ?></id> 
 	<updated><?= gmdate('c'); ?></updated> 
-	<subtitle type="html"><?= to_xml(('Trade and Share - Want it? Get it! Have it? Share it! Don\'t want it? Trade it!')); ?></subtitle> 
+	<subtitle>Trade and Share - Want it? Get it! Have it? Share it! Don't want it? Trade it!</subtitle> 
 	<author> 
-		<name><?= to_xml(!empty($x['feed_atom']['contact_name']) 
+		<name><?= to_html(!empty($x['feed_atom']['contact_name']) 
 			? $x['feed_atom']['contact_name'] 
 			: $config['unabstracted_prefix'] . $x['feed_atom']['user_name']. $config['unabstracted_suffix']
 		); ?></name> 
 	</author><? # feed owner
 	foreach ($listing as $k1 => $v1) { ?> 
 		<entry> 
-			<title type="html"><?
+			<title><?
 				$style = array(); # hack
 				ob_start();
 				print_listing_template($listing[$k1], $key, $translation, 'result', 'feed', 'title', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0] ); 
 				$s1 = strip_tags(ob_get_clean());
-				echo to_xml(
-					# no HTML in RSS title (Similar to email subject)
-					trim($s1)
-				); 
+				echo trim($s1); 
 			?></title><?
 			# function call to get correct variable? 2013-03-22 vaskoiii
 			$s1;
@@ -129,25 +121,21 @@ $x['feed_atom']['contact_id'] = get_db_single_value('
 							break;
 						}
 					}
-					# needs 2x trims for some reason
 					$s1 = get_listing_template_output($a1, $listing[$k1], $key, $translation, 'list', 'feed', 'author', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0]);
-					echo to_xml(html_entity_decode(trim(trim(strip_tags($s1)))));
-				?></name><?
-				# hack for thunderbird so to display the from name correctly
-				# <email>@</email> ?> 
+					echo strip_tags($s1);
+				?></name>
 			</author> 
-			<content type="html"><?
+			<content type="xhtml"><?
 				ob_start();
 				print_listing_template($listing[$k1], $key, $translation, 'result', 'feed', 'summary', $_SESSION['login']['login_user_id'], $style, $x['feed_atom']['part'][0] );
 				$s1 = ob_get_clean();
 				$s1 = strip_tags($s1, '<a>');
 				# hack
 				$s1 = str_replace('style="color: ;" ', '', $s1);
-				echo to_xml($s1); ?>
+				$s1 = trim($s1);
+				echo PHP_EOL . to_xml_atom_xhtml($s1, 4); ?> 
 			</content> 
-			<updated><?= to_xml(
-				gmdate('c', strtotime($listing[$k1]['modified']))
-			); ?></updated> 
+			<updated><?= gmdate('c', strtotime($listing[$k1]['modified'])); ?></updated> 
 		</entry><?
 	} ?> 
 </feed><?
