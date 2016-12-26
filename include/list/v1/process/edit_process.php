@@ -315,6 +315,7 @@ switch($type) {
 		}
 	break;
 	case 'feed':
+		if (!str_match('_list', $action_content_1['page_name']))
 		if (!str_match('_list', $action_content_2['page_name']))
 			$message = tt('element', 'error') . ' : ' . tt('element', 'invalid') . ' : ' . tt('element', 'page_name');
 		if (get_db_single_value('
