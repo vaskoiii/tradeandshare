@@ -77,7 +77,7 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 						<span id="quick_<?= to_html($s1); ?>_box">
 						<form name="edit_process" action="/index.php" method="POST">
 							<input type="hidden" name ="x" value="<?= to_html($x['.']); ?>edit_process/" />
-							<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+							<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 							<input type="hidden" name="load" value="quick" />
 							<input type="hidden" name="type" value="<?= $s1; ?>" />
 

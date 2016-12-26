@@ -31,7 +31,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="content">
 	<form name="form_search" action="/index.php" method="POST">
 		<input type="hidden" name="x" value="<?= to_html($x['.']); ?>search_process/" />
-		<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+		<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 		<input type="hidden" name="load" value="list" />
 		<input type="hidden" name="type" value="<?= $x['load']['list']['type']; ?>" />
 		<input type="hidden" name="id" value="<?= (int)$x['load']['list']['id']; ?>" /><?

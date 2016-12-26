@@ -114,7 +114,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 		<li>2. Get Provider SMS gateway (domain name) ie) [txt.att.net] - See: <a href="http://www.wikihow.com/Text-Message-Online#Email_to_SMS_Gateways">http://www.wikihow.com/Text-Message-Online#Email_to_SMS_Gateways</a></li>
 		<li>3. Test your mobile phone's email (to SMS) address. ie) [1234567890@txt.att.net]</li>
 	</ul>
-	<p>Once you have your mobile phones email address, go to your profile at <a href="./profile_edit/<?= ff(); ?>"><?= tt('page', 'profile_edit'); ?></a> and from there you can update your email address and make sure to turn on <?= tt('element', 'feature_minnotify'); ?>.</p>
+	<p>Once you have your mobile phones email address, go to your profile at <a href="./profile_edit/<?= to_html(ff()); ?>"><?= tt('page', 'profile_edit'); ?></a> and from there you can update your email address and make sure to turn on <?= tt('element', 'feature_minnotify'); ?>.</p>
 	<p>Please note that TS only allows you to use one email address for notifications so please choose what is best for you.</p>
 </div>
 
@@ -142,7 +142,7 @@ do_translation($key, $translation, $_SESSION['dialect']['dialect_id'], $_SESSION
 <div class="doc_box">
 	<h3>How do I add something on TS?</h3>
 	<p>Just click on the GIANT + on main page.</p>
-	<p>Or <a href="./item_edit/<?= ff(); ?>">add stuff here</a>.</p>
+	<p>Or <a href="./item_edit/<?= to_html(ff()); ?>">add stuff here</a>.</p>
 	<p>From there just fill out the form and click <?= tt('element', 'add'); ?>.</p>
 	<p>Once again you will see a preview of your submission on the following page when you have completed adding an item successfully.</p>
 </div>

@@ -34,13 +34,13 @@ include('list/v1/inline/t1/test.php'); # despite the name test.php launcher will
 	<p id="topper"><?
 		if (isset($_SESSION['login']['login_user_id'])) { ?> 
 			<?= $_SESSION['login']['login_user_name'] . $config['spacer']; ?> 
-			<a href="login_unset_process/<?= ff(''); ?>"><?= tt('element', 'unset_login'); ?></a>
-			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a>
+			<a href="login_unset_process/<?= to_html(ff('')); ?>"><?= tt('element', 'unset_login'); ?></a>
+			| <a href="config_report/<?= to_html(ff('')); ?>"><?= tt('page', 'config_report'); ?></a>
 			| <a href="/manager/"><?= tt('page', 'manager'); ?></a>
 			<span style="float: right;"><?= nod() . number_format((float)$_SESSION['login']['accounting_value_sum'], 2); ?></span><?
 		} else { ?> 
-			<a href="login_set/<?= ff(); ?>"><?= tt('element', 'set_login'); ?></a>
-			| <a href="config_report/<?= ff(''); ?>"><?= tt('page', 'config_report'); ?></a><?
+			<a href="login_set/<?= to_html(ff()); ?>"><?= tt('element', 'set_login'); ?></a>
+			| <a href="config_report/<?= to_html(ff('')); ?>"><?= tt('page', 'config_report'); ?></a><?
 		} ?> 
 	</p><?
 	if ($_SESSION['feature']['feature_lock'] == 1) { ?> 
@@ -73,7 +73,7 @@ if ($_SESSION['login']['login_user_id']) { ?>
 			</div>
 			<form id="main_search" name="ms" action="/index.php" method="POST">
 				<input type="hidden" name="x" value="/item_list/search_process/" />
-				<input type="hidden" name="q" value="<?= ff(); ?>" />
+				<input type="hidden" name="q" value="<?= to_html(ff()); ?>" />
 				<input type="hidden" name="load" value="list" />
 				<input type="hidden" name="type" value="item" />
 				<div class="main_keyword_box">
@@ -107,7 +107,7 @@ if ($_SESSION['login']['login_user_id']) { ?>
 				<? # no need to return to the main page ?> 
 				<form id="main_search" name="me" action="/index.php" method="POST">
 					<input name="x" value="/item_edit/edit_process/" type="hidden" />
-					<input name="q" value="<?= ff(); ?>" type="hidden" />
+					<input name="q" value="<?= to_html(ff()); ?>" type="hidden" />
 					<input name="load" value="action" type="hidden" />
 					<input name="type" value="item" type="hidden" /><?
 					$s1 = 'item';
@@ -132,10 +132,10 @@ if ($_SESSION['login']['login_user_id']) { ?>
 		<div class="splash_box">
 			<div class="menu_2">
 				<ul>
-					<li><a href="top_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'top_report'); ?></a></li>
-					<li><a href="new_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'new_report'); ?></a></li>
-					<li><a href="search_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'search_report'); ?></a></li>
-					<li><a href="member_report/<?= ff(get_lock_query()); ?>"><?= tt('page', 'member_report'); ?></a></li>
+					<li><a href="top_report/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', 'top_report'); ?></a></li>
+					<li><a href="new_report/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', 'new_report'); ?></a></li>
+					<li><a href="search_report/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', 'search_report'); ?></a></li>
+					<li><a href="member_report/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', 'member_report'); ?></a></li>
 				</ul>
 			</div>
 		</div>
@@ -160,12 +160,12 @@ else { ?>
 		<div class="menu_2">
 			<center>
 			<ul>
-				<li><a href="download_doc/<?= ff(); ?>"><?= tt('page', 'download_doc'); ?></a></li>
-				<li><a href="about_doc/<?= ff(); ?>"><?= tt('page', 'about_doc'); ?></a></li>
-				<li><a href="faq_doc/<?= ff(); ?>"><?= tt('page', 'faq_doc'); ?></a></li>
-				<li><a href="sitemap_doc/<?= ff(); ?>"><?= tt('page', 'sitemap_doc'); ?></a></li>
-				<li><a href="disclaimer_doc/<?= ff(); ?>"><?= tt('page', 'disclaimer_doc'); ?></a></li>
-				<li><a href="donate_doc/<?= ff(); ?>"><?= tt('page', 'donate_doc'); ?></a></li>
+				<li><a href="download_doc/<?= to_html(ff()); ?>"><?= tt('page', 'download_doc'); ?></a></li>
+				<li><a href="about_doc/<?= to_html(ff()); ?>"><?= tt('page', 'about_doc'); ?></a></li>
+				<li><a href="faq_doc/<?= to_html(ff()); ?>"><?= tt('page', 'faq_doc'); ?></a></li>
+				<li><a href="sitemap_doc/<?= to_html(ff()); ?>"><?= tt('page', 'sitemap_doc'); ?></a></li>
+				<li><a href="disclaimer_doc/<?= to_html(ff()); ?>"><?= tt('page', 'disclaimer_doc'); ?></a></li>
+				<li><a href="donate_doc/<?= to_html(ff()); ?>"><?= tt('page', 'donate_doc'); ?></a></li>
 				
 			</ul>
 			</center>

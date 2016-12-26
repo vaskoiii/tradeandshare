@@ -74,7 +74,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	</div>
 	<div class="menu_2">
 		<ul>
-			<li><a href="login_recover/<?= ff(); ?>"><?= tt('page', 'login_recover'); ?></a></li>
+			<li><a href="login_recover/<?= to_html(ff()); ?>"><?= tt('page', 'login_recover'); ?></a></li>
 		</ul>
 	</div>
 </form>

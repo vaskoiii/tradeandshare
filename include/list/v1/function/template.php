@@ -240,22 +240,22 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'judge':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $spacer . '<a href="vote_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="judge">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="vote_list/' . to_html(ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action')) . '"><span class="judge">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'import':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $spacer . '<a href="item_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="import">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="item_list/' . to_html(ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action')) . '"><span class="import">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'digest':
 			switch($type) {
 				case 'cycle':
-					$grab .= $spacer . '<a href="cycle_report/' . ff('cycle_id=' . $listing['cycle_id']) . '"><span class="digest">' . tt('element', $k1) . '</span></a>';
+					$grab .= $spacer . '<a href="cycle_report/' . to_html(ff('cycle_id=' . $listing['cycle_id'])) . '"><span class="digest">' . tt('element', $k1) . '</span></a>';
 				break;
 			}
 		break;
 		case 'export':
 			if ($type == 'transfer' || $type == 'item' || $type == 'vote')
-				$grab .= $spacer . '<a href="transfer_list/' . ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action') . '"><span class="export">' . tt('element', $k1) . '</span></a>';
+				$grab .= $spacer . '<a href="transfer_list/' . to_html(ff('action_tag_id=' . $listing['tag_id'] . '&expand[0]=action&focus=action')) . '"><span class="export">' . tt('element', $k1) . '</span></a>';
 		break;
 		case 'like':
 		case 'dislike':
@@ -423,7 +423,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# doesnt make sense for:
 			# contact_list - possible repeat {add_contact} - {add_contact}
 			# feed_list - cant add feeds like this
-			$grab .=  '<a href="' . $href_prepend . $type . '_edit/' . ff($href_append, $ff_level) . '">' . tt('element','add_' . $type, 'translation_name', $translation ) . '</a>';
+			$grab .=  '<a href="' . $href_prepend . $type . '_edit/' . to_html(ff($href_append, $ff_level)) . '">' . tt('element','add_' . $type, 'translation_name', $translation ) . '</a>';
 		break;
 		case 'contact_name':
 			$i1 = 2; # print contact (do href mod)
@@ -483,7 +483,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			}
 			if ($i2 == 1) {
 				$grab .= ' <a ' . $s1 .  ' href="' . $href_prepend . 'user_view/'
-					. ff('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level)
+					. to_html(ff('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level))
 					. '"><span ' . $s3 . ' class="user_name">'
 						. to_html($config['unabstracted_prefix'] . $key_user[ $listing['team_owner_user_id'] ]['user_name'] . $config['unabstracted_suffix'])
 					. '</span></a>';
@@ -544,7 +544,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($key_contact[ $listing['contact_id'] ]['user_id'] &&
 				$key_contact[ $listing['contact_id'] ]['user_name']
 			)
-				$grab .= '<a href="' . $href_prepend . 'offer_edit/' . ff('user_id=' . (int)$key_contact[ $listing['contact_id'] ]['user_id'] . $glue . $href_append, $ff_level) . '"><span class="user_name">' . tt('element', 'reply', 'translation_name', $translation) . '</span></a>';
+				$grab .= '<a href="' . $href_prepend . 'offer_edit/' . to_html(ff('user_id=' . (int)$key_contact[ $listing['contact_id'] ]['user_id'] . $glue . $href_append, $ff_level)) . '"><span class="user_name">' . tt('element', 'reply', 'translation_name', $translation) . '</span></a>';
 		break;
 		case 'parent_tag_name':
 		case 'phase_name':
@@ -881,7 +881,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'feed_link':
 			if ($listing['user_id'] == $login_user_id)
-				$grab .= $spacer . '<a href="' . $href_prepend . 'feed_recover/' . ff('id=' . (int)$listing['feed_id'] . $glue . $href_append, $ff_level) . '"><span class="feed_recover">' . tt('element', 'recover') . '</span></a>';
+				$grab .= $spacer . '<a href="' . $href_prepend . 'feed_recover/' . to_html(ff('id=' . (int)$listing['feed_id'] . $glue . $href_append, $ff_level)) . '"><span class="feed_recover">' . tt('element', 'recover') . '</span></a>';
 		break;
 		case 'feed_link_copyable':
 			# onclick intended to prevent unintentional logging to browser history

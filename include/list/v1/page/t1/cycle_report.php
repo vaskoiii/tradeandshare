@@ -91,7 +91,7 @@ foreach ($channel_list as $kc1 => $vc1) {
 		</li>
 		<li>Average Like Weight: <?= $channel['computed_weight']['aggregate']['info']['average']; ?></li>
 		<?/*<li>
-			<a href="cycle_list/<?= ff('channel_parent_id=' . (int)$kc1); ?>">View All Cycles</a>*
+			<a href="cycle_list/<?= to_html(ff('channel_parent_id=' . (int)$kc1)); ?>">View All Cycles</a>*
 		</li>*/?>
 	</ul>
 	<p style="margin-top: 0px;">
@@ -225,8 +225,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<li>&lt;&lt;</li><?
 			}
 			else { ?> 
-				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['first'], 0); ?>">|&lt;</a></li>
-				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['previous'], 0); ?>">&lt;&lt;</a></li><?
+				<li><a href="<?= to_html(ff('cycle_id=' . (int)$paging_cycle_id['first'], 0)); ?>">|&lt;</a></li>
+				<li><a href="<?= to_html(ff('cycle_id=' . (int)$paging_cycle_id['previous'], 0)); ?>">&lt;&lt;</a></li><?
 			} ?> 
 			<li><?= (int)$channel['seed']['cycle_id']; ?></li><?
 			if ($paging_cycle_id['next'] == $paging_cycle_id['current']) { ?>  
@@ -234,8 +234,8 @@ foreach ($channel_list as $kc1 => $vc1) {
 				<li>&gt;|</li><?
 			}
 			else { ?> 
-				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['next'], 0); ?>">&gt;&gt;</a></li>
-				<li><a href="<?= ff('cycle_id=' . (int)$paging_cycle_id['last'], 0); ?>">&gt;|</a></li><?
+				<li><a href="<?= to_html(ff('cycle_id=' . (int)$paging_cycle_id['next'], 0)); ?>">&gt;&gt;</a></li>
+				<li><a href="<?= to_html(ff('cycle_id=' . (int)$paging_cycle_id['last'], 0)); ?>">&gt;|</a></li><?
 			} ?> 
 		</ul>
 	</div>

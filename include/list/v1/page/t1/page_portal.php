@@ -22,7 +22,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">
 		<input type="hidden" name ="x" value="/page_portal/portal_process/" />
-		<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+		<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 		<input type="hidden" name="load" value="action" />
 		<input type="hidden" name="type" value="page" />
 		<div class="k"><span class="page_name"><?= tt('element', 'page_name'); ?></span>:</div>

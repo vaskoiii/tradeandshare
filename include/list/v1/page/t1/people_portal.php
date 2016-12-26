@@ -24,7 +24,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 <div class="content_box">
 	<form name="portal_process" action="/index.php" method="POST">
 		<input type="hidden" name ="x" value="/people_portal/portal_process/" />
-		<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+		<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 		<input type="hidden" name="load" value="action" />
 		<input type="hidden" name="type" value="contact" />
 		<div class="k"><span class="contact_name">Contact</span> <span class="user_name">(User)</span>:</div>

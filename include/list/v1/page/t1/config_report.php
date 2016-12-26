@@ -26,7 +26,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<h3>My Stuff</h3>
 			<ul>
 				<li><a href="user_view/?list_name=list&list_type=feed&lock_user_id=<?= (int)$_SESSION['login']['login_user_id']; ?>"><span class="edit"><?= tt('page', 'feed_list'); ?></span></a></li>
-				<li><a href="profile_edit/<?= ff(''); ?>"><span class="edit"><?= tt('page', 'profile_edit'); ?></span></a></li>
+				<li><a href="profile_edit/<?= to_html(ff('')); ?>"><span class="edit"><?= tt('page', 'profile_edit'); ?></span></a></li>
 				<li><a href="user_view/?list_name=list&list_type=item&lock_user_id=<?= (int)$_SESSION['login']['login_user_id']; ?>"><span class="edit"><?= tt('page', 'item_list'); ?></span></a></li>
 				<li><a href="./team_view/?team_id=<?= (int)$my_team_id; ?>&lock_team_id=<?= (int)$my_team_id; ?>"><span class="edit"><?= tt('page', 'team_list'); ?></span></a></li>
 			</ul>
@@ -41,28 +41,28 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			foreach ($a1 as $k1 => $v1) { ?> 
 				<span class="<?= $k1; ?>"><?= tt('theme', $_SESSION['theme'][$k1]); ?></span> <?= $config['spacer']; ?><?
 			} ?> 
-			<a href="./theme_set/<?= ff(); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+			<a href="./theme_set/<?= to_html(ff()); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</dd>
 			<dt><?= tt('page', 'dialect_set'); ?></dt>
 			<dd>
 				<span class="dialect_name"><?= to_html($_SESSION['dialect']['dialect_name']); ?></span>
-				 <?= $config['spacer'];?> <a href="./dialect_set/<?= ff(); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+				 <?= $config['spacer'];?> <a href="./dialect_set/<?= to_html(ff()); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</dd><?
 			if ($_SESSION['login']['login_user_name']) { ?> 
 				<dt><?= tt('page', 'lock_set'); ?></dt>
 				<dd>
-					<a href="./lock_set/<?= ff(); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+					<a href="./lock_set/<?= to_html(ff()); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 				</dd><?
 			} ?> 
 			<dt><?= tt('page', 'display_set'); ?></dt>
 			<dd>
 				<span class="display_name"><?= tt('display', $_SESSION['display']['display_name']); ?></span>
-				 <?= $config['spacer'];?> <a href="display_set/<?= ff(); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+				 <?= $config['spacer'];?> <a href="display_set/<?= to_html(ff()); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</dd>
 			<dt><?= tt('page', 'load_set'); ?></dt>
 			<dd>
 				<span class="load_javascript"><?= tt('element', 'load_javascript'); ?>: <?= $_SESSION['load']['load_javascript'] == 1 ? tt('boolean', 'true') : tt('boolean', 'false'); ?></span>
-			 <?= $config['spacer'];?> <a href="load_set/<?= ff(); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
+			 <?= $config['spacer'];?> <a href="load_set/<?= to_html(ff()); ?>"><span class="edit"><?= tt('element', 'edit'); ?></span></a>
 			</dd>
 		</dl>
 	</div><?
@@ -71,7 +71,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			<h3>Action</h3>
 			<ul>
 				<li>
-					<a href="guest_portal/<?= ff(); ?>"><span class="edit"><?=
+					<a href="guest_portal/<?= to_html(ff()); ?>"><span class="edit"><?=
 						tt('page', 'guest_portal')
 						. ' ' . tt('element', 'print') 
 					?></span></a>

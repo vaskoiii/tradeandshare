@@ -162,7 +162,7 @@ if (in_array($load, $a1))
 					<span class="extra"><?= tt('element', 'extra'); ?></span>:
 				</div>
 				<div class="v">
-					<a href="feed_edit/<?= ff('feed_query=' . to_url(ltrim(ffm('page=', 0), '?')) . '&page_name=' . to_url($s1 . '_list') . '&feed_name=' . to_url(get_page_title())); ?>"><?= tt('element', 'add_feed'); ?></a>
+					<a href="feed_edit/<?= to_html(ff('feed_query=' . to_url(ltrim(ffm('page=', 0), '?')) . '&page_name=' . to_url($s1 . '_list') . '&feed_name=' . to_url(get_page_title()))); ?>"><?= tt('element', 'add_feed'); ?></a>
 				</div>
 			</div><?
 		} ?> 

@@ -31,7 +31,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="doc_box">
 		<h3><?= tt('page', 'main'); ?></h3>
 		<p>
-			<a href="item_list/<?= ff($q['raw']); ?>"><?= tt('element', 'everything'); ?></a>
+			<a href="item_list/<?= to_html(ff($q['raw'])); ?>"><?= tt('element', 'everything'); ?></a>
 		</p>
 	</div>
 
@@ -47,7 +47,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 			if ($v1 != 0) { ?> 
 				<dt><?
 					# todo fix so that the link maintains the locking and not all url vars 2012-06-16 vaskoiii ?> 
-					<a href="item_list/<?= ff($q['raw'] . '&parent_tag_id=' . (int)$k1, $x['level']); ?>"><?= to_html($data['custom_key']['tag_id']['name'][$k1]); ?></a>
+					<a href="item_list/<?= to_html(ff($q['raw'] . '&parent_tag_id=' . (int)$k1, $x['level'])); ?>"><?= to_html($data['custom_key']['tag_id']['name'][$k1]); ?></a>
 					-
 					<?= (int)$v1; ?> 
 				</dt>
@@ -68,6 +68,6 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 <div class="menu_2">
 <ul>
-	<li><a href="./category_list/<?= ff(get_lock_query()); ?>"><?= tt('page', 'category_list'); ?></a></li>
+	<li><a href="./category_list/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', 'category_list'); ?></a></li>
 </ul>
 </div>

@@ -161,7 +161,7 @@ switch ($x['load']['action']['type']) {
 <input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $s1; ?>_process/" /><?
 unset($s1);
 ?> 
-<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 <input type="hidden" name="load" value="action" />
 <input type="hidden" name="type" value="<?= $x['load']['action']['type']; ?>" />
 <input type="hidden" name="id" value="<?= (int)$x['load']['action']['id']; ?>" /><?
@@ -333,7 +333,7 @@ switch($k1) {
 	switch($k1) {
 		case 'recover_feed':
 			if (get_gp('action_id')) { ?> 
-				<li><a href="feed_recover/<?= ff('id=' . (int)get_gp('action_id') ); ?>"><?= get_translation('element', 'recover'); ?></a></li><?
+				<li><a href="feed_recover/<?= to_html(ff('id=' . (int)get_gp('action_id') )); ?>"><?= get_translation('element', 'recover'); ?></a></li><?
 			}
 		break;
 		case 'recover_login':

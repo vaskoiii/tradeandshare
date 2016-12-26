@@ -85,18 +85,18 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 		if ($v2['page_advanced'] == 2) {
 			if ($v2['new_amount']) { ?> 
 				<p class="list_new">
-					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
+					<a href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>:
 					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?> 
 				</p><?
 			} 
 			elseif (!$v2['view_when']) { ?> 
 				<p class="list_unseen">
-					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
+					<a href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>:
 					<?= tt('element', 'unseen'); ?> 
 				</p><?
 			} else { ?> 
 				<p class="list_seen">
-					<a class="not_new" style="color: gray;" href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>
+					<a class="not_new" style="color: gray;" href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>
 				</p><?
 			} 
 		} } ?> 
@@ -107,18 +107,18 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 		if ($v2['page_advanced'] == 1) {
 			if ($v2['new_amount']) { ?> 
 				<p class="list_new">
-					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
+					<a href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>:
 					<?= $v2['new_amount']; ?> <?= tt('element', 'new'); ?> 
 				</p><?
 			} 
 			elseif (!$v2['view_when']) { ?> 
 				<p class="list_unseen">
-					<a href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>:
+					<a href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>:
 					<?= tt('element', 'unseen'); ?> 
 				</p><?
 			} else { ?> 
 				<p class="list_seen">
-					<a class="not_new" style="color: gray;" href="<?= $v2['page_name']; ?>/<?= ff(get_lock_query()); ?>"><?= tt('page', $v2['page_name']); ?></a>
+					<a class="not_new" style="color: gray;" href="<?= $v2['page_name']; ?>/<?= to_html(ff(get_lock_query())); ?>"><?= tt('page', $v2['page_name']); ?></a>
 				</p><?
 			} 
 		} } ?> 
@@ -134,6 +134,6 @@ foreach ($data['new_report']['page_id'] as $k1 => $v1) {
 
 <div class="menu_2">
 <ul>
-	<li><a href="ignore_process/<?= ff(); ?>"><?= tt('element', 'ignore_process'); ?></a></li>
+	<li><a href="ignore_process/<?= to_html(ff()); ?>"><?= tt('element', 'ignore_process'); ?></a></li>
 </ul>
 </div><? # end content ?> 

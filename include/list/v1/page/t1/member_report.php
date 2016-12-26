@@ -36,7 +36,7 @@ print_keyword_box('member_report', 1); ?>
 		if (is_numeric($k1)) {
 			# present (not future_horizon) ?>
 			<dt>
-				<a href="./cycle_report/<?= ff('cycle_id=' . (int)$data['member_report']['channel'][$k1]['cycle_offset'][1]['id']); ?>"><?= to_html($data['member_report']['channel'][$k1]['info']['name']); ?></a>
+				<a href="./cycle_report/<?= to_html(ff('cycle_id=' . (int)$data['member_report']['channel'][$k1]['cycle_offset'][1]['id'])); ?>"><?= to_html($data['member_report']['channel'][$k1]['info']['name']); ?></a>
 				-
 				<?= (int)$data['member_report']['order'][$k1]; ?>
 			</dt>

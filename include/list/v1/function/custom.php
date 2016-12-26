@@ -65,14 +65,14 @@ function print_go_back($name, $kind = null) {
 	} else { 
 		if ($x['page']['name'] == 'login_set') {
 			# if not logged in and you click back on login_set it will keep headering you back to login set! ?> 
-			<a href="/<?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
+			<a href="/<?= to_html(ff($q['active'][$x['level'] - 1], -1)); ?>"><?= 
 				!empty($kind)
 					? tt($kind, $name) 
 					: $name
 				;
 			?></a><?
 		} else { ?> 
-			<a href="<?= $x['..']; ?><?= ff($q['active'][$x['level'] - 1], -1); ?>"><?= 
+			<a href="<?= $x['..']; ?><?= to_html(ff($q['active'][$x['level'] - 1], -1)); ?>"><?= 
 				!empty($kind)
 					? tt($kind, $name) 
 					: $name

@@ -89,7 +89,7 @@ if ($x['preload']['focus'] == 'motion')
 <div class="content">
 <form name="motion_process" action="/index.php" method="POST">
 <input type="hidden" name ="x" value="<?= to_html($x['.']); ?><?= $x['load']['motion']['name']; ?>_process/" />
-<input type="hidden" name="q" value="<?= ff('', 1); ?>" />
+<input type="hidden" name="q" value="<?= to_html(ff('', 1)); ?>" />
 <input type="hidden" name="load" value="motion" />
 <input type="hidden" name="type" value="<?= $x['load']['motion']['type']; ?>" />
 <input type="hidden" name="id" value="<?= (int)$x['load']['motion']['id']; ?>" />
