@@ -315,8 +315,8 @@ switch($type) {
 		}
 	break;
 	case 'feed':
+		# easy setup based on the corresponding list is more important as communication is moving away from email
 		if (!str_match('_list', $action_content_1['page_name']))
-		if (!str_match('_list', $action_content_2['page_name']))
 			$message = tt('element', 'error') . ' : ' . tt('element', 'invalid') . ' : ' . tt('element', 'page_name');
 		if (get_db_single_value('
 				id
@@ -329,6 +329,11 @@ switch($type) {
 				id != ' . (int)get_gp('id') . '
 		'))
 			$message = tt('element', 'error') . ' : ' . tt('element', 'feed_name') . ' : ' . tt('element', 'error_does_exist'); 
+		# feed_query should match $_SERVER['QUERY_STRING']
+		if (empty($message))
+		if (!empty($action_content_2['feed_query']))
+		if (preg_match('/[?\s]/', $action_content_2['feed_query']))
+			$message = tt('element', 'error') . ' : ' . tt('element', 'invalid') . ' : ' . tt('element', 'feed_query') . ' : ? | (space)';
 	break;
 	case 'offer':
 	case 'transfer':

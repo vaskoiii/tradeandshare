@@ -231,9 +231,9 @@ if ($b1 == 1) {
 # todo integrate with load_response
 if ($x['load']['action']['type'] == 'feed') {
 	if (get_gp('page_name'))
-	$action_content_2['page_name'] = get_gp('page_name');
+		$action_content_1['page_name'] = get_gp('page_name');
 	if (get_gp('feed_query'))
-	$action_content_2['feed_query'] = get_gp('feed_query');
+		$action_content_2['feed_query'] = get_gp('feed_query');
 }
 elseif ($x['load']['action']['type'] == 'user') {
 	if (!$action_content_1['invite_password']) {

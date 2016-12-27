@@ -157,7 +157,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		$dattrib = 'style="color:' . $color['description'] . ';"';
 	} }
 
-
 	$key_user = & $key['user_id']['result'];
 	$key_contact = & $key['contact_id']['result'];
 
@@ -377,14 +376,6 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			ob_start(); ?><span class="uid"><?= tt('element', $s1 . '_uid', 'translation_name', $translation); ?>: <?= (int)$listing[ get_base_type($s1) . '_id']; ?></span><?
 			$grab .= ob_get_clean();
 		break;
-		case 'feed_query':
-			$grab .= '<span class="feed_query">';
-			if (!empty($listing['query']))
-				$grab .= to_html($listing['query']);
-			else
-				$grab .= tt('element', 'unspecified');
-			$grab .= '</span>';
-		break;
 		case 'ts_link':
 			$grab .= a_link_replace(
 				'https://' . $_SERVER['HTTP_HOST'] . '/'
@@ -395,11 +386,10 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'way_name':
 			# =) and (= instead of &gt;&gt; and &lt;&lt;
 			# for increased compatibility and smaller size and more happiness
-			$s1 = 'style="color: ' . (isset($color['direction_name']) ? $color['direction_name'] : '') . ';"';
 			if ($listing['source_user_id'] == $login_user_id)
-				$grab .= '<span ' . $s1 . ' class="direction_name">=)</span>';
+				$grab .= '<span' . get_color_style($color['direction_name']) . ' class="direction_name">=)</span>';
 			else
-				$grab .= '<span ' . $s1 . ' class="direction_name">(=</span>';
+				$grab .= '<span' . get_color_style($color['direction_name']) . ' class="direction_name">(=</span>';
 			$grab .= ' ';
 		break;
 		case 'direction_right_name':
@@ -474,25 +464,22 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'team_owner':
 			$i1 = 2; # print contact (href mod)
 			$i2 = 2; # print user (href mod)
-
-			$s1 = 'style="color: ' . (isset($color['link']) ? $color['link'] : '') .';"';
-			$s2 = 'style="color: ' . (isset($color['contact_name']) ? $color['contact_name'] : '') . ';"'; 
-			$s3 = 'style="color: ' . (isset($color['user_name']) ? $color['user_name'] : '') . ';"'; 
 			if ( $key_user[ $listing['team_owner_user_id'] ]['contact_name'] )
 				$i1 = 1;
 			else
 				$i2 = 1;
 			if ($i1 == 1) {
-				$grab .= '<a ' . $s1  . ' href="' . $href_prepend . 'contact_view/'
+				$grab .= '<a' .
+					get_color_style($color['link']) . ' href="' . $href_prepend . 'contact_view/'
 					. to_html(ffm('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level))
-					. '"><span ' . $s2 . ' class="contact_name">'
+					. '"><span ' . get_color_style($color['contact_name']) . ' class="contact_name">'
 						. $key_user[ $listing['team_owner_user_id'] ]['contact_name']
 					. '</span></a>';
 			}
 			if ($i2 == 1) {
-				$grab .= ' <a ' . $s1 .  ' href="' . $href_prepend . 'user_view/'
+				$grab .= ' <a' . get_color_style($color['link']) .  ' href="' . $href_prepend . 'user_view/'
 					. to_html(ff('list_name=&list_type=&lock_user_id=' . (int)$listing['team_owner_user_id'] . $glue . $href_append, $ff_level))
-					. '"><span ' . $s3 . ' class="user_name">'
+					. '"><span' . get_color_style($color['user_name']) . ' class="user_name">'
 						. to_html($config['unabstracted_prefix'] . $key_user[ $listing['team_owner_user_id'] ]['user_name'] . $config['unabstracted_suffix'])
 					. '</span></a>';
 			}
@@ -530,22 +517,27 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($i1 == 1) {
 			if ($key_user[ $listing[str_replace('_name', '_id', $v1)] ]['contact_name']) {
 				$s1 = str_replace('_name', '_id', $v1);
-				$grab .= '<a style="color: ' . (isset($color['link']) ? $color['link'] : '') .';" href="' . $href_prepend . 'contact_view/' 
+				$grab .= '<a' . get_color_style($color['link']) . ' href="' . $href_prepend . 'contact_view/' 
 					. to_html(ffm('list_name=report&list_type=top' .
 						((int)$listing[$s1]
 							?  '&lock_user_id=' . (int)$listing[$s1]
 							: '&lock_contact_id=' . (int)$key_user[ $listing[$s1] ]['contact_id']
 					)  . $glue . $href_append, $ff_level))
-					. '"><span style="color: ' . (isset($color['contact_name']) ? $color['contact_name'] : '') . ';" class="contact_name">'
+					. '"><span' . get_color_style($color['contact_name']) . ' class="contact_name">'
 						. $key_user[ $listing[$s1] ]['contact_name'] 
 					. '</span></a>';
 			} }
 			if ($i3 == 1) {
-				$grab .= ' <a style="color: ' . (isset($color['link']) ? $color['link'] : '') .';" href="' . $href_prepend . 'user_view/' 
-					. to_html(ffm('list_name=report&list_type=top&lock_user_id=' . to_url($listing[str_replace('_name', '_id', $v1)]) . $glue . $href_append, $ff_level)) 
-					. '"><span style="color: ' . (isset($color['user_name']) ? $color['user_name'] : '') . ';" class="' . $v1 . '">' 
-						. to_html($config['unabstracted_prefix'] . $listing[$v1] . $config['unabstracted_suffix']) 
-					. '</span></a>';
+				$grab .= ' <a' .
+						get_color_style($color['link']) .
+						' href="' . $href_prepend . 'user_view/' .
+						to_html(ffm('list_name=report&list_type=top&lock_user_id=' . to_url($listing[str_replace('_name', '_id', $v1)]) . $glue . $href_append, $ff_level)) .
+					'"><span' .
+						get_color_style($color['user_name']) .
+						' class="' . $v1 .
+					'">' .
+						to_html($config['unabstracted_prefix'] . $listing[$v1] . $config['unabstracted_suffix']) .
+					'</span></a>';
 			}
 		break;
 		case 'contact_name_reply':
@@ -562,6 +554,12 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 				$s1 = 'tag';
 			$grab .= '<span class="' . $v1 . '">' . tt($s1, $listing[$v1], 'translation_name', $translation) . '</span>';
 		break;
+		case 'feed_query':
+			$grab .= '<span' .
+				get_color_style($color['status_name']) .
+				' class="' . $v1 .
+			'">' .  to_html($listing[$v1]) . '</span>';
+		break;
 		case 'mark_name':
 		case 'point_name':
 		case 'timeframe_name':
@@ -570,7 +568,10 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		case 'meritype_name':
 		case 'page_name':
 		case 'status_name':
-			$grab .= '<span style="color: ' . (isset($color['status_name']) ? $color['status_name'] : '') . ';" class="' . $v1 . '">' .  tt(str_replace('_name', '', $v1), $listing[$v1]) . '</span>';
+			$grab .= '<span' .
+				get_color_style($color['status_name']) .
+				' class="' . $v1 .
+			'">' .  tt(str_replace('_name', '', $v1), $listing[$v1]) . '</span>';
 		break;
 		case 'description':
 			$grab .= '<span ' . $dattrib . ' class="' . $v1 . '">'
@@ -630,9 +631,12 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			. '</span>';
 		break;
 		case 'offer_name':
-			$grab .= '<span  style="color: ' . (isset($color['offer_name']) ? $color['offer_name'] : '') . ';" class="' . $v1 . '">'
-				. to_html($listing[$v1])
-			. '</span>';
+			$grab .= '<span' .
+				get_color_style($color['offer_name']) .
+				' class="' . $v1 .
+			'">' .
+				to_html($listing[$v1]) .
+			'</span>';
 		break;
 		case 'kind_name':
 			$grab .= '<span class="' . $v1 . '">'
@@ -645,10 +649,13 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= ': ' . (int)$listing['kind_name_id'];
 		break;
 		case 'tag_name':
-			$grab .= '<span style="color: ' . (isset($color['thing_name']) ? $color['thing_name'] : '') . ';" class="' . $v1 . '">'
+			$grab .= '<span' .
+				get_color_style($color['thing_name']) .
+				' class="' . $v1 .
+			'">' .
 				#. tt('tag', $listing[$v1])
-				. kk('tag', $listing['tag_id'], 'translation_name', $listing[$v1])
-			. '</span>';
+				kk('tag', $listing['tag_id'], 'translation_name', $listing[$v1]) .
+			'</span>';
 		break;
 		case 'parent_tag_path':
 		case 'parent_tag_translation_path':
@@ -945,10 +952,17 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		break;
 		case 'team_required_name':
 		case 'team_name': 
-			$grab .= '<span style="color: ' . (isset($color['team_name']) ? $color['team_name'] : '') . '" class="' . $v1 . '">' . to_html($listing[$v1]) . '</span>';
+			$grab .= '<span' .
+				get_color_style($color['team_name']) . 
+				' class="' . $v1 .
+			'">' . to_html($listing[$v1]) . '</span>';
 		break;
 		case 'group_name': 
-			$grab .= '<span style="color: ' . (isset($color['group_name']) ? $color['group_name'] : '') . '" class="' . $v1 . '">' . to_html($listing[$v1]) . '</span>';
+			# group_list and groupmate_list not completely stripped out of ts yet
+			$grab .= '<span' .
+				get_color_style($color['group_name']) .
+				' class="' . $v1 .
+			'">' . to_html($listing[$v1]) . '</span>';
 		break;
 	}
 	}

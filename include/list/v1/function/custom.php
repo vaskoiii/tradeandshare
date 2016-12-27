@@ -20,6 +20,13 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 # Contents/Description: Custom functions intended to be specific to this site. New functions that may be moved elsewhere later.
 
+function get_color_style($s1) {
+	# originally used for email clients to render well
+	if (!empty($s1))
+		return ' style="color: ' . to_html($s1) . '";';
+	return '';
+}
+
 function nod() {
 	# no dollar symbol (nod)
 	return '<span style="text-decoration: line-through;">$</span>';
