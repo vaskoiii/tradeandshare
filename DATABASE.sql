@@ -3261,3 +3261,17 @@ insert into ts_timeframe set name='future_horizon', parent_id=3;
 insert into ts_timeframe set name='future_upcoming', parent_id=3;
 insert into ts_timeframe set name='past_pending', parent_id=1;
 insert into ts_timeframe set name='past_settlement', parent_id=1;
+
+-- todo setup some placeholder numbers so that there will be an actual pattern ie)
+-- past
+--     |_1 settlement
+--     |_2
+--     |_3 pending
+-- present
+--     |_1
+--     |_2
+--     |_3
+-- future
+--     |_1 upcoming
+--     |_2
+--     |_3 horizon
