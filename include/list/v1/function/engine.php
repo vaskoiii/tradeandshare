@@ -48,7 +48,6 @@ function prepare_engine(& $base, $type, $login_user_id) {
 		break;
 		case 'feedback':
 		case 'item':
-		case 'login':
 		case 'meripost':
 		case 'metail':
 		case 'minder':
@@ -56,6 +55,13 @@ function prepare_engine(& $base, $type, $login_user_id) {
 		# =)
 		case 'category':
 		case 'tag':
+			$where[] = $s1 . '.user_id != ' . (int)$config['autocreation_user_id'];
+			$where[] = $s1 . '.user_id != ' . (int)$login_user_id;
+		break;
+		case 'login':
+			# restrict to the landing page to prevent flooding of visit messages
+			# todo set a config variable with the landing page_id
+			$where[] = $s1 . '.page_id = 380'; # /top_report/
 			$where[] = $s1 . '.user_id != ' . (int)$config['autocreation_user_id'];
 			$where[] = $s1 . '.user_id != ' . (int)$login_user_id;
 		break;
