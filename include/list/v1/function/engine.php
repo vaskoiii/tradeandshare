@@ -538,10 +538,15 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			if (isset_gp('location_id'))
 				$where_x[] = 'lo.id = ' . to_sql(get_gp('location_id'));
 		break;
-		case 'login':
+		case 'visit': # todo make visit_list work
+		case 'login': # deprecate
+			$select[] = 'pe.name as page_name';
 			$select[] = 't1.id as login_id';
 			$select[] = 't1.`when` as modified';
-			$from[] = $prefix . 'login t1';
+			$from[] = $prefix . 'visit t1';
+			# $from[] = $prefix . 'login t1';
+			$from[] = $prefix . 'page pe';
+			$where[] = 'pe.id = t1.page_id';
 			$where[] = 'u.id = t1.user_id';
 			if (isset_gp('keyword'))
 				$where_x[] = 'u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%');

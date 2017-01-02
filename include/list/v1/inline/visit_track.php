@@ -18,34 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# Contents/Description: Update ts_login AND ts_visit - any page load is considered a login
+# description: update ts_visit - any page load is considered a login
 
 if ($_SESSION['login']['login_user_id']) {
-	// LOGIN (Any page accessed when you are logged in.)
-	$sql = '
-		DELETE FROM
-			' . $config['mysql']['prefix'] . 'login
-		WHERE
-			user_id = ' . (int)$_SESSION['login']['login_user_id']
-	;
-	$result = mysql_query($sql) or die(mysql_error());
-
-	$sql = '
-		INSERT INTO
-			' . $config['mysql']['prefix'] . 'login
-		SET
-			user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
-			`when` = CURRENT_TIMESTAMP
-	';
-	$result = mysql_query($sql) or die(mysql_error());
-
-	// VISIT
-	if ($x['page']['monitor']) { # Remove for a login/visit to be considered for any page not just list pages marked in the database by [monitor]
+	# todo eliminate the [when] field from [ts_login]
+	$i1 = $x['page']['id'];
+	if ($x['page']['name'] == 'feed_atom')
+		$i1 = $x['feed_atom']['page_id'];
+	# visit counts for any page with this include (not just if $x['page']['monitor'] == 1)
+	if (1) {
 		$sql = '
 			DELETE FROM  
 				' . $config['mysql']['prefix'] . 'visit
 			WHERE 
-				page_id = ' . (int)$x['page']['id'] . ' AND
+				page_id = ' . (int)$i1 . ' AND
 				user_id = ' . (int)$_SESSION['login']['login_user_id'] 
 		;
 		$result = mysql_query($sql) or die(mysql_error());
@@ -55,7 +41,7 @@ if ($_SESSION['login']['login_user_id']) {
 				' . $config['mysql']['prefix'] . 'visit
 			SET
 				user_id = ' . (int)$_SESSION['login']['login_user_id'] . ',
-				page_id = ' . (int)$x['page']['id'] . ',
+				page_id = ' . (int)$i1 . ',
 				`when` = CURRENT_TIMESTAMP
 		';
 		$result = mysql_query($sql) or die(mysql_error());

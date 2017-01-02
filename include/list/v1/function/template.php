@@ -139,7 +139,20 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 		$color = & $style['text_style']['color'];
 	}
 	else {
-		$color = ''; # prevent adding extra crap to the global array if not needed 2012-02-29 vaskoiii
+		# prevent adding extra crap to the global array if not needed 2012-02-29 vaskoiii
+		# see also text_style.php
+		$color = array(
+			'link' => '',
+			'direction_name' => '',
+			'user_name' => '',
+			'contact_name' => '',
+			'spacer' => '',
+			'offer_name' => '',
+			'think_name' => '',
+			'status_name' => '',
+			'team_name' => '',
+			'description' => '',
+		);
 	}
 
 	# Cant always use the '_' case because sometimes the spacer is conditional
@@ -558,15 +571,25 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			$grab .= '<span' .
 				get_color_style($color['status_name']) .
 				' class="' . $v1 .
-			'">' .  to_html($listing[$v1]) . '</span>';
+			'">' . (!empty($listing[$v1])
+					? to_html($listing[$v1])
+					: tt('element', 'unspecified')
+			) . '</span>';
+		break;
+		case 'page_name_path':
+			# has 2 parts
+			$grab .= '<a href="/' . $listing['page_name'] . '/"><span' .
+				get_color_style($color['page_name']) .
+				' class="page_name' .
+			'">/' .  to_html($listing['page_name']) . '/</span></a>';
 		break;
 		case 'mark_name':
 		case 'point_name':
 		case 'timeframe_name':
 		case 'decision_name':
 		case 'grade_name':
-		case 'meritype_name':
 		case 'page_name':
+		case 'meritype_name':
 		case 'status_name':
 			$grab .= '<span' .
 				get_color_style($color['status_name']) .

@@ -509,6 +509,12 @@ function get_mask_subject($type, $display) {
 			); 
 		break;
 		case 'login':
+			$array = array(
+				'user_name' => 'user_name',
+				'user_name_spacer' => '_',
+				'page_name' => 'page_name_path',
+			);
+		break;
 		case 'metail':
 			$array = array(
 				'user_name' => 'user_name',
