@@ -102,7 +102,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 				'https://'
 				. $_SERVER['HTTP_HOST']
 				. '/' . $x['feed_atom']['page_name'] . '/?'
-				. 'lock_user_id=' . $s1
+				. 'lock_user_id=' . $s1 . '&dumb_'
+				# hack for dumb feed readers that think <link> means <id>
+				# ie) [sparse rss] on android
+				. $x['feed_atom']['part'][0] . '_uid=' . (int)$listing[$k1][$x['feed_atom']['part'][0] . '_id']
 			); ?>" /> 
 			<id><?= to_html(
 				'https://'
