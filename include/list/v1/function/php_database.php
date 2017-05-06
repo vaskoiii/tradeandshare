@@ -265,6 +265,8 @@ function get_mask_author($type, $display) {
 		'source' => 'user_name',
 		'source_spacer' => '_'
 	);
+	if ($display == 'feed')
+		unset($array['source_spacer']);
 	switch($type) {
 		# case 'feed': # uncomment if feeds are only seen by you 2012-04-04 vaskoiii
 		case 'contact':
@@ -273,7 +275,7 @@ function get_mask_author($type, $display) {
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'my_user_name',
-					'source_spacer' => '_',
+					# 'source_spacer' => '_',
 				);
 			else
 				$array = array();
@@ -290,7 +292,7 @@ function get_mask_author($type, $display) {
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'source_user_name',
-					'source_spacer' => '_',
+					# 'source_spacer' => '_',
 				);
 			else
 				$array = array();
@@ -301,7 +303,7 @@ function get_mask_author($type, $display) {
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'user_name',
-					'source_spacer' => '_',
+					# 'source_spacer' => '_',
 				); # Repeat info but makes the most sense. (Author of the user is that user) 2012-02-27 vaskoiii
 			else
 				$array = array();

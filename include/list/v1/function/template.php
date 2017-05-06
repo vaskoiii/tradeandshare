@@ -434,7 +434,8 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			# doesnt make sense for:
 			# contact_list - possible repeat {add_contact} - {add_contact}
 			# feed_list - cant add feeds like this
-			$grab .=  '<a href="' . $href_prepend . $type . '_edit/' . to_html(ff($href_append, $ff_level)) . '">' . tt('element','add_' . $type, 'translation_name', $translation ) . '</a>';
+			# additional link was confusing
+			# $grab .=  '<a href="' . $href_prepend . $type . '_edit/' . to_html(ff($href_append, $ff_level)) . '">' . tt('element','add_' . $type, 'translation_name', $translation ) . '</a>';
 		break;
 		case 'contact_name':
 			$i1 = 2; # print contact (do href mod)
