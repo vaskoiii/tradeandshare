@@ -163,8 +163,7 @@ function launch(tsType) {
 }
 function checkIt(event) {
 	// comma 188 ,
-	// space 32 deprecated
-	if (event.keyCode == 32 | event.keyCode == 188) {
+	if (event.keyCode == 188) {
 		if ( event.ctrlKey | (
 			event.shiftKey &
 			(event.metaKey | event.altKey | event.ctrlKey)
@@ -183,7 +182,7 @@ function checkIt(event) {
 			return false;
 		}
 	}
-	// slash 191
+	// slash 191 /
 	else if (event.keyCode == 191) {
 		if ( event.ctrlKey | (
 			event.shiftKey &
