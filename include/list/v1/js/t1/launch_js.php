@@ -165,21 +165,30 @@ function checkIt(event) {
 	// comma 188 ,
 	// space 32 deprecated
 	if (event.keyCode == 32 | event.keyCode == 188) {
-		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
+		if ( event.ctrlKey | (
+			event.shiftKey &
+			(event.metaKey | event.altKey | event.ctrlKey)
+		) ) {
 			launch('pager');
 			return false;
 		}
 	}
 	// period 190 .
 	else if (event.keyCode == 190) {
-		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
+		if ( event.ctrlKey | (
+			event.shiftKey &
+			(event.metaKey | event.altKey | event.ctrlKey)
+		) ) {
 			launch('peopler');
 			return false;
 		}
 	}
 	// slash 191
 	else if (event.keyCode == 191) {
-		if (event.shiftKey & (event.metaKey | event.altKey | event.ctrlKey)) {
+		if ( event.ctrlKey | (
+			event.shiftKey &
+			(event.metaKey | event.altKey | event.ctrlKey)
+		) ) {
 			launch('scanner');
 			return false;
 		}
