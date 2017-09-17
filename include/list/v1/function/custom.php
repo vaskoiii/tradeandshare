@@ -797,7 +797,7 @@ function a_link_replace($t) {
 	# [] allowed characters
 	# ^ negation
 	# {min,max) character length requirement
-	$t = preg_replace('/ ' . $p1 . '\:' . $p2 .' /', ' <a href="$1:$2" >$1:$2</a> ', $t);
+	$t = preg_replace('/ ' . $p1 . '\:' . $p2 .' /', ' <a target="_blank" href="$1:$2" >$1:$2</a> ', $t);
 	# Clean Up
 	$t = preg_replace('/  /', ' ', $t);
 	$t = ltrim($t, ' ');
