@@ -579,6 +579,10 @@ function get_mask_subject($type, $display) {
 					'destination_user_name_spacer' => '_',
 					'offer_name' => 'offer_name',
 				);
+				if (isset_gp('not_from_me'))
+					$array = array(
+						'offer_name' => 'offer_name',
+					);
 			break;
 			default:
 				$array = array(
