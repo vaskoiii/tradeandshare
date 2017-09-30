@@ -22,6 +22,7 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 # Note: References used frequently to help reduce wordiness
 
 # for mixed pages only ie. new_report && top_report
+# or if not_from_me is set
 function prepare_engine(& $base, $type, $login_user_id) {
 	global $x;
 	global $data;
@@ -228,6 +229,10 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 	$order_by = & $base['search']['order_by'];
 
 	$prefix = $config['mysql']['prefix'];
+
+	# simulate top_report for feeds
+	if (!empty(get_gp('not_from_me')))
+		prepare_engine($base, $type, $login_user_id);
 
 	# TEAM REQUIRED switch
 	switch($type) {

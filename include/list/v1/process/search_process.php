@@ -44,6 +44,9 @@ $process['search_miscellaneous'] = array(
 	$process['form_info']['type'] . '_uid' => '',
 );
 
+# always needed
+$interpret['lookup']['not_from_me'] = get_gp('not_from_me');
+
 if (get_gp('keyword'))
 	$interpret['lookup']['keyword'] = get_gp('keyword');
 

@@ -106,6 +106,8 @@ function print_keyword_box($toggle = 'asearch_box', $lock_only = false, $load = 
 				default:
 				break;
 			}
+			if (isset_gp('not_from_me'))
+				$n1++;
 			if (isset_gp($t1 . '_uid'))
 				$n1++; # count also uid (not yet present in a container)
 		echo $n1 . ')'; ?> 
@@ -153,6 +155,25 @@ if (in_array($load, $a1))
 					elseif ($_SESSION['process']['search_miscellaneous'][$s1 . '_uid'])
 						$s2 = $_SESSION['process']['search_miscellaneous'][$s1 . '_uid']; ?> 
 					<input class="uid" type="text" name="<?= to_html($s1 . '_uid'); ?>" value="<?= to_html($s2); ?>" />
+				</div>
+				<div class="k">
+					<span class="not_from_me"><?= tt('element', 'not_from_me'); ?></span>: 
+				</div>
+				<div class="v"><?
+					$s2 = '';
+					if (isset_gp('not_from_me'))
+						$s2 = get_gp('not_from_me');
+					# todo needed?
+					# elseif ($_SESSION['process']['search_miscellaneous']['not_from_me'])
+					# 	$s2 = $_SESSION['process']['search_miscellaneous']['not_from_me']; ?> 
+					<select
+						onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };"
+						class="not_from_me"
+						name="not_from_me"
+					>
+						<option></option>
+						<option value="1" <?= !empty($s2) ? 'selected="selected"' : ''; ?>>Yes</option>
+					</select>
 				</div><?
 				# use if you dont want the add feed link to appear on the main page...
 				$s1 = $x['load']['list']['type'];
