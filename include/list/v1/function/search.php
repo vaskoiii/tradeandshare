@@ -220,7 +220,7 @@ function load_response($container_name, & $container_reference, $login_user_id) 
 
 	# misc
 	else {
-		# get
+		# inject url get vars
 		url_response($container_reference, $login_user_id, $e1[0]);
 
 		# session
@@ -292,8 +292,7 @@ function url_response(& $container, $login_user_id, $load) {
 		case 'keyword':
 		case 'invite_password':
 		case 'feed_query':
-		case 'page_name':
-		case 'feed_name':
+		case 'feed_name': # using _name here is unconventional?
 			if (isset_gp($prepend . $k1))
 				$container[$k1] = get_gp($prepend . $k1);
 		break;
@@ -321,6 +320,7 @@ function url_response(& $container, $login_user_id, $load) {
 		case 'lock_range_name':
 		case 'lock_team_name':
 
+		case 'page_name':
 		case 'parent_tag_path': # special
 		case 'parent_tag_name':
 

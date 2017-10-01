@@ -349,6 +349,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$where[] = 'dd.id = t1.dialect_id';
 			#$where[] = 't1.user_id = ' . (int)$login_user_id; # uncomment to see only your feeds 2012-04-04 vaskoiii
 			$where[] = 't1.active = 1';
+			if (isset_gp('page_id'))
+				$where_x[] = 't1.page_id = ' . (int)get_gp('page_id');
 			if (isset_gp('keyword'))
 				$where_x[] = '(
 					t1.name LIKE ' . to_sql('%' . get_gp('keyword') . '%') . '
@@ -560,6 +562,8 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			$from[] = $prefix . 'page pe';
 			$where[] = 'pe.id = t1.page_id';
 			$where[] = 'u.id = t1.user_id';
+			if (isset_gp('page_id'))
+				$where_x[] = 't1.page_id = ' . (int)get_gp('page_id');
 			if (isset_gp('keyword'))
 				$where_x[] = 'u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%');
 		break;

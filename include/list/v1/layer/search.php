@@ -59,6 +59,7 @@ $data['search']['response']['search_content_2'] = get_search_content_2($x['load'
 
 $search_content_1 = & $data['search']['response']['search_content_1'];
 $search_content_2 = & $data['search']['response']['search_content_2'];
+
 load_response('search_content_1', $search_content_1, $_SESSION['login']['login_user_id']);
 load_response('search_content_2', $search_content_2, $_SESSION['login']['login_user_id']);
 

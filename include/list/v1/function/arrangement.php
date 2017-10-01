@@ -511,6 +511,12 @@ function get_action_content_1($type = false, $name = false) {
 function get_view_content_1($type) { } # placeholder
 function get_search_content_1($type) {
 	switch($type) {
+		case 'feed':
+		case 'login':
+			$array = array(
+				'page_name' => '',
+			);
+		break;
 		case 'cycle':
 			$array = array(
 				'channel_parent_name' => '',
