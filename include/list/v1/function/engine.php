@@ -565,7 +565,7 @@ function listing_engine(& $base, $type, $login_user_id, $dialect_id = 0) {
 			if (isset_gp('page_id'))
 				$where_x[] = 't1.page_id = ' . (int)get_gp('page_id');
 			if (isset_gp('keyword'))
-				$where_x[] = 'u.name LIKE ' . to_sql('%' . get_gp('keyword') . '%');
+				$where_x[] = 'pe.name LIKE ' . to_sql('%' . get_gp('keyword') . '%');
 		break;
 		case 'meripost':
 			// get meritype name translation from key
