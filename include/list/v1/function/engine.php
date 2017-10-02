@@ -64,6 +64,10 @@ function prepare_engine(& $base, $type, $login_user_id) {
 			# todo set a config variable with the landing page_id
 			if ($x['page']['name'] == 'top_report')
 				$where[] = $s1 . '.page_id = 380'; # /top_report/
+			else if (get_gp('list_type') == 'top') {
+			if (get_gp('list_name') == 'report') {
+				$where[] = $s1 . '.page_id = 380'; # /top_report/
+			} }
 			$where[] = $s1 . '.user_id != ' . (int)$config['autocreation_user_id'];
 			$where[] = $s1 . '.user_id != ' . (int)$login_user_id;
 		break;
