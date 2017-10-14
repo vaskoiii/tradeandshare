@@ -519,6 +519,16 @@ function get_default_value($input, $load, & $x = null) {
 # maybe load should be the first parameter 2012-03-15 vaskoiii
 function print_container(& $container, & $listing = null, & $key = null, & $translation = null, $load = '', & $option = null) {
 
+	# hack extend for quick and fast layers
+	# ultimate goal to be able to dump a user into offer composition
+	$subload = '';
+	switch ($load) {
+		case 'quick_offer':
+			$a1 = explode('_', $load);
+			$load = 'quick';
+			$subload = 'offer';
+		break;
+	}
 
 	# todo: these globals should not be used! 2012-03-07 vaskoiii
 	if (!$listing) {
@@ -972,7 +982,19 @@ function print_container(& $container, & $listing = null, & $key = null, & $tran
 				else { ?> 
 					<? # textarea display hacks 2012-02-26 vaskoiii ?> 
 					<div class="textarea">
-						<textarea style="" onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };" class="description_input" name="<?= $k1; ?>" maxlength="255" /><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
+						<textarea <?= (
+								isset_gp('quick_offer_offer_name') &&
+								$subload == 'offer'
+							)
+								? 'id=ts_focus'
+								: ''
+							; ?>
+							style=""
+							onkeypress="if (event.which == 13) { event.preventDefault(); submit(); };"
+							class="description_input"
+							name="<?= $k1; ?>"
+							maxlength="255"
+						/><?= $v1 ? to_html($v1) : to_html(get_gp($load_ . $k1)); ?></textarea>
 					</div>
 					&nbsp;<?
 				} ?> 

@@ -60,6 +60,13 @@ if ($x['preload']['focus'] == 'view')
 			switch($x['load']['view']['type']) {
 				case 'contact': # needed because sometimes ONLY lock_user_id exists for contact_view
 				case 'user':
+
+
+
+					# todo fix js with quick_offer_offer_name
+
+
+
 					if (isset_gp('lock_user_id')) { ?> 
 						<li>
 							<a
@@ -73,15 +80,20 @@ if ($x['preload']['focus'] == 'view')
 								href="<?= to_html(ffm('page=&list_name=list&list_type=item&focus=action&expand%5B0%5D=', 0)); ?>"
 							><?= tt('page', 'item_list'); ?></a>
 							<span style="margin-left: -5px;">*</span>
-						</li>
+						</li><?
+						# hack for going straight into editing
+						$b1 = 2;
+						if (isset_gp('quick_offer_offer_name'))
+							$b1 = 1; ?> 
 						<li>
 							<a
 								id="offer_q_swap1"
+								<?= $b1 == 1 ? 'style="display: none;"' : ''; ?> 
 								href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 								onclick="javascript: if (document.getElementById('item_q_box').style.display == 'block') more_toggle_swap('item_q'); more_toggle_swap('offer_q'); return false;"
 							><?= tt('page', 'offer_list'); ?></a>
-							<a
-								id="offer_q_swap2" style="display: none; font-weight: bold;"
+							<a id="offer_q_swap2"
+								style="display: <?= $b1 == 1 ? 'inline' : 'none'; ?>; font-weight: bold;"
 								href="<?= to_html(ffm('page=&list_name=list&list_type=offer&focus=action&expand%5B0%5D=', 0)); ?>"
 							><?= tt('page', 'offer_list'); ?></a>
 							<span style="margin-left: -5px;">*</span>

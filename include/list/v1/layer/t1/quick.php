@@ -39,6 +39,10 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 
 				# todo dont let the action steal focus from quick
 				$b1 = 2;
+				# todo better way to integrate?
+				if ($v2['page_name'] == 'offer_list')
+				if (isset_gp('quick_offer_offer_name'))
+					$b1 = 1;
 				if (isset($_GET['focus'])){
 					if ($_GET['focus'] == 'quick')
 					if (isset($_SESSION['process']['form_info']['type']))
@@ -105,7 +109,9 @@ foreach ($v1['page_id'] as $k2 => $v2) {
 				print_container($quick_content_2, $empty_listing, $key, $translation, 'quick', $option);
 		}
 		else {
-			print_container($edit[$s1]['content_1'], $empty_listing, $key, $translation, 'quick', $option);
+			# note the $load parameter appending $s1
+			print_container($edit[$s1]['content_1'], $empty_listing, $key, $translation, 'quick_' . $s1, $option);
+
 			if(!empty($edit[$s1]['content_2'])) { ?> 
 			<p class="more_solo">
 				&gt;&gt; <a id="<?= to_html($s1); ?>_quick_2_toggle" style="display: inline;" href="#" onclick="more_toggle('<?= to_html($s1); ?>_quick_2'); return false;"><?= tt('element', 'more'); ?></a>

@@ -26,7 +26,8 @@ along with Trade and Share.  If not, see <http://www.gnu.org/licenses/>.
 
 
 # todo dont repeat logic
-# exact same file as fast.php but with fast and f replaced with quick and q
+# almost exact same file as fast.php but with fast and f replaced with quick and q
+
 
 
 
@@ -74,3 +75,7 @@ if ($_SESSION['process']['form_info']['load'] == 'quick') {
 	} }
 
 } } } }
+
+# special case
+if (isset_gp('quick_offer_offer_name'))
+	$edit['offer']['content_1']['offer_name'] = get_gp('quick_offer_offer_name');
