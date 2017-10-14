@@ -291,8 +291,7 @@ function get_mask_author($type, $display) {
 		case 'offer':
 			if ($display == 'feed')
 				$array = array(
-					'source' => 'source_user_name',
-					# 'source_spacer' => '_',
+					'source' => 'feed_source_user_name', # only used here
 				);
 			else
 				$array = array();

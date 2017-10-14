@@ -498,11 +498,33 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					. '</span></a>';
 			}
 		break;
+		case 'feed_source_user_name':
 		case 'corresponding_user_name': # only call with source and destination user names.
-			if ($listing['source_user_id'] != $login_user_id)
+		switch ($v1) {
+			case 'feed_source_user_name':
+				$s1href_append = $href_append;
+				$s1subject = strip_tags(
+					get_listing_template_output(
+					get_mask_subject($type, 'feed'),
+					$listing, $key, $translation, $load, $display, $part, $login_user_id, $style, $type)
+				);
+				$href_append .= '&' . http_build_query(array(
+					'quick_offer_offer_name' => $s1subject,
+					'expand[0]' => 'quick_offer',
+					'focus' => 'quick_offer_offer_description',
+				));
+				# restore unhacked $v1
 				$v1 = 'source_user_name';
-			else
-				$v1 = 'destination_user_name';
+				# https://en.wikipedia.org/wiki/Fragment_identifier
+				$s1_fragment_identifier = 'offer_q_box';
+			break;
+			case 'corresponding_user_name': # only call with source and destination user names.
+				if ($listing['source_user_id'] != $login_user_id)
+					$v1 = 'source_user_name';
+				else
+					$v1 = 'destination_user_name';
+			break;
+		}
 		# nobreak;
 		case 'source_user_name':
 		case 'destination_user_name':
@@ -531,12 +553,14 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 			if ($i1 == 1) {
 			if ($key_user[ $listing[str_replace('_name', '_id', $v1)] ]['contact_name']) {
 				$s1 = str_replace('_name', '_id', $v1);
+				# todo use . consistently to join things at the end
 				$grab .= '<a' . get_color_style($color['link']) . ' href="' . $href_prepend . 'contact_view/' 
 					. to_html(ffm('list_name=report&list_type=top' .
 						((int)$listing[$s1]
 							?  '&lock_user_id=' . (int)$listing[$s1]
 							: '&lock_contact_id=' . (int)$key_user[ $listing[$s1] ]['contact_id']
 					)  . $glue . $href_append, $ff_level))
+						. (!empty($s1_fragment_identifier) ? '#' . to_html($s1_fragment_identifier) : '')
 					. '"><span' . get_color_style($color['contact_name']) . ' class="contact_name">'
 						. $key_user[ $listing[$s1] ]['contact_name'] 
 					. '</span></a>';
@@ -546,12 +570,18 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 						get_color_style($color['link']) .
 						' href="' . $href_prepend . 'user_view/' .
 						to_html(ffm('list_name=report&list_type=top&lock_user_id=' . to_url($listing[str_replace('_name', '_id', $v1)]) . $glue . $href_append, $ff_level)) .
+						(!empty($s1_fragment_identifier) ? '#' . to_html($s1_fragment_identifier) : '') .
 					'"><span' .
 						get_color_style($color['user_name']) .
 						' class="' . $v1 .
 					'">' .
 						to_html($config['unabstracted_prefix'] . $listing[$v1] . $config['unabstracted_suffix']) .
 					'</span></a>';
+			}
+			# restore unhacked stuff
+			if ($v1 == 'feed_source_user_name') {
+				$href_append = $s1href_append;
+				unset($s1_fragment_identifier);
 			}
 		break;
 		case 'contact_name_reply':
