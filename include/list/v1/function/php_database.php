@@ -260,22 +260,28 @@ switch($view_type) {
 } }
 
 function get_mask_author($type, $display) {
+	# todo make all feeds dump to edit an offer on top_report
 	# $display currently has 3 types: main, feed, email 2012-02-26 vaskoiii
-	$array = array(
-		'source' => 'user_name',
-		'source_spacer' => '_'
-	);
-	if ($display == 'feed')
-		unset($array['source_spacer']);
+	if ($display == 'feed') {
+		$array = array(
+			'source' => 'feed_user_name',
+		);
+	}
+	else {
+		$array = array(
+			'source' => 'user_name',
+			'source_spacer' => '_'
+		);
+	}
 	switch($type) {
 		# case 'feed': # uncomment if feeds are only seen by you 2012-04-04 vaskoiii
 		case 'contact':
 		case 'groupmate':
 		case 'note':
+			# todo desired feed behavior?
 			if ($display == 'feed')
 				$array = array(
 					'source' => 'my_user_name',
-					# 'source_spacer' => '_',
 				);
 			else
 				$array = array();
@@ -284,9 +290,14 @@ function get_mask_author($type, $display) {
 		case 'score':
 		case 'invited':
 		case 'transfer': 
-			$array = array(
-				'source' => 'source_user_name',
-			);
+			if ($display == 'feed')
+				$array = array(
+					'source' => 'feed_source_user_name',
+				);
+			else
+				$array = array(
+					'source' => 'source_user_name',
+				);
 		break;
 		case 'offer':
 			if ($display == 'feed')
@@ -301,13 +312,13 @@ function get_mask_author($type, $display) {
 		case 'metail':
 			if ($display == 'feed')
 				$array = array(
-					'source' => 'user_name',
-					# 'source_spacer' => '_',
+					'source' => 'feed_user_name',
 				); # Repeat info but makes the most sense. (Author of the user is that user) 2012-02-27 vaskoiii
 			else
 				$array = array();
 		break;
 		case 'teammate':
+			# todo desired feed behavior?
 			$array = array(
 				'source' => 'team_owner',
 				'direction_right_name' => 'direction_right_name',

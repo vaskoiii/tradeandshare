@@ -498,9 +498,11 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					. '</span></a>';
 			}
 		break;
+		case 'feed_user_name':
 		case 'feed_source_user_name':
 		case 'corresponding_user_name': # only call with source and destination user names.
 		switch ($v1) {
+			case 'feed_user_name':
 			case 'feed_source_user_name':
 				$s1href_append = $href_append;
 				$s1subject = strip_tags(
@@ -514,7 +516,7 @@ function get_listing_template_output($structure, & $listing, & $key, & $translat
 					'focus' => 'quick_offer_offer_description',
 				));
 				# restore unhacked $v1
-				$v1 = 'source_user_name';
+				$v1 = str_replace('feed_', '', $v1);
 				# https://en.wikipedia.org/wiki/Fragment_identifier
 				$s1_fragment_identifier = 'offer_q_box';
 			break;
