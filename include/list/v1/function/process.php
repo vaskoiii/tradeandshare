@@ -1282,6 +1282,7 @@ function process_failure($message, $location = false) {
 		$_SESSION['interpret']['preload']['expand'] = array($load);
 
 		$a1 = array(
+			# 'quick_offer_offer_name' => '', # only unset on success (more predictable)
 			'focus' => $load,
 			'preview' => array(''),
 			'expand' => array($load),
@@ -1322,6 +1323,7 @@ function process_success($message,  $location = false, $amod = array()) {
 		$a1 = array();
 		$a1[$s1 . '_id'] = '';
 		# unset if any of the following were set to reduce wordiness 2012-04-05 vaskoiii
+		$a1['quick_offer_offer_name'] = ''; # todo better way to unset nonstandard var
 		$a1['focus'] = '';
 		$a1['preview'] = array(''); 
 		$a1['expand'] = array('');
